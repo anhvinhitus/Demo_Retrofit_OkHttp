@@ -14,7 +14,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.HttpUrl;
-import rx.functions.Func1;
 import timber.log.Timber;
 
 
@@ -130,11 +129,12 @@ public final class Strings {
     public static int getIndexOfSearchString(String text, String searchText) {
         String standardString = text.toLowerCase(Locale.getDefault());
         String standardRemoveAccentString = stripAccents(standardString);
+        String searchTextLowerCase = searchText.toLowerCase(Locale.getDefault());
 
-        if (standardRemoveAccentString.contains(searchText)) {
-            return standardRemoveAccentString.indexOf(searchText);
-        } else if (standardString.contains(searchText)) {
-            return standardString.indexOf(searchText);
+        if (standardRemoveAccentString.contains(searchTextLowerCase)) {
+            return standardRemoveAccentString.indexOf(searchTextLowerCase);
+        } else if (standardString.contains(searchTextLowerCase)) {
+            return standardString.indexOf(searchTextLowerCase);
         }
 
         return -1;
