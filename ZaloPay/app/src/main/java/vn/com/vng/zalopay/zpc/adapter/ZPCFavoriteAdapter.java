@@ -212,7 +212,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
                 if (mListener != null) {
                     mListener.onRemoveFavorite(mFavoriteData);
                 }
-                ToastUtil.showCustomToast(mContext, mContext.getString(R.string.friend_favorite_removed));
+                ToastUtil.showCustomToast(mContext, mContext.getString(R.string.friend_favorite_removed), false);
                 return;
             }
 
@@ -232,7 +232,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
                 mListener.onAddFavorite(mFavoriteData);
             }
             mSwipeLayout.close();
-            ToastUtil.showCustomToast(mContext, mContext.getString(R.string.friend_favorite_added));
+            ToastUtil.showCustomToast(mContext, mContext.getString(R.string.friend_favorite_added), false);
 
         }
     }

@@ -13,7 +13,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -94,22 +93,38 @@ public class FavoriteView extends LinearLayout implements FavoriteAdapter.OnClic
     }
 
     public void setData(List<FavoriteData> personList) {
+        if(mAdapter == null || personList == null || personList.size() < 0) {
+            return;
+        }
+
         mAdapter.setData(personList);
         checkItemCount();
     }
 
     public void remove(FavoriteData person) {
+        if(mAdapter == null || person == null) {
+            return;
+        }
+
         mAdapter.remove(person);
         checkItemCount();
     }
 
     public void add(FavoriteData person) {
+        if(mAdapter == null || person == null) {
+            return;
+        }
+
         mAdapter.insert(person, 0);
         AndroidUtils.runOnUIThread(mScrollRunnable);
         checkItemCount();
     }
 
     public void addLast(FavoriteData person) {
+        if(mAdapter == null || mAdapter.getItemCount() < 0) {
+            return;
+        }
+
         mAdapter.insert(person, mAdapter.getItemCount());
         AndroidUtils.runOnUIThread(mScrollRunnable);
         checkItemCount();
@@ -138,6 +153,10 @@ public class FavoriteView extends LinearLayout implements FavoriteAdapter.OnClic
     }
 
     private void checkItemCount() {
+        if(mAdapter == null || mAdapter.getItemCount() < 0) {
+            return;
+        }
+
         int count = mAdapter.getItemCount();
         setCountView(count);
         mEmptyView.setVisibility(count == 0 ? VISIBLE : GONE);

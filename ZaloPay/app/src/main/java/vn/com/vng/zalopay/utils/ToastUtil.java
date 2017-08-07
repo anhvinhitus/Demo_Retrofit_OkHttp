@@ -62,18 +62,23 @@ public class ToastUtil {
         toast.show();
     }
 
-    public static void showCustomToast(Context context, CharSequence message, int duration, int gravity) {
+    public static void showCustomToast(Context context, CharSequence message, int duration, int gravity, boolean isAllCaps) {
         Toast toast = new Toast(context);
         toast.setGravity(gravity, 0, 0);
         toast.setDuration(duration);
         View customView = View.inflate(context, R.layout.custom_toast, null);
         TextView mMessage = (TextView) customView.findViewById(R.id.tvMessage);
         mMessage.setText(message);
+        mMessage.setAllCaps(isAllCaps);
         toast.setView(customView);
         toast.show();
     }
 
     public static void showCustomToast(Context context, CharSequence message) {
-        showCustomToast(context, message, Toast.LENGTH_SHORT, Gravity.CENTER);
+        showCustomToast(context, message, Toast.LENGTH_SHORT, Gravity.CENTER, true);
+    }
+
+    public static void showCustomToast(Context context, CharSequence message, boolean isAllCaps) {
+        showCustomToast(context, message, Toast.LENGTH_SHORT, Gravity.CENTER, isAllCaps);
     }
 }
