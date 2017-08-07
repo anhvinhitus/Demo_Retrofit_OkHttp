@@ -94,7 +94,6 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
     private FrameLayout mInternetFrame;
     private FrameLayout mCustomContentFrame;
     private ImageView mErrorX;
-    private ImageView mNormal_ic;
     private Drawable mCustomImgDrawable;
     private ImageView mCustomImage;
     private TextView mConfirmButton;
@@ -220,7 +219,6 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         mSuccessFrame = (FrameLayout) findViewById(R.id.success_frame);
         mNormalFrame = (FrameLayout) findViewById(R.id.normal_frame);
         mUpdateFrame = (FrameLayout) findViewById(R.id.update_frame);
-        mNormal_ic = (ImageView) mNormalFrame.findViewById(R.id.normal_im);
         mProgressFrame = (FrameLayout) findViewById(R.id.progress_dialog);
         mLine = (View) findViewById(R.id.view_line);
         mCustomImage = (ImageView) findViewById(R.id.custom_image);

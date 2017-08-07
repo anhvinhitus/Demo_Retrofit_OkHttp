@@ -52,14 +52,15 @@
             android:layout_marginTop="5dp"
             android:visibility="gone">
 
-            <ImageView
-                android:id="@+id/info_im"
+            <com.zalopay.ui.widget.IconFont
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/app_name"
-                android:padding="@dimen/pading_top_min"
-                android:src="@drawable/ic_information" />
-
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:textColor="#008fe5"
+                app:iconName="dialoge_infor"
+                app:iconSize="60dp" />
         </FrameLayout>
 
         <FrameLayout
@@ -87,13 +88,15 @@
             android:layout_marginTop="5dp"
             android:visibility="gone">
 
-            <ImageView
-                android:id="@+id/normal_im"
+            <com.zalopay.ui.widget.IconFont
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/app_name"
-                android:padding="@dimen/pading_top_min"
-                android:src="@drawable/ic_speaker" />
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:textColor="#008fe5"
+                app:iconName="dialoge_notify"
+                app:iconSize="60dp" />
 
         </FrameLayout>
 
@@ -120,12 +123,15 @@
             android:layout_marginTop="5dp"
             android:visibility="gone">
 
-            <ImageView
+            <com.zalopay.ui.widget.IconFont
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/app_name"
-                android:padding="@dimen/pading_top_min"
-                android:src="@drawable/ic_wr" />
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:textColor="#008fe5"
+                app:iconName="dialoge_warning"
+                app:iconSize="60dp" />
         </FrameLayout>
 
         <FrameLayout
@@ -135,15 +141,17 @@
             android:layout_marginTop="5dp"
             android:visibility="gone">
 
-            <ImageView
-                android:id="@+id/ninternet_im"
+            <com.zalopay.ui.widget.IconFont
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/app_name"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:gravity="center"
                 android:paddingBottom="@dimen/zpw_padding_10"
                 android:paddingTop="@dimen/zpw_padding_20"
-                android:src="@drawable/ic_no_connection" />
-
+                android:textColor="#ff7c00"
+                app:iconName="dialoge_connect"
+                app:iconSize="60dp" />
         </FrameLayout>
 
         <FrameLayout
