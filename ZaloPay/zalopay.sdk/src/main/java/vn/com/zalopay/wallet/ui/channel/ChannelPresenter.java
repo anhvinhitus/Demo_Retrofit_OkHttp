@@ -193,7 +193,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             getViewOrThrow().showDialogManyOption(dialogManyOptionClick);
             return true;
         }
-        if (mAbstractWorkFlow != null && mAbstractWorkFlow.isATMFlow() && mAbstractWorkFlow.isCanEditCardInfo()) {
+        if (mAbstractWorkFlow != null && mAbstractWorkFlow.isATMFlow() && mAbstractWorkFlow.isCanEditCardInfo() && mAbstractWorkFlow.hasCardGuiProcessor()) {
             ((BankCardGuiProcessor) mAbstractWorkFlow.getGuiProcessor()).goBackInputCard();
             return true;
         }
@@ -642,7 +642,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     void resetCardNumberAndShowKeyBoard() throws Exception {
-        if (mAbstractWorkFlow != null) {
+        if (mAbstractWorkFlow != null && mAbstractWorkFlow.hasCardGuiProcessor()) {
             mAbstractWorkFlow.getGuiProcessor().resetCardNumberAndShowKeyBoard();
         }
     }
@@ -679,7 +679,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnUnLockScreen(SdkUnlockScreenMessage message) {
         try {
-            if (mAbstractWorkFlow != null && mAbstractWorkFlow.isCardFlow()) {
+            if (mAbstractWorkFlow != null && mAbstractWorkFlow.isCardFlow() && mAbstractWorkFlow.hasCardGuiProcessor()) {
                 mAbstractWorkFlow.getGuiProcessor().moveScrollViewToCurrentFocusView();
             }
             mBus.removeStickyEvent(SdkUnlockScreenMessage.class);
