@@ -78,6 +78,7 @@
     <!--Tab in Personal START-->
     <string name="personal_balance">personal_balance</string>
     <string name="personal_linkbank">personal_linkbank</string>
+    <string name="personal_voucher">personal_voucherlist</string>
     <string name="personal_bill">personal_bill</string>
     <string name="personal_history">personal_history</string>
     <string name="personal_supportcenter">personal_supportcenter</string>
