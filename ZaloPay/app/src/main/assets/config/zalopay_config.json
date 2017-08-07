@@ -110,7 +110,7 @@
     }
   ],
   "quick_comment_url": "https://goo.gl/forms/FCO642guFSbpYwlt2",
-  "api_route": "connector",
+  "api_route": "https",
   "api_names": [
     "um/listcardinfoforclient",
     "um/listbankaccountforclient",
