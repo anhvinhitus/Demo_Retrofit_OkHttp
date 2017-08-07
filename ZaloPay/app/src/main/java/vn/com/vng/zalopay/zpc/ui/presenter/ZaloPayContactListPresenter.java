@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
@@ -176,6 +177,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         Intent data = new Intent();
         data.putExtra("profile", profile);
         activity.setResult(Activity.RESULT_OK, data);
+        AndroidUtils.hideKeyboard(activity);
         activity.finish();
     }
 

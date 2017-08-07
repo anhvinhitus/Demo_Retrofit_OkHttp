@@ -43,6 +43,7 @@ import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.zpc.ui.presenter.ZaloPayContactListPresenter;
 import vn.com.vng.zalopay.zpc.adapter.ZPCFavoriteAdapter;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
@@ -189,6 +190,12 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        AndroidUtils.hideKeyboard(getActivity());
+        return super.onBackPressed();
     }
 
     @Override
