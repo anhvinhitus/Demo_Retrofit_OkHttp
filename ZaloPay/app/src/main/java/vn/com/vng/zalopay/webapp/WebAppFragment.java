@@ -130,6 +130,10 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
 
     @Override
     public void showError(int errorCode) {
+        if(getContext() == null) {
+            return;
+        }
+
         Timber.d("showError errorCode [%s]", errorCode);
         if (NetworkHelper.isNetworkAvailable(getContext())) {
             showErrorNoLoad();

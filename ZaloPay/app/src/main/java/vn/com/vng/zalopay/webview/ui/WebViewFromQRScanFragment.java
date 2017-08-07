@@ -166,6 +166,10 @@ public class WebViewFromQRScanFragment extends BaseFragment implements ZPWebView
 
     @Override
     public void showError(int errorCode) {
+        if(getContext() == null) {
+            return;
+        }
+
         Timber.d("showError errorCode [%s]", errorCode);
         if (NetworkHelper.isNetworkAvailable(getContext())) {
             showErrorNoLoad();
