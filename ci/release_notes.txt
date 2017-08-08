@@ -1,16 +1,2 @@
-Zalo Pay (Sandbox v2.17.0 - build 392) - Released on 2017-08-08 10:45
-+ [Voucher] Fix import sau khi move class by vo van chuc (#02d5cf6)
-+ [UI] task#777 : [Android] Chỉnh lại màu background của các UI by sinhtt (#02d9847)
-+ [Voucher] Move entity vào right package by vo van chuc (#7ea2f1d)
-+ [Dialog] Update IconFont by lytm (#ceef244)
-+ [APP] Check  null Display in ModalHostHelper by lytm (#ce3995b)
-+ [Search] Đổi màu icon app "Nhận tiền" by lytm (#f5ca39e)
-+ [UI] show arrow & loading when update contact by sinhtt (#36100dd)
-+ [Voucher] Update icon list voucher by lytm (#fc9720a)
-+ [SDK] Check null getGuiProcessor() by lytm (#9501e24)
-+ [SearchApp] task#774 : không tìm thấy kết quả với từ khoá có chữ viết hoa by sinhtt (#e4e8bf3)
-+ [ZPC] Edit toast notice allcaps, refactor code by datnt10 (#4c8197c)
-+ [ZPC] Hide keyboard when back topup by hieuvm (#1d39df5)
-+ [App] Update icon font by Nguyen Danh Khoi (#16e8814)
-+ [WebApp] refactor code by datnt10 (#be56ea1)
-+ [Resource] Update https api in local resource by vo van chuc (#e98690e)
+Zalo Pay (Staging v2.17.0 - build 393) - Released on 2017-08-08 10:45
+
