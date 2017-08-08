@@ -44,7 +44,6 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.react.model.ZPCViewMode;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.FileDownloader;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -390,7 +389,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void launchContactList(String phoneNumber, @ZPCViewMode String viewMode, boolean isNumberPad, String navigationTitle, final Promise promise) {
+    public void launchContactList(String phoneNumber, String viewMode, boolean isNumberPad, String navigationTitle, final Promise promise) {
 
         Activity activity = getCurrentActivity();
         if (activity == null) {
