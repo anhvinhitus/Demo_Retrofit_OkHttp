@@ -56,7 +56,11 @@ public class TransactionHelper {
             return context.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
         }
         if (throwable instanceof RequestException || throwable instanceof SdkResourceException) {
-            return throwable.getMessage();
+            String error = throwable.getMessage();
+            if(TextUtils.isEmpty(error)){
+                error = context.getResources().getString(R.string.sdk_error_undefine);
+            }
+            return error;
         }
         if (throwable instanceof NetworkConnectionException) {
             return context.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
