@@ -67,6 +67,7 @@ dependencies {
 
     testCompile tests.junit
     testCompile tests.robolectric
+    testCompile tests.mockito
 
     compile libs.timber
 
