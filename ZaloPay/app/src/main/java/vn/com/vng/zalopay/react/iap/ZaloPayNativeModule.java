@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -33,6 +34,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BundleConstants;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -42,6 +44,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.react.model.ZPCViewMode;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.FileDownloader;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -387,7 +390,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void launchContactList(String phoneNumber, boolean isNumberPad, String navigationTitle, final Promise promise) {
+    public void launchContactList(String phoneNumber, @ZPCViewMode String viewMode, boolean isNumberPad, String navigationTitle, final Promise promise) {
 
         Activity activity = getCurrentActivity();
         if (activity == null) {
@@ -396,7 +399,14 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         }
 
         mPromiseTopup = new WeakReference<>(promise);
-        mNavigator.startZaloPayContactTopup(activity, phoneNumber, isNumberPad, navigationTitle, TOPUP_REQUEST_CODE);
+
+        // push data to bundle
+        Bundle extras = new Bundle();
+        extras.putString(BundleConstants.KEY_SEARCH, phoneNumber);
+        extras.putString(BundleConstants.ZPC_VIEW_MODE, viewMode);
+        extras.putBoolean(BundleConstants.NUMBER_KEYBOARD, isNumberPad);
+        extras.putString(BundleConstants.NAVIGATION_TITLE, navigationTitle);
+        mNavigator.startZaloPayContactTopup(activity, extras, TOPUP_REQUEST_CODE);
     }
 
     private void handleResultTopup(int resultCode, Intent data) {

@@ -111,6 +111,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     private int mViewType = ZpcViewType.ZPC_All;
     private String mKeySearch = null;
     private boolean mIsNumberPad = false;
+    private String mNavigatorTitle = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,6 +144,10 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
             setKeyboard(true);
         }
 
+        if(!TextUtils.isEmpty(mNavigatorTitle)){
+            setTitle(mNavigatorTitle);
+        }
+
         showLoading();
     }
 
@@ -157,6 +162,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         mViewType = bundle.getInt(BundleConstants.ZPC_VIEW_TYPE, ZpcViewType.ZPC_All);
         mKeySearch = bundle.getString(BundleConstants.KEY_SEARCH, "");
         mIsNumberPad = bundle.getBoolean(BundleConstants.NUMBER_KEYBOARD, false);
+        mNavigatorTitle = bundle.getString(BundleConstants.NAVIGATION_TITLE, "");
     }
 
     @Override
@@ -422,6 +428,16 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
             mTvNumberNotSave.setText(mEdtSearchView.getText());
             mEmptyView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void setTitle(String title) {
+        Activity activity = getActivity();
+
+        if (!(activity instanceof UserBaseToolBarActivity)) {
+            return;
+        }
+        ((UserBaseToolBarActivity) activity).setTitle(title);
     }
 
     @Override

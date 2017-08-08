@@ -21,6 +21,8 @@ public interface IZaloFriendListView extends ILoadDataView {
 
     void checkIfEmpty();
 
+    void setTitle(String title);
+
     void setSubTitle(String subTitle);
 
     void setFavorite(List<FavoriteData> persons);

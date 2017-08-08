@@ -104,12 +104,9 @@ import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
 public class Navigator {
 
     private static final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
-
-    private UserConfig mUserConfig;
-
-    private SharedPreferences mPreferences;
-
     AuthenticationPassword mAuthenticationPassword;
+    private UserConfig mUserConfig;
+    private SharedPreferences mPreferences;
     private AppResourceStore.Repository mAppResourceRepository;
 
     @Inject
@@ -489,14 +486,10 @@ public class Navigator {
         return intent;
     }
 
-    public void startZaloPayContactTopup(Activity activity, String phoneNumber, boolean isNumberPad, String navigationTitle, int requestCode) {
+    public void startZaloPayContactTopup(Activity activity, Bundle extras, int requestCode) {
         Intent intent = getIntentZaloPayContactList(activity, ZpcViewType.ZPC_PhoneBook);
-        if (!TextUtils.isEmpty(phoneNumber)) {
-            intent.putExtra(BundleConstants.KEY_SEARCH, phoneNumber);
-        }
-        intent.putExtra(BundleConstants.NUMBER_KEYBOARD, isNumberPad);
+        intent.putExtras(extras);
         activity.startActivityForResult(intent, requestCode);
-        // TODO: code here for set title navigator
     }
 
     public void startTransferActivity(Fragment fragment, TransferObject object, int requestCode) {

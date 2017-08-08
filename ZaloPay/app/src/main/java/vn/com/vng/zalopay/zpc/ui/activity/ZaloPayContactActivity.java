@@ -1,18 +1,17 @@
 package vn.com.vng.zalopay.zpc.ui.activity;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.tracker.ActivityTracker;
-import vn.com.vng.zalopay.zpc.ui.fragment.ZaloPayContactListFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
+import vn.com.vng.zalopay.zpc.ui.fragment.ZaloPayContactListFragment;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
-
-import android.os.Bundle;
-import android.widget.TextView;
 
 public class ZaloPayContactActivity extends UserBaseToolBarActivity {
     @BindView(R.id.title)
@@ -62,5 +61,13 @@ public class ZaloPayContactActivity extends UserBaseToolBarActivity {
             return;
         }
         tvSubTitle.setText(subTitle);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        if(tvTitle == null){
+            return;
+        }
+        tvTitle.setText(title);
     }
 }
