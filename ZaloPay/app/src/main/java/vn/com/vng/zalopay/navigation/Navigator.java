@@ -39,7 +39,6 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
-import vn.com.vng.zalopay.authentication.Stage;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.bank.ui.BankActivity;
@@ -53,6 +52,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
 import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.passport.OnboardingActivity;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.react.Helpers;
@@ -64,9 +64,6 @@ import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
-import vn.com.vng.zalopay.zpc.ui.activity.ZaloPayContactActivity;
-import vn.com.vng.zalopay.zpc.ui.activity.SyncContactActivity;
-import vn.com.vng.zalopay.zpc.model.ZpcViewType;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
@@ -87,13 +84,16 @@ import vn.com.vng.zalopay.webview.ui.WebViewFromQRScanActivity;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
+import vn.com.vng.zalopay.zpc.model.ZpcViewType;
+import vn.com.vng.zalopay.zpc.ui.activity.SyncContactActivity;
+import vn.com.vng.zalopay.zpc.ui.activity.ZaloPayContactActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
-import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_OAUTHTOKEN;
 import static vn.com.vng.zalopay.Constants.ARGUMENT_KEY_ZALOPROFILE;
 
@@ -489,13 +489,14 @@ public class Navigator {
         return intent;
     }
 
-    public void startZaloPayContactTopup(Activity activity, String phoneNumber, boolean isNumberPad, int requestCode) {
+    public void startZaloPayContactTopup(Activity activity, String phoneNumber, boolean isNumberPad, String navigationTitle, int requestCode) {
         Intent intent = getIntentZaloPayContactList(activity, ZpcViewType.ZPC_PhoneBook);
         if (!TextUtils.isEmpty(phoneNumber)) {
             intent.putExtra(BundleConstants.KEY_SEARCH, phoneNumber);
         }
         intent.putExtra(BundleConstants.NUMBER_KEYBOARD, isNumberPad);
         activity.startActivityForResult(intent, requestCode);
+        // TODO: code here for set title navigator
     }
 
     public void startTransferActivity(Fragment fragment, TransferObject object, int requestCode) {

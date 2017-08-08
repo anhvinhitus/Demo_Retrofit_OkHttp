@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -54,12 +53,14 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 class ZaloPayNativeModule extends ReactContextBaseJavaModule
         implements ActivityEventListener, LifecycleEventListener {
 
+    private static final int TOPUP_REQUEST_CODE = 100;
     private final IPaymentService mPaymentService;
     private final long mAppId; // AppId này là appid js cắm vào
     private final NetworkService mNetworkServiceWithRetry;
     private final User mUser;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private Navigator mNavigator;
+    private WeakReference<Promise> mPromiseTopup = null;
 
     ZaloPayNativeModule(ReactApplicationContext reactContext,
                         User user,
@@ -213,7 +214,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         }
     }
 
-
     @ReactMethod
     public void shareMessageToOtherApp(String message, Promise promise) {
         if (getCurrentActivity() != null) {
@@ -282,7 +282,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         Timber.d("Invalid parameter [%s]", parameterName);
         Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), message);
     }
-
 
     @ReactMethod
     public void showLoading() {
@@ -387,11 +386,8 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         }
     }
 
-    private WeakReference<Promise> mPromiseTopup = null;
-    private static final int TOPUP_REQUEST_CODE = 100;
-
     @ReactMethod
-    public void launchContactList(String phoneNumber, boolean isNumberPad, final Promise promise) {
+    public void launchContactList(String phoneNumber, boolean isNumberPad, String navigationTitle, final Promise promise) {
 
         Activity activity = getCurrentActivity();
         if (activity == null) {
@@ -400,7 +396,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         }
 
         mPromiseTopup = new WeakReference<>(promise);
-        mNavigator.startZaloPayContactTopup(activity, phoneNumber, isNumberPad, TOPUP_REQUEST_CODE);
+        mNavigator.startZaloPayContactTopup(activity, phoneNumber, isNumberPad, navigationTitle, TOPUP_REQUEST_CODE);
     }
 
     private void handleResultTopup(int resultCode, Intent data) {
