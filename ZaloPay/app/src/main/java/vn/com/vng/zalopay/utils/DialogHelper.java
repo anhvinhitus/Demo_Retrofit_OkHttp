@@ -60,14 +60,12 @@ public class DialogHelper {
     }
 
     public static void showErrorDialog(Activity activity,
-                                       String title,
                                        String message,
                                        String cancelText,
                                        ZPWOnEventDialogListener cancelListener) {
         DialogManager.showSweetDialogCustom(activity,
                 message,
                 cancelText,
-                title,
                 SweetAlertDialog.ERROR_TYPE,
                 cancelListener);
 

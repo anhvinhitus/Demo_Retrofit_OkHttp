@@ -132,50 +132,6 @@ public class DialogManager {
         }
     }
 
-    /****
-     * show custom dialog(info, error, success, warning ...)
-     */
-    public synchronized static void showSweetDialogCustom(final Activity pActivity, final String pMessage, String pButtonText,
-                                                          String pTitle, int pDialogType, final ZPWOnEventDialogListener callback) {
-        try {
-            if (pActivity == null || pActivity.isFinishing()) {
-                Timber.d("activity is null or finish");
-                return;
-            }
-            if (mDialog != null && mDialog.isShowing()) {
-                Timber.d("There are a dialog showing - dismiss dialog");
-                mDialog.dismiss();
-                mDialog = null;
-            }
-            mDialog = new SweetAlertDialog(pActivity, pDialogType, R.style.alert_dialog);
-            if (TextUtils.isEmpty(pTitle)) {
-                switch (pDialogType) {
-                    case UPDATE_TYPE:
-                        pTitle = pActivity.getString(R.string.dialog_title_update);
-                        break;
-                }
-            }
-            mDialog.setConfirmText(pButtonText)
-                    .setContentText(pMessage)
-                    .setTitleText(pTitle);
-            mDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    if (sweetAlertDialog != null) {
-                        sweetAlertDialog.dismiss();
-                        mDialog = null;
-                    }
-                    if (callback != null) {
-                        callback.onOKEvent();
-                    }
-                }
-            });
-            mDialog.show();
-        } catch (Exception e) {
-            Timber.w(e, "Exception show custom alert dialog");
-        }
-    }
-
     /**
      * overload custom dialog (info, error, success, warning ...)
      *
@@ -198,11 +154,10 @@ public class DialogManager {
             }
             mDialog = new SweetAlertDialog(pActivity, pDialogType, R.style.alert_dialog);
             String pTitle = null;
-            switch (pDialogType) {
-                case UPDATE_TYPE:
-                    pTitle = pActivity.getString(R.string.dialog_title_update);
-                    break;
+            if (pDialogType == UPDATE_TYPE) {
+                pTitle = pActivity.getString(R.string.dialog_title_update);
             }
+
             mDialog.setConfirmText(pButtonText)
                     .setContentHtmlText(pMessage)
                     .setTitleText(pTitle);
@@ -380,7 +335,7 @@ public class DialogManager {
         showMultiButtonDialog(pActivity, SweetAlertDialog.INFO_NO_ICON, pDrawable, pContent, pListener, pArrButton);
     }
 
-    public synchronized static void showMultiButtonDialog(final Activity pActivity, int pDialogType, int pIcoDrawable,  String pContent,
+    public synchronized static void showMultiButtonDialog(final Activity pActivity, int pDialogType, int pIcoDrawable, String pContent,
                                                           final ZPWOnSweetDialogListener pListener, String... pArrButton) {
         try {
             if (pActivity == null || pActivity.isFinishing()) {
