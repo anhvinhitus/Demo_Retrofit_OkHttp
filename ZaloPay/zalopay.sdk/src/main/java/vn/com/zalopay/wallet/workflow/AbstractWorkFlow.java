@@ -1200,7 +1200,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             Timber.w(e, "Exception cancel trans timer");
         }
         GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
-        GlobalData.revertVouchersOnStorage(mCompositeSubscription);
         //hide webview
         try {
             mGuiProcessor.useWebView(false);
