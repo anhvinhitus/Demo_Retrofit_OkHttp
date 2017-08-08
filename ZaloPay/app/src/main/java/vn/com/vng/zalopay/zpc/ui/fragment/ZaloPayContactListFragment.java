@@ -44,6 +44,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
+import vn.com.vng.zalopay.react.model.ZPCViewMode;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -87,6 +88,8 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     private String mKeySearch = null;
     private boolean mIsNumberPad = false;
     private String mNavigatorTitle = null;
+    private String mViewMode = ZPCViewMode.keyboardABC;
+    private String mPhoneNumber = null;
     private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -160,6 +163,14 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
             setTitle(mNavigatorTitle);
         }
 
+        if (mViewMode.equals(ZPCViewMode.keyboardABC)) {
+            setKeyboard(true);
+        }
+
+        if (!TextUtils.isEmpty(mPhoneNumber)) {
+            mEdtSearchView.setText(mPhoneNumber);
+        }
+
         showLoading();
 
         focusEdtSearchView();
@@ -177,6 +188,8 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         mKeySearch = bundle.getString(BundleConstants.KEY_SEARCH, "");
         mIsNumberPad = bundle.getBoolean(BundleConstants.NUMBER_KEYBOARD, false);
         mNavigatorTitle = bundle.getString(BundleConstants.NAVIGATION_TITLE, "");
+        mViewMode = bundle.getString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardABC);
+        mPhoneNumber = bundle.getString(BundleConstants.PHONE_NUMBER, "");
     }
 
     @Override
@@ -467,9 +480,12 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
     @Override
     public void focusEdtSearchView() {
-        mEdtSearchView.requestFocus();
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        mEdtSearchView.postDelayed(() -> {
+            mEdtSearchView.requestFocus();
+            mEdtSearchView.setSelection(mEdtSearchView.getText().length()); // set cursor to end
+            imm.showSoftInput(mEdtSearchView, 0);
+        }, 200);
     }
 
 //    private OnFavoriteListener mOnFavoriteListener = new OnFavoriteListener() {
