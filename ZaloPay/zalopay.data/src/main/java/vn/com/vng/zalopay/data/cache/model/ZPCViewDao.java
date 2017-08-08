@@ -57,7 +57,9 @@ public class ZPCViewDao {
                 UCBDao.Properties.PhoneNumber.columnName,
                 UCBDao.Properties.DisplayName.columnName,
                 UCBDao.Properties.NormalizeDisplayName.columnName,
-                UCBDao.Properties.PhotoUri.columnName
+                UCBDao.Properties.PhotoUri.columnName,
+                UCBDao.Properties.FirstName.columnName,
+                UCBDao.Properties.LastName.columnName
         };
 
         StringBuilder builder = new StringBuilder();

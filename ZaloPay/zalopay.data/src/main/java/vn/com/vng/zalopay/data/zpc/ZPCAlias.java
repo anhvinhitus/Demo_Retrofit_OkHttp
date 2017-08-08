@@ -17,6 +17,8 @@ public class ZPCAlias {
         public static final String ZALOPAY_ID = "ZALOPAY_ID";
         public static final String ZALOPAY_NAME = "ZALOPAY_NAME";
         public static final String USING_APP = "USING_APP";
+        public static final String FIRST_NAME = "FIRST_NAME";
+        public static final String LAST_NAME = "LAST_NAME";
     }
 
 

@@ -145,6 +145,8 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
         String avatar = cursor.getString(cursor.getColumnIndex(ColumnAlias.AVATAR));
         String phone = cursor.getString(cursor.getColumnIndex(ColumnAlias.PHONE_NUMBER));
         long zaloPayId = cursor.getLong(cursor.getColumnIndex(ColumnAlias.ZALOPAY_ID));
+        String firstName = cursor.getString(cursor.getColumnIndex(ColumnAlias.FIRST_NAME));
+        String lastName = cursor.getString(cursor.getColumnIndex(ColumnAlias.LAST_NAME));
 
         holder.bindView(zaloId, phone, displayName, aliasDisPlayName, avatar);
 

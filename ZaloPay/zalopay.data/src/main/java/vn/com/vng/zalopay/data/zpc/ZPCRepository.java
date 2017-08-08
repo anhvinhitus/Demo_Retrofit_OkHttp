@@ -100,6 +100,8 @@ public class ZPCRepository implements ZPCStore.Repository {
             profile.normalizeDisplayName = cursor.getString(cursor.getColumnIndex(ColumnAlias.NORMALIZE_DISPLAY_NAME));
             profile.status = cursor.getInt(cursor.getColumnIndex(ColumnAlias.STATUS));
             profile.phonenumber = cursor.getString(cursor.getColumnIndex(ColumnAlias.PHONE_NUMBER));
+            profile.firstName = cursor.getString(cursor.getColumnIndex(ColumnAlias.FIRST_NAME));
+            profile.lastName = cursor.getString(cursor.getColumnIndex(ColumnAlias.LAST_NAME));
             return profile;
         } catch (Exception e) {
             Timber.d(e, "Transform friend exception");

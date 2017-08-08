@@ -108,7 +108,9 @@ class ZPCSqlHelper {
                 + ZPCDao.Properties.Status.columnName + ", "
                 + ZPCDao.Properties.ZalopayId.columnName + ", "
                 + ZPCDao.Properties.ZalopayName.columnName + ", "
-                + ZFLDao.Properties.UsingApp.columnName
+                + ZFLDao.Properties.UsingApp.columnName + ", "
+                + "NULL AS" + ColumnAlias.FIRST_NAME + ", "
+                + "NULL AS" + ColumnAlias.LAST_NAME
                 + " FROM ZPC_VIEW";
     }
 
@@ -118,6 +120,8 @@ class ZPCSqlHelper {
                 + UCBDao.Properties.DisplayName.columnName + " AS " + ColumnAlias.DISPLAY_NAME + ", "
                 + UCBDao.Properties.NormalizeDisplayName.columnName + " AS " + ColumnAlias.NORMALIZE_DISPLAY_NAME + ", "
                 + UCBDao.Properties.PhoneNumber.columnName + " AS " + ColumnAlias.PHONE_NUMBER + ", "
+                + UCBDao.Properties.FirstName.columnName + " AS " + ColumnAlias.FIRST_NAME + ", "
+                + UCBDao.Properties.LastName.columnName + " AS " + ColumnAlias.LAST_NAME + ", "
                 + "0 AS " + ColumnAlias.STATUS + ", "
                 + "NULL AS " + ColumnAlias.ZALOPAY_ID + ", "
                 + "NULL AS " + ColumnAlias.ZALOPAY_NAME + ", "
