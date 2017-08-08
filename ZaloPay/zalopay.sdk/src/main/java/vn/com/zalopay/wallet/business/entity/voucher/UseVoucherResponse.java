@@ -1,7 +1,6 @@
-package vn.com.zalopay.wallet.voucher;
+package vn.com.zalopay.wallet.business.entity.voucher;
 
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 /**
  * Created by chucvv on 8/1/17.
