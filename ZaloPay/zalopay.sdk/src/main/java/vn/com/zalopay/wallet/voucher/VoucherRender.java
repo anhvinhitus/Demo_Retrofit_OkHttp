@@ -66,6 +66,8 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
             error_textview.setText(error);
             boolean hasError = !TextUtils.isEmpty(error);
             error_textview.setVisibility(hasError ? View.VISIBLE : View.GONE);
+
+            hideSubmit();
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -94,6 +96,7 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
             View loadingView = view.findViewById(R.id.loading_view);
             loadingView.setVisibility(View.VISIBLE);
             clearError();
+            hideSubmit();
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -106,8 +109,34 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
                 return;
             }
             View loadingView = view.findViewById(R.id.loading_view);
-            loadingView.setVisibility(View.INVISIBLE);
+            loadingView.setVisibility(View.GONE);
 
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+    }
+
+    private void hideSubmit() {
+        try {
+            View view = getView();
+            if (view == null) {
+                return;
+            }
+            View loadingView = view.findViewById(R.id.use_vouchercode_ll);
+            loadingView.setVisibility(View.GONE);
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+    }
+
+    private void showSubmit() {
+        try {
+            View view = getView();
+            if (view == null) {
+                return;
+            }
+            View loadingView = view.findViewById(R.id.use_vouchercode_ll);
+            loadingView.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -192,6 +221,8 @@ public class VoucherRender implements UIBottomSheetDialog.IRender {
                 @Override
                 public void afterTextChanged(Editable editable) {
                     try {
+                        clearError();
+                        showSubmit();
                         String text = editable != null ? editable.toString() : null;
                         if (TextUtils.isEmpty(text) || text.length() < VOUCHER_CODE_BOUND_NUM) {
                             useVoucherView.setTextColor(getContext().getResources().getColor(R.color.text_color));
