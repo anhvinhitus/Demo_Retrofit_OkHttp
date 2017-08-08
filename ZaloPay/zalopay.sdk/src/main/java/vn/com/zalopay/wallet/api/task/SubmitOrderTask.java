@@ -10,12 +10,12 @@ import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 public class SubmitOrderTask extends BaseTask<StatusResponse> {
     PaymentInfoHelper mPaymentHelper;

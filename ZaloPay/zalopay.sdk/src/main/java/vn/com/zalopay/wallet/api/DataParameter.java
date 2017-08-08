@@ -15,12 +15,11 @@ import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
-import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
-import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 public class DataParameter {
     /**

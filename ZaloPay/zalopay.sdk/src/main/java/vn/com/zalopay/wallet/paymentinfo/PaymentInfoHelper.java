@@ -19,6 +19,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -26,7 +27,6 @@ import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.ui.BaseActivity;
-import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorAccountArray;
 import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorArray;

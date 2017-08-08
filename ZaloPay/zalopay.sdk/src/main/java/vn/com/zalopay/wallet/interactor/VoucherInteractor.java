@@ -4,11 +4,11 @@ import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
+import vn.com.zalopay.wallet.business.entity.voucher.UseVoucherResponse;
+import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.repository.voucher.VoucherStore;
-import vn.com.zalopay.wallet.voucher.UseVoucherResponse;
-import vn.com.zalopay.wallet.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.voucher.VoucherStatusResponse;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;

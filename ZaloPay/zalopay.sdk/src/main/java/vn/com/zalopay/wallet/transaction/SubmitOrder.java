@@ -10,11 +10,11 @@ import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 /**
  * Created by chucvv on 6/16/17.

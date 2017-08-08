@@ -4,9 +4,9 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
+import vn.com.zalopay.wallet.business.entity.voucher.UseVoucherResponse;
+import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.voucher.UseVoucherResponse;
-import vn.com.zalopay.wallet.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.voucher.VoucherStatusResponse;
 
 /**

@@ -30,6 +30,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentState;
@@ -51,7 +52,6 @@ import vn.com.zalopay.wallet.transaction.TransStatus;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListFragment;
 import vn.com.zalopay.wallet.ui.channellist.ChannelListPresenter;
-import vn.com.zalopay.wallet.voucher.VoucherInfo;
 
 /*
  * pre check before start payment channel
