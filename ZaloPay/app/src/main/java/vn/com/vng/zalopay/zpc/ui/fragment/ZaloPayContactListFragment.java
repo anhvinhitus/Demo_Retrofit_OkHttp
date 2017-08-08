@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.zpc.ui.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -45,9 +47,9 @@ import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.zpc.ui.presenter.ZaloPayContactListPresenter;
 import vn.com.vng.zalopay.zpc.adapter.ZPCFavoriteAdapter;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
+import vn.com.vng.zalopay.zpc.ui.presenter.ZaloPayContactListPresenter;
 import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 
 /**
@@ -58,6 +60,54 @@ import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 public class ZaloPayContactListFragment extends RuntimePermissionFragment implements IZaloFriendListView,
         SwipeRefreshLayout.OnRefreshListener {
 
+
+    @BindView(R.id.listview)
+    ListView mListView;
+    @BindView(R.id.swipeRefresh)
+    MultiSwipeRefreshLayout mSwipeRefreshView;
+    @BindView(R.id.progressContainer)
+    View mLoadingView;
+    ZPCFavoriteAdapter mAdapter;
+    @Inject
+    ZaloPayContactListPresenter mPresenter;
+    @BindView(R.id.tv_empty)
+    TextView mTvEmptyView;
+    @BindView(R.id.iv_empty)
+    View mEmptyView;
+    @BindView(R.id.edtSearch)
+    ZPEditText mEdtSearchView;
+    @BindView(R.id.switchKeyboard)
+    IconFont mSwitchKeyboardView;
+    @BindView(R.id.itemNumberNotSaveYet)
+    LinearLayout mItemNumberNotSaveYet;
+    @BindView(R.id.tvNumberNotSave)
+    TextView mTvNumberNotSave;
+    @ZpcViewType
+    private int mViewType = ZpcViewType.ZPC_All;
+    private String mKeySearch = null;
+    private boolean mIsNumberPad = false;
+    private String mNavigatorTitle = null;
+    private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            if (scrollState != AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                return;
+            }
+
+            closeAllSwipeItems(view);
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+        }
+    };
+    private SwipeLayout.SwipeListener mSwipeListener = new SimpleSwipeListener() {
+        @Override
+        public void onStartOpen(SwipeLayout layout) {
+            closeAllExcept(mListView, layout);
+        }
+    };
 
     public static ZaloPayContactListFragment newInstance(Bundle args) {
         ZaloPayContactListFragment fragment = new ZaloPayContactListFragment();
@@ -74,44 +124,6 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     protected int getResLayoutId() {
         return R.layout.fragment_zalopay_contact_list;
     }
-
-    @BindView(R.id.listview)
-    ListView mListView;
-
-    @BindView(R.id.swipeRefresh)
-    MultiSwipeRefreshLayout mSwipeRefreshView;
-
-    @BindView(R.id.progressContainer)
-    View mLoadingView;
-
-    ZPCFavoriteAdapter mAdapter;
-
-    @Inject
-    ZaloPayContactListPresenter mPresenter;
-
-    @BindView(R.id.tv_empty)
-    TextView mTvEmptyView;
-
-    @BindView(R.id.iv_empty)
-    View mEmptyView;
-
-    @BindView(R.id.edtSearch)
-    ZPEditText mEdtSearchView;
-
-    @BindView(R.id.switchKeyboard)
-    IconFont mSwitchKeyboardView;
-
-    @BindView(R.id.itemNumberNotSaveYet)
-    LinearLayout mItemNumberNotSaveYet;
-
-    @BindView(R.id.tvNumberNotSave)
-    TextView mTvNumberNotSave;
-
-    @ZpcViewType
-    private int mViewType = ZpcViewType.ZPC_All;
-    private String mKeySearch = null;
-    private boolean mIsNumberPad = false;
-    private String mNavigatorTitle = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -144,11 +156,13 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
             setKeyboard(true);
         }
 
-        if(!TextUtils.isEmpty(mNavigatorTitle)){
+        if (!TextUtils.isEmpty(mNavigatorTitle)) {
             setTitle(mNavigatorTitle);
         }
 
         showLoading();
+
+        focusEdtSearchView();
     }
 
     @Override
@@ -275,35 +289,13 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     public void onSwitchKeyboard() {
         mIsNumberPad = !mIsNumberPad;
         setKeyboard(mIsNumberPad);
+        focusEdtSearchView();
     }
 
     @OnClick(R.id.itemNumberNotSaveYet)
-    public void onClickItemNumberNotSaveYet(){
+    public void onClickItemNumberNotSaveYet() {
         Timber.d("onClickItemNumberNotSaveYet()");
     }
-
-    private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-            if (scrollState != AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                return;
-            }
-
-            closeAllSwipeItems(view);
-        }
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-        }
-    };
-
-    private SwipeLayout.SwipeListener mSwipeListener = new SimpleSwipeListener() {
-        @Override
-        public void onStartOpen(SwipeLayout layout) {
-            closeAllExcept(mListView, layout);
-        }
-    };
 
     @Override
     public void closeAllSwipeItems(AbsListView listView) {
@@ -471,6 +463,13 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         }
 
         mAdapter.setFavorite(persons);
+    }
+
+    @Override
+    public void focusEdtSearchView() {
+        mEdtSearchView.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
 //    private OnFavoriteListener mOnFavoriteListener = new OnFavoriteListener() {

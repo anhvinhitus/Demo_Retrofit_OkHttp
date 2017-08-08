@@ -38,4 +38,6 @@ public interface IZaloFriendListView extends ILoadDataView {
     void closeAllSwipeItems();
 
     Fragment getFragment();
+
+    void focusEdtSearchView();
 }

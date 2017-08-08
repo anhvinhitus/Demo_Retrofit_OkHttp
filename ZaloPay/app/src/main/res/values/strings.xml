@@ -477,5 +477,6 @@
     <string name="friend.favorite.maximum.format">Danh sách bạn bè ưa thích chỉ chứa tối đa %s người</string>
     <string name="friend.favorite.added">Đã thêm vào bạn bè ưa thích</string>
     <string name="friend.favorite.removed">Đã xoá khỏi bạn bè ưa thích</string>
+    <string name="not.number.save.yet">Số chưa lưu</string>
 </resources>
 
