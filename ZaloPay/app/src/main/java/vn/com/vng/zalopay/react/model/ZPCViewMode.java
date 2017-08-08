@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by cpu11843-local on 8/8/17.
+ * Created by sinhtt on 8/8/17.
  */
 
 @StringDef({ZPCViewMode.keyboardABC, ZPCViewMode.keyboardPhone})

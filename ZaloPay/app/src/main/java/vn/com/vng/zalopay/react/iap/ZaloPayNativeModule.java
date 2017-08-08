@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -398,14 +399,18 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         }
 
         mPromiseTopup = new WeakReference<>(promise);
+        mNavigator.startZaloPayContactTopup(activity, getBundleContactList(phoneNumber, viewMode, isNumberPad, navigationTitle), TOPUP_REQUEST_CODE);
+    }
 
+    @NonNull
+    private Bundle getBundleContactList(String phoneNumber, String viewMode, boolean isNumberPad, String navigationTitle) {
         // push data to bundle
         Bundle extras = new Bundle();
         extras.putString(BundleConstants.KEY_SEARCH, phoneNumber);
         extras.putString(BundleConstants.ZPC_VIEW_MODE, viewMode);
         extras.putBoolean(BundleConstants.NUMBER_KEYBOARD, isNumberPad);
         extras.putString(BundleConstants.NAVIGATION_TITLE, navigationTitle);
-        mNavigator.startZaloPayContactTopup(activity, extras, TOPUP_REQUEST_CODE);
+        return extras;
     }
 
     private void handleResultTopup(int resultCode, Intent data) {

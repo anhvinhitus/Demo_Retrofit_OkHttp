@@ -486,7 +486,7 @@ public class Navigator {
         return intent;
     }
 
-    public void startZaloPayContactTopup(Activity activity, Bundle extras, int requestCode) {
+    public void startZaloPayContactTopup(Activity activity, @NonNull Bundle extras, int requestCode) {
         Intent intent = getIntentZaloPayContactList(activity, ZpcViewType.ZPC_PhoneBook);
         intent.putExtras(extras);
         activity.startActivityForResult(intent, requestCode);
