@@ -17,6 +17,7 @@ import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
 import vn.zalopay.promotion.IPromotionResult;
 import vn.zalopay.promotion.IResourceLoader;
+import vn.zalopay.promotion.PromotionType;
 import vn.zalopay.promotion.VoucherRender;
 import vn.zalopay.promotion.model.CashBackEvent;
 import vn.zalopay.promotion.model.PromotionEvent;
@@ -37,15 +38,15 @@ public class SdkPromotion extends SingletonBase {
         super();
     }
 
-    public boolean showing(){
-        return mPromotionBuilder != null;
-    }
-
     public static SdkPromotion shared() {
         if (_object == null) {
             _object = new SdkPromotion();
         }
         return _object;
+    }
+
+    public boolean showing() {
+        return mPromotionBuilder != null;
     }
 
     SdkPromotion plant(Context pContext) {
@@ -81,10 +82,13 @@ public class SdkPromotion extends SingletonBase {
             resourceLoader = (IResourceLoader) pAdditionParams[2];
         }
         Timber.d("start render promotion %s", GsonUtils.toJsonString(promotionEvent));
-        if (promotionEvent instanceof CashBackEvent) {
-            handleCashBack((CashBackEvent) promotionEvent, resourceLoader);
-        } else if (promotionEvent instanceof VoucherEvent) {
-            handleVoucher((VoucherEvent) promotionEvent, resourceLoader);
+        switch (promotionEvent.type) {
+            case PromotionType.CASHBACK:
+                handleCashBack((CashBackEvent) promotionEvent, resourceLoader);
+                break;
+            case PromotionType.VOUCHER:
+                handleVoucher((VoucherEvent) promotionEvent, resourceLoader);
+                break;
         }
     }
 

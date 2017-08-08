@@ -72,6 +72,7 @@ import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
 import vn.zalopay.promotion.IInteractPromotion;
 import vn.zalopay.promotion.IResourceLoader;
+import vn.zalopay.promotion.PromotionType;
 import vn.zalopay.promotion.VoucherRender;
 import vn.zalopay.promotion.model.CashBackEvent;
 import vn.zalopay.promotion.model.PromotionEvent;
@@ -390,13 +391,15 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         if (mView == null) {
             return;
         }
-        if (event instanceof CashBackEvent) {
-            mPromotionBuilder = CashBackRender.getBuilder();
-        } else if (event instanceof VoucherEvent) {
-            mPromotionBuilder = VoucherRender.getBuilder();
-        }
-        if (mPromotionBuilder == null) {
-            return;
+        switch (event.type){
+            case PromotionType.CASHBACK:
+                mPromotionBuilder = CashBackRender.getBuilder();
+                break;
+            case PromotionType.VOUCHER:
+                mPromotionBuilder = VoucherRender.getBuilder();
+                break;
+            default:
+                return;
         }
         mPromotionBuilder
                 .setPromotion(event)
