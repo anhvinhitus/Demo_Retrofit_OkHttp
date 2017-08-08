@@ -462,7 +462,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void showWarningLinkCardBeforeWithdraw() {
         hideLoading();
         DialogManager.showConfirmDialog(getActivity(),
-                getResources().getString(R.string.dialog_title_normal),
                 getResources().getString(R.string.sdk_withdraw_no_link_warning_mess),
                 getResources().getString(R.string.dialog_linkcard_button),
                 getResources().getString(R.string.dialog_close_button),
@@ -484,7 +483,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     public void showOpenSettingNetwokingDialog(onNetworkingDialogCloseListener pListener) {
         hideLoading();
         DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NO_INTERNET, -1,
-                getString(R.string.sdk_dialog_nointernet_title),
                 getString(R.string.sdk_dialog_nointernet_content), pIndex -> {
                     if (pIndex == 0 && pListener != null) {
                         pListener.onCloseNetworkingDialog();
@@ -502,7 +500,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void showConfirmDeleteVoucherDialog(ZPWOnEventConfirmDialogListener pListener) {
         DialogManager.showConfirmDialog(getActivity(),
-                null,
                 getString(R.string.sdk_delete_voucher_confirm_text),
                 getString(R.string.dialog_khong_button),
                 getString(R.string.dialog_co_button), pListener);
@@ -515,7 +512,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
             terminate();
         }
         DialogManager.showConfirmDialog(getActivity(),
-                getString(R.string.dialog_title_confirm),
                 mess,
                 getString(R.string.dialog_khong_button),
                 getString(R.string.dialog_co_button), new ZPWOnEventConfirmDialogListener() {
@@ -549,7 +545,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     @Override
     public void showSupportBankVersionDialog(String pMessage) {
         DialogManager.showConfirmDialog(getActivity(),
-                getString(com.zalopay.ui.widget.R.string.dialog_title_confirm),
                 pMessage, getResources().getString(R.string.dialog_upgrade_button),
                 getResources().getString(R.string.dialog_choose_again_button), new ZPWOnEventConfirmDialogListener() {
                     @Override

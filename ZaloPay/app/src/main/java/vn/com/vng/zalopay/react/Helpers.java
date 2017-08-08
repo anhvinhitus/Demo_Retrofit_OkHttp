@@ -214,7 +214,7 @@ public class Helpers {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                showDialogInUIThread(activity, dialogType, title, message, convert(btnNames), promise);
+                showDialogInUIThread(activity, dialogType, message, convert(btnNames), promise);
             }
         });
     }
@@ -223,21 +223,20 @@ public class Helpers {
                                   final String title, final String message, final String[] btnNames
                                   ) {
         Timber.d("React call showDialog, dialogType[%s] title[%s] message[%s]",
-                dialogType, title, message);
+                dialogType, message);
         if (btnNames == null || btnNames.length <= 0) {
             return;
         }
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                showDialogInUIThread(activity, dialogType, title, message, btnNames, null);
+                showDialogInUIThread(activity, dialogType, message, btnNames, null);
             }
         });
     }
 
     private static void showDialogInUIThread(Activity activity,
                                              int dialogType,
-                                             String title,
                                              String message,
                                              String[] btnNames,
                                              final Promise promise) {
@@ -272,7 +271,6 @@ public class Helpers {
 
             DialogHelper.showCustomDialog(activity,
                     sweetAlertType,
-                    title,
                     message,
                     new ZPWOnSweetDialogListener() {
                         @Override

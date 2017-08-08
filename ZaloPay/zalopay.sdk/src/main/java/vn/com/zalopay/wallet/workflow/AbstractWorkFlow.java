@@ -144,7 +144,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                     }
                     numberOfRetryTimeout++;
                     DialogManager.showConfirmDialog(activity.get(),
-                            mContext.getResources().getString(R.string.dialog_title_normal),
                             mContext.getResources().getString(R.string.sdk_load_data_timeout_mess),
                             mContext.getResources().getString(R.string.dialog_continue_load_button),
                             mContext.getResources().getString(R.string.dialog_cancel_button),

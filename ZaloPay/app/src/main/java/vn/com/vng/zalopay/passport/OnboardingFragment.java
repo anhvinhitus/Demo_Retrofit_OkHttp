@@ -329,7 +329,6 @@ public class OnboardingFragment extends RuntimePermissionFragment implements IOn
     private void previousToPhone() {
         String msg = String.format(getString(R.string.ip_desc_confirm_change_phone), mInputPhoneView.getInputText());
         DialogHelper.showConfirmDialog(getActivity(),
-                getString(R.string.confirm),
                 msg,
                 getString(R.string.cancel),
                 getString(R.string.accept),

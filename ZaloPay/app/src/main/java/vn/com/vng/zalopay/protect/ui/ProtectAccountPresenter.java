@@ -314,7 +314,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_BACK);
             if (mPassword.getBuilder().isConfirmClose()) {
                 DialogHelper.showConfirmDialog(getActivity(),
-                        mContext.getString(R.string.notification),
                         getActivity().getString(R.string.protect_account_confirm_close_dialog),
                         getActivity().getString(R.string.txt_later),
                         getActivity().getString(R.string.txt_continue),

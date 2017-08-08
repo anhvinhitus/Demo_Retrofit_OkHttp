@@ -53,7 +53,6 @@ public class DialogHelper {
             return;
         }
         DialogManager.showDrawableDialog(activity,
-                activity.getString(R.string.txt_warning),
                 activity.getString(R.string.exception_no_connection_try_again),
                 R.drawable.ic_no_internet,
                 listener,
@@ -137,22 +136,7 @@ public class DialogHelper {
                                          String pOKButton,
                                          String pCancelButton,
                                          ZPWOnEventConfirmDialogListener callback) {
-        showConfirmDialog(activity,
-                "",
-                pMessage,
-                pOKButton,
-                pCancelButton,
-                callback);
-    }
-
-    public static void showConfirmDialog(Activity activity,
-                                         String pTitle,
-                                         String pMessage,
-                                         String pOKButton,
-                                         String pCancelButton,
-                                         ZPWOnEventConfirmDialogListener callback) {
         DialogManager.showConfirmDialog(activity,
-                pTitle,
                 pMessage,
                 pOKButton,
                 pCancelButton,
@@ -210,19 +194,17 @@ public class DialogHelper {
                                         String btnConfirm,
                                         String btnCancel,
                                         ZPWOnEventConfirmDialogListener listener) {
-        DialogManager.showConfirmDialog(activity, "", message, btnConfirm, btnCancel, listener);
+        DialogManager.showConfirmDialog(activity, message, btnConfirm, btnCancel, listener);
     }
 
     public static void showCustomDialog(Activity activity,
                                         int dialogType,
-                                        String title,
                                         String message,
                                         ZPWOnSweetDialogListener listener,
                                         String[] btnNames) {
         DialogManager.showMultiButtonDialog(activity,
                 dialogType,
                 -1,
-                title,
                 message,
                 listener,
                 btnNames);

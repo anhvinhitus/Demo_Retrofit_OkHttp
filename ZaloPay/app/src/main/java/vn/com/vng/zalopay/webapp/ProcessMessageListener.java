@@ -149,7 +149,6 @@ class ProcessMessageListener implements IProcessMessageListener {
 
                 DialogHelper.showCustomDialog(mWebAppPresenterWeakReference.get().getActivity(),
                         dialogType,
-                        title,
                         message,
                         null,
                         Collections.singletonList(buttonLabel).toArray(new String[0]));

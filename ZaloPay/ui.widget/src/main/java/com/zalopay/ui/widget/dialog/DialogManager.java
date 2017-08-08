@@ -150,20 +150,8 @@ public class DialogManager {
             mDialog = new SweetAlertDialog(pActivity, pDialogType, R.style.alert_dialog);
             if (TextUtils.isEmpty(pTitle)) {
                 switch (pDialogType) {
-                    case NORMAL_TYPE:
-                        pTitle = pActivity.getString(R.string.dialog_title_normal);
-                        break;
-                    case ERROR_TYPE:
-                        pTitle = pActivity.getString(R.string.dialog_title_error);
-                        break;
                     case UPDATE_TYPE:
                         pTitle = pActivity.getString(R.string.dialog_title_update);
-                        break;
-                    case SUCCESS_TYPE:
-                        pTitle = pActivity.getString(R.string.dialog_title_success);
-                        break;
-                    case WARNING_TYPE:
-                        pTitle = pActivity.getString(R.string.dialog_title_warning);
                         break;
                 }
             }
@@ -211,20 +199,8 @@ public class DialogManager {
             mDialog = new SweetAlertDialog(pActivity, pDialogType, R.style.alert_dialog);
             String pTitle = null;
             switch (pDialogType) {
-                case NORMAL_TYPE:
-                    pTitle = pActivity.getString(R.string.dialog_title_normal);
-                    break;
-                case ERROR_TYPE:
-                    pTitle = pActivity.getString(R.string.dialog_title_error);
-                    break;
                 case UPDATE_TYPE:
                     pTitle = pActivity.getString(R.string.dialog_title_update);
-                    break;
-                case SUCCESS_TYPE:
-                    pTitle = pActivity.getString(R.string.dialog_title_success);
-                    break;
-                case WARNING_TYPE:
-                    pTitle = pActivity.getString(R.string.dialog_title_warning);
                     break;
             }
             mDialog.setConfirmText(pButtonText)
@@ -249,7 +225,7 @@ public class DialogManager {
         }
     }
 
-    public synchronized static void showConfirmDialog(final Activity pActivity, String pTitle, final String pMessage, final String pOKButton,
+    public synchronized static void showConfirmDialog(final Activity pActivity, final String pMessage, final String pOKButton,
                                                       final String pCancelButton, final ZPWOnEventConfirmDialogListener callback) {
         try {
             if (pActivity == null || pActivity.isFinishing()) {
@@ -262,14 +238,9 @@ public class DialogManager {
                 Timber.d("There're a confirm dialog showing - dismiss");
             }
             mDialog = new SweetAlertDialog(pActivity);
-            String title = pTitle;
-            if (TextUtils.isEmpty(title)) {
-                title = pActivity.getString(R.string.dialog_title_confirm);
-            }
             mDialog.setContentHtmlText(pMessage)
                     .setCancelText(pCancelButton)
                     .setConfirmText(pOKButton)
-                    .setTitleText(title)
                     .showCancelButton(true)
                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
@@ -404,12 +375,12 @@ public class DialogManager {
         }
     }
 
-    public synchronized static void showDrawableDialog(final Activity pActivity, String pTitle, String pContent, int pDrawable,
+    public synchronized static void showDrawableDialog(final Activity pActivity, String pContent, int pDrawable,
                                                        final ZPWOnSweetDialogListener pListener, String... pArrButton) {
-        showMultiButtonDialog(pActivity, SweetAlertDialog.INFO_NO_ICON, pDrawable, pTitle, pContent, pListener, pArrButton);
+        showMultiButtonDialog(pActivity, SweetAlertDialog.INFO_NO_ICON, pDrawable, pContent, pListener, pArrButton);
     }
 
-    public synchronized static void showMultiButtonDialog(final Activity pActivity, int pDialogType, int pIcoDrawable, String pTitle, String pContent,
+    public synchronized static void showMultiButtonDialog(final Activity pActivity, int pDialogType, int pIcoDrawable,  String pContent,
                                                           final ZPWOnSweetDialogListener pListener, String... pArrButton) {
         try {
             if (pActivity == null || pActivity.isFinishing()) {
@@ -428,8 +399,7 @@ public class DialogManager {
             if (pIcoDrawable != -1) {
                 mDialog.setCustomImage(pIcoDrawable);
             }
-            mDialog.setTitleText(pTitle)
-                    .setContentText(pContent)
+            mDialog.setContentText(pContent)
                     .setCustomClickListener(new ZPWOnDialogListener() {
                         @Override
                         public void onCloseDialog(SweetAlertDialog sweetAlertDialog, int pIndexClick) {

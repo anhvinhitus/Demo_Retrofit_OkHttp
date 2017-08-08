@@ -366,7 +366,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         if (notify.transid > 0) {
             SweetAlertDialog dialog = new SweetAlertDialog(mView.getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
 
-            dialog.setTitleText(TextUtils.isEmpty(event.mTitle) ? mApplicationContext.getString(R.string.notification) : event.mTitle);
             dialog.setCancelText(mApplicationContext.getString(R.string.txt_close));
             dialog.setContentText(notify.message);
             dialog.setConfirmText(mApplicationContext.getString(R.string.view_detail));

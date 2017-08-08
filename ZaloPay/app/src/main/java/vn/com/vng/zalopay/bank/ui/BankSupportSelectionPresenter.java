@@ -131,7 +131,6 @@ final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupport
     protected void showVCBWarningDialog() {
         if (mView == null) return;
         SweetAlertDialog dialog = new SweetAlertDialog(mView.getActivity(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
-        dialog.setTitleText(applicationContext.getString(R.string.notification));
         dialog.setContentText(applicationContext.getString(R.string.bank_link_account_vcb_exist));
         dialog.setConfirmText(applicationContext.getString(R.string.txt_close));
         dialog.setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> dialog.dismiss());
@@ -141,8 +140,6 @@ final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupport
     protected void showVCBConfirmDialog(String cardCode) {
         if (mView == null) return;
         SweetAlertDialog dialog = new SweetAlertDialog(mView.getActivity(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
-
-        dialog.setTitleText(applicationContext.getString(R.string.notification));
         dialog.setCancelText(applicationContext.getString(R.string.txt_cancel));
         dialog.setContentText(getVCBWarningMessage());
         dialog.setConfirmText(applicationContext.getString(R.string.accept));

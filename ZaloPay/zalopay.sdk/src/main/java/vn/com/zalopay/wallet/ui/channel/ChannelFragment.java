@@ -261,7 +261,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public void showQuitConfirm(String message, ZPWOnEventConfirmDialogListener pListener) {
-        DialogManager.showConfirmDialog(getActivity(), getString(com.zalopay.ui.widget.R.string.dialog_title_confirm),
+        DialogManager.showConfirmDialog(getActivity(),
                 message,
                 getString(R.string.dialog_khong_button),
                 getString(R.string.dialog_co_button), pListener);
@@ -269,7 +269,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public void showDialogManyOption(ZPWOnSweetDialogListener pListener) {
-        DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, -1, null,
+        DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, -1,
                 getResources().getString(R.string.sdk_trans_confirm_quit_load_website3ds_mess), pListener,
                 getResources().getString(R.string.dialog_khong_button),
                 getResources().getString(R.string.dialog_co_button),
@@ -377,7 +377,6 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     public void showOpenSettingNetwokingDialog(onNetworkingDialogCloseListener pListener) {
         hideLoading();
         DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NO_INTERNET, -1,
-                getString(R.string.sdk_dialog_nointernet_title),
                 getString(R.string.sdk_dialog_nointernet_content), pIndex -> {
                     if (pIndex == 0 && pListener != null) {
                         pListener.onCloseNetworkingDialog();
@@ -394,7 +393,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public void showConfirmDialog(String pMessage, String pButtonLeftText, String pButtonRightText, ZPWOnEventConfirmDialogListener pListener) {
-        DialogManager.showConfirmDialog(getActivity(), getString(com.zalopay.ui.widget.R.string.dialog_title_confirm),
+        DialogManager.showConfirmDialog(getActivity(),
                 pMessage, pButtonLeftText, pButtonRightText, pListener);
     }
 
