@@ -6,6 +6,8 @@ public class Contact {
     public String id;
     public String name;
     public String photoUri;
+    public String firstName;
+    public String lastName;
 
     public ArrayList<ContactPhone> numbers;
 
@@ -13,6 +15,15 @@ public class Contact {
         this.id = id;
         this.name = name;
         this.photoUri = photoUri;
+        this.numbers = new ArrayList<>();
+    }
+
+    public Contact(String id, String name, String photoUri, String givenName, String familyName) {
+        this.id = id;
+        this.name = name;
+        this.photoUri = photoUri;
+        this.firstName = givenName;
+        this.lastName = familyName;
         this.numbers = new ArrayList<>();
     }
 

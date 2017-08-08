@@ -1,9 +1,13 @@
 package vn.com.vng.zalopay.data.zpc.contactloader;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,10 +29,11 @@ public class ContactFetcher {
     }
 
     public ArrayList<Contact> fetchAll() throws Exception {
+
         String[] projectionFields = new String[]{
                 ContactsContract.Contacts._ID,
                 ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
+                ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
         };
         ArrayList<Contact> listContacts = new ArrayList<>();
         Cursor c = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projectionFields, null, null, ContactsContract.Contacts.DISPLAY_NAME);
@@ -45,6 +50,7 @@ public class ContactFetcher {
                     String contactDisplayName = c.getString(nameIndex);
                     String photoUri = c.getString(photoIndex);
                     Contact contact = new Contact(contactId, contactDisplayName, photoUri);
+                    setContactDetailInfo(contactId, contact);
                     contactsMap.put(contactId, contact);
                     listContacts.add(contact);
                 } while (c.moveToNext());
@@ -57,6 +63,41 @@ public class ContactFetcher {
 
         matchContactNumbers(contactsMap);
         return listContacts;
+    }
+
+    private void setContactDetailInfo(String contactId, Contact contact) throws Exception {
+        String where = ContactsContract.Data.RAW_CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+        String[] whereParameters = new String[]{contactId, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE};
+        String[] projectionFields = new String[]{
+                ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME,
+                ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME
+        };
+
+        Cursor c = context.getContentResolver().query(
+                ContactsContract.Data.CONTENT_URI,
+                projectionFields,
+                where,
+                whereParameters,
+                null);
+
+        try {
+            if (c != null && c.moveToFirst()) {
+                int familyNameIndex = c.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
+                int givenNameIndex = c.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME);
+
+                do {
+                    String familyName = c.getString(familyNameIndex);
+                    String givenName = c.getString(givenNameIndex);
+
+                    contact.lastName = familyName;
+                    contact.firstName = givenName;
+                } while (c.moveToNext());
+            }
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
     }
 
     private void matchContactNumbers(Map<String, Contact> contactsMap) throws Exception {

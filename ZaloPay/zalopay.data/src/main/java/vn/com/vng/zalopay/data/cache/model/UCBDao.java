@@ -27,6 +27,8 @@ public class UCBDao extends AbstractDao<UCB, Long> {
         public final static Property DisplayName = new Property(2, String.class, "displayName", false, "DISPLAY_NAME");
         public final static Property NormalizeDisplayName = new Property(3, String.class, "normalizeDisplayName", false, "NORMALIZE_DISPLAY_NAME");
         public final static Property PhotoUri = new Property(4, String.class, "photoUri", false, "PHOTO_URI");
+        public final static Property FirstName = new Property(5, String.class, "firstName", false, "FIRST_NAME");
+        public final static Property LastName = new Property(6, String.class, "lastName", false, "LAST_NAME");
     }
 
 
@@ -46,7 +48,9 @@ public class UCBDao extends AbstractDao<UCB, Long> {
                 "\"PHONE_NUMBER\" TEXT NOT NULL UNIQUE ," + // 1: phoneNumber
                 "\"DISPLAY_NAME\" TEXT," + // 2: displayName
                 "\"NORMALIZE_DISPLAY_NAME\" TEXT," + // 3: normalizeDisplayName
-                "\"PHOTO_URI\" TEXT);"); // 4: photoUri
+                "\"PHOTO_URI\" TEXT," + // 4: photoUri
+                "\"FIRST_NAME\" TEXT," + // 5: firstName
+                "\"LAST_NAME\" TEXT);"); // 6: lastName
     }
 
     /** Drops the underlying database table. */
@@ -79,6 +83,16 @@ public class UCBDao extends AbstractDao<UCB, Long> {
         if (photoUri != null) {
             stmt.bindString(5, photoUri);
         }
+
+        String firstName = entity.firstName;
+        if (firstName != null) {
+            stmt.bindString(6, firstName);
+        }
+
+        String lastName = entity.lastName;
+        if (lastName != null) {
+            stmt.bindString(7, lastName);
+        }
     }
 
     @Override
@@ -105,6 +119,16 @@ public class UCBDao extends AbstractDao<UCB, Long> {
         if (photoUri != null) {
             stmt.bindString(5, photoUri);
         }
+
+        String firstName = entity.firstName;
+        if (firstName != null) {
+            stmt.bindString(6, firstName);
+        }
+
+        String lastName = entity.lastName;
+        if (lastName != null) {
+            stmt.bindString(7, lastName);
+        }
     }
 
     @Override
@@ -126,6 +150,8 @@ public class UCBDao extends AbstractDao<UCB, Long> {
         entity.displayName = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
         entity.normalizeDisplayName = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
         entity.photoUri = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
+        entity.firstName = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
+        entity.lastName = cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6);
      }
     
     @Override

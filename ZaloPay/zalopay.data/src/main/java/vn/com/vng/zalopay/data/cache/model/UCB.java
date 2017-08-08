@@ -19,6 +19,6 @@ public class UCB {
     public String displayName;
     public String normalizeDisplayName;
     public String photoUri;
-
-
+    public String firstName;
+    public String lastName;
 }

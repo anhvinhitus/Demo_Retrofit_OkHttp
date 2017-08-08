@@ -75,6 +75,8 @@ final class ZPCMapper {
             ucb.normalizeDisplayName = Strings.stripAccents(ucb.displayName);
             ucb.phoneNumber = phoneNumber;
             ucb.photoUri = contact.photoUri;
+            ucb.firstName = contact.firstName;
+            ucb.lastName = contact.lastName;
             ret.add(ucb);
         }
 
@@ -211,7 +213,7 @@ final class ZPCMapper {
         if (ucb == null) {
             return null;
         }
-        Contact entity = new Contact("", ucb.displayName, ucb.photoUri);
+        Contact entity = new Contact("", ucb.displayName, ucb.photoUri, ucb.firstName, ucb.lastName);
         entity.addNumber(ucb.phoneNumber, "");
         return entity;
     }
