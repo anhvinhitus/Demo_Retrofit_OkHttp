@@ -168,6 +168,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         }
 
         if (!TextUtils.isEmpty(mPhoneNumber)) {
+            setKeyboard(true);
             mEdtSearchView.setText(mPhoneNumber);
         }
 
