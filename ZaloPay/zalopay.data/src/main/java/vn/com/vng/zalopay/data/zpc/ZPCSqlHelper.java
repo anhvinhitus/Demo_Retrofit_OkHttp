@@ -120,12 +120,12 @@ class ZPCSqlHelper {
                 + UCBDao.Properties.DisplayName.columnName + " AS " + ColumnAlias.DISPLAY_NAME + ", "
                 + UCBDao.Properties.NormalizeDisplayName.columnName + " AS " + ColumnAlias.NORMALIZE_DISPLAY_NAME + ", "
                 + UCBDao.Properties.PhoneNumber.columnName + " AS " + ColumnAlias.PHONE_NUMBER + ", "
-                + UCBDao.Properties.FirstName.columnName + " AS " + ColumnAlias.FIRST_NAME + ", "
-                + UCBDao.Properties.LastName.columnName + " AS " + ColumnAlias.LAST_NAME + ", "
                 + "0 AS " + ColumnAlias.STATUS + ", "
                 + "NULL AS " + ColumnAlias.ZALOPAY_ID + ", "
                 + "NULL AS " + ColumnAlias.ZALOPAY_NAME + ", "
-                + "0 AS " + ColumnAlias.USING_APP
+                + "0 AS " + ColumnAlias.USING_APP + ", "
+                + UCBDao.Properties.FirstName.columnName + " AS " + ColumnAlias.FIRST_NAME + ", "
+                + UCBDao.Properties.LastName.columnName + " AS " + ColumnAlias.LAST_NAME
                 + " FROM " + table;
     }
 }
