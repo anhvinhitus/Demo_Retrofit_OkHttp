@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -99,6 +100,12 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
     @BindView(R.id.switchKeyboard)
     IconFont mSwitchKeyboardView;
+
+    @BindView(R.id.itemNumberNotSaveYet)
+    LinearLayout mItemNumberNotSaveYet;
+
+    @BindView(R.id.tvNumberNotSave)
+    TextView mTvNumberNotSave;
 
     @ZpcViewType
     private int mViewType = ZpcViewType.ZPC_All;
@@ -264,6 +271,11 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         setKeyboard(mIsNumberPad);
     }
 
+    @OnClick(R.id.itemNumberNotSaveYet)
+    public void onClickItemNumberNotSaveYet(){
+        Timber.d("onClickItemNumberNotSaveYet()");
+    }
+
     private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -394,14 +406,20 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         if (mAdapter.getCount() != 0) {
             mTvEmptyView.setText(null);
             mEmptyView.setVisibility(View.GONE);
+            mItemNumberNotSaveYet.setVisibility(View.GONE);
+            mTvNumberNotSave.setText(null);
             return;
         }
 
         if (mEdtSearchView.length() == 0) {
             mTvEmptyView.setText(R.string.friend_list_empty);
+            mItemNumberNotSaveYet.setVisibility(View.GONE);
+            mTvNumberNotSave.setText(null);
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
-            mTvEmptyView.setText(R.string.no_result_your_search);
+            mTvEmptyView.setText(null);
+            mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
+            mTvNumberNotSave.setText(mEdtSearchView.getText());
             mEmptyView.setVisibility(View.GONE);
         }
     }

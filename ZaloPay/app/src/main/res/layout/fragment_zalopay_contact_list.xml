@@ -85,6 +85,10 @@
 
         </LinearLayout>
 
+        <include
+            layout="@layout/row_number_not_save_yet"
+            android:visibility="gone" />
+
     </FrameLayout>
 
 
