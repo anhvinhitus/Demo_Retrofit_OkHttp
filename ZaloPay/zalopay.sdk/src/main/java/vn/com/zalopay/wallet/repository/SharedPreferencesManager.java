@@ -26,7 +26,7 @@ public class SharedPreferencesManager {
 
     public SharedPreferencesManager(Context pContext) {
         super();
-        sharedPreferences = pContext.getSharedPreferences(SHARE_PREFERENCES_NAME, 0);
+        sharedPreferences = pContext.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
     public String getString(String pKey) {
@@ -431,5 +431,91 @@ public class SharedPreferencesManager {
 
     public String getZaloPayChannelConfig(long pAppId, @TransactionType int pTranstype, String pBankCode) {
         return getPmcConfigByPmcID(pAppId, pTranstype, BuildConfig.channel_zalopay, pBankCode);
+    }
+
+    public boolean setRevertVoucher(String pUserId, String mapKey, String pVoucherInfo) throws Exception {
+        String mapKeys = getVoucherMapList(pUserId);
+        boolean existed = false;
+        if (!TextUtils.isEmpty(mapKeys)) {
+            String[] keys = mapKeys.split(Constants.COMMA);
+            for (int i = 0; i < keys.length; i++) {
+                String key = keys[i];
+                if (!TextUtils.isEmpty(key) && key.equals(mapKey)) {
+                    existed = true;
+                    break;
+                }
+            }
+        }
+        if (!existed) {
+            StringBuffer mapKeysBuilder = new StringBuffer();
+            if (!TextUtils.isEmpty(mapKeys)) {
+                mapKeysBuilder.append(mapKeys);
+                mapKeysBuilder.append(Constants.COMMA);
+            }
+            mapKeysBuilder.append(mapKey);
+            setVoucherMapList(pUserId, mapKeysBuilder.toString());
+        }
+        return setString(mapKey, pVoucherInfo);
+    }
+
+    public void clearVouchers(String pUserId, String mapKey) throws Exception {
+        String mapKeys = getVoucherMapList(pUserId);
+        if (TextUtils.isEmpty(mapKeys)) {
+            return;
+        }
+        StringBuffer mapKeyBuffer = new StringBuffer();
+        String[] keys = mapKeys.split(Constants.COMMA);
+        for (int i = 0; i < keys.length; i++) {
+            String key = keys[i];
+            if (TextUtils.isEmpty(key)) {
+                continue;
+            }
+            if (key.equals(mapKey)) {
+                continue;
+            }
+            mapKeyBuffer.append(key);
+            if ((i + 1) < keys.length) {
+                mapKeyBuffer.append(Constants.COMMA);
+            }
+        }
+        setVoucherMapList(pUserId, mapKeyBuffer.toString());
+        setString(mapKey, null);
+    }
+
+    public String[] getVouchers(String pUserId) throws Exception {
+        String mapKeys = getVoucherMapList(pUserId);
+        if (TextUtils.isEmpty(mapKeys)) {
+            return new String[0];
+        }
+        String[] keys = mapKeys.split(Constants.COMMA);
+        String[] values = new String[keys.length];
+        for (int i = 0; i < keys.length; i++) {
+            try {
+                String value = getString(keys[i]);
+                if (!TextUtils.isEmpty(value)) {
+                    values[i] = value;
+                }
+            } catch (Exception e) {
+                Timber.d(e);
+            }
+        }
+        return values;
+    }
+
+    public String getVoucherMapList(String pUserId) {
+        return getString(getUserVoucherKey(pUserId));
+    }
+
+    public boolean setVoucherMapList(String pUser, String pMapKeys) {
+        return setString(getUserVoucherKey(pUser), pMapKeys);
+    }
+
+    private String getUserVoucherKey(String pUserId) {
+        StringBuffer keyBuiler = new StringBuffer();
+        keyBuiler
+                .append(SharePrefConstants.sdk_conf_channel_list)
+                .append(Constants.UNDERLINE)
+                .append(pUserId);
+        return keyBuiler.toString();
     }
 }

@@ -30,4 +30,5 @@ public class SharePrefConstants {
     public static final String sdk_conf_bankconfig = "bankconfig";
     public static final String sdk_conf_banklist_checksum = "banklist_checksum";
     public static final String sdk_conf_banklist_expire_time = "banklist_expire_time";
+    public static final String sdk_conf_revert_voucher_list = "revert_voucher_list";
 }

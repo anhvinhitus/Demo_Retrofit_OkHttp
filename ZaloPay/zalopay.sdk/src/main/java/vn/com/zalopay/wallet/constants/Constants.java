@@ -142,6 +142,7 @@ public class Constants {
 
     public static final String URL_USE_VOUCHER = "usevoucher";
     public static final String URL_GET_VOUCHER_STATUS = "getvoucherstatus";
+    public static final String URL_REVERT_VOUCHER = "revertvoucher";
 
     public static final String BANKLINK_TYPE_EXTRA = "bank_data_after_link";
 }

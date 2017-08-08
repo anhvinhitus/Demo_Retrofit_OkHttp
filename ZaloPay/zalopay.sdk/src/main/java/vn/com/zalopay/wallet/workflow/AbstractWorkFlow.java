@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.ref.WeakReference;
 
 import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
@@ -34,7 +35,6 @@ import vn.com.zalopay.wallet.api.task.SendLogTask;
 import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
@@ -99,6 +99,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     ILinkSourceInteractor mLinkInteractor;
     int numberOfRetryTimeout = 1;
     SDKTransactionAdapter mTransactionAdapter;
+    CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private boolean isLoadWebTimeout = false;
     private int numberRetryOtp = 0;
     //count of retry check status if submit order fail
@@ -383,6 +384,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             mGuiProcessor.dispose();
             mGuiProcessor = null;
         }
+        mCompositeSubscription.clear();
         mMiniPmcTransType = null;
         mPresenter = null;
         clearStickyEvent();
@@ -1198,6 +1200,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             Timber.w(e, "Exception cancel trans timer");
         }
         GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
+        GlobalData.revertVouchersOnStorage(mCompositeSubscription);
         //hide webview
         try {
             mGuiProcessor.useWebView(false);

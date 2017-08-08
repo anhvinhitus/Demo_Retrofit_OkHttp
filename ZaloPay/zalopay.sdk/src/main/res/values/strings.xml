@@ -95,6 +95,7 @@
     <string name="sdk_error_paymentinfo_empty">Dữ liệu giao dịch hết hạn. Vui lòng thử lại</string>
     <string name="sdk_error_generic_submitorder">Không kiểm tra được trạng thái giao dịch, vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút!</string>
     <string name="sdk_error_not_submit_order">Hóa đơn chưa được gửi đi, vui lòng thực hiện lại giao dịch</string>
+    <string name="sdk_error_networking_generic">Vui lòng kiểm tra kết nối mạng</string>
 
     <string name="sdk_alert_networking_off_in_link_account">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại liên kết tài khoản</string>
     <string name="sdk_alert_networking_off_in_unlink_account">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại hủy liên kết tài khoản</string>
@@ -410,6 +411,8 @@
     <string name="sdk_delete_voucher_confirm_text">Bạn muốn hủy bỏ mã khuyến mãi ?</string>
     <string name="sdk_voucher_code_empty_mess">Nhập mã khuyến mãi để tiếp tục</string>
     <string name="sdk_voucher_origin_amount_total">Trước khuyến mãi</string>
+    <string name="sdk_voucher_revert_title">Xóa mã khuyến mãi</string>
+    <string name="sdk_voucher_revert_error_mess">Xóa mã khuyến mãi thất bại. Vui lòng thử lại!</string>
 
     <string name="sdk_default_link_channel_name">Thêm liên kết mới</string>
 </resources>

@@ -66,7 +66,7 @@ public class InteractorModule {
 
     @Provides
     @Singleton
-    VoucherStore.Interactor provideVoucherInteractor(VoucherStore.VoucherService voucherService) {
-        return new VoucherInteractor(voucherService);
+    VoucherStore.Interactor provideVoucherInteractor(VoucherStore.VoucherService voucherService, VoucherStore.LocalStorage localStorage) {
+        return new VoucherInteractor(voucherService, localStorage);
     }
 }

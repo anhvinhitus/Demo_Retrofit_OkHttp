@@ -5,14 +5,19 @@ import android.content.Context;
 
 import java.lang.ref.WeakReference;
 
+import rx.Subscription;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPScreens;
+import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
+import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
@@ -28,6 +33,7 @@ import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
+import vn.com.zalopay.wallet.repository.voucher.VoucherStore;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 
@@ -166,7 +172,7 @@ public class GlobalData {
             String result = ResourceManager.getInstance(null).getString(pResourceID);
             return (result != null) ? result : getAppContext().getString(RS.getString(pResourceID));
         } catch (Exception e) {
-            Timber.w(e, "Exception get resource string");
+            Timber.d(e, "Exception get resource string");
         }
         return null;
     }
@@ -182,6 +188,19 @@ public class GlobalData {
         }
         try {
             boolean success = TransactionHelper.isTransactionSuccess(pStatusResponse);
+            //clear voucher on payment result
+            VoucherInfo voucherInfo = paymentInfoHelper.getVoucher();
+            if (voucherInfo != null) {
+                String userId = paymentInfoHelper.getUserId();
+                String voucherCode = voucherInfo.vouchercode;
+                SDKApplication
+                        .getApplicationComponent()
+                        .voucherInteractor()
+                        .clearVoucher(userId, voucherCode)
+                        .subscribe(aBoolean -> Timber.d("clear voucher %s", voucherCode),
+                                throwable -> Timber.d(throwable, "clear voucher on error"));
+            }
+            revertVouchersOnStorage();
             //notify to app to do some background task
             if (GlobalData.getPaymentListener() != null) {
                 GlobalData.getPaymentListener().onPreComplete(success, pStatusResponse.zptransid, paymentInfoHelper.getAppTransId());
@@ -195,7 +214,39 @@ public class GlobalData {
             ZPAnalytics.trackScreen(screenName);
             TrackHelper.trackPaymentResult(paymentInfoHelper);
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.d(e);
+        }
+    }
+
+    public static void revertVouchersOnStorage() {
+        revertVouchersOnStorage(null);
+    }
+
+    public static void revertVouchersOnStorage(CompositeSubscription compositeSubscription) {
+        if (paymentInfoHelper == null || paymentInfoHelper.getUserInfo() == null) {
+            return;
+        }
+        if (!ConnectionUtil.isOnline(getAppContext())) {
+            return;
+        }
+        VoucherStore.Interactor voucherInteractor = SDKApplication
+                .getApplicationComponent()
+                .voucherInteractor();
+
+        String userId = paymentInfoHelper.getUserId();
+        if (!voucherInteractor.hasRevertVouchers(userId)) {
+            Timber.d("Have no voucher to revert");
+            return;
+        }
+
+        String accessToken = paymentInfoHelper.getUserInfo().accesstoken;
+        Subscription subscription = voucherInteractor
+                .revertVoucher(userId, accessToken)
+                .subscribeOn(Schedulers.io())
+                .subscribe(success -> Timber.d("finish revert voucher"),
+                        throwable -> Timber.d(throwable, "Exception revert vouchers"));
+        if (compositeSubscription != null) {
+            compositeSubscription.add(subscription);
         }
     }
     //endregion

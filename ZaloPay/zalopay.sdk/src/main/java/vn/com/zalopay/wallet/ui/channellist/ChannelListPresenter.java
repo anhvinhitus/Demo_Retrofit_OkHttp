@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
@@ -431,13 +432,13 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             Intent bankSelectIntent = new Intent(BuildConfig.BANK_SELECT_ACTION);
             getViewOrThrow().startActivityForResult(bankSelectIntent, Constants.BANK_SELECT_REQUEST_CODE);
         } catch (Exception e) {
-            Timber.w(e, "Exception start default payment");
+            Timber.d(e, "Exception start default payment");
         }
     }
 
     void onUseVouchComplete(VoucherInfo voucherInfo) {
-        Timber.d("response use voucher %s", GsonUtils.toJsonString(voucherInfo));
         try {
+            Timber.d("response use voucher %s", GsonUtils.toJsonString(voucherInfo));
             getViewOrThrow().hideVoucherCodePopup();
             if (voucherInfo == null || mPaymentInfoHelper == null) {
                 return;
@@ -451,8 +452,13 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             double paymentAmount = total_amount - voucherInfo.discountamount;
             getViewOrThrow().renderOrderAmount(paymentAmount);
             getViewOrThrow().renderActiveVoucher(voucherInfo.vouchercode, total_amount, voucherInfo.discountamount);
+            //save voucher to cache
+            String userId = mPaymentInfoHelper.getUserId();
+            if (!TextUtils.isEmpty(userId)) {
+                mVoucherInteractor.put(userId, voucherInfo);
+            }
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.d(e);
         }
     }
 
@@ -476,6 +482,14 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (TextUtils.isEmpty(voucherCode)) {
             return;
         }
+        if (!ConnectionUtil.isOnline(mContext)) {
+            try {
+                getViewOrThrow().setVoucherError(mContext.getString(R.string.sdk_error_networking_generic));
+            } catch (Exception e) {
+                Timber.d(e);
+            }
+            return;
+        }
         String upperVoucherCode = voucherCode.toUpperCase();
         String userId = mPaymentInfoHelper.getUserId();
         String accessToken = mPaymentInfoHelper.getUserInfo().accesstoken;
@@ -483,7 +497,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         long appId = mPaymentInfoHelper.getAppId();
         long amount = mPaymentInfoHelper.getAmount();
         long time = System.currentTimeMillis();
-        mVoucherInteractor.validateVoucher(userId, accessToken, appTrans, appId, amount, time, upperVoucherCode)
+        Subscription subscription = mVoucherInteractor
+                .validateVoucher(userId, accessToken, appTrans, appId, amount, time, upperVoucherCode)
                 .map(voucherInfo -> {
                     if (voucherInfo != null) {
                         voucherInfo.vouchercode = upperVoucherCode;
@@ -492,14 +507,17 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 })
                 .compose(SchedulerHelper.applySchedulers())
                 .subscribe(this::onUseVouchComplete, throwable -> {
-                    Timber.w(throwable, "Exception use voucher %s", upperVoucherCode);
                     try {
+                        Timber.d(throwable, "Exception use voucher %s", upperVoucherCode);
                         String error = TransactionHelper.getMessage(mContext, throwable);
                         getViewOrThrow().setVoucherError(error);
                     } catch (Exception e) {
                         Timber.d(e);
                     }
                 });
+        if (mSubscription != null) {
+            mSubscription.add(subscription);
+        }
     }
 
     public void onPaymentReady() {
@@ -702,6 +720,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
         }
         clearObjects();
+        GlobalData.revertVouchersOnStorage(mSubscription);
     }
 
     void loadChannelOnCompleted() {

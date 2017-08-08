@@ -6,6 +6,8 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.di.qualifier.Voucher;
+import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
+import vn.com.zalopay.wallet.repository.voucher.VoucherLocalStorage;
 import vn.com.zalopay.wallet.repository.voucher.VoucherStore;
 
 /**
@@ -18,5 +20,11 @@ public class VoucherModule {
     @Singleton
     public VoucherStore.VoucherService provideVoucherService(@Voucher Retrofit retrofit) {
         return retrofit.create(VoucherStore.VoucherService.class);
+    }
+
+    @Provides
+    @Singleton
+    public VoucherStore.LocalStorage provideLocalStorage(SharedPreferencesManager sharedPreferencesManager) {
+        return new VoucherLocalStorage(sharedPreferencesManager);
     }
 }
