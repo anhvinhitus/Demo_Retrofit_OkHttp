@@ -4,14 +4,13 @@
     android:id="@+id/ScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"
         android:gravity="center"
         android:orientation="vertical">
 

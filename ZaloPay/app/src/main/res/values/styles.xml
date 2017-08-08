@@ -228,7 +228,7 @@
         <item name="actualImageScaleType">centerCrop</item>
         <item name="failureImageScaleType">centerCrop</item>
         <item name="placeholderImageScaleType">centerCrop</item>
-        <item name="failureImage">@color/silver</item>
+        <item name="failureImage">@color/white</item>
         <item name="placeholderImage">@color/silver</item>
         <item name="fadeDuration">0</item>
         <item name="roundAsCircle">false</item>
