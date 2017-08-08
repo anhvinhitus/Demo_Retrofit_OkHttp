@@ -63,8 +63,14 @@ class WalletListener implements ZPPaymentListener {
 
     @Override
     public void onComplete() {
-        int paymentStatus = mPaymentWrapper.getPaymentInfoBuilder().getStatus();
-        BaseMap mapBank = mPaymentWrapper.getPaymentInfoBuilder().getMapBank();
+        if (mPaymentWrapper == null) {
+            Timber.w("mPaymentWrapper is null");
+            return;
+        }
+        int paymentStatus = mPaymentWrapper.getPaymentInfoBuilder() != null
+                ? mPaymentWrapper.getPaymentInfoBuilder().getStatus() : FAILURE;
+        BaseMap mapBank = mPaymentWrapper.getPaymentInfoBuilder() != null
+                ? mPaymentWrapper.getPaymentInfoBuilder().getMapBank() : null;
         Timber.d("pay complete, result [%d]", paymentStatus);
         boolean paymentIsCompleted = true;
         PaymentWrapper.IResponseListener responseListener = mPaymentWrapper.getResponseListener();
@@ -156,7 +162,6 @@ class WalletListener implements ZPPaymentListener {
         if (mPaymentWrapper.shouldClearPendingOrder(paymentStatus)) {
             mPaymentWrapper.clearPendingOrder();
         }
-
 
         // cleanup temporary variables
         if (paymentIsCompleted) {
