@@ -21,6 +21,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.zpc.ZPCConfig;
 import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -40,8 +41,7 @@ import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
  * *
  */
 
-public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFriendListView>
-                                               implements OnFavoriteListener {
+public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFriendListView> implements OnFavoriteListener {
 
     private static final int MAX_FAVORITE = 10;
 
@@ -221,6 +221,21 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         mSubscription.add(subscription);
     }
 
+    public void handleNumberNotInZPC(String phoneNumber) {
+        if (getFragment() == null) {
+            return;
+        }
+
+        if (!PhoneUtil.isMobileNumber(phoneNumber)) {
+            return;
+        }
+
+        FavoriteData favoriteData = new FavoriteData();
+        favoriteData.displayName = "";
+        favoriteData.phoneNumber = phoneNumber;
+        onSelectContactItem(getFragment(), favoriteData);
+    }
+
     @Override
     public void onRemoveFavorite(FavoriteData favoriteData) {
         if (favoriteData == null) {
@@ -228,10 +243,10 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         }
 
         Subscription subscription =
-            mFriendRepository.removeFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
-                .doOnError(Timber::d)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
+                mFriendRepository.removeFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
+                        .doOnError(Timber::d)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
 
         if (mView == null) {

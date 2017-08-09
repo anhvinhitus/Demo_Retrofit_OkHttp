@@ -303,7 +303,12 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
     @OnClick(R.id.itemNumberNotSaveYet)
     public void onClickItemNumberNotSaveYet() {
-        Timber.d("onClickItemNumberNotSaveYet()");
+        if (mEdtSearchView == null) {
+            return;
+        }
+
+        String phoneNumber = mEdtSearchView.getText().toString().trim();
+        mPresenter.handleNumberNotInZPC(phoneNumber);
     }
 
     @Override

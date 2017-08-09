@@ -152,6 +152,10 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
         holder.bindView(zaloId, phone, displayName, aliasDisplayName, avatar, status);
 
         if (TextUtils.isEmpty(avatar)) {
+            if(TextUtils.isEmpty(aliasDisplayName) || aliasDisplayName.length() <= 0) {
+                return;
+            }
+
             holder.mPlaceHolder.setVisibility(View.VISIBLE);
             holder.mPlaceHolder.setText(aliasDisplayName.substring(0, 1).toUpperCase());
         } else {
