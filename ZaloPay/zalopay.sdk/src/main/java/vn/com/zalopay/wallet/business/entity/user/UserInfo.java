@@ -31,32 +31,6 @@ public class UserInfo {
         return !TextUtils.isEmpty(zalopay_userid) && !TextUtils.isEmpty(accesstoken);
     }
 
-    public boolean isProfileValid() {
-        return !TextUtils.isEmpty(profile);
-    }
-
-    /**
-     * check whether user is allowed payment this channel.
-     */
-    public int getPermissionByChannelMap(int pChannelID, @TransactionType int pTranstype) {
-        if (!isProfileValid()) {
-            return Constants.LEVELMAP_INVALID;
-        }
-        ListUserProfile userProfile = GsonUtils.fromJsonString(profile, ListUserProfile.class);
-        if (userProfile == null) {
-            return Constants.LEVELMAP_INVALID;
-        }
-        UserProfile allowProfile = null;
-        for (int i = 0; i < userProfile.profilelevelpermisssion.size(); i++) {
-            UserProfile mapProfile = userProfile.profilelevelpermisssion.get(i);
-            if (mapProfile.pmcid == pChannelID && mapProfile.transtype == pTranstype) {
-                allowProfile = mapProfile;
-                break;
-            }
-        }
-        return (allowProfile != null && allowProfile.allow) ? Constants.LEVELMAP_ALLOW : Constants.LEVELMAP_BAN;
-    }
-
     /***
      * check soft token
      * if has new accesstoken, must notify to app to update new token to cache again
