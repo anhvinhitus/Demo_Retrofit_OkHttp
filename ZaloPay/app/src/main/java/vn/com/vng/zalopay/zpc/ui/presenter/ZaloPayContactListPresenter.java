@@ -196,12 +196,16 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     private void showDialogNotUsingApp(ZPProfile zaloProfile) {
-        if (mView != null) {
-            String message = String.format(mContext.getString(R.string.account_not_use_zalopay), zaloProfile.displayName, zaloProfile.displayName);
-            DialogHelper.showNotificationDialog((Activity) mView.getContext(),
-                    message,
-                    null);
+        if (mView == null) {
+            return;
         }
+
+        String user = zaloProfile.displayName == null || TextUtils.isEmpty(zaloProfile.displayName) ? zaloProfile.phonenumber : zaloProfile.displayName;
+
+        String message = String.format(mContext.getString(R.string.account_not_use_zalopay), user, user);
+        DialogHelper.showNotificationDialog((Activity) mView.getContext(),
+                message,
+                null);
     }
 
     private void getFavorite(int limitFavorite) {
