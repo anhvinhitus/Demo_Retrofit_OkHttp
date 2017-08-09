@@ -8,6 +8,7 @@ public class MapCard extends BaseMap {
     public String cardname;
     public String first6cardno;
     public String last4cardno;
+    public String cardhash;
     public long expiretime;
 
     public MapCard() {
@@ -16,8 +17,6 @@ public class MapCard extends BaseMap {
 
     /***
      * convert DPaymentCard to MapCard
-     *
-     * @param pCard
      */
     public MapCard(DPaymentCard pCard) {
         this.expiretime = 0;
@@ -30,13 +29,14 @@ public class MapCard extends BaseMap {
     }
 
     public MapCard clone() {
-        MapCard mappedCard = new MapCard();
-        mappedCard.cardname = this.cardname;
-        mappedCard.first6cardno = this.first6cardno;
-        mappedCard.last4cardno = this.last4cardno;
-        mappedCard.bankcode = this.bankcode;
-        mappedCard.expiretime = this.expiretime;
-        return mappedCard;
+        MapCard mapCard = new MapCard();
+        mapCard.cardname = this.cardname;
+        mapCard.first6cardno = this.first6cardno;
+        mapCard.last4cardno = this.last4cardno;
+        mapCard.bankcode = this.bankcode;
+        mapCard.expiretime = this.expiretime;
+        mapCard.cardhash = this.cardhash;
+        return mapCard;
     }
 
     @Override

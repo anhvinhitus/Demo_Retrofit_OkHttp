@@ -8,11 +8,13 @@ public class CardSubmit {
     public String f6no;
     public String l4no;
     public String bankcode;
+    public String cardhash;
 
-    public CardSubmit(MapCard pMappedCard) {
-        this.f6no = pMappedCard.first6cardno;
-        this.l4no = pMappedCard.last4cardno;
-        this.bankcode = pMappedCard.bankcode;
+    public CardSubmit(MapCard mapCard) {
+        this.f6no = mapCard.first6cardno;
+        this.l4no = mapCard.last4cardno;
+        this.bankcode = mapCard.bankcode;
+        this.cardhash = mapCard.cardhash;
     }
 
     public boolean isValid() {
