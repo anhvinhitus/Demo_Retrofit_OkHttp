@@ -454,7 +454,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
             ZPProfile profile = data.getParcelableExtra("profile");
 
-            if (profile == null || TextUtils.isEmpty(profile.displayName) || TextUtils.isEmpty(profile.phonenumber)) {
+            if (profile == null || TextUtils.isEmpty(profile.phonenumber)) {
                 Timber.d("Profile invalid");
                 Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), "Data invalid");
                 return;
