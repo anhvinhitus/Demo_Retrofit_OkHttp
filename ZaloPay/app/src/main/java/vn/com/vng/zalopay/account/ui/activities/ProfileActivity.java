@@ -16,14 +16,13 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.tracker.ActivityTracker;
-import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
-import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 
@@ -44,8 +43,8 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
     @BindView(R.id.profile_tv_name)
     TextView tvName;
 
-    @BindView(R.id.profile_tv_zalopay_name)
-    TextView tvZaloPayName;
+    @BindView(R.id.profile_tv_zalopay_info)
+    TextView tvZaloPayInfo;
 
     @BindView(R.id.profile_icfont_right_arrow)
     IconFont icfontRightArrow;
@@ -67,7 +66,7 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
         }
         tvName.setText(user.displayName);
         imgAvatar.setImageURI(user.avatar);
-        setZaloPayName(user.zalopayname);
+        setPhoneNumber(user.phonenumber);
     }
 
 //    @OnClick(R.id.tab_personal_tv_setting)
@@ -75,12 +74,12 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
 //        navigator.startProtectAccount(this);
 //    }
 
+
     @Override
-    public void setZaloPayName(String zaloPayName) {
-        if (TextUtils.isEmpty(zaloPayName)) {
-            tvZaloPayName.setText(getString(R.string.zalopay_name_not_update));
-        } else {
-            tvZaloPayName.setText(String.format(getString(R.string.account_format), zaloPayName));
+    public void setPhoneNumber(long phoneNumber) {
+        if (tvZaloPayInfo != null && phoneNumber > 0) {
+            String PhoneNumber = String.valueOf(phoneNumber);
+            tvZaloPayInfo.setText(PhoneNumber);
         }
     }
 

@@ -56,10 +56,4 @@ public class ProfileInfoPresenter extends AbstractPresenter<IProfileInfoView> {
         mEventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
-        if (mView != null) {
-            mView.setZaloPayName(event.zaloPayName);
-        }
-    }
 }

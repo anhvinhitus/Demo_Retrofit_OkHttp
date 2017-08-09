@@ -8,7 +8,7 @@ import vn.com.vng.zalopay.domain.model.User;
 public interface IProfileInfoView {
     void updateUserInfo(User user);
 
-    void setZaloPayName(String zaloPayName);
+    void setPhoneNumber(long phoneNumber);
 
     void showError(String message);
 }

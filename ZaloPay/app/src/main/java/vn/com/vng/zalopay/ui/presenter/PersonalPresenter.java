@@ -127,13 +127,6 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
-        if (mView != null) {
-            mView.setZaloPayName(event.zaloPayName);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onZaloPayUpdateBalanceMainThread(ChangeBalanceEvent event) {
         if (mView != null) {
             mView.setBalance(event.balance);

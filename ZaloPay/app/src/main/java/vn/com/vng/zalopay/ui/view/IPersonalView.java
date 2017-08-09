@@ -17,7 +17,7 @@ public interface IPersonalView {
 
     void setDisplayName(String displayName);
 
-    void setZaloPayName(String zaloPayName);
+    void setPhoneNumber(long phoneNumber);
 
     void setBalance(long balance);
 

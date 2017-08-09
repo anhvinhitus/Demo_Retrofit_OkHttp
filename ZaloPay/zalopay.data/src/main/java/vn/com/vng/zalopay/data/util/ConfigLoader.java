@@ -229,10 +229,10 @@ public class ConfigLoader {
         }
     }
     public static boolean isEnableRegisterZalopayID() {
-        if (mConfig == null || mConfig.mEnableRegisterZalopayID == 1) {
-            return true;
-        } else {
+        if (mConfig == null || mConfig.mEnableRegisterZalopayID != 1) {
             return false;
+        } else {
+            return true;
         }
     }
 }
