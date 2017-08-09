@@ -38,8 +38,8 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
     @BindView(R.id.profile_tv_name)
     TextView tvName;
 
-    @BindView(R.id.profile_tv_zalopay_info)
-    TextView tvZaloPayInfo;
+    @BindView(R.id.profile_tv_zalopay_phone_number)
+    TextView tvZaloPayPhoneNumber;
 
     @BindView(R.id.tab_personal_tv_balance_value)
     TextView tvBalance;
@@ -123,9 +123,9 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
 
     @Override
     public void setPhoneNumber(long phoneNumber) {
-        if (tvZaloPayInfo != null && phoneNumber > 0) {
+        if (tvZaloPayPhoneNumber != null && phoneNumber > 0) {
             String PhoneNumber = String.valueOf(phoneNumber);
-            tvZaloPayInfo.setText(PhoneNumber);
+            tvZaloPayPhoneNumber.setText(PhoneNumber);
         }
     }
 

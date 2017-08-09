@@ -43,8 +43,8 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
     @BindView(R.id.profile_tv_name)
     TextView tvName;
 
-    @BindView(R.id.profile_tv_zalopay_info)
-    TextView tvZaloPayInfo;
+    @BindView(R.id.profile_tv_zalopay_phone_number)
+    TextView tvZaloPayPhoneNumber;
 
     @BindView(R.id.profile_icfont_right_arrow)
     IconFont icfontRightArrow;
@@ -77,9 +77,9 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
 
     @Override
     public void setPhoneNumber(long phoneNumber) {
-        if (tvZaloPayInfo != null && phoneNumber > 0) {
+        if (tvZaloPayPhoneNumber != null && phoneNumber > 0) {
             String PhoneNumber = String.valueOf(phoneNumber);
-            tvZaloPayInfo.setText(PhoneNumber);
+            tvZaloPayPhoneNumber.setText(PhoneNumber);
         }
     }
 
