@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -34,6 +35,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.BundleConstants;
 import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -303,11 +305,41 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void request(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("requestWithoutRetry: baseUrl [%s] String content [%s]", baseUrl, content);
-        Subscription subscription = mNetworkServiceWithRetry.requestWithoutRetry(baseUrl, content)
+
+        ReadableMap queries = addQueriesUser(content);
+
+        Subscription subscription = mNetworkServiceWithRetry.requestWithoutRetry(baseUrl, queries)
                 .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         compositeSubscription.add(subscription);
+    }
+
+    private boolean shouldAddQueriesUser() {
+        Timber.d("Should add QueriesUser: [appId:%s]",mAppId);
+        return mAppId == BuildConfig.VOUCHER_APP_ID;
+    }
+
+    private ReadableMap addQueriesUser(@NonNull ReadableMap content) {
+        if (!shouldAddQueriesUser()) {
+            return content;
+        }
+
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(content);
+
+        WritableMap queries = Arguments.createMap();
+        if (content.hasKey("query")) {
+            ReadableMap map = content.getMap("query");
+            queries.merge(map);
+        }
+
+        queries.putString("accesstoken", mUser.accesstoken);
+        queries.putString("userid", mUser.zaloPayId);
+
+        writableMap.putMap("query", queries);
+
+        return writableMap;
     }
 
     @ReactMethod
