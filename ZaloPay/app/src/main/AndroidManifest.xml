@@ -273,12 +273,6 @@
             android:windowSoftInputMode="adjustResize|stateVisible"/>
 
         <activity
-            android:name=".ui.activity.InvitationCodeActivity"
-            android:label="@string/title.activity.invitation.code"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode=""/>
-
-        <activity
             android:name=".protect.ui.ProtectAccountActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/title.activity.protect.account"

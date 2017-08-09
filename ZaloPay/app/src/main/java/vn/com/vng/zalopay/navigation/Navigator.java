@@ -66,7 +66,6 @@ import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.vng.zalopay.ui.activity.HomeActivity;
-import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
@@ -524,12 +523,6 @@ public class Navigator {
             context.startActivity(intent);
         }
     }
-
-    public void startInvitationCodeActivity(Context context) {
-        Intent intent = new Intent(context, InvitationCodeActivity.class);
-        context.startActivity(intent);
-    }
-
     public void startSearchCategoryActivity(Context context) {
         Intent intent = new Intent(context, SearchCategoryActivity.class);
         context.startActivity(intent);

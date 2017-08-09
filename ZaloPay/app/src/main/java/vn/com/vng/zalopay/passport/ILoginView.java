@@ -11,8 +11,6 @@ import vn.com.vng.zalopay.domain.model.zalosdk.ZaloProfile;
  */
 interface ILoginView extends AbstractLoginView {
 
-    void gotoInvitationCode();
-
     void gotoOnboarding(ZaloProfile zaloProfile, String oauthcode);
 
     void showCustomDialog(String message,

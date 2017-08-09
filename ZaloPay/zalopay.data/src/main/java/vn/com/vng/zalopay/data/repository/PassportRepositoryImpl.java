@@ -15,7 +15,6 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.RequirePhoneException;
 import vn.com.vng.zalopay.data.exception.VerifyTimeoutException;
 import vn.com.vng.zalopay.domain.model.User;
@@ -77,10 +76,7 @@ public class PassportRepositoryImpl implements PassportRepository {
                     return Observable.error(new RequirePhoneException());
                 })
                 .doOnError(throwable -> {
-                    if (throwable instanceof InvitationCodeException) {
-                        LoginResponse loginResponse = (LoginResponse) ((InvitationCodeException) throwable).response;
-                        userConfig.saveInvitationInfo(loginResponse.userid, loginResponse.accesstoken);
-                    }
+                    Timber.d("User login error [%d]", throwable.getMessage());
                 }).map(this::saveUser);
     }
 
@@ -91,12 +87,6 @@ public class PassportRepositoryImpl implements PassportRepository {
                 .map(logoutResponse -> Boolean.TRUE);
     }
 
-    @Override
-    public Observable<User> verifyCode(String code) {
-        return passportService.verifyCode(userConfig.getUserIdInvitation(), userConfig.getSessionInvitation(), code)
-                .doOnNext(response -> checkIfOldAccount(response.userid))
-                .map(this::saveUser);
-    }
 
     private User transformWithZaloInfo(LoginResponse response) {
         User user = userEntityDataMapper.transform(response);

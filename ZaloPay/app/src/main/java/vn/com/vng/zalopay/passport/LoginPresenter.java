@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.account.network.listener.ZaloErrorCode;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
-import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.RequirePhoneException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
@@ -260,8 +259,6 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
                 || e instanceof AccountSuspendedException
                 || e instanceof ServerMaintainException) {
             showMessageDialog(ErrorMessageFactory.create(mApplicationContext, e));
-        } else if (e instanceof InvitationCodeException) {
-            mView.gotoInvitationCode();
         } else if (e instanceof RequirePhoneException) {
             mView.gotoOnboarding(profile, oauthcode);
         } else {

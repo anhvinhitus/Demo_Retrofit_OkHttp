@@ -42,7 +42,6 @@ import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.share.IntentHandlerActivity;
 import vn.com.vng.zalopay.tracker.GoogleReporter;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
-import vn.com.vng.zalopay.ui.fragment.InvitationCodeFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 
 @Singleton
@@ -117,8 +116,6 @@ public interface ApplicationComponent {
     void inject(OnboardingFragment f);
 
     void inject(DownloadService service);
-
-    void inject(InvitationCodeFragment f);
 
     void inject(LoginZaloActivity activity);
 

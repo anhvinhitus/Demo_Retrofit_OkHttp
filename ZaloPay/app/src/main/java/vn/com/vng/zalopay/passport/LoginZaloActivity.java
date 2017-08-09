@@ -104,12 +104,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         super.onActivityResult(requestCode, resultCode, data);
         mLoginPresenter.onActivityResult(this, requestCode, resultCode, data);
     }
-
-    public void gotoInvitationCode() {
-        navigator.startInvitationCodeActivity(getContext());
-        finish();
-    }
-
     public void showLoading() {
         Timber.d("showLoading");
         if (mProgressDialog == null) {

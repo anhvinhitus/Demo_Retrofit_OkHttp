@@ -16,7 +16,6 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 
@@ -57,8 +56,6 @@ class ZaloPayCallAdapter extends BaseCallAdapter {
 
                 postThrowToLoginScreenEvent(exception);
                 return Observable.error(exception);
-            } else if (baseResponse.isInvitationCode()) {
-                return Observable.error(new InvitationCodeException(baseResponse.err, baseResponse));
             } else if (baseResponse.isAccountSuspended()) {
                 AccountSuspendedException exception = new AccountSuspendedException(baseResponse.err, baseResponse.message);
                 postThrowToLoginScreenEvent(exception);

@@ -163,8 +163,6 @@ public class UserConfigImpl implements UserConfig {
         editor.remove(Constants.PREF_PROFILE_LEVEL);
         editor.remove(Constants.PREF_USER_BIRTHDAY);
         editor.remove(Constants.PREF_PROFILE_PERMISSIONS);
-        editor.remove(Constants.PREF_INVITATION_SESSION);
-        editor.remove(Constants.PREF_INVITATION_USERID);
         editor.remove(Constants.PREF_USER_IDENTITY_NUMBER);
         editor.remove(Constants.PREF_USER_ZALOPAY_NAME);
         editor.remove(Constants.PREF_WAITING_APPROVE_PROFILE_LEVEL3);
@@ -232,24 +230,6 @@ public class UserConfigImpl implements UserConfig {
     @Override
     public String getDisPlayName() {
         return preferences.getString(Constants.PREF_USER_NAME, "");
-    }
-
-    @Override
-    public void saveInvitationInfo(String uid, String session) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(Constants.PREF_INVITATION_USERID, uid);
-        editor.putString(Constants.PREF_INVITATION_SESSION, session);
-        editor.apply();
-    }
-
-    @Override
-    public String getSessionInvitation() {
-        return preferences.getString(Constants.PREF_INVITATION_SESSION, "");
-    }
-
-    @Override
-    public String getUserIdInvitation() {
-        return preferences.getString(Constants.PREF_INVITATION_USERID, "");
     }
 
     @Override

@@ -34,8 +34,6 @@ public interface Constants {
     String PREF_PROFILE_LEVEL = "profilelevel";
     String PREF_PROFILE_PERMISSIONS = "profilePermissions";
     String PREF_USER_LAST_USER_ID = "pref_last_uid";
-    String PREF_INVITATION_USERID = "pref_userid_invitation";
-    String PREF_INVITATION_SESSION = "pref_session_invitation";
     String PREF_USER_ZALOPAY_NAME = "pref_zalopay_name";
 
     //Using to transfer arg between fragment/activity
