@@ -294,6 +294,8 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     @OnClick(R.id.switchKeyboard)
     public void onSwitchKeyboard() {
         boolean isNumPad = mViewMode != null && mViewMode.equals(ZPCViewMode.keyboardPhone);
+        mViewMode = isNumPad ? ZPCViewMode.keyboardABC : ZPCViewMode.keyboardPhone;
+        isNumPad = !isNumPad;
         setKeyboard(isNumPad);
         focusEdtSearchView();
     }
