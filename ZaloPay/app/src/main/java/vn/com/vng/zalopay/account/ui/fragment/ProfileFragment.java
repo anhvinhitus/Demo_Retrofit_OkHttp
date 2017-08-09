@@ -180,15 +180,10 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         if (lineProfile == null & layoutAccountName == null) {
             return;
         }
-        if (isShowing) {
-            lineProfile.setVisibility(View.VISIBLE);
-            layoutAccountName.setVisibility(View.VISIBLE);
-        } else {
-            lineProfile.setVisibility(View.GONE);
-            layoutAccountName.setVisibility(View.GONE);
-        }
-
+        lineProfile.setVisibility((isShowing) ? View.VISIBLE : View.GONE);
+        layoutAccountName.setVisibility((isShowing) ? View.VISIBLE : View.GONE);
     }
+
 
     private void setCMND(String cmnd) {
         if (!TextUtils.isEmpty(cmnd)) {
