@@ -113,7 +113,7 @@ public class PhoneUtil {
     }
 
     private static boolean validPhoneFormat(String input) {
-        return (TextUtils.isEmpty(input)
+        return (!TextUtils.isEmpty(input)
                 && validMinLength(input)
                 && validMaxLength(input)
                 && validPatterns(input));

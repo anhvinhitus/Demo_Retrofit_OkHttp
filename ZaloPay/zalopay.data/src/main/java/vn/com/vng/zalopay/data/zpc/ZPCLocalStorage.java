@@ -9,6 +9,7 @@ import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import vn.com.vng.zalopay.data.Constants;
@@ -27,6 +28,7 @@ import vn.com.vng.zalopay.data.cache.model.ZFLDao;
 import vn.com.vng.zalopay.data.cache.model.ZPC;
 import vn.com.vng.zalopay.data.cache.model.ZPCDao;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.zpc.contactloader.Contact;
 
@@ -59,6 +61,15 @@ public class ZPCLocalStorage extends SqlBaseScopeImpl implements ZPCStore.LocalS
             return;
         }
 
+        Iterator<UCB> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            UCB ucb = iterator.next();
+
+            if(!PhoneUtil.isMobileNumber(ucb.phoneNumber)) {
+                iterator.remove();
+            }
+        }
+
         mUCBDao.insertOrReplaceInTx(list);
     }
 
@@ -79,6 +90,7 @@ public class ZPCLocalStorage extends SqlBaseScopeImpl implements ZPCStore.LocalS
         if (Lists.isEmptyOrNull(list)) {
             return;
         }
+
         mZPCDao.insertOrReplaceInTx(list);
     }
 
