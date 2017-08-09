@@ -187,7 +187,6 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     private void initArgs(Bundle bundle) {
         mViewType = bundle.getInt(BundleConstants.ZPC_VIEW_TYPE, ZpcViewType.ZPC_All);
         mKeySearch = bundle.getString(BundleConstants.KEY_SEARCH, "");
-        mIsNumberPad = bundle.getBoolean(BundleConstants.NUMBER_KEYBOARD, false);
         mNavigatorTitle = bundle.getString(BundleConstants.NAVIGATION_TITLE, "");
         mViewMode = bundle.getString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardABC);
         mPhoneNumber = bundle.getString(BundleConstants.PHONE_NUMBER, "");

@@ -421,7 +421,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void launchContactList(String phoneNumber, String viewMode, boolean isNumberPad, String navigationTitle, final Promise promise) {
+    public void launchContactList(String phoneNumber, String viewMode, String navigationTitle, final Promise promise) {
 
         Activity activity = getCurrentActivity();
         if (activity == null) {
@@ -435,7 +435,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         Bundle extras = new Bundle();
         extras.putString(BundleConstants.KEY_SEARCH, phoneNumber);
         extras.putString(BundleConstants.ZPC_VIEW_MODE, viewMode);
-        extras.putBoolean(BundleConstants.NUMBER_KEYBOARD, isNumberPad);
         extras.putString(BundleConstants.NAVIGATION_TITLE, navigationTitle);
         mNavigator.startZaloPayContactTopup(activity, extras, TOPUP_REQUEST_CODE);
     }
