@@ -44,7 +44,6 @@ public class Constants {
     public interface UM_API {
         String CREATEACCESSTOKEN = "um/createaccesstoken";
         String REMOVEACCESSTOKEN = "um/removeaccesstoken";
-        String VERIFYCODETEST = "/um/verifycodetest";
         String UPDATEPROFILE = "um/updateprofile";
         String VERIFYOTPPROFILE = "um/verifyotpprofile";
         String RECOVERYPIN = "um/recoverypin";

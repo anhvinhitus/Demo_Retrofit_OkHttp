@@ -31,12 +31,6 @@ public interface PassportService {
     @POST(Constants.UM_API.REMOVEACCESSTOKEN)
     Observable<LogoutResponse> logout(@Field("appid") long appid, @Field("userid") String uid, @Field("accesstoken") String accesstoken);
 
-
-    @API_NAME(https = ZPEvents.API_UM_VERIFYCODETEST, connector = ZPEvents.CONNECTOR_UM_VERIFYCODETEST)
-    @FormUrlEncoded
-    @POST(Constants.UM_API.VERIFYCODETEST)
-    Observable<VerifyInvitationCodeResponse> verifyCode(@Field("userid") String uid, @Field("accesstoken") String accesstoken, @Field("codetest") String codetest);
-
     @API_NAME(https = ZPEvents.API_UM_REGISTERPHONENUMBER, connector = ZPEvents.CONNECTOR_UM_REGISTERPHONENUMBER)
     @FormUrlEncoded
     @POST(Constants.UM_API.REGISTERPHONENUMBER)
