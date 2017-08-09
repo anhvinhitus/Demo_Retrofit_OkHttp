@@ -1,3 +1,6 @@
-Zalo Pay (Sandbox v2.17.0 - build 397) - Released on 2017-08-09 10:46
-+ [Profile] task#785: Thêm config để thực hiện: Tắt phần đăng ký Zalo Pay ID by lytm (#1d703f6)
-+ [ZPC] Add status to favorite data in order to check zalopay user status by datnt10 (#8dba077)
+Zalo Pay (Sandbox v2.17.0 - build 398) - Released on 2017-08-09 13:59
++ [ZPC] Handle on click in item not in zpc by datnt10 (#3a038f5)
++ [SDK] CPS-72: Fix lỗi màn hình kết quả tên dài bị bể layout by chucvv (#668d710)
++ Revert "[SDK] CPS-72: Fix lỗi màn hình kết quả tên dài bị bể layout" by chucvv (#fb23187)
++ [ZPC] Upper case first letter of contact name in case do not have avatar by datnt10 (#d1044b8)
++ [ContactList] validate phoneNumber input by sinhtt (#916b1d6)
