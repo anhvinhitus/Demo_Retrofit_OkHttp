@@ -86,7 +86,6 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     @ZpcViewType
     private int mViewType = ZpcViewType.ZPC_All;
     private String mKeySearch = null;
-    private boolean mIsNumberPad = false;
     private String mNavigatorTitle = null;
     private String mViewMode = ZPCViewMode.keyboardABC;
     private String mPhoneNumber = null;
@@ -155,22 +154,16 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
             mSwitchKeyboardView.setVisibility(View.GONE);
         }
 
-        if (mIsNumberPad) {
-            setKeyboard(true);
-        }
-
         if (!TextUtils.isEmpty(mNavigatorTitle)) {
             setTitle(mNavigatorTitle);
         }
 
-        if (mViewMode.equals(ZPCViewMode.keyboardABC)) {
-            setKeyboard(true);
-        }
-
         if (!TextUtils.isEmpty(mPhoneNumber)) {
-            setKeyboard(true);
             mEdtSearchView.setText(mPhoneNumber);
         }
+
+        boolean isNumPad = mViewMode != null && mViewMode.equals(ZPCViewMode.keyboardPhone);
+        setKeyboard(isNumPad);
 
         showLoading();
 
@@ -300,8 +293,8 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
     @OnClick(R.id.switchKeyboard)
     public void onSwitchKeyboard() {
-        mIsNumberPad = !mIsNumberPad;
-        setKeyboard(mIsNumberPad);
+        boolean isNumPad = mViewMode != null && mViewMode.equals(ZPCViewMode.keyboardPhone);
+        setKeyboard(isNumPad);
         focusEdtSearchView();
     }
 
