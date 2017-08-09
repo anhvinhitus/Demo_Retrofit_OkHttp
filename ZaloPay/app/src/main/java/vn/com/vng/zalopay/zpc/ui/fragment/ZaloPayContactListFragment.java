@@ -42,6 +42,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BundleConstants;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.react.model.ZPCViewMode;
@@ -423,10 +424,18 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
             mTvNumberNotSave.setText(null);
             mEmptyView.setVisibility(View.VISIBLE);
         } else {
-            mTvEmptyView.setText(null);
-            mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
-            mTvNumberNotSave.setText(mEdtSearchView.getText());
-            mEmptyView.setVisibility(View.GONE);
+            String phoneNumber = mEdtSearchView.getText().toString();
+            if (PhoneUtil.isMobileNumber(phoneNumber)) {
+                mTvEmptyView.setText(null);
+                mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
+                mTvNumberNotSave.setText(phoneNumber);
+                mEmptyView.setVisibility(View.GONE);
+            }
+            else {
+                mTvEmptyView.setText(R.string.no_result_your_search);
+                mItemNumberNotSaveYet.setVisibility(View.GONE);
+                mEmptyView.setVisibility(View.GONE);
+            }
         }
     }
 
