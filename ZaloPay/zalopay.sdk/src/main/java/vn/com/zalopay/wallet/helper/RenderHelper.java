@@ -8,11 +8,11 @@ import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
@@ -44,36 +44,39 @@ public class RenderHelper {
         List<View> views = new ArrayList<>();
         for (int i = 0; i < nameValuePairList.size(); i++) {
             NameValuePair nameValuePair = nameValuePairList.get(i);
-            if(nameValuePair == null){
+            if (nameValuePair == null) {
                 continue;
             }
-            RelativeLayout relativeLayout = new RelativeLayout(context);
+            LinearLayout linearLayout = new LinearLayout(context);
+            linearLayout.setWeightSum(2);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.bottomMargin = (int) context.getResources().getDimension(R.dimen.sdk_margin_left_right);
-            relativeLayout.setLayoutParams(params);
+            linearLayout.setLayoutParams(params);
             if (!TextUtils.isEmpty(nameValuePair.key)) {
                 TextView name_txt = new TextView(context);
                 name_txt.setTextColor(ContextCompat.getColor(context, (R.color.text_color_grey)));
                 name_txt.setText(nameValuePair.key);
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.weight = 1;
                 name_txt.setLayoutParams(layoutParams);
-                relativeLayout.addView(name_txt);
+                name_txt.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+
+                linearLayout.addView(name_txt);
             }
             if (!TextUtils.isEmpty(nameValuePair.value)) {
                 TextView value_txt = new TextView(context);
                 value_txt.setTextColor(ContextCompat.getColor(context, (R.color.text_color_grey)));
                 value_txt.setText(nameValuePair.value);
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.weight = 1;
                 value_txt.setLayoutParams(layoutParams);
-                relativeLayout.addView(value_txt);
+                value_txt.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+
+                linearLayout.addView(value_txt);
             }
-            views.add(relativeLayout);
+            views.add(linearLayout);
         }
         return views;
     }
@@ -82,13 +85,13 @@ public class RenderHelper {
         if (pEditext == null) {
             return;
         }
-        if(( !(pEditext instanceof VPaymentEditText) || ((VPaymentEditText) pEditext).getTextInputLayout() == null)){
+        if ((!(pEditext instanceof VPaymentEditText) || ((VPaymentEditText) pEditext).getTextInputLayout() == null)) {
             return;
         }
 
         try {
             TextInputLayout textInputLayout = ((VPaymentEditText) pEditext).getTextInputLayout();
-            if(textInputLayout == null){
+            if (textInputLayout == null) {
                 return;
             }
 
@@ -121,12 +124,12 @@ public class RenderHelper {
         if (pEditext == null) {
             return;
         }
-        if(( !(pEditext instanceof VPaymentEditText) || ((VPaymentEditText) pEditext).getTextInputLayout() == null)){
+        if ((!(pEditext instanceof VPaymentEditText) || ((VPaymentEditText) pEditext).getTextInputLayout() == null)) {
             return;
         }
         try {
             TextInputLayout textInputLayout = ((VPaymentEditText) pEditext).getTextInputLayout();
-            if(textInputLayout == null){
+            if (textInputLayout == null) {
                 return;
             }
             int color = pContext.getResources().getColor(R.color.holo_red_light);
