@@ -74,8 +74,8 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     ZaloPayContactListPresenter mPresenter;
     @BindView(R.id.tv_empty)
     TextView mTvEmptyView;
-    @BindView(R.id.iv_empty)
-    View mEmptyView;
+    @BindView(R.id.ll_empty)
+    LinearLayout mLlEmptyView;
     @BindView(R.id.edtSearch)
     ZPEditText mEdtSearchView;
     @BindView(R.id.switchKeyboard)
@@ -385,7 +385,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
         if (mAdapter.getCount() <= 0) {
             mTvEmptyView.setText(message);
-            mEmptyView.setVisibility(View.GONE);
+            mLlEmptyView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -415,9 +415,9 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
     @Override
     public void checkIfEmpty() {
-        if (mAdapter.getCount() != 0) {
+        if (mAdapter != null && mAdapter.getCount() != 0) {
             mTvEmptyView.setText(null);
-            mEmptyView.setVisibility(View.GONE);
+            mLlEmptyView.setVisibility(View.GONE);
             mItemNumberNotSaveYet.setVisibility(View.GONE);
             mTvNumberNotSave.setText(null);
             return;
@@ -427,19 +427,18 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
             mTvEmptyView.setText(R.string.friend_list_empty);
             mItemNumberNotSaveYet.setVisibility(View.GONE);
             mTvNumberNotSave.setText(null);
-            mEmptyView.setVisibility(View.VISIBLE);
+            mLlEmptyView.setVisibility(View.VISIBLE);
         } else {
             String phoneNumber = mEdtSearchView.getText().toString();
             if (PhoneUtil.isMobileNumber(phoneNumber)) {
-                mTvEmptyView.setText(null);
                 mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
                 mTvNumberNotSave.setText(phoneNumber);
-                mEmptyView.setVisibility(View.GONE);
+                mLlEmptyView.setVisibility(View.GONE);
             }
             else {
                 mTvEmptyView.setText(R.string.no_result_your_search);
                 mItemNumberNotSaveYet.setVisibility(View.GONE);
-                mEmptyView.setVisibility(View.GONE);
+                mLlEmptyView.setVisibility(View.VISIBLE);
             }
         }
     }

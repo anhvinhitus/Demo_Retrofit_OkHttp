@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:drawablePadding="28dp"
-        android:drawableTop="@drawable/search_emty"
+        android:drawableTop="@drawable/ic_search_emty"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"

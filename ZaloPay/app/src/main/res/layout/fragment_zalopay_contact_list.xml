@@ -26,10 +26,9 @@
             style="@style/ZaloPayEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical"
             android:hint="@string/hint_zalo_contact"
             android:inputType="text|textCapWords"
-            android:paddingBottom="13dp"
             android:paddingLeft="50dp"
             app:zlp_floatingLabel="none"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
@@ -66,18 +65,17 @@
         <include layout="@layout/progress_layout" />
 
         <LinearLayout
+            android:id="@+id/ll_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/iv_empty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_nocontact"
-                android:visibility="gone" />
+                android:src="@drawable/ic_search_emty" />
 
             <TextView
                 android:id="@+id/tv_empty"
