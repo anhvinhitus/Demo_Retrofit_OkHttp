@@ -12,6 +12,7 @@ public class FavoriteData {
     public String phoneNumber;
     public String displayName;
     public String avatar;
+    public int status;
 
     public FavoriteData() {
     }
@@ -21,6 +22,7 @@ public class FavoriteData {
         this.phoneNumber = other.phoneNumber;
         this.displayName = other.displayName;
         this.avatar = other.avatar;
+        this.status = other.status;
     }
 
     @Override

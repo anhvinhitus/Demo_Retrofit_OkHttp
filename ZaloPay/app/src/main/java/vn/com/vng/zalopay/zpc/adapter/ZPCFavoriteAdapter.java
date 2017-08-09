@@ -180,11 +180,12 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
         }
 
         @Override
-        public void bindView(long zaloId, String phone, String displayName, String aliasDisPlayName, String avatar) {
+        public void bindView(long zaloId, String phone, String displayName, String aliasDisPlayName, String avatar, int status) {
             mFavoriteData.zaloId = zaloId;
             mFavoriteData.phoneNumber = phone;
             mFavoriteData.displayName = displayName;
             mFavoriteData.avatar = avatar;
+            mFavoriteData.status = status;
          /*   if (mSwipeLayout.getOpenStatus() != SwipeLayout.Status.Close) {
                 mSwipeLayout.close(false, false);
             }*/

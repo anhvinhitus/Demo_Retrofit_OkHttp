@@ -34,7 +34,7 @@ public class ViewHolder {
         ButterKnife.bind(this, view);
     }
 
-    public void bindView(long zaloId, String phone, String displayName, String aliasDisPlayName, String avatar) {
+    public void bindView(long zaloId, String phone, String displayName, String aliasDisPlayName, String avatar, int status) {
 
     }
 }

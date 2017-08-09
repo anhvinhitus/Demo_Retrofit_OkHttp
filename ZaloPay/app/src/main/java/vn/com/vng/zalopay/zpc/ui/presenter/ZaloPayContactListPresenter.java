@@ -164,6 +164,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         profile.avatar = favoriteData.avatar;
         profile.displayName = favoriteData.displayName;
         profile.phonenumber = favoriteData.phoneNumber;
+        profile.status = favoriteData.status;
 
         if (isPhoneBook()) {
             backTopup(fragment, profile);
