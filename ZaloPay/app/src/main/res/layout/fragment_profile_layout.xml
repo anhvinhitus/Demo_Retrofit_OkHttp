@@ -32,7 +32,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/birthday"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
 
                     <TextView
                         android:id="@+id/tvBirthday"
@@ -41,7 +41,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:hint="@string/update_information"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
                 </LinearLayout>
 
                 <View
@@ -63,7 +63,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/gender"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
 
                     <TextView
                         android:id="@+id/tvGender"
@@ -72,7 +72,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:hint="@string/update_information"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -118,7 +118,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/hint_phone"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
 
                     <TextView
                         android:id="@+id/tvPhone"
@@ -129,10 +129,11 @@
                         android:drawableRight="@drawable/ic_arrow_right"
                         android:gravity="right|center_vertical"
                         android:hint="@string/update_information"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/profile_line"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/separate"
                     android:layout_marginLeft="@dimen/spacing.medium"
@@ -152,7 +153,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/account_name"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
 
                     <TextView
                         android:id="@+id/tvAccountName"
@@ -163,7 +164,7 @@
                         android:drawableRight="@drawable/ic_arrow_right"
                         android:gravity="right|center_vertical"
                         android:hint="@string/update_information"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -211,7 +212,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/hint_email"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
 
                     <TextView
                         android:id="@+id/tvEmail"
@@ -222,7 +223,7 @@
                         android:drawableRight="@drawable/ic_arrow_right"
                         android:gravity="right|center_vertical"
                         android:hint="@string/update_information"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
                 </LinearLayout>
 
                 <View
@@ -245,7 +246,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/cmnd_passpost"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
 
                     <TextView
                         android:id="@+id/tvCMND"
@@ -256,7 +257,7 @@
                         android:drawableRight="@drawable/ic_arrow_right"
                         android:gravity="right|center_vertical"
                         android:hint="@string/update_information"
-                        android:textSize="@dimen/personal_general_text_main"/>
+                        android:textSize="@dimen/personal_general_text_main" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -298,7 +299,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/zalopay_id"
-                    android:textSize="@dimen/personal_general_text_main"/>
+                    android:textSize="@dimen/personal_general_text_main" />
 
                 <TextView
                     android:id="@+id/tvZaloPayId"
@@ -307,7 +308,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:hint="@string/update_information"
-                    android:textSize="@dimen/personal_general_text_main"/>
+                    android:textSize="@dimen/personal_general_text_main" />
             </LinearLayout>
 
             <View

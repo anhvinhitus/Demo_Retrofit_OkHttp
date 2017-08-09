@@ -19,5 +19,7 @@ public interface IProfileView extends ILoadDataView {
     void setZaloPayName(String zaloPayName);
 
     void showNotificationDialog(String content);
+
+    void showRegisterZalopayID(boolean isShowing);
 }
 

@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
@@ -35,6 +36,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     private final User mUser;
     private final AccountStore.Repository mAccountRepository;
     private final Navigator mNavigator;
+    private boolean isEnableRegisterZalopayID = ConfigLoader.isEnableRegisterZalopayID();
 
     @Inject
     ProfilePresenter(EventBus eventBus,
@@ -54,6 +56,9 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
 
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
+        }
+        if (mView != null) {
+            mView.showRegisterZalopayID(isEnableRegisterZalopayID);
         }
     }
 

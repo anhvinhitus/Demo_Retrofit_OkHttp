@@ -71,6 +71,12 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.profile_tv_email_and_id_suggest)
     TextView tvEmailAndIdSuggest;
 
+    @BindView(R.id.profile_line)
+    View lineProfile;
+
+    @BindView(R.id.layoutAccountName)
+    View layoutAccountName;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -90,6 +96,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
+
     }
 
     @Override
@@ -166,6 +173,21 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @Override
     public void showNotificationDialog(String message) {
         DialogHelper.showNotificationDialog(getActivity(), message, null);
+    }
+
+    @Override
+    public void showRegisterZalopayID(boolean isShowing) {
+        if (lineProfile == null & layoutAccountName == null) {
+            return;
+        }
+        if (isShowing) {
+            lineProfile.setVisibility(View.VISIBLE);
+            layoutAccountName.setVisibility(View.VISIBLE);
+        } else {
+            lineProfile.setVisibility(View.GONE);
+            layoutAccountName.setVisibility(View.GONE);
+        }
+
     }
 
     private void setCMND(String cmnd) {

@@ -228,5 +228,12 @@ public class ConfigLoader {
             return mConfig.mInternalApps;
         }
     }
+    public static boolean isEnableRegisterZalopayID() {
+        if (mConfig == null || mConfig.mEnableRegisterZalopayID == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 

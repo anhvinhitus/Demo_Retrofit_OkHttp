@@ -62,4 +62,6 @@ public class Config {
     public List<InternalApp> mInternalApps;
 
 
+    @SerializedName("enable_register_profile_zalopayid")
+    public int mEnableRegisterZalopayID;
 }
