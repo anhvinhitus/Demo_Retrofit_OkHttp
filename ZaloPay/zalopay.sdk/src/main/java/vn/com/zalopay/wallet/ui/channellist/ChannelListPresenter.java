@@ -804,6 +804,18 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     }
 
     private void makeDefaultChannel() throws Exception {
+        if (mPaymentInfoHelper == null) {
+            Timber.d("payment info is null");
+            return;
+        }
+        //valid balance and has active zalopay channel
+        if (mPaymentInfoHelper.validBalancePayment()
+                && mZaloPayChannel != null
+                && mZaloPayChannel.meetPaymentCondition()) {
+            selectAndScrollToChannel(mZaloPayChannel, mZaloPayChannel.position);
+            startDefaultPayment();
+            return;
+        }
         //auto select recently payment or link bank
         boolean hasLastPaymentChannel = selectLastPaymentChannel();
         if (hasLastPaymentChannel) {
@@ -850,7 +862,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (mPaymentInfoHelper == null) {
             return;
         }
-        if (mPaymentInfoHelper.getBalance() > mPaymentInfoHelper.getAmountTotal()) {
+        if (mPaymentInfoHelper.validBalancePayment()) {
             getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel), null,
                     Snackbar.LENGTH_INDEFINITE, null);
         } else {

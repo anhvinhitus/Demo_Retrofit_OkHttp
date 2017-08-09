@@ -106,6 +106,10 @@ public class PaymentInfoHelper extends SingletonBase {
         return paymentInfo != null ? paymentInfo.getForceChannels() : new int[0];
     }
 
+    public boolean validBalancePayment() {
+        return getBalance() > getAmountTotal();
+    }
+
     public long getBalance() {
         if (getUserInfo() != null) {
             return getUserInfo().balance;
