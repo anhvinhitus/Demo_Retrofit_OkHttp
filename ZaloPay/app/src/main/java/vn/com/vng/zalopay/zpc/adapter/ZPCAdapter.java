@@ -141,7 +141,7 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
 
         long zaloId = cursor.getLong(cursor.getColumnIndex(ColumnAlias.ZALO_ID));
         String displayName = cursor.getString(cursor.getColumnIndex(ColumnAlias.DISPLAY_NAME));
-        String aliasDisPlayName = cursor.getString(cursor.getColumnIndex(ColumnAlias.NORMALIZE_DISPLAY_NAME));
+        String aliasDisplayName = cursor.getString(cursor.getColumnIndex(ColumnAlias.NORMALIZE_DISPLAY_NAME));
         String avatar = cursor.getString(cursor.getColumnIndex(ColumnAlias.AVATAR));
         String phone = cursor.getString(cursor.getColumnIndex(ColumnAlias.PHONE_NUMBER));
         long zaloPayId = cursor.getLong(cursor.getColumnIndex(ColumnAlias.ZALOPAY_ID));
@@ -149,11 +149,11 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
         String firstName = cursor.getString(cursor.getColumnIndex(ColumnAlias.FIRST_NAME));
         String lastName = cursor.getString(cursor.getColumnIndex(ColumnAlias.LAST_NAME));
 
-        holder.bindView(zaloId, phone, displayName, aliasDisPlayName, avatar, status);
+        holder.bindView(zaloId, phone, displayName, aliasDisplayName, avatar, status);
 
         if (TextUtils.isEmpty(avatar)) {
             holder.mPlaceHolder.setVisibility(View.VISIBLE);
-            holder.mPlaceHolder.setText(aliasDisPlayName.substring(0, 1));
+            holder.mPlaceHolder.setText(aliasDisplayName.substring(0, 1).toUpperCase());
         } else {
             holder.mPlaceHolder.setVisibility(View.INVISIBLE);
             holder.mImgAvatar.setImageURI(avatar);
@@ -167,7 +167,7 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
             setShowBorder(holder.mImgAvatar, mPrimaryColor, mBorderAvatar);
         }
 
-        setDisplayName(holder.mTvDisplayName, displayName, aliasDisPlayName);
+        setDisplayName(holder.mTvDisplayName, displayName, aliasDisplayName);
         setPhone(holder.mPhoneView, phone);
     }
 
