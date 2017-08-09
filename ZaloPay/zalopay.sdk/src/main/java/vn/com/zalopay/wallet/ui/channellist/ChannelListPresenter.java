@@ -446,12 +446,12 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mPaymentInfoHelper.setVoucher(voucherInfo);
             //re calculate order amount
             double total_amount = mPaymentInfoHelper.getAmountTotal();
-            if (total_amount <= 0 || voucherInfo.discountamount <= 0) {
-                return;
-            }
             double paymentAmount = total_amount - voucherInfo.discountamount;
             getViewOrThrow().renderOrderAmount(paymentAmount);
             getViewOrThrow().renderActiveVoucher(voucherInfo.vouchercode, total_amount, voucherInfo.discountamount);
+
+            boolean validBalance = total_amount >= paymentAmount;
+            showSnackBarOnError(validBalance);
             //save voucher to cache
             String userId = mPaymentInfoHelper.getUserId();
             if (!TextUtils.isEmpty(userId)) {
@@ -808,8 +808,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             Timber.d("payment info is null");
             return;
         }
+        boolean validBalance = mPaymentInfoHelper.validBalancePayment();
         //valid balance and has active zalopay channel
-        if (mPaymentInfoHelper.validBalancePayment()
+        if (validBalance
                 && mZaloPayChannel != null
                 && mZaloPayChannel.meetPaymentCondition()) {
             selectAndScrollToChannel(mZaloPayChannel, mZaloPayChannel.position);
@@ -826,7 +827,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
 
         PaymentChannel selectChannel = null;
-        boolean hasLinkChannel = false;
         int pos = -1;
         for (int position = 0; position < mChannelList.size(); position++) {
             Object object = mChannelList.get(position);
@@ -838,7 +838,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 continue;
             }
             if (channel.isLinkChannel()) {
-                hasLinkChannel = true;
                 continue;
             }
             mHasActiveChannel = true;
@@ -852,20 +851,23 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (shouldAutoPayment()) {
             startDefaultPayment();
         }
-        if (!mHasActiveChannel && !hasLinkChannel) {
+        if (!mHasActiveChannel) {
             getViewOrThrow().disableConfirmButton();
-            showSnackBarOnError();
         }
+        showSnackBarOnError(validBalance);
     }
 
-    private void showSnackBarOnError() throws Exception {
+    private void showSnackBarOnError(boolean validBalance) throws Exception {
         if (mPaymentInfoHelper == null) {
             return;
         }
-        if (mPaymentInfoHelper.validBalancePayment()) {
+        getViewOrThrow().dismissSnackBar();
+        if (validBalance) {
             getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel), null,
                     Snackbar.LENGTH_INDEFINITE, null);
-        } else {
+            return;
+        }
+        if (!mHasActiveChannel) {
             getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel_balance_error),
                     mContext.getResources().getString(R.string.sdk_hyperlink_charge_more),
                     Snackbar.LENGTH_INDEFINITE, () -> {

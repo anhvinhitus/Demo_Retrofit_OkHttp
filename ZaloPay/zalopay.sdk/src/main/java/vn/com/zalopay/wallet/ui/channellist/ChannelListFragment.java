@@ -586,6 +586,15 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
+    public void dismissSnackBar() {
+        try {
+            PaymentSnackBar.getInstance().dismiss();
+        } catch (Exception e) {
+            Timber.d(e, "Exception dismiss snackbar");
+        }
+    }
+
+    @Override
     public void enablePaymentButton(int buttonTextId, int bgResourceId) {
         confirm_button.setEnabled(true);
         if (buttonTextId != -1) {

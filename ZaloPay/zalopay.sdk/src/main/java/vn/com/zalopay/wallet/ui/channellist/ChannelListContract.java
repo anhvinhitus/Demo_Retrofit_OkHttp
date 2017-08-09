@@ -58,6 +58,8 @@ public interface ChannelListContract extends IContract {
 
         void renderOrderFee(double order_fee);
 
+        void dismissSnackBar();
+
         ChannelListAdapter initChannelListAdapter(long amount, UserInfo userInfo, int userLevel, int transtype);
     }
 }
