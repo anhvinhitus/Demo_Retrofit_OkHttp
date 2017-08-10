@@ -36,5 +36,7 @@ interface IBankSupportSelectionView {
                            String pCancelButton,
                            ZPWOnEventConfirmDialogListener callback);
 
+    void showWarningDialog(String message, String btnText);
+
     void showNetworkErrorDialog();
 }

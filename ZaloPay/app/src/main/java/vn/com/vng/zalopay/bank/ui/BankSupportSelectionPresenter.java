@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.bank.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
@@ -21,6 +22,7 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -35,6 +37,7 @@ import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.constants.BankStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 
@@ -43,8 +46,9 @@ import vn.com.zalopay.wallet.merchant.entities.ZPBank;
  * List support bank.
  */
 final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupportSelectionView> {
-    private final User mUser;
     protected final Context applicationContext;
+    private final User mUser;
+    private int mCurrentCcLinkNum = 0;
 
     @Inject
     BankSupportSelectionPresenter(Context applicationContext, User user) {
@@ -62,7 +66,27 @@ final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupport
         mSubscription.add(subscription);
     }
 
+    void loadMaxCcLinNum(){
+        if (mUser == null) {
+            return;
+        }
+        mCurrentCcLinkNum = BankHelper.getMaxCCLinkNum(mUser.zaloPayId);
+        Timber.d("current cc link number %s", mCurrentCcLinkNum);
+    }
+
     void linkBank(ZPBank bank) {
+        if (mView == null || bank == null) {
+            return;
+        }
+
+        int max_cc_link = ConfigLoader.maxCCLinkNum();
+        if (BankHelper.isInternationalBank(bank.bankCode)
+                && mCurrentCcLinkNum >= max_cc_link) {
+            String mess = String.format(applicationContext.getString(R.string.bank_link_cclink_limit_warning), max_cc_link);
+            mView.showWarningDialog(mess, applicationContext.getString(R.string.dialog_agree_button));
+            return;
+        }
+
         if (!NetworkHelper.isNetworkAvailable(applicationContext)) {
             mView.showNetworkErrorDialog();
             return;
@@ -177,7 +201,6 @@ final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupport
         activity.setResult(Activity.RESULT_OK, data);
         activity.finish();
     }
-
 
     private class BankSupportSubscriber extends DefaultSubscriber<List<ZPBank>> {
         BankSupportSubscriber() {

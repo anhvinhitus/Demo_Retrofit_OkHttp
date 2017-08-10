@@ -45,7 +45,6 @@ public class ConfigLoader {
             Timber.d("Load config from resource app 1 successfully.");
             return;
         }
-
         if (loadConfigFromAssets(assetManager)) {
             Timber.d("Load config from assets successfully.");
         }
@@ -228,8 +227,16 @@ public class ConfigLoader {
             return mConfig.mInternalApps;
         }
     }
+
     public static boolean isEnableRegisterZalopayID() {
         return (mConfig != null && mConfig.mEnableRegisterZalopayID == 1);
+    }
+
+    public static int maxCCLinkNum() {
+        if (mConfig == null || mConfig.general == null) {
+            return 3;
+        }
+        return mConfig.general.max_cc_links;
     }
 }
 

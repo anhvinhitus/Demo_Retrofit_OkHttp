@@ -31,27 +31,20 @@ import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 public class BankSupportSelectionFragment extends BaseFragment implements IBankSupportSelectionView
         , BankSupportSelectionAdapter.OnClickBankSupportListener {
 
-    public static BankSupportSelectionFragment newInstance() {
+    private static final int PADDING_ITEM = 60;
+    @BindView(R.id.listview)
+    RecyclerView mListView;
+    @BindView(R.id.progressContainer)
+    View mLoadingView;
+    @Inject
+    BankSupportSelectionPresenter mPresenter;
+    private BankSupportSelectionAdapter mAdapter;
 
-        Bundle args = new Bundle();
-
+    public static BankSupportSelectionFragment newInstance(Bundle args) {
         BankSupportSelectionFragment fragment = new BankSupportSelectionFragment();
         fragment.setArguments(args);
         return fragment;
     }
-
-    private static final int PADDING_ITEM = 60;
-
-    @BindView(R.id.listview)
-    RecyclerView mListView;
-
-    @BindView(R.id.progressContainer)
-    View mLoadingView;
-
-    @Inject
-    BankSupportSelectionPresenter mPresenter;
-
-    private BankSupportSelectionAdapter mAdapter;
 
     @Override
     protected void setupFragmentComponent() {
@@ -84,6 +77,7 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mPresenter.listBankSupport();
+        mPresenter.loadMaxCcLinNum();
     }
 
     @Override
@@ -144,6 +138,11 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     @Override
     public void showMessageDialog(String message, ZPWOnEventDialogListener closeDialogListener) {
         DialogHelper.showCustomDialog(getActivity(), message, getString(R.string.btn_retry_select_bank), SweetAlertDialog.INFO_TYPE, closeDialogListener);
+    }
+
+    @Override
+    public void showWarningDialog(String message, String btnText) {
+        DialogHelper.showWarningDialog(getActivity(), message, btnText, null);
     }
 
     @Override

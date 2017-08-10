@@ -61,7 +61,14 @@ public class Config {
     @SerializedName("internal_apps")
     public List<InternalApp> mInternalApps;
 
-
     @SerializedName("enable_register_profile_zalopayid")
     public int mEnableRegisterZalopayID;
+
+    @SerializedName("general")
+    public General general;
+
+    public static class General{
+        @SerializedName("max_cc_links")
+        public int max_cc_links = 3;
+    }
 }

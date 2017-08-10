@@ -199,5 +199,8 @@
       "icon_name": "app_recharge",
       "icon_color": "#129d5a"
     }
-  ]
+  ],
+  "general": {
+    "max_cc_links": 3
+  }
 }

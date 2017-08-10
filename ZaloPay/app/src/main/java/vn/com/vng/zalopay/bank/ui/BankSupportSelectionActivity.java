@@ -24,6 +24,6 @@ public class BankSupportSelectionActivity extends UserBaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return BankSupportSelectionFragment.newInstance();
+        return BankSupportSelectionFragment.newInstance(getIntent().getExtras());
     }
 }

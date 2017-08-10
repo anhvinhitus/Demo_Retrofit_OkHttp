@@ -29,7 +29,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
-import vn.com.vng.zalopay.authentication.Stage;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -61,6 +60,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
@@ -256,7 +256,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         }
 
         if (type == Constants.LinkBank.LINK_CARD) {
-            mPaymentWrapper.linkCard((Activity) mView.getContext(),cardCode);
+            mPaymentWrapper.linkCard((Activity) mView.getContext(), cardCode);
         } else if (type == Constants.LinkBank.LINK_ACCOUNT) {
             if (TextUtils.isEmpty(cardCode)) {
                 return;
@@ -367,7 +367,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
     }
 
     private int getInsertPosition(BankData pBankData) {
-        if(mView == null){
+        if (mView == null) {
             return 0;
         }
         List<BankData> bankDataList = mView.getData();
@@ -485,6 +485,15 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
             authenticationPassword.getPasswordManager().setTitle(message);
         } catch (Exception e) {
             Timber.d("Set title password error [%s]", e.getMessage());
+        }
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshBankAccount(RefreshBankAccountEvent event) {
+        Timber.d("BankListPresenter reload  map card here");
+        if (mView != null) {
+            loadView();
         }
 
     }
@@ -641,14 +650,5 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         public void onPreComplete(boolean isSuccessful, String tId, String pAppTransId) {
             Timber.d("onPreComplete payment, transactionId %s isSuccessful [%s] pAppTransId [%s]", tId, isSuccessful, pAppTransId);
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRefreshBankAccount(RefreshBankAccountEvent event) {
-        Timber.d("BankListPresenter reload  map card here");
-        if (mView != null) {
-            loadView();
-        }
-
     }
 }

@@ -83,6 +83,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     final SdkErrorReporter mSdkErrorReporter;
     private final DPaymentCard mCard;
     public boolean mOrderProcessing = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
+    public CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    public int mCurrentCcLinkNum = 0;
     protected ChannelPresenter mPresenter = null;
     protected PaymentInfoHelper mPaymentInfoHelper;
     protected Context mContext;
@@ -99,7 +101,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     ILinkSourceInteractor mLinkInteractor;
     int numberOfRetryTimeout = 1;
     SDKTransactionAdapter mTransactionAdapter;
-    CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private boolean isLoadWebTimeout = false;
     private int numberRetryOtp = 0;
     //count of retry check status if submit order fail
@@ -314,6 +315,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             } else if (!TransactionHelper.isSecurityFlow(mStatusResponse)) {
                 showTransactionFailView(mStatusResponse.returnmessage);
             }
+        } else if (mPaymentInfoHelper != null) {
+            mCurrentCcLinkNum = BankHelper.getMaxCCLinkNum(mPaymentInfoHelper.getUserId());
         }
         Timber.d("start adapter with page name %s", mPageName);
     }

@@ -8,9 +8,9 @@ import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
@@ -19,6 +19,24 @@ import vn.com.zalopay.wallet.constants.CardTypeUtils;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 
 public class BankHelper {
+
+    public static int getMaxCCLinkNum(String userId) {
+
+        List<MapCard> mapCardList = SDKApplication
+                .getApplicationComponent()
+                .linkInteractor()
+                .getMapCardList(userId);
+        if (mapCardList == null || mapCardList.size() <= 0) {
+            return 0;
+        }
+        int num = 0;
+        for (BaseMap card : mapCardList) {
+            if (card != null && BankHelper.isInternationalBank(card.bankcode)) {
+                num++;
+            }
+        }
+        return num;
+    }
 
     public static boolean hasBankAccountOnCache(String pUserId, String pBankCode) {
         try {
@@ -40,8 +58,11 @@ public class BankHelper {
     }
 
     public static boolean isInternationalBank(@CardType String pBankCode) {
-        if(TextUtils.isEmpty(pBankCode)){
+        if (TextUtils.isEmpty(pBankCode)) {
             return false;
+        }
+        if (pBankCode.equals(BuildConfig.CC_CODE)) {
+            return true;
         }
         switch (pBankCode) {
             case CardType.VISA:

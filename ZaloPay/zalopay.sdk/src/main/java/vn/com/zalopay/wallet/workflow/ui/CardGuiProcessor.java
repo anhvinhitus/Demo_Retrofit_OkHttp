@@ -27,6 +27,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import java.util.ArrayList;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PaymentUtils;
@@ -441,7 +442,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             initMutualView();
             setMinHeightSwitchCardButton();
         } catch (Exception e) {
-            Timber.w(e, "Exception init card gui processor");
+            Timber.d(e, "Exception init card gui processor");
         }
     }
 
@@ -851,6 +852,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     return;
                 }
             }
+            //limit number of cc link number
+            if (isMaxCcLink(bankCode)) {
+                return;
+            }
             //check bank future feature
             if (getCardFinder().detected() && miniPmcTransType != null && !miniPmcTransType.isVersionSupport(SdkUtils.getAppVersion(mContext))) {
                 showWarningBankVersionSupport();
@@ -874,6 +879,22 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         } catch (Exception e) {
             Log.e(this, e);
         }
+    }
+
+    public boolean isMaxCcLink(String bankCode) {
+        try {
+            int max_cc_link = ConfigLoader.maxCCLinkNum();
+            int currentCcLinkNum = getAdapter().mCurrentCcLinkNum;
+            if (BankHelper.isInternationalBank(bankCode)
+                    && currentCcLinkNum >= max_cc_link) {
+                String mess = String.format(mContext.getString(R.string.sdk_bank_link_cc_limit_warning), max_cc_link);
+                getView().showInfoDialog(mess, mContext.getResources().getString(R.string.dialog_agree_button), this::clearCardNumberAndShowKeyBoard);
+                return true;
+            }
+        } catch (Exception e) {
+            Timber.d(e, "Exception check max cc link num");
+        }
+        return false;
     }
 
     protected void populateTextOnCardView() {
@@ -996,6 +1017,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             //check disable pmc
             if (getCardFinder().detected() && miniPmcTransType != null && miniPmcTransType.isDisable()) {
                 showWarningDisablePmc(pBankName);
+                return;
+            }
+            //limit number of cc link number
+            if (isMaxCcLink(pBankCode)) {
                 return;
             }
             //user input bank account
