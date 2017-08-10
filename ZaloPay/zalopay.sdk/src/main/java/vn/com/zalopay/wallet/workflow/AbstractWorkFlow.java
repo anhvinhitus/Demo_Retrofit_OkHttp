@@ -812,11 +812,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         mStatusResponse = response;
         mTransactionID = mStatusResponse.zptransid;
         if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
-            try {
-                getPresenter().startTransactionExpiredTimer();//start count timer for checking transaction is expired.
-            } catch (Exception e) {
-                Timber.w(e, "Exception start trans expire timer");
-            }
             getTransactionStatus(mTransactionID, true, null);//get status transaction
         } else {
             checkTransactionStatus(mStatusResponse);//check status
@@ -1096,11 +1091,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         showDialogOnChannelList = false;
         existTransWithoutConfirm = true;
         try {
-            getPresenter().cancelTransactionExpiredTimer();
-        } catch (Exception e) {
-            Timber.w(e, "Exception cancel trans timer");
-        }
-        try {
             mGuiProcessor.useWebView(false);
         } catch (Exception e) {
             Timber.w(e, "Exception hide webview");
@@ -1192,12 +1182,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             getView().dismissShowingView();
         } catch (Exception e) {
             Timber.w(e);
-        }
-        //stop timer
-        try {
-            getPresenter().cancelTransactionExpiredTimer();
-        } catch (Exception e) {
-            Timber.w(e, "Exception cancel trans timer");
         }
         GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
         //hide webview

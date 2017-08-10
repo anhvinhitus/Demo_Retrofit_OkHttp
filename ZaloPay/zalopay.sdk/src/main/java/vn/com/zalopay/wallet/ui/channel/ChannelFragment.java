@@ -94,14 +94,6 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         return mPresenter;
     }
 
-    public void onUserInteraction() {
-        if (!existPresenter()) {
-            Timber.w("invalid presenter");
-            return;
-        }
-        mPresenter.onUserInteraction();
-    }
-
     @Override
     protected void onArguments() {
         super.onArguments();

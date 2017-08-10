@@ -8,7 +8,6 @@
     "zalopay_appid": "1",
     "withdraw_appid": "2",
     "redpacket_appid": "6",
-    "transaction_expire_time": "7",
     "channel_zalopay": "38",
     "channel_bankaccount": "37",
     "channel_credit_card": "36",

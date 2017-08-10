@@ -28,14 +28,6 @@ public class ChannelActivity extends ToolbarActivity {
         return ChannelFragment.newInstance(bundle);
     }
 
-    @Override
-    public void onUserInteraction() {
-        super.onUserInteraction();
-        if (getActiveFragment() instanceof ChannelFragment) {
-            ((ChannelFragment) getActiveFragment()).onUserInteraction();
-        }
-    }
-
     public void requestPermission(Context pContext) {
         if (PermissionUtils.isNeedToRequestPermissionAtRuntime() && !PermissionUtils.checkIfAlreadyhavePermission(pContext)) {
             PermissionUtils.requestForSpecificPermission(this, Constants.REQUEST_CODE_SMS);

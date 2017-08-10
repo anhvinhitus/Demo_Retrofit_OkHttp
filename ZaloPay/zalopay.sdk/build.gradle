@@ -38,8 +38,6 @@ android {
         buildConfigField 'String', 'CC_CODE', '"' + configJson.configs.cc_code + '"'
         buildConfigField 'String', 'BANK_SELECT_ACTION', '"' + configJson.configs.bank_select_action + '"'
 
-        buildConfigField 'int', 'transaction_expire_time', configJson.configs.transaction_expire_time
-
         buildConfigField 'int', 'channel_zalopay', configJson.configs.channel_zalopay
         buildConfigField 'int', 'channel_bankaccount', configJson.configs.channel_bankaccount
         buildConfigField 'int', 'channel_credit_card', configJson.configs.channel_credit_card

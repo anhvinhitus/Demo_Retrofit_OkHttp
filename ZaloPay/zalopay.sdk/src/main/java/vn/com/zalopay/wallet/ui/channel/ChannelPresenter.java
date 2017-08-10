@@ -84,7 +84,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     AppInfoStore.Interactor appInfoInteractor;
     boolean mTimerRunning = false;
     AbstractWorkFlow mAbstractWorkFlow = null;
-    private CountDownTimer mExpireTransTimer;
     private onCloseSnackBar mOnCloseSnackBarListener = () -> {
         if (mAbstractWorkFlow != null) {
             mAbstractWorkFlow.checkAndOpenNetworkingSetting();
@@ -246,13 +245,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return false;
     }
 
-    public void onUserInteraction() {
-        if (mTimerRunning && mAbstractWorkFlow != null && !mAbstractWorkFlow.isFinalScreen()) {
-            Timber.d("user tap on UI restart payment transaction countdown");
-            startTransactionExpiredTimer();
-        }
-    }
-
     public void pushArgument(Bundle bundle) {
         if (bundle == null) {
             return;
@@ -270,7 +262,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 callback();
                 return;
             }
-            initTimer();
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(mContext));
             getViewOrThrow().visibleOrderInfo(!mPaymentInfoHelper.isLinkTrans());
             if (mPaymentInfoHelper.isLinkTrans()) {
@@ -469,7 +460,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         if (DialogManager.showingLoadDialog()) {
             DialogManager.closeLoadDialog();
         }
-        cancelTransactionExpiredTimer();
     }
 
     void showKeyBoard() {
@@ -517,42 +507,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             getViewOrThrow().showSnackBar(message, btnActionText, duration, mOnCloseSnackBarListener);
         } catch (Exception e) {
             Timber.w(e, "Exception showNetworkOfflineSnackBar");
-        }
-    }
-
-    /***
-     * transaction expired in 7minutes
-     */
-    private void initTimer() {
-        int iTimeToLiveTrans = BuildConfig.transaction_expire_time;
-        iTimeToLiveTrans *= 60 * 1000;
-        mExpireTransTimer = new CountDownTimer(iTimeToLiveTrans, 1000) {
-            public void onTick(long millisUntilFinished) {
-                mTimerRunning = true;
-            }
-
-            public void onFinish() {
-                mTimerRunning = false;
-                Timber.d("Timer is onDetach");
-                if (mAbstractWorkFlow != null && !mAbstractWorkFlow.isFinalScreen()) {
-                    DialogManager.closeAllDialog();
-                    mAbstractWorkFlow.showTransactionFailView(mContext.getResources().getString(R.string.sdk_expire_transaction_mess));
-                    Timber.d("Moving to expired transaction screen because expiration");
-                }
-            }
-        };
-    }
-
-    public void startTransactionExpiredTimer() {
-        if (mExpireTransTimer != null) {
-            mExpireTransTimer.cancel();
-            mExpireTransTimer.start();
-        }
-    }
-
-    public void cancelTransactionExpiredTimer() {
-        if (mExpireTransTimer != null) {
-            mExpireTransTimer.cancel();
         }
     }
 
