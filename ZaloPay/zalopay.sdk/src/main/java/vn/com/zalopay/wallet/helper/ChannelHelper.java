@@ -62,14 +62,18 @@ public class ChannelHelper {
             default:
                 btnTextId = R.string.sdk_generic_button_confirm_txt;
         }
-        if (!channel.isZaloPayChannel() && !channel.isMapCardChannel() && !channel.isBankAccountMap()) {
+        if (channel != null
+                && !channel.isZaloPayChannel()
+                && !channel.isMapCardChannel()
+                && !channel.isBankAccountMap()) {
             btnTextId = R.string.sdk_next_button_confirm_txt;
         }
         return btnTextId;
     }
 
     public static int btnConfirmDrawable(PaymentChannel channel) {
-        if (channel.isZaloPayChannel() || channel.isMapCardChannel() || channel.isBankAccountMap()) {
+        if (channel != null
+                && (channel.isZaloPayChannel() || channel.isMapCardChannel() || channel.isBankAccountMap() || channel.isLinkChannel())) {
             return R.drawable.bg_btn_green_border_selector;
         } else {
             return R.drawable.bg_btn_blue_border_selector;

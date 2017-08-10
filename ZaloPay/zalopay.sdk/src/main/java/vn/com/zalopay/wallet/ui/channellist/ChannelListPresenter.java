@@ -32,7 +32,6 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.entity.MultiValueMap;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -95,6 +94,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private AbstractChannelLoader mChannelLoader;
     private PaymentChannel mSelectChannel = null;
     private PaymentChannel mZaloPayChannel = null; //temp variable for checking active zalopay channel
+    private PaymentChannel mLinkChannel = null;
     private int mLastSelectPosition = -1;
     private boolean mHasActiveChannel = false;
     private
@@ -400,7 +400,12 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     public void startPayment() {
         try {
-            if (mSelectChannel == null || mPayProxy == null) {
+            //auto assign to link channel
+            if (mSelectChannel == null) {
+                startLinkChannel();
+                return;
+            }
+            if (mPayProxy == null) {
                 return;
             }
             mPayProxy
@@ -410,6 +415,17 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         } catch (Exception e) {
             Timber.w(e, "Exception start payment");
         }
+    }
+
+    private void startLinkChannel() {
+        if (mLinkChannel == null) {
+            return;
+        }
+        int pos = mChannelList != null ? (mChannelList.size() - 1) : -1;
+        if (pos < 0) {
+            return;
+        }
+        onSelectedChannel(pos);
     }
 
     public void startDefaultPayment() {
@@ -843,6 +859,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 continue;
             }
             if (channel.isLinkChannel()) {
+                mLinkChannel = channel;
                 continue;
             }
             mHasActiveChannel = true;
@@ -856,7 +873,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (shouldAutoPayment()) {
             startDefaultPayment();
         }
-        if (!mHasActiveChannel) {
+        boolean hasLinkChannel = mLinkChannel != null;
+        if (hasLinkChannel) {
+            updateButton(mLinkChannel);
+        }
+        if (!mHasActiveChannel && !hasLinkChannel) {
             getViewOrThrow().disableConfirmButton();
         }
         showSnackBarOnError(validBalance);
@@ -866,11 +887,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (mPaymentInfoHelper == null) {
             return;
         }
-        getViewOrThrow().dismissSnackBar();
         if (mHasActiveChannel) {
             return;
         }
-        if (!validBalance) {
+        getViewOrThrow().dismissSnackBar();
+        if (!validBalance && !mPaymentInfoHelper.isTopupTrans()) {
             getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel_balance_error),
                     mContext.getResources().getString(R.string.sdk_hyperlink_charge_more),
                     Snackbar.LENGTH_INDEFINITE, () -> {
@@ -883,9 +904,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     });
             return;
         }
-        getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel), null,
-                Snackbar.LENGTH_INDEFINITE, null);
-
+        if (mLinkChannel == null) {
+            getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel), null,
+                    Snackbar.LENGTH_INDEFINITE, null);
+        }
     }
 
     private void selectAndScrollToChannel(PaymentChannel selectChannel, int position) throws Exception {
