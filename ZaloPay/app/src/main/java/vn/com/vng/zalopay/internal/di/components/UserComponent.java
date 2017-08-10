@@ -44,7 +44,6 @@ import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountFragment;
 import vn.com.vng.zalopay.pw.PaymentWrapper;
-import vn.com.vng.zalopay.react.base.ExternalReactFragment;
 import vn.com.vng.zalopay.react.base.InternalReactFragment;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
@@ -188,8 +187,6 @@ public interface UserComponent {
     void inject(WebBottomSheetDialogFragment f);
 
     void inject(InternalReactFragment d);
-
-    void inject(ExternalReactFragment f);
 
     void inject(SearchCategoryFragment f);
 
