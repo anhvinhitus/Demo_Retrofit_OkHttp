@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.cache.SqlBaseScope;
 import vn.com.vng.zalopay.data.zpc.contactloader.Contact;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.Person;
+import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -77,6 +78,8 @@ public interface ZPCStore {
         @API_NAME(https = ZPEvents.API_UM_CHECKLISTZALOIDFORCLIENT, connector = ZPEvents.CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT)
         @GET(Constants.UM_API.CHECKLISTZALOIDFORCLIENT)
         Observable<ListUserExistResponse> checklistzaloidforclient(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("zaloidlist") String zaloidlist);
+        @GET(Constants.UM_API.GETUSERINFOBYPHONE)
+        Observable<ZPCGetByPhone> getuserinfobyphone(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("phonenumber") String phone);
     }
 
     /**
@@ -128,6 +131,8 @@ public interface ZPCStore {
         Observable<Boolean> removeFavorite(@Nullable String phone, long zaloId);
 
         Observable<List<FavoriteData>> getFavorites(int limit);
+
+        Observable<ZPCGetByPhone> getUserInfoByPhone(String userID, String token, String phone);
 
     }
 }

@@ -58,6 +58,7 @@ public class Constants {
         String GETMERCHANTUSERINFO = "ummerchant/getmerchantuserinfo";
         String GETLISTMERCHANTUSERINFO = "ummerchant/getlistmerchantuserinfo";
         String CHECKLISTZALOIDFORCLIENT = "um/checklistzaloidforclient";
+        String GETUSERINFOBYPHONE = "um/getuserinfobyphone";
 
         String AUTHENPHONENUMBER = "/um/authenphonenumber";
         String GETUSERIDBYPHONE = "/um/getuseridbyphone";

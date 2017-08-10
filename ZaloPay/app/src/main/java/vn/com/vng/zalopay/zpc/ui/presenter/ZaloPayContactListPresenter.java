@@ -26,7 +26,10 @@ import vn.com.vng.zalopay.data.zpc.ZPCConfig;
 import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
+import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -35,6 +38,7 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
 import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /**
  * Created by AnhHieu on 10/10/16.
@@ -45,12 +49,15 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
 
     private static final int MAX_FAVORITE = 10;
 
-    protected final ZPCStore.Repository mFriendRepository;
+    private final ZPCStore.Repository mFriendRepository;
     protected final Context mContext;
     protected final Navigator mNavigator;
 
     @ZpcViewType
     private int mViewType = ZpcViewType.ZPC_All;
+
+    @Inject
+    User user;
 
     @Inject
     ZaloPayContactListPresenter(Context context, Navigator navigator, ZPCStore.Repository friendRepository) {
@@ -107,6 +114,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     private void getFriendList() {
+        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_START);
         Subscription subscription = mFriendRepository.getZaloFriendsCursor(isPhoneBook())
                 .concatWith(retrieveZaloFriendsAsNeeded(isPhoneBook()))
                 .subscribeOn(Schedulers.io())
@@ -183,16 +191,22 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     private void startTransfer(Fragment fragment, ZPProfile profile) {
-        if (profile.status != 1) {
-            Timber.d("user profile [status %s]", profile.status);
-            showDialogNotUsingApp(profile);
-            return;
-        }
+        Subscription subscription = mFriendRepository.getUserInfoByPhone(user.zaloPayId, user.accesstoken, profile.phonenumber)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GetUserByPhoneSubscriber(fragment, profile));
 
-        TransferObject object = new TransferObject(profile);
-        object.transferMode = Constants.TransferMode.TransferToZaloFriend;
-        object.activateSource = Constants.ActivateSource.FromTransferActivity;
-        mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
+        mSubscription.add(subscription);
+//        if (profile.status != 1) {
+//            Timber.d("user profile [status %s]", profile.status);
+//            showDialogNotUsingApp(profile);
+//            return;
+//        }
+//
+//        TransferObject object = new TransferObject(profile);
+//        object.transferMode = Constants.TransferMode.TransferToZaloFriend;
+//        object.activateSource = Constants.ActivateSource.FromTransferActivity;
+//        mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
     }
 
     private void showDialogNotUsingApp(ZPProfile zaloProfile) {
@@ -289,5 +303,32 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         }
 
         onSelectContactItem(getFragment(), favoriteData);
+    }
+
+    private class GetUserByPhoneSubscriber extends DefaultSubscriber<ZPCGetByPhone> {
+        private Fragment mFragment;
+        private ZPProfile mProfile;
+
+        GetUserByPhoneSubscriber(Fragment fragment, ZPProfile profile) {
+            mFragment = fragment;
+            mProfile = profile;
+        }
+
+        @Override
+        public void onNext(ZPCGetByPhone zpcGetByPhone) {
+            if (zpcGetByPhone == null) {
+                return;
+            }
+
+            if (zpcGetByPhone.returnCode == 1) {
+                TransferObject object = new TransferObject(zpcGetByPhone);
+                object.transferMode = Constants.TransferMode.TransferToZaloFriend;
+                object.activateSource = Constants.ActivateSource.FromTransferActivity;
+                mNavigator.startTransferActivity(mFragment, object, Constants.REQUEST_CODE_TRANSFER);
+            } else {
+                Timber.d("user get by phone [error :  %s]", zpcGetByPhone.returnMessage == null ? "" : zpcGetByPhone.returnMessage);
+                showDialogNotUsingApp(mProfile);
+            }
+        }
     }
 }

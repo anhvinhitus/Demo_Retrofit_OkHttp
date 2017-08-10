@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.data.zpc.contactloader.ContactPhone;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
@@ -224,6 +225,12 @@ public class ZPCRepository implements ZPCStore.Repository {
                 .map(response -> response.userList)
                 .doOnNext(mLocalStorage::putZaloPayUser)
                 ;
+    }
+
+    @Override
+    public Observable<ZPCGetByPhone> getUserInfoByPhone(String userID, String token, String phone) {
+        Timber.d("Getting user by phone: phone number [%s]", phone);
+        return mRequestService.getuserinfobyphone(userID, token, phone);
     }
 
     @Override

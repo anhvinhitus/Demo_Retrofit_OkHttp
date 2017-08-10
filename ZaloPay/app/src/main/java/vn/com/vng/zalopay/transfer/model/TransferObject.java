@@ -8,6 +8,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 
 /**
@@ -64,6 +65,15 @@ public class TransferObject implements Parcelable {
         this.avatar = zalo.avatar;
         this.displayName = zalo.displayName;
         this.phoneNumber = PhoneUtil.formatPhoneNumber(zalo.phonenumber);
+    }
+
+    public TransferObject(ZPCGetByPhone modelGetByPhone) {
+        this.zaloId = modelGetByPhone.zaloId;
+        this.zalopayId = modelGetByPhone.userId;
+        this.zalopayName = modelGetByPhone.zalopayName;
+        this.avatar = modelGetByPhone.avatar;
+        this.displayName = modelGetByPhone.displayName;
+        this.phoneNumber = PhoneUtil.formatPhoneNumber(modelGetByPhone.phoneNumber);
     }
 
     public TransferObject(RecentTransaction recent) {
