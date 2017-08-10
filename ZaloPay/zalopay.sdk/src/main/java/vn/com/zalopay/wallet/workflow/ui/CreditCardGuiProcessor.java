@@ -52,16 +52,17 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
         // Set hint card expiry here
     }
 
-    public void continueDetectCardForLinkCard() {
-        try {
-            Subscription subscription = getBankCardFinder().detectOnAsync(getCardNumber())
-                    .compose(SchedulerHelper.applySchedulers())
-                    .subscribe(detected -> {
-                        try {
-                            getAdapter().setNeedToSwitchChannel(detected);
-                        } catch (Exception e) {
-                            Timber.w(e.getMessage());
-                        }
+    @Override
+    public void continueDetectCardForLinkCard() throws Exception {
+        AbstractWorkFlow workFlow = getAdapter();
+        if (workFlow == null) {
+            return;
+        }
+        Subscription subscription = getBankCardFinder().detectOnAsync(getCardNumber())
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(detected -> {
+                    try {
+                        workFlow.setNeedToSwitchChannel(detected);
                         populateTextOnCardView();
                         if (detected) {
                             setDetectedCard(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
@@ -69,11 +70,11 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
                         } else {
                             setDetectedCard();
                         }
-                    }, Timber::d);
-            getAdapter().getPresenter().addSubscription(subscription);
-        } catch (Exception e) {
-            Timber.w(e.getMessage());
-        }
+                    } catch (Exception e) {
+                        Timber.w(e);
+                    }
+                }, Timber::d);
+        workFlow.mCompositeSubscription.add(subscription);
     }
 
     @Override

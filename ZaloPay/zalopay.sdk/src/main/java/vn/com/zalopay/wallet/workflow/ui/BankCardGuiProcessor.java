@@ -178,12 +178,17 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         // Set hint card issue here
     }
 
-    public void continueDetectCardForLinkCard() {
+    @Override
+    public void continueDetectCardForLinkCard() throws Exception {
+        AbstractWorkFlow workFlow = getAdapter();
+        if (workFlow == null) {
+            return;
+        }
         Subscription subscription = getCreditCardFinder().detectOnAsync(getCardNumber())
                 .compose(SchedulerHelper.applySchedulers())
                 .subscribe(detected -> {
                     try {
-                        getAdapter().setNeedToSwitchChannel(detected);
+                        workFlow.setNeedToSwitchChannel(detected);
                         populateTextOnCardView();
                         if (detected) {
                             setDetectedCard(getCreditCardFinder().getBankName(), getCreditCardFinder().getDetectBankCode());
@@ -194,14 +199,10 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                             setDetectedCard();
                         }
                     } catch (Exception e) {
-                        Timber.w(e.getMessage());
+                        Timber.d(e, "Exception continueDetectCardForLinkCard");
                     }
                 }, Timber::d);
-        try {
-            getAdapter().getPresenter().addSubscription(subscription);
-        } catch (Exception e) {
-            Timber.w(e.getMessage());
-        }
+        workFlow.mCompositeSubscription.add(subscription);
     }
 
     @Override

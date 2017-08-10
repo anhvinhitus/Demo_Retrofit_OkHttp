@@ -62,7 +62,6 @@ import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsEvent;
-import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -218,22 +217,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     public void onStop() {
         if (mEventBus.isRegistered(this)) {
             mEventBus.unregister(this);
-        }
-    }
-
-    void onLoadMapCardListException(Throwable throwable) {
-        try {
-            Timber.d(throwable, "load card list on error");
-            String message = null;
-            if (throwable instanceof RequestException) {
-                message = throwable.getMessage();
-            }
-            if (TextUtils.isEmpty(message)) {
-                message = mContext.getResources().getString(R.string.sdk_error_load_card_mess);
-            }
-            getView().showInfoDialog(message);
-        } catch (Exception e) {
-            Timber.d(e);
         }
     }
 
@@ -1065,9 +1048,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    /*
-     link card channel, server auto save card , client only save card to local cache without hit server
-     */
     private void saveMapCardToLocal() {
         try {
             if (mCard == null) {
@@ -1089,17 +1069,14 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         try {
             mGuiProcessor.useWebView(false);
         } catch (Exception e) {
-            Timber.w(e, "Exception hide webview");
+            Timber.d(e, "Exception hide webview");
         }
         try {
             getView().dismissShowingView();
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.d(e, "Exception dismiss loading view");
         }
         GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
-        if (needReloadCardMapAfterPayment()) {
-            reloadMapCard();
-        }
         //save payment card for show on channel list later
         String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
         if (!TextUtils.isEmpty(userId)) {
@@ -1131,7 +1108,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             }
             getView().handleSpecialAppResult(appId);
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.d(e);
         }
         //update password fingerprint
         try {
@@ -1143,7 +1120,12 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
 
         if (mPaymentInfoHelper.isLinkTrans()) {
-            saveMapCardToLocal();
+            try {
+                saveMapCardToLocal();
+                reloadMapCard();
+            } catch (Exception e) {
+                Timber.w(e, "Exception reload map card on link");
+            }
         }
     }
 
@@ -1177,14 +1159,13 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         try {
             getView().dismissShowingView();
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.d(e);
         }
         GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
-        //hide webview
         try {
             mGuiProcessor.useWebView(false);
         } catch (Exception e) {
-            Timber.w(e, "Exception hide webview");
+            Timber.d(e, "Exception hide webview");
         }
 
         mPageName = Constants.PAGE_FAIL;
@@ -1197,13 +1178,14 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
 
         int status = mPaymentInfoHelper.getStatus();
         if (status != PaymentStatus.TOKEN_EXPIRE && status != PaymentStatus.USER_LOCK) {
-            mPaymentInfoHelper.setResult(mPageName.equals(Constants.PAGE_FAIL_PROCESSING) ? PaymentStatus.NON_STATE : PaymentStatus.FAILURE);
+            mPaymentInfoHelper.setResult(mPageName.equals(Constants.PAGE_FAIL_PROCESSING)
+                    ? PaymentStatus.NON_STATE : PaymentStatus.FAILURE);
         }
         try {
             getView().renderByResource(mPageName);
             showFailScreen(pMessage);
         } catch (Exception e) {
-            Timber.w(e, "Exception show trans fail");
+            Timber.d(e, "Exception show trans fail");
         }
         //send log captcha, otp
         if (isCardFlowWeb()) {
@@ -1214,7 +1196,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             mSdkErrorReporter.sdkReportErrorOnTransactionFail(this,
                     GsonUtils.toJsonString(mStatusResponse));
         } catch (Exception e) {
-            Timber.w(e, "Exception send error log");
+            Timber.d(e, "Exception send error log");
         }
         reloadMapListOnResponseMessage(pMessage);
     }
@@ -1226,8 +1208,11 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         if (!message.equalsIgnoreCase(mContext.getResources().getString(R.string.sdk_error_mess_exist_mapcard))) {
             return;
         }
-        mLinkInteractor.clearCheckSum();
-        reloadMapCard();
+        try {
+            reloadMapCard();
+        } catch (Exception e) {
+            Timber.d(e, "Exception reload map card");
+        }
     }
 
     public void terminate(String pMessage, boolean pExitSDK) {
@@ -1345,44 +1330,26 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    /*
-     * reload map card list
-     */
-    private void reloadMapCard() {
+    private void reloadMapCard() throws Exception {
         try {
+            mLinkInteractor.clearCheckSum();
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
             String appVersion = SdkUtils.getAppVersion(mContext);
             Subscription subscription = SDKApplication.getApplicationComponent()
                     .linkInteractor()
                     .getCards(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
                     .compose(SchedulerHelper.applySchedulers())
-                    .subscribe(aBoolean -> Timber.d("Reload map card list success"), this::onLoadMapCardListException);
-            getPresenter().addSubscription(subscription);
+                    .subscribe(aBoolean -> Timber.d("Reload map card list success"),
+                            throwable -> Timber.d(throwable, "Exception reload map card list"));
+            mCompositeSubscription.add(subscription);
         } catch (Exception e) {
-            Timber.w(e, "Exception reload map card list");
+            throw e;
         }
-    }
-
-    private boolean needReloadCardMapAfterPayment() {
-        if (isZaloPayFlow()) {
-            return false;
-        }
-        if (mPaymentInfoHelper.isWithDrawTrans()) {
-            return false;
-        }
-        if (mPaymentInfoHelper.payByCardMap() || mPaymentInfoHelper.payByBankAccountMap()) {
-            return false;
-        }
-        if (mPaymentInfoHelper.isLinkTrans()) {
-            return false;
-        }
-        return !existMapCardOnCache();
     }
 
     public boolean existMapCardOnCache() {
         try {
             if (getGuiProcessor() == null) {
-                Timber.d("getGuiProcessor() = null");
                 return false;
             }
             String cardNumber = getGuiProcessor().getCardNumber();

@@ -130,7 +130,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                             Timber.w(e);
                         }
                     }, Timber::d);
-            getPresenter().addSubscription(subscription);
+            mCompositeSubscription.add(subscription);
         } catch (Exception e) {
             Timber.w(e);
         }

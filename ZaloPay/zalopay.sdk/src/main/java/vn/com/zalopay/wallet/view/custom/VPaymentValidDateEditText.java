@@ -77,7 +77,7 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
     public String getTextField(int pField) {
         String text = getString();
 
-        if (TextUtils.isEmpty(text)) {
+        if (TextUtils.isEmpty(text) || text.length() < 2) {
             return null;
         }
         try {

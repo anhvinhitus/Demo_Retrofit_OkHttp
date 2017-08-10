@@ -405,7 +405,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     public abstract boolean isAllowValidateCardNumberByLuhn();
 
-    public abstract void continueDetectCardForLinkCard();
+    public abstract void continueDetectCardForLinkCard() throws Exception;
 
     public abstract void setCardDateOnCardView();
 
@@ -1248,7 +1248,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         try {
             return getAdapter().existMapCardOnCache();
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e);
             return false;
         }
     }

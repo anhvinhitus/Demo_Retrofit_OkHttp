@@ -8,7 +8,7 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.zalopay.wallet.exception.InvalidStateException;
 
-/**
+/*
  * Created by chucvv on 6/12/17.
  */
 
