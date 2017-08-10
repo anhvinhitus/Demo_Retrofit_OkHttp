@@ -22,6 +22,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
@@ -537,7 +538,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             startSubscribePaymentReadyMessage();
             initAdapter();
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(mContext));
-            if (PaymentPermission.allowVoucher()) {
+            if (ConfigLoader.allowPaymentVoucher()) {
                 getViewOrThrow().renderVoucher();
             }
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_RENDER_ORDERINFO);

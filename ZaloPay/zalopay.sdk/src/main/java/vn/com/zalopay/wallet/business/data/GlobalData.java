@@ -9,6 +9,7 @@ import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPScreens;
@@ -223,6 +224,9 @@ public class GlobalData {
     }
 
     public static void revertVouchersOnStorage(CompositeSubscription compositeSubscription) {
+        if (!ConfigLoader.allowPaymentVoucher()) {
+            return;
+        }
         if (paymentInfoHelper == null || paymentInfoHelper.getUserInfo() == null) {
             return;
         }

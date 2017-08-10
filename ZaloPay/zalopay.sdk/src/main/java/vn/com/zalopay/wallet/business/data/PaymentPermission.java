@@ -78,16 +78,6 @@ public class PaymentPermission {
         }
     }
 
-    public static boolean allowVoucher() {
-        try {
-            int allow = Integer.parseInt(GlobalData.getStringResource(RS.string.allow_voucher));
-            return allow > 0;
-        } catch (Exception ex) {
-            Timber.w(ex, "Exception read allow link cc");
-            return true;
-        }
-    }
-
     public static boolean allowLinkChannel() {
         try {
             int allow = Integer.parseInt(GlobalData.getStringResource(RS.string.allow_link_channel));

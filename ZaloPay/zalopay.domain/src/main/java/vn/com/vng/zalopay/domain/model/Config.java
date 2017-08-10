@@ -2,9 +2,6 @@ package vn.com.vng.zalopay.domain.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.HashSet;
-import java.util.List;
-
 /**
  * Created by longlv on 2/13/17.
  * Parse file config in resource app 1.
@@ -39,6 +36,6 @@ public class Config {
     @SerializedName("tab_home")
     public TabHome mTabHome;
 
-
-
+    @SerializedName("promotion")
+    public Promotion mPromotion;
 }

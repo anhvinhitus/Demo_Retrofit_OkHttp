@@ -216,5 +216,10 @@
         "icon_color": "#129d5a"
       }
     ]
+  },
+  "promotion": {
+    "voucher": {
+      "allow_payment_use_voucher": 0
+    }
   }
 }

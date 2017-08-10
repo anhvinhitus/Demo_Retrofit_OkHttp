@@ -240,5 +240,12 @@ public class ConfigLoader {
         }
         return mConfig.mGeneral.max_cc_links;
     }
+
+    public static boolean allowPaymentVoucher() {
+        if (mConfig == null || mConfig.mPromotion == null || mConfig.mPromotion.mVoucher == null) {
+            return false;
+        }
+        return mConfig.mPromotion.mVoucher.mAllowPaymentVoucher > 0;
+    }
 }
 
