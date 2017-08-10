@@ -17,9 +17,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import vn.com.vng.zalopay.BundleConstants;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.react.model.ZPCViewMode;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -56,7 +58,9 @@ public class TransferHomeFragment extends BaseFragment implements
 
     @OnClick(R.id.layoutTransferAccZaloPay)
     public void onClickTransferAccZaloPay() {
-        navigator.startZaloContactActivity(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardABC);
+        navigator.startZaloContactActivity(this, bundle);
     }
 
     @OnClick(R.id.layoutTransferViaAccount)
