@@ -36,7 +36,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
     private final FavoriteView mFavoriteView;
     private final Space mEmptyView;
     protected OnFavoriteListener mListener;
-    protected SwipeLayout.SwipeListener mSwipeItemListener;
+    private SwipeLayout.SwipeListener mSwipeItemListener;
 
     public ZPCFavoriteAdapter(Context context, OnFavoriteListener listener) {
         super(context, R.layout.row_swipe_contact_layout);
@@ -64,23 +64,13 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
 
     }
 
-    public void setMaxFavorite(int max) {
-        mFavoriteView.setMaximum(max);
-    }
-
-    public int getMaxFavorite(){
+    public int getMaxFavorite() {
         return mFavoriteView.getMaximum();
     }
 
-    private SwipeLayout.SwipeListener mSwipeListener = new SimpleSwipeListener() {
-        @Override
-        public void onStartOpen(SwipeLayout layout) {
-            if (mSwipeItemListener != null) {
-                mSwipeItemListener.onStartOpen(layout);
-            }
-        }
-    };
-
+    public void setMaxFavorite(int max) {
+        mFavoriteView.setMaximum(max);
+    }
 
     public void setOnSwipeLayoutListener(SwipeLayout.SwipeListener listener) {
         mSwipeItemListener = listener;
@@ -127,7 +117,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
 
     @Override
     SwipeHolder onCreateViewHolder(View view) {
-        return new SwipeHolder(view, mFavoriteView, mListener, mSwipeListener);
+        return new SwipeHolder(view, mFavoriteView, mListener, mSwipeItemListener);
     }
 
     @Override
@@ -149,24 +139,19 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
     }
 
     static class SwipeHolder extends ViewHolder {
-        private Context mContext;
-
-        @BindView(R.id.swipe)
-        SwipeLayout mSwipeLayout;
-
-        @BindView(R.id.background)
-        View mBackground;
-
-        @BindView(R.id.iconFavorite)
-        IconFontTextView mIconFontTextView;
-
-        @BindView(R.id.zpcontactlist_if_favorite_star)
-        IconFont mFavoriteStar;
-
         private final OnFavoriteListener mListener;
         private final FavoriteData mFavoriteData;
         private final FavoriteView mFavoriteView;
         private final int mColorYellow;
+        @BindView(R.id.swipe)
+        SwipeLayout mSwipeLayout;
+        @BindView(R.id.background)
+        View mBackground;
+        @BindView(R.id.iconFavorite)
+        IconFontTextView mIconFontTextView;
+        @BindView(R.id.zpcontactlist_if_favorite_star)
+        IconFont mFavoriteStar;
+        private Context mContext;
 
         SwipeHolder(View view, FavoriteView favoriteView, OnFavoriteListener listener, SwipeLayout.SwipeListener swipeListener) {
             super(view);
@@ -175,7 +160,30 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
             mFavoriteData = new FavoriteData();
             mFavoriteView = favoriteView;
             mColorYellow = ContextCompat.getColor(view.getContext(), R.color.yellow_f8d41c);
-            mSwipeLayout.addSwipeListener(swipeListener);
+            mSwipeLayout.setSelected(true);
+            mSwipeLayout.addSwipeListener(new SimpleSwipeListener() {
+                @Override
+                public void onStartOpen(SwipeLayout layout) {
+                    if (swipeListener != null) {
+                        swipeListener.onStartOpen(layout);
+                    }
+
+                    // hide star if shown
+                    if (mFavoriteStar.isShown())
+                        mFavoriteStar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onClose(SwipeLayout layout) {
+                    if (swipeListener != null) {
+                        swipeListener.onClose(layout);
+                    }
+
+                    // show star if iconFontTextView isSelected && star is hide
+                    if (!mFavoriteStar.isShown() && mIconFontTextView.isSelected())
+                        mFavoriteStar.setVisibility(View.VISIBLE);
+                }
+            });
             mSwipeLayout.setSwipeEnabled(ZPCConfig.sEnableDisplayFavorite);
         }
 
