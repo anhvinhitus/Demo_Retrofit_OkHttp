@@ -22,6 +22,7 @@ import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
+import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
@@ -43,6 +44,7 @@ import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.card.BankDetector;
@@ -56,6 +58,7 @@ import vn.com.zalopay.wallet.event.SdkOrderStatusEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
+import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
@@ -550,7 +553,23 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 });
     }
 
-    public void autoFillOtp(String pSender, String pOtp) {
+    public void autoFillOtp(SdkSmsMessage pSms) {
+    }
+    public String getOtpInSMS(DOtpReceiverPattern otpPattern, SdkSmsMessage pMessage) {
+        if (pMessage == null) {
+            return "";
+        }
+        if (!TextUtils.isEmpty(otpPattern.sender) && otpPattern.sender.equalsIgnoreCase(pMessage.sender)) {
+            pMessage.message = pMessage.message.trim();
+
+            //read the begining of sms content
+            int start = (otpPattern.begin) ? otpPattern.start : (pMessage.message.length() - otpPattern.length - otpPattern.start);
+
+            String otp = pMessage.message.substring(start, start + otpPattern.length);
+            //clear whitespace and - character
+            return PaymentUtils.clearOTP(otp);
+        }
+        return "";
     }
 
     protected boolean shouldCheckStatusAgain() {

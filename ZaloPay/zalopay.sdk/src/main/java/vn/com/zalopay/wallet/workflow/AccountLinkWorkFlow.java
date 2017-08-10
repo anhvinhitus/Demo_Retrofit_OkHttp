@@ -48,6 +48,7 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -481,31 +482,24 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     }
 
     @Override
-    public void autoFillOtp(String pSender, String pOtp) {
-        Timber.d("sender %s otp %s", pSender, pOtp);
+    public void autoFillOtp(SdkSmsMessage pSms) {
+        Timber.d("Sms %s", pSms);
         try {
+            if (pSms == null || mPaymentInfoHelper == null) {
+                return;
+            }
             if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !isNativeFlow) {
                 Timber.d("user is not in otp phase, skip auto fill otp");
                 return;
             }
             List<DOtpReceiverPattern> patternList = ResourceManager.getInstance(null).getOtpReceiverPattern(mPaymentInfoHelper.getLinkAccBankCode());
             if (patternList != null && patternList.size() > 0) {
+
                 for (DOtpReceiverPattern otpReceiverPattern : patternList) {
                     Timber.d("checking pattern %s", GsonUtils.toJsonString(otpReceiverPattern));
-                    if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
-                        int start;
-                        pOtp = pOtp.trim();
-                        //read the begining of sms content
-                        if (otpReceiverPattern.begin) {
-                            start = otpReceiverPattern.start;
-                        }
-                        //read otp from the ending of content
-                        else {
-                            start = pOtp.length() - otpReceiverPattern.length - otpReceiverPattern.start;
-                        }
+                    if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSms.sender)) {
+                        String otp = getOtpInSMS(otpReceiverPattern, pSms);
 
-                        String otp = pOtp.substring(start, start + otpReceiverPattern.length);
-                        //clear whitespace and - character
                         otp = PaymentUtils.clearOTP(otp);
                         if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                             continue;

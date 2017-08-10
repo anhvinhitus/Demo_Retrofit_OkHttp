@@ -34,6 +34,7 @@ import vn.com.zalopay.wallet.event.SdkAuthenPayerEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
+import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -150,7 +151,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         return channelId != -1 ? channelId : getDefaultChannelId();
     }
 
-    @Override
+   /* @Override
     public void autoFillOtp(String pSender, String pOtp) {
         Timber.d("sender %s otp %s", pSender, pOtp);
         try {
@@ -166,13 +167,13 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 for (DOtpReceiverPattern otpReceiverPattern : patternList) {
                     if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
                         pOtp = pOtp.trim();
-                        /*
+                        *//*
                          vietinbank has 2 type of sms
                          1. 6 number otp in the fist of content
                          2. 6 number otp in the last of content
                          need extract splited otp by search space ' ' again
                          then compare #validOtp and length otp in config
-                         */
+                         *//*
                         int index = -1;
                         String validOtp = null;
                         if (otpReceiverPattern.begin) {
@@ -221,7 +222,51 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         } catch (Exception e) {
             Timber.d(e, "Exception autoFillOtp");
         }
+    }*/
+
+    @Override
+    public void autoFillOtp(SdkSmsMessage pSms) {
+        try {
+            if (pSms == null) {
+                return;
+            }
+            Timber.d("sender " + pSms);
+            if (getGuiProcessor() == null || !(getGuiProcessor().getCardFinder() instanceof BankDetector)) {
+                return;
+            }
+            if (!((BankCardGuiProcessor) getGuiProcessor()).isBankOtpPhase()) {
+                Timber.d("user is not in otp phase, skip auto fill otp");
+                return;
+            }
+
+            List<DOtpReceiverPattern> patternList = ((BankDetector) getGuiProcessor().getCardFinder()).getFoundOtpRules();
+            if (patternList != null && patternList.size() > 0) {
+                for (DOtpReceiverPattern otpReceiverPattern : patternList) {
+                    if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSms.sender)) {
+
+                        String otp = PaymentUtils.clearOTP(getOtpInSMS(otpReceiverPattern, pSms));
+                        Timber.d("otp after split by space " + otp);
+                        //check it whether length match length of otp in config
+                        if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
+                            continue;
+                        }
+                        if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
+                            continue;
+                        }
+                        if (CardType.PBIDV.equals(otpReceiverPattern.bankcode)) {
+                            getGuiProcessor().bidvAutoFillOtp(otp);
+                        }
+                        ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);
+                        getView().setVisible(R.id.txtOtpInstruction, false);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Timber.d(e, "Exception autoFillOtp");
+        }
     }
+
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onAuthenPayerEvent(SdkAuthenPayerEvent event) {

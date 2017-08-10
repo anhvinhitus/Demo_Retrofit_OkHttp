@@ -648,7 +648,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         String sender = message.sender;
         String body = message.message;
         if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
-            mAbstractWorkFlow.autoFillOtp(sender, body);
+            mAbstractWorkFlow.autoFillOtp(message);
         }
         mBus.removeStickyEvent(SdkSmsMessage.class);
         Timber.d("on payment otp event %s", message);
