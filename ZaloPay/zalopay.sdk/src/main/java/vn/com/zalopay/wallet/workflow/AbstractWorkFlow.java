@@ -58,7 +58,6 @@ import vn.com.zalopay.wallet.event.SdkOrderStatusEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
-import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
@@ -553,21 +552,26 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 });
     }
 
-    public void autoFillOtp(SdkSmsMessage pSms) {
+    public void autoFillOtp(String pSender, String pOtp) {
     }
-    public String getOtpInSMS(DOtpReceiverPattern otpPattern, SdkSmsMessage pMessage) {
-        if (pMessage == null) {
-            return "";
-        }
-        if (!TextUtils.isEmpty(otpPattern.sender) && otpPattern.sender.equalsIgnoreCase(pMessage.sender)) {
-            pMessage.message = pMessage.message.trim();
 
-            //read the begining of sms content
-            int start = (otpPattern.begin) ? otpPattern.start : (pMessage.message.length() - otpPattern.length - otpPattern.start);
+    public String getOtpInSMS(DOtpReceiverPattern otpPattern, String pSender, String pMessage) {
+        try {
+            if (TextUtils.isEmpty(pSender) || TextUtils.isEmpty(pMessage)) {
+                return "";
+            }
+            if (!TextUtils.isEmpty(otpPattern.sender) && otpPattern.sender.equalsIgnoreCase(pSender)) {
+                pMessage = pMessage.trim();
 
-            String otp = pMessage.message.substring(start, start + otpPattern.length);
-            //clear whitespace and - character
-            return PaymentUtils.clearOTP(otp);
+                //read the begining of sms content
+                int start = (otpPattern.begin) ? otpPattern.start : (pMessage.length() - otpPattern.length - otpPattern.start);
+
+                String otp = pMessage.substring(start, start + otpPattern.length);
+                //clear whitespace and - character
+                return PaymentUtils.clearOTP(otp);
+            }
+        } catch (Exception e) {
+            Timber.d(e);
         }
         return "";
     }

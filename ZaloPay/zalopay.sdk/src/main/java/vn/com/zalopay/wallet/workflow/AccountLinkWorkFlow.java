@@ -48,7 +48,6 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -482,10 +481,10 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     }
 
     @Override
-    public void autoFillOtp(SdkSmsMessage pSms) {
-        Timber.d("Sms %s", pSms);
+    public void autoFillOtp(String pSender, String pOtp) {
+        Timber.d("Sender %s Sms %s", pSender, pOtp);
         try {
-            if (pSms == null || mPaymentInfoHelper == null) {
+            if (TextUtils.isEmpty(pSender) || TextUtils.isEmpty(pOtp) || mPaymentInfoHelper == null) {
                 return;
             }
             if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !isNativeFlow) {
@@ -493,26 +492,31 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 return;
             }
             List<DOtpReceiverPattern> patternList = ResourceManager.getInstance(null).getOtpReceiverPattern(mPaymentInfoHelper.getLinkAccBankCode());
-            if (patternList != null && patternList.size() > 0) {
+            if (patternList == null || patternList.size() <= 0) {
+                return;
+            }
 
-                for (DOtpReceiverPattern otpReceiverPattern : patternList) {
-                    Timber.d("checking pattern %s", GsonUtils.toJsonString(otpReceiverPattern));
-                    if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSms.sender)) {
-                        String otp = getOtpInSMS(otpReceiverPattern, pSms);
+            for (DOtpReceiverPattern otpReceiverPattern : patternList) {
 
-                        otp = PaymentUtils.clearOTP(otp);
-                        if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
-                            continue;
-                        }
-                        if (isNativeFlow) {
-                            mWebViewProcessor.fillOtpOnWebFlow(otp);
-                            Timber.d("fill otp into website vcb directly");
-                        } else {
-                            linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
-                        }
-                        break;
-                    }
+                Timber.d("checking pattern %s", GsonUtils.toJsonString(otpReceiverPattern));
+
+                if (TextUtils.isEmpty(otpReceiverPattern.sender) || !otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
+                    continue;
                 }
+
+                String otp = getOtpInSMS(otpReceiverPattern, pSender, pOtp);
+                otp = PaymentUtils.clearOTP(otp);
+                if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
+                    continue;
+                }
+                if (isNativeFlow) {
+                    mWebViewProcessor.fillOtpOnWebFlow(otp);
+                    Timber.d("fill otp into website vcb directly");
+                } else {
+                    linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
+                }
+                break;
+
             }
         } catch (Exception e) {
             Timber.d(e, "Exception autoFillOtp");

@@ -34,7 +34,6 @@ import vn.com.zalopay.wallet.event.SdkAuthenPayerEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
-import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -225,12 +224,13 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     }*/
 
     @Override
-    public void autoFillOtp(SdkSmsMessage pSms) {
+    public void autoFillOtp(String pSender, String pOtp) {
+        Timber.d("Sender %s Sms %s", pSender, pOtp);
         try {
-            if (pSms == null) {
+            if (TextUtils.isEmpty(pSender) || TextUtils.isEmpty(pOtp)) {
                 return;
             }
-            Timber.d("sender " + pSms);
+
             if (getGuiProcessor() == null || !(getGuiProcessor().getCardFinder() instanceof BankDetector)) {
                 return;
             }
@@ -240,27 +240,30 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
             }
 
             List<DOtpReceiverPattern> patternList = ((BankDetector) getGuiProcessor().getCardFinder()).getFoundOtpRules();
-            if (patternList != null && patternList.size() > 0) {
-                for (DOtpReceiverPattern otpReceiverPattern : patternList) {
-                    if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSms.sender)) {
-
-                        String otp = PaymentUtils.clearOTP(getOtpInSMS(otpReceiverPattern, pSms));
-                        Timber.d("otp after split by space " + otp);
-                        //check it whether length match length of otp in config
-                        if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
-                            continue;
-                        }
-                        if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
-                            continue;
-                        }
-                        if (CardType.PBIDV.equals(otpReceiverPattern.bankcode)) {
-                            getGuiProcessor().bidvAutoFillOtp(otp);
-                        }
-                        ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);
-                        getView().setVisible(R.id.txtOtpInstruction, false);
-                        break;
-                    }
+            if (patternList == null || patternList.size() <= 0) {
+                return;
+            }
+            for (DOtpReceiverPattern otpReceiverPattern : patternList) {
+                if (TextUtils.isEmpty(otpReceiverPattern.sender) || !otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
+                    continue;
                 }
+
+                String otp = PaymentUtils.clearOTP(getOtpInSMS(otpReceiverPattern, pSender, pOtp));
+                Timber.d("otp after split by space " + otp);
+                //check it whether length match length of otp in config
+                if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
+                    continue;
+                }
+                if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
+                    continue;
+                }
+                if (CardType.PBIDV.equals(otpReceiverPattern.bankcode)) {
+                    getGuiProcessor().bidvAutoFillOtp(otp);
+                    break;
+                }
+                ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);
+                getView().setVisible(R.id.txtOtpInstruction, false);
+                break;
             }
         } catch (Exception e) {
             Timber.d(e, "Exception autoFillOtp");

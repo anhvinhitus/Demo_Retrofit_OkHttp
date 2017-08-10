@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.TextUtils;
 
@@ -648,7 +647,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         String sender = message.sender;
         String body = message.message;
         if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
-            mAbstractWorkFlow.autoFillOtp(message);
+            mAbstractWorkFlow.autoFillOtp(sender, body);
         }
         mBus.removeStickyEvent(SdkSmsMessage.class);
         Timber.d("on payment otp event %s", message);
