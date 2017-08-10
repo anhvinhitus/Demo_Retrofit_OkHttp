@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.widget.ListView;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -158,7 +159,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         if (isPhoneBook()) {
             backTopup(fragment, profile);
         } else {
-            startTransfer(fragment, profile);
+            startTransfer(profile);
         }
     }
 
@@ -177,7 +178,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         if (isPhoneBook()) {
             backTopup(fragment, profile);
         } else {
-            startTransfer(fragment, profile);
+            startTransfer(profile);
         }
     }
 
@@ -190,11 +191,11 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         activity.finish();
     }
 
-    private void startTransfer(Fragment fragment, ZPProfile profile) {
+    private void startTransfer(ZPProfile profile) {
         Subscription subscription = mFriendRepository.getUserInfoByPhone(user.zaloPayId, user.accesstoken, profile.phonenumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetUserByPhoneSubscriber(fragment, profile));
+                .subscribe(new GetUserByPhoneSubscriber(this, profile));
 
         mSubscription.add(subscription);
 //        if (profile.status != 1) {
@@ -209,7 +210,17 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
 //        mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
     }
 
-    private void showDialogNotUsingApp(ZPProfile zaloProfile) {
+    void startTransfer(TransferObject transferObject){
+        if(mNavigator == null){
+            return;
+        }
+        if (mView == null) {
+            return;
+        }
+        mNavigator.startTransferActivity((Fragment) mView, transferObject, Constants.REQUEST_CODE_TRANSFER);
+    }
+
+    void showDialogNotUsingApp(ZPProfile zaloProfile) {
         if (mView == null) {
             return;
         }
@@ -305,12 +316,12 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         onSelectContactItem(getFragment(), favoriteData);
     }
 
-    private class GetUserByPhoneSubscriber extends DefaultSubscriber<ZPCGetByPhone> {
-        private Fragment mFragment;
+    private static class GetUserByPhoneSubscriber extends DefaultSubscriber<ZPCGetByPhone> {
+        private WeakReference<ZaloPayContactListPresenter> mPresenter;
         private ZPProfile mProfile;
 
-        GetUserByPhoneSubscriber(Fragment fragment, ZPProfile profile) {
-            mFragment = fragment;
+        GetUserByPhoneSubscriber(ZaloPayContactListPresenter presenter, ZPProfile profile) {
+            mPresenter = new WeakReference<>(presenter);
             mProfile = profile;
         }
 
@@ -319,15 +330,19 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
             if (zpcGetByPhone == null) {
                 return;
             }
+            ZaloPayContactListPresenter presenter = mPresenter.get();
+            if(presenter == null){
+                return;
+            }
 
             if (zpcGetByPhone.returnCode == 1) {
                 TransferObject object = new TransferObject(zpcGetByPhone);
                 object.transferMode = Constants.TransferMode.TransferToZaloFriend;
                 object.activateSource = Constants.ActivateSource.FromTransferActivity;
-                mNavigator.startTransferActivity(mFragment, object, Constants.REQUEST_CODE_TRANSFER);
+                presenter.startTransfer(object);
             } else {
                 Timber.d("user get by phone [error :  %s]", zpcGetByPhone.returnMessage == null ? "" : zpcGetByPhone.returnMessage);
-                showDialogNotUsingApp(mProfile);
+                presenter.showDialogNotUsingApp(mProfile);
             }
         }
     }
