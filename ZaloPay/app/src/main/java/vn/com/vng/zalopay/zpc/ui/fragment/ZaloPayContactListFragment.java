@@ -148,6 +148,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
         mSwipeRefreshView.setSwipeableChildren(R.id.listview);
         mSwipeRefreshView.setOnRefreshListener(this);
+        mSwipeRefreshView.setColorSchemeResources(R.color.back_ground_blue);
 
         if (!TextUtils.isEmpty(mKeySearch)) {
             mEdtSearchView.setText(mKeySearch);

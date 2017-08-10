@@ -70,6 +70,10 @@ final class ZPCMapper {
                 continue;
             }
 
+            if (!PhoneUtil.isMobileNumber(number.number)) {
+                continue;
+            }
+
             UCB ucb = new UCB();
             ucb.displayName = Strings.trim(contact.name);
             ucb.normalizeDisplayName = Strings.stripAccents(ucb.displayName);
