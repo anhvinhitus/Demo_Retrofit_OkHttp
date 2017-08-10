@@ -11,7 +11,6 @@ import com.zalopay.ui.widget.password.managers.PasswordManager;
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
@@ -35,7 +34,7 @@ public class AuthenActor {
             try {
                 getProxy().onErrorPasswordPopup();
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "password on error");
             }
             Timber.w("password on error %s", pError);
         }
@@ -64,7 +63,7 @@ public class AuthenActor {
             try {
                 getProxy().onCompletePasswordPopup(pHashPassword);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception onComplete");
             }
         }
     };
@@ -75,7 +74,7 @@ public class AuthenActor {
                 closeAuthen();
                 getProxy().onErrorFingerPrint();
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception FF onError");
             }
         }
 
@@ -85,7 +84,7 @@ public class AuthenActor {
             try {
                 getProxy().showPassword();
             } catch (Exception e) {
-                Timber.w("show password on error %s", e.getMessage());
+                Timber.w(e, "Exception show password");
             }
         }
 
@@ -95,7 +94,7 @@ public class AuthenActor {
             try {
                 getProxy().onCompleteFingerPrint(pHashPassword);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception onComplete FF");
             }
             if (!TextUtils.isEmpty(pHashPassword)) {
                 fpPassword = pHashPassword;
@@ -108,18 +107,19 @@ public class AuthenActor {
     }
 
     public boolean updatePassword() {
-        /***
+        /*
          * user use wrong fingerprint
          * update again password after payment success
          */
         if (!TextUtils.isEmpty(fpPassword) && !TextUtils.isEmpty(popupPassword) && !fpPassword.equals(popupPassword)) {
             try {
                 PaymentFingerPrint.shared().updatePassword(fpPassword, popupPassword);
+                return useFPPassword && !TextUtils.isEmpty(popupPassword) && shouldUseFPPassword() && PaymentFingerPrint.shared().putPassword(popupPassword);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception update Password");
             }
         }
-        return useFPPassword && !TextUtils.isEmpty(popupPassword) && shouldUseFPPassword() && PaymentFingerPrint.shared().putPassword(popupPassword);
+        return false;
     }
 
     public AuthenActor plant(PayProxy payProxy) {
@@ -142,6 +142,9 @@ public class AuthenActor {
 
     public void showPasswordPopup(Activity pActivity, PaymentChannel pPaymentChannel) throws Exception {
         if (mPassword != null && mPassword.isShowing()) {
+            return;
+        }
+        if (pActivity == null || pActivity.isFinishing()) {
             return;
         }
         String logo_path = ResourceManager.getAbsoluteImagePath(pPaymentChannel.channel_icon);
@@ -187,7 +190,7 @@ public class AuthenActor {
                 mPassword.lock();
             }
         } catch (Exception e) {
-            Timber.d("AuthenActor showLoading [%s]", e.getMessage());
+            Timber.d(e, "Exception showLoading");
         }
         return mPassword != null;
     }
@@ -199,7 +202,7 @@ public class AuthenActor {
                 mPassword.unlock();
             }
         } catch (Exception e) {
-            Timber.d("AuthenActor hideLoading [%s]", e.getMessage());
+            Timber.d(e, "AuthenActor hideLoading");
         }
         return mPassword != null;
     }
@@ -220,7 +223,7 @@ public class AuthenActor {
                 mPassword = null;
             }
         } catch (Exception e) {
-            Timber.d("AuthenActor closePassword [%s]", e.getMessage());
+            Timber.d(e, "AuthenActor closePassword");
         }
     }
 
