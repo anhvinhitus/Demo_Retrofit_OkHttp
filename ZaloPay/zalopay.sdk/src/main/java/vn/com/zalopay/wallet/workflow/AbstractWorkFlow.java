@@ -84,7 +84,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     private final DPaymentCard mCard;
     public boolean mOrderProcessing = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     public CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-    public int mCurrentCcLinkNum = 0;
+    public int mCurrentCcLinkNumber = 0;
     protected ChannelPresenter mPresenter = null;
     protected PaymentInfoHelper mPaymentInfoHelper;
     protected Context mContext;
@@ -316,7 +316,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 showTransactionFailView(mStatusResponse.returnmessage);
             }
         } else if (mPaymentInfoHelper != null) {
-            mCurrentCcLinkNum = BankHelper.getMaxCCLinkNum(mPaymentInfoHelper.getUserId());
+            mCurrentCcLinkNumber = BankHelper.getMaxCCLinkNumber(mPaymentInfoHelper.getUserId());
         }
         Timber.d("start adapter with page name %s", mPageName);
     }

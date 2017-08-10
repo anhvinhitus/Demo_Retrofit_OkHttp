@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.bank.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
@@ -48,7 +47,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupportSelectionView> {
     protected final Context applicationContext;
     private final User mUser;
-    private int mCurrentCcLinkNum = 0;
+    private int mCurrentCcLinkNumber = 0;
 
     @Inject
     BankSupportSelectionPresenter(Context applicationContext, User user) {
@@ -66,12 +65,12 @@ final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupport
         mSubscription.add(subscription);
     }
 
-    void loadMaxCcLinNum(){
+    void loadMaxCcLinkNumber(){
         if (mUser == null) {
             return;
         }
-        mCurrentCcLinkNum = BankHelper.getMaxCCLinkNum(mUser.zaloPayId);
-        Timber.d("current cc link number %s", mCurrentCcLinkNum);
+        mCurrentCcLinkNumber = BankHelper.getMaxCCLinkNumber(mUser.zaloPayId);
+        Timber.d("current cc link number %s", mCurrentCcLinkNumber);
     }
 
     void linkBank(ZPBank bank) {
@@ -81,7 +80,7 @@ final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupport
 
         int max_cc_link = ConfigLoader.maxCCLinkNum();
         if (BankHelper.isInternationalBank(bank.bankCode)
-                && mCurrentCcLinkNum >= max_cc_link) {
+                && mCurrentCcLinkNumber >= max_cc_link) {
             String mess = String.format(applicationContext.getString(R.string.bank_link_cclink_limit_warning), max_cc_link);
             mView.showWarningDialog(mess, applicationContext.getString(R.string.dialog_agree_button));
             return;

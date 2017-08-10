@@ -77,7 +77,7 @@ public class BankSupportSelectionFragment extends BaseFragment implements IBankS
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mPresenter.listBankSupport();
-        mPresenter.loadMaxCcLinNum();
+        mPresenter.loadMaxCcLinkNumber();
     }
 
     @Override

@@ -884,7 +884,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     public boolean isMaxCcLink(String bankCode) {
         try {
             int max_cc_link = ConfigLoader.maxCCLinkNum();
-            int currentCcLinkNum = getAdapter().mCurrentCcLinkNum;
+            int currentCcLinkNum = getAdapter().mCurrentCcLinkNumber;
             if (BankHelper.isInternationalBank(bankCode)
                     && currentCcLinkNum >= max_cc_link) {
                 String mess = String.format(mContext.getString(R.string.sdk_bank_link_cc_limit_warning), max_cc_link);

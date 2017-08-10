@@ -20,7 +20,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 
 public class BankHelper {
 
-    public static int getMaxCCLinkNum(String userId) {
+    public static int getMaxCCLinkNumber(String userId) {
 
         List<MapCard> mapCardList = SDKApplication
                 .getApplicationComponent()
