@@ -8,9 +8,9 @@
         "(01)\\d{9}"
       ],
       "invalid_length_message": "Số điện thoại cần 10 hoặc 11 chữ số",
-      "general_message": "Số điện thoại không hợp lệ",
-      "max_cc_links": 3
-    }
+      "general_message": "Số điện thoại không hợp lệ"
+    },
+    "max_cc_links": 3
   },
   "zpc": {
     "enable_merge_contact_name": 1,

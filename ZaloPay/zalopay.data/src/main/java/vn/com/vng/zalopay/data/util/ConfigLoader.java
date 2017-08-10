@@ -84,7 +84,6 @@ public class ConfigLoader {
                 mConfig = config;
                 loadConfigPhoneFormat(config);
                 loadConfigInsideApp(config);
-                loadConfigSearch(config);
                 ZPCConfig.sEnableSyncContact = isSyncContact();
                 ZPCConfig.sEnableDisplayFavorite = isDisplayFavorite();
                 return true;
@@ -103,10 +102,6 @@ public class ConfigLoader {
 
     private static boolean loadConfigInsideApp(@NonNull Config config) {
         return InsideAppUtil.setInsideApps(config.mSearch.mInsideAppList);
-    }
-
-    private static void loadConfigSearch(@NonNull Config config) {
-        SearchUtil.setTopRateApp(config.mSearch.mSearchConfig);
     }
 
     /**
@@ -224,6 +219,14 @@ public class ConfigLoader {
             return listInternalApp;
         } else {
             return mConfig.mTabHome.mInternalApps;
+        }
+    }
+
+    public static int getTopRateApp() {
+        if (mConfig == null || mConfig.mSearch == null || mConfig.mSearch.mSearchConfig <= 0) {
+            return 3;
+        } else {
+            return mConfig.mSearch.mSearchConfig;
         }
     }
 
