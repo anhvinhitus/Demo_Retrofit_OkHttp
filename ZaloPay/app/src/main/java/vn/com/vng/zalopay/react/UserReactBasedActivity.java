@@ -12,16 +12,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
-import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
 import vn.com.vng.zalopay.event.SignOutEvent;
-import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
-import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;

@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -15,10 +16,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.common.logging.FLog;
-import com.facebook.react.common.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
+import com.facebook.react.common.LifecycleState;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
@@ -44,7 +45,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
 
     protected abstract void doInjection();
 
-    public void handleException(Throwable e) {
+    public void handleException(@NonNull Throwable e) {
 
         if (getUseDeveloperSupport()) {
             return;
@@ -310,8 +311,8 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
     @Override
     public void onRequestPermissionsResult(
             int requestCode,
-            String[] permissions,
-            int[] grantResults) {
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
         Timber.d("onRequestPermissionsResult: requestCode [%s] grantResults [%s]", requestCode, grantResults);
         if (mPermissionListener != null &&
                 mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {

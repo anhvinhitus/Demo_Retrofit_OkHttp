@@ -15,7 +15,6 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
-import com.zalopay.apploader.network.NetworkService;
 import com.zalopay.zcontacts.ZContactsPackage;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,7 +25,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import cl.json.RNSharePackage;
 import timber.log.Timber;
@@ -35,11 +33,9 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.UserReactBasedActivity;
 import vn.com.vng.zalopay.react.analytics.GoogleAnalyticsBridgePackage;
-import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 
 /**
@@ -50,11 +46,6 @@ public class PaymentApplicationActivity extends UserReactBasedActivity {
 
     private static final int RECHARGE_MONEY_PHONE_APP_ID = 11;
     private static final int RECHARGE_MONEY_PHONE_V2_APP_ID = 61;
-
-    private String mComponentName;
-
-    @Inject
-    IPaymentService paymentService;
 
     @Inject
     User mUser;
@@ -69,18 +60,13 @@ public class PaymentApplicationActivity extends UserReactBasedActivity {
     ReactNativeHostable mReactNativeHostable;
 
     @Inject
-    @Named("NetworkServiceWithRetry")
-    NetworkService mNetworkServiceWithRetry;
+    ReactIAPPackage mReactIAPPackage;
 
     private AppResource appResource;
 
-    @Inject
-    Navigator mNavigator;
+    private Bundle mLaunchOptions = new Bundle();
 
-    Bundle mLaunchOptions = new Bundle();
-
-    public PaymentApplicationActivity() {
-    }
+    private String mComponentName;
 
     @Override
     protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
@@ -225,9 +211,6 @@ public class PaymentApplicationActivity extends UserReactBasedActivity {
 
     @Override
     public List<ReactPackage> getPackages() {
-
-        long appId = appResource == null ? 0 : appResource.appid;
-        Timber.d("getPackages: appId %s", appId);
         return Arrays.asList(
                 new MainReactPackage(),
                 new RNSendIntentPackage(),
@@ -241,18 +224,21 @@ public class PaymentApplicationActivity extends UserReactBasedActivity {
                 new LinearGradientPackage(),
                 new ReactNativePermissionsPackage(),
                 new PickerViewPackage(),
-                new ReactIAPPackage(paymentService,
-                        mUser, appId,
-                        mNetworkServiceWithRetry,
-                        mNavigator,
-                        mReactNativeHostable)
+                mReactIAPPackage
         );
     }
 
     @Override
-    public void handleException(Throwable e) {
+    public void handleException(@NonNull Throwable e) {
         mEventBus.post(new PaymentAppExceptionEvent(e, appResource.appid));
         super.handleException(e);
+    }
+
+    public long getCurrentAppId() {
+        if (appResource != null) {
+            return appResource.appid;
+        }
+        return -1;
     }
 
 }
