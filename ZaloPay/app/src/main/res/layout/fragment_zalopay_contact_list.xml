@@ -46,6 +46,29 @@
 
     </FrameLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="56dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_search_emty" />
+
+        <TextView
+            android:id="@+id/tv_empty"
+            style="@style/TextViewEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"/>
+
+    </LinearLayout>
+
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -63,28 +86,6 @@
         </com.zalopay.ui.widget.MultiSwipeRefreshLayout>
 
         <include layout="@layout/progress_layout" />
-
-        <LinearLayout
-            android:id="@+id/ll_empty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_search_emty" />
-
-            <TextView
-                android:id="@+id/tv_empty"
-                style="@style/TextViewEmpty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_large"/>
-
-        </LinearLayout>
 
         <include
             layout="@layout/row_number_not_save_yet"

@@ -28,7 +28,7 @@
             android:layout_gravity="bottom|right"
             android:background="@drawable/dot_white"
             android:gravity="center"
-            android:textColor="@color/gray.5e5e5e"
+            android:textColor="@color/gray.a7a9aa"
             android:visibility="invisible"
             app:iconName="@string/ct_list_del"
             app:iconSize="13dp" />
