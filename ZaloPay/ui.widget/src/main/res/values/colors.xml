@@ -108,7 +108,7 @@
     <color name="c.text.title">#24272c</color>
     <color name="c.text.white">#d6f0f6</color>
     <color name="c.text.primary">#008fe5</color>
-    <color name="c.text.item.not.found">#ACB3BA</color>
+    <color name="c.text.item.not.found">#acb3ba</color>
 
     <!--SEPARATE-->
     <color name="c.separate">#e3e6e7</color>

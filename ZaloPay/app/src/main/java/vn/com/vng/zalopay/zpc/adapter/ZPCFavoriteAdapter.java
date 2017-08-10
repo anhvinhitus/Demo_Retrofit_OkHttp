@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Space;
 
 import com.daimajia.swipe.SimpleSwipeListener;
@@ -49,6 +48,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
             public void onRemoveFavorite(FavoriteData favorite) {
                 if (mListener != null) {
                     mListener.onRemoveFavorite(favorite);
+                    notifyDataSetChanged();
                 }
             }
 
@@ -59,7 +59,9 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
 
             @Override
             public void onFavoriteItemClick(FavoriteData favorite) {
-                mListener.onSelectFavorite(favorite);
+                if (mListener != null) {
+                    mListener.onSelectFavorite(favorite);
+                }
             }
         });
 
@@ -153,7 +155,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
         @BindView(R.id.zpcontactlist_if_favorite_star)
         IconFont mFavoriteStar;
         @BindView(R.id.foreground)
-        LinearLayout mForeground;
+        View mForeground;
         private Context mContext;
 
         SwipeHolder(View view, FavoriteView favoriteView, OnFavoriteListener listener, SwipeLayout.SwipeListener swipeListener) {
