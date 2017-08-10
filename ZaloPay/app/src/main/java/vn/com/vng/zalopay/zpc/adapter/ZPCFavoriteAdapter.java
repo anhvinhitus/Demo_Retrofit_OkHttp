@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Space;
 
 import com.daimajia.swipe.SimpleSwipeListener;
@@ -151,6 +152,8 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
         IconFontTextView mIconFontTextView;
         @BindView(R.id.zpcontactlist_if_favorite_star)
         IconFont mFavoriteStar;
+        @BindView(R.id.foreground)
+        LinearLayout mForeground;
         private Context mContext;
 
         SwipeHolder(View view, FavoriteView favoriteView, OnFavoriteListener listener, SwipeLayout.SwipeListener swipeListener) {
@@ -160,13 +163,16 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
             mFavoriteData = new FavoriteData();
             mFavoriteView = favoriteView;
             mColorYellow = ContextCompat.getColor(view.getContext(), R.color.yellow_f8d41c);
-            mSwipeLayout.setSelected(true);
             mSwipeLayout.addSwipeListener(new SimpleSwipeListener() {
                 @Override
                 public void onStartOpen(SwipeLayout layout) {
                     if (swipeListener != null) {
                         swipeListener.onStartOpen(layout);
                     }
+
+                    // select item list
+                    if (!mForeground.isSelected())
+                        mForeground.setSelected(true);
 
                     // hide star if shown
                     if (mFavoriteStar.isShown())
@@ -178,6 +184,10 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
                     if (swipeListener != null) {
                         swipeListener.onClose(layout);
                     }
+
+                    // unselect item list
+                    if (mForeground.isSelected())
+                        mForeground.setSelected(false);
 
                     // show star if iconFontTextView isSelected && star is hide
                     if (!mFavoriteStar.isShown() && mIconFontTextView.isSelected())
