@@ -28,7 +28,6 @@ import vn.com.vng.zalopay.domain.model.InternalApp;
 public class ConfigLoader {
     private final static String CONFIG_FILE_PATH = "config/zalopay_config.json";
     private static Config mConfig;
-    private static String FEEDBACK_URL = "https://goo.gl/forms/FCO642guFSbpYwlt2";
 
     static {
         mConfig = new Config();
@@ -133,8 +132,8 @@ public class ConfigLoader {
      * Default sử dụng https
      */
     public static boolean isHttpsRoute() {
-        boolean isHttpsRoute = mConfig == null || mConfig.mApi == null || !"connector".equals(mConfig.mApi.apiRoute);
-        Timber.d("Network routing through: [%s]", mConfig == null ? "https" : mConfig.mApi.apiRoute);
+        boolean isHttpsRoute = (mConfig == null || mConfig.mApi == null || !"connector".equals(mConfig.mApi.apiRoute));
+        Timber.d("Network routing through: [%s]", isHttpsRoute ? "https" : "connector");
         return isHttpsRoute;
     }
 
@@ -180,7 +179,7 @@ public class ConfigLoader {
 
     public static String getFeedbackUrl() {
         if (mConfig == null || mConfig.mTabMe == null || TextUtils.isEmpty(mConfig.mTabMe.mFeedbackUrl)) {
-            return FEEDBACK_URL;
+            return "https://goo.gl/forms/FCO642guFSbpYwlt2";
         } else {
             return mConfig.mTabMe.mFeedbackUrl;
         }
