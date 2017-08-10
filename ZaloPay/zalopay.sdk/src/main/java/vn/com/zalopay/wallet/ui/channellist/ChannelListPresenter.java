@@ -454,7 +454,8 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             getViewOrThrow().renderOrderAmount(paymentAmount);
             getViewOrThrow().renderActiveVoucher(voucherInfo.vouchercode, total_amount, voucherInfo.discountamount);
 
-            boolean validBalance = total_amount >= paymentAmount;
+            long balance = mPaymentInfoHelper.getBalance();
+            boolean validBalance = balance >= paymentAmount;
             showSnackBarOnError(validBalance);
             //save voucher to cache
             String userId = mPaymentInfoHelper.getUserId();
@@ -819,6 +820,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 && mZaloPayChannel.meetPaymentCondition()) {
             selectAndScrollToChannel(mZaloPayChannel, mZaloPayChannel.position);
             startDefaultPayment();
+            mHasActiveChannel = true;
             return;
         }
         //auto select recently payment or link bank
@@ -827,6 +829,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             if (shouldAutoPayment()) {
                 startDefaultPayment();
             }
+            mHasActiveChannel = true;
             return;
         }
 
@@ -866,12 +869,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return;
         }
         getViewOrThrow().dismissSnackBar();
-        if (validBalance) {
-            getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel), null,
-                    Snackbar.LENGTH_INDEFINITE, null);
+        if (mHasActiveChannel) {
             return;
         }
-        if (!mHasActiveChannel) {
+        if (!validBalance) {
             getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel_balance_error),
                     mContext.getResources().getString(R.string.sdk_hyperlink_charge_more),
                     Snackbar.LENGTH_INDEFINITE, () -> {
@@ -882,7 +883,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                             Timber.w(e);
                         }
                     });
+            return;
         }
+        getViewOrThrow().showSnackBar(mContext.getResources().getString(R.string.sdk_warning_no_channel), null,
+                Snackbar.LENGTH_INDEFINITE, null);
+
     }
 
     private void selectAndScrollToChannel(PaymentChannel selectChannel, int position) throws Exception {
