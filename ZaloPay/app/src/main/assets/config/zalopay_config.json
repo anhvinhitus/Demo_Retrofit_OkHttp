@@ -19,20 +19,6 @@
   "search": {
     "inside_app": [
       {
-        "inside_app_id": 13,
-        "app_type": -1,
-        "app_name": "Chuyển tiền",
-        "icon_name": "app_1_transfers",
-        "icon_color": "#4387f6"
-      },
-      {
-        "inside_app_id": 14,
-        "app_type": -1,
-        "app_name": "Nhận tiền",
-        "icon_name": "app_1_receivemoney",
-        "icon_color": "#4286F6"
-      },
-      {
         "inside_app_id": 1,
         "app_type": -1,
         "app_name": "Rút tiền",
@@ -111,6 +97,20 @@
         "app_name": "Thiết lập bảo vệ tài khoản",
         "icon_name": "personal_settingaccount",
         "icon_color": "#53718B"
+      },
+      {
+        "inside_app_id": 13,
+        "app_type": -1,
+        "app_name": "Chuyển tiền",
+        "icon_name": "app_1_transfers",
+        "icon_color": "#4387f6"
+      },
+      {
+        "inside_app_id": 14,
+        "app_type": -1,
+        "app_name": "Nhận tiền",
+        "icon_name": "app_1_receivemoney",
+        "icon_color": "#4286F6"
       }
     ],
     "number_search_app": 3
@@ -121,9 +121,7 @@
       "um/listcardinfoforclient",
       "um/listbankaccountforclient",
       "um/removeaccesstoken",
-      "um/verifycodetest",
       "um/getuserinfo",
-      "um/checklistzaloidforclient",
       "um/updateprofile",
       "um/verifyotpprofile",
       "um/recoverypin",
@@ -139,16 +137,6 @@
       "um/getuserprofilelevel",
       "ummerchant/getmerchantuserinfo",
       "ummerchant/getlistmerchantuserinfo",
-      "redpackage/createbundleorder",
-      "redpackage/submittosendbundle",
-      "redpackage/submittosendbundlebyzalopayinfo",
-      "redpackage/submitopenpackage",
-      "redpackage/getsentbundlelist",
-      "redpackage/getrevpackagelist",
-      "redpackage/getpackagesinbundle",
-      "redpackage/getappinfo",
-      "redpackage/getbundlestatus",
-      "redpackage/getlistpackagestatus",
       "v001/tpe/transhistory",
       "v001/tpe/gettransstatus",
       "v001/tpe/v001getplatforminfo",
