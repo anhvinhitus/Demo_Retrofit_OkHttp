@@ -1,16 +1,2 @@
-Zalo Pay (Sandbox v2.17.0 - build 399) - Released on 2017-08-10 08:54
-+ [Bank] task#793 : Hạn chế 1 tài khoản liên kết nhiều thẻ CC đang active (tính cả master và visa) : rename by chucvv (#bdfd2af)
-+ [Bank] task#793 : Hạn chế 1 tài khoản liên kết nhiều thẻ CC đang active (tính cả master và visa) by chucvv (#6953077)
-+ [Voucher] hide snackbar warning sau khi user nhập voucher by chucvv (#55c365d)
-+ [ZPC] Check data that send to react native module by datnt10 (#df1d1f7)
-+ [SDK] Cleanup by chucvv (#5ba4394)
-+ [SDK] task#792 : Ưu tiên kênh thanh toán TK Zalo Pay trong flow thanh toán by chucvv (#2eae1bd)
-+ [APP] Clear code by lytm (#745ff31)
-+ [Config] Refactor code by lytm (#c973e2a)
-+ [invitation] task#789: Remove invitation code by lytm (#5e301a8)
-+ [ZPC] update ui by sinhtt (#404ffe2)
-+ [SDK] task#794 : [SDK] PaybyToken - gửi thêm thông tin cardhash trong chargeinfo khi giao dịch dùng thẻ lưu by chucvv (#c2e856f)
-+ [ZPC] Handle user display name in dialog not using app by datnt10 (#7bb1413)
-+ [Profile] Clear code by lytm (#f444e76)
-+ [Profile] task#785: Chuyển phần hiển thị Zalo Pay ID thành số điện thoại by lytm (#8221bea)
-+ [Profile] Refactor code by lytm (#4ef3f68)
+Zalo Pay (Staging v2.17.0 - build 400) - Released on 2017-08-10 08:57
+
