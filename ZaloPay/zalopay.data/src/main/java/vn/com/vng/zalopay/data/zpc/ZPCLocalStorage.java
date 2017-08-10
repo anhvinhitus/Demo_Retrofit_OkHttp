@@ -61,15 +61,6 @@ public class ZPCLocalStorage extends SqlBaseScopeImpl implements ZPCStore.LocalS
             return;
         }
 
-        Iterator<UCB> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            UCB ucb = iterator.next();
-
-            if(ucb.phoneNumber == null && !PhoneUtil.isMobileNumber(ucb.phoneNumber)) {
-                iterator.remove();
-            }
-        }
-
         mUCBDao.insertOrReplaceInTx(list);
     }
 
