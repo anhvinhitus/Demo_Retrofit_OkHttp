@@ -2,19 +2,19 @@ package vn.com.zalopay.wallet.api.task;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
+import vn.com.zalopay.wallet.api.DataParameter;
+import vn.com.zalopay.wallet.api.implement.SubmitMapAccountImpl;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.api.DataParameter;
-import vn.com.zalopay.wallet.api.implement.SubmitMapAccountImpl;
+import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
 
 public class SubmitMapAccountTask extends BaseTask<BaseResponse> {
     protected String mBankAccInfo;
     protected AccountLinkWorkFlow mAdapter;
+
     public SubmitMapAccountTask(AccountLinkWorkFlow pAdapter, String pBankAccInfo) {
         super(pAdapter.getPaymentInfoHelper().getUserInfo());
         mAdapter = pAdapter;
@@ -42,7 +42,7 @@ public class SubmitMapAccountTask extends BaseTask<BaseResponse> {
             statusResponse.returnmessage = getDefaulErrorNetwork();
             mAdapter.onEvent(EEventType.ON_SUBMIT_LINKACC_COMPLETED, statusResponse);
         }
-        Timber.d(e != null ? e.getMessage() : "Exception");
+        Timber.d(e);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class SubmitMapAccountTask extends BaseTask<BaseResponse> {
     @Override
     protected boolean doParams() {
         try {
-            if(mAdapter.getPaymentInfoHelper() == null){
+            if (mAdapter == null || mAdapter.getPaymentInfoHelper() == null) {
                 return false;
             }
             UserInfo userInfo = mAdapter.getPaymentInfoHelper().getUserInfo();
@@ -71,7 +71,6 @@ public class SubmitMapAccountTask extends BaseTask<BaseResponse> {
             return true;
         } catch (Exception e) {
             onRequestFail(e);
-            Log.e(this, e);
             return false;
         }
     }

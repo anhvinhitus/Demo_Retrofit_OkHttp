@@ -10,7 +10,6 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -244,8 +243,7 @@ public class SharedPreferencesManager {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(pUserId).append(Constants.COMMA).append(pKey);
             return setString(stringBuilder.toString(), pConfig);
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         return false;
     }
@@ -264,7 +262,7 @@ public class SharedPreferencesManager {
         try {
             return getString(pKey + SharePrefConstants.sdk_conf_bankaccount_list);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception getBankAccountKeyList");
         }
         return null;
     }
@@ -400,8 +398,7 @@ public class SharedPreferencesManager {
             for (String pmcId : raw.split(Constants.COMMA)) {
                 result.add(String.valueOf(pmcId));
             }
-        } catch (Exception ex) {
-            Log.e(this, ex);
+        } catch (Exception ignored) {
         }
         return result;
     }

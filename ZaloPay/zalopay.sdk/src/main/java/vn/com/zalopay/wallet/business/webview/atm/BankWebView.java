@@ -10,7 +10,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 
 public class BankWebView extends PaymentWebView {

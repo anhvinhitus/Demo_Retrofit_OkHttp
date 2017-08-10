@@ -14,7 +14,6 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
@@ -41,7 +40,7 @@ import static vn.com.zalopay.wallet.constants.Constants.PAGE_FAIL_PROCESSING;
 public class TransactionHelper {
 
     public static String getTransProcessingMessage(@TransactionType int pTranstype) {
-        int resId  = (pTranstype == TransactionType.LINK) ? R.string.sdk_fail_trans_status_link : R.string.sdk_fail_trans_status;
+        int resId = (pTranstype == TransactionType.LINK) ? R.string.sdk_fail_trans_status_link : R.string.sdk_fail_trans_status;
         return GlobalData.getAppContext().getResources().getString(resId);
     }
 
@@ -57,7 +56,7 @@ public class TransactionHelper {
         }
         if (throwable instanceof RequestException || throwable instanceof SdkResourceException) {
             String error = throwable.getMessage();
-            if(TextUtils.isEmpty(error)){
+            if (TextUtils.isEmpty(error)) {
                 error = context.getResources().getString(R.string.sdk_error_undefine);
             }
             return error;
@@ -99,7 +98,6 @@ public class TransactionHelper {
     }
 
     public static boolean needUserPasswordPayment(MiniPmcTransType pChannel, AbstractOrder pOrder) {
-        Log.d("needUserPasswordPayment", "start check require for using password", pChannel);
         if (pChannel == null || pOrder == null) {
             return false;
         }

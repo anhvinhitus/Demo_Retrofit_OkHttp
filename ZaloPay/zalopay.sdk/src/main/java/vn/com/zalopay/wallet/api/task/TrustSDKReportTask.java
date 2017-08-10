@@ -3,9 +3,8 @@ package vn.com.zalopay.wallet.api.task;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.api.implement.SDKReportImpl;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 
 /***
  * always log to server

@@ -22,18 +22,15 @@ import vn.com.zalopay.utility.BitmapUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.card.BankDetector;
-import vn.com.zalopay.wallet.helper.SchedulerHelper;
-import vn.com.zalopay.wallet.workflow.BankCardWorkFlow;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
-import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.card.AbstractCardDetector;
+import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.constants.AuthenType;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.LocalCardFragmentAdapter;
@@ -43,6 +40,8 @@ import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardIssueFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNameFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.BankCardWorkFlow;
 
 public class BankCardGuiProcessor extends CardGuiProcessor {
     private RadioGroup mInputRadioGroupAuthenType;
@@ -71,7 +70,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         try {
             getView().findViewById(R.id.bidv_register_btn).setOnClickListener(view -> {
                 try {
-                    SdkUtils.openWebPage(getActivity(),GlobalData.getStringResource(RS.string.sdk_bidv_bankaccount_register_url));
+                    SdkUtils.openWebPage(getActivity(), GlobalData.getStringResource(RS.string.sdk_bidv_bankaccount_register_url));
                 } catch (Exception e) {
                     Timber.w(e);
                 }
@@ -170,8 +169,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                 mTokenAuthenEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
                 mTokenAuthenEditText.setOnTouchListener(mOnTouchListener);
             }
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
     }
 
@@ -214,7 +212,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected CardFragmentBaseAdapter onCreateCardFragmentAdapter() {
         try {
-            return new LocalCardFragmentAdapter(getActivity().getSupportFragmentManager(),getActivity().getIntent().getExtras());
+            return new LocalCardFragmentAdapter(getActivity().getSupportFragmentManager(), getActivity().getIntent().getExtras());
         } catch (Exception e) {
             Timber.w(e);
         }
@@ -225,11 +223,9 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     protected boolean validateCardNumberLength() {
         try {
             return getCardNumberView().isValidPattern();
-
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception validateCardNumberLength");
         }
-
         return true;
     }
 
@@ -253,36 +249,27 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         if (!getCardFinder().detected()) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNumberFragment.class.getName());
-
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
-
             return 0;
         }
-
         if (mCardAdapter.hasFragment(CardIssueFragment.class.getName()) && TextUtils.isEmpty(getIssueDate())) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardIssueFragment.class.getName());
-
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
-
             return 1;
         }
-
-
         if (TextUtils.isEmpty(getCardName()) || getCardName().length() <= 3) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNameFragment.class.getName());
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
-
             return 2;
         }
-
         return errorFragmentIndex;
     }
 
@@ -354,11 +341,11 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             if (!getCardFinder().detected()) {
                 return;
             }
-            if(!(getCardFinder() instanceof BankDetector)){
+            if (!(getCardFinder() instanceof BankDetector)) {
                 return;
             }
             BankConfig bankConfig = ((BankDetector) getCardFinder()).getFoundBankConfig();
-            if(bankConfig == null){
+            if (bankConfig == null) {
                 return;
             }
             getAdapter().getCard().setBankcode(bankConfig.code);
@@ -653,7 +640,6 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         try {
             return PaymentPermission.allowLinkCC();
         } catch (Exception e) {
-            Log.e(this, e);
             return false;
         }
     }

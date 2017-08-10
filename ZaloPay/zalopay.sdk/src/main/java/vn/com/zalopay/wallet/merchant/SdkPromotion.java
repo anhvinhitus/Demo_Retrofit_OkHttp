@@ -10,7 +10,6 @@ import com.zalopay.ui.widget.UIBottomSheetDialog;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.zalopay.promotion.CashBackRender;
 import vn.zalopay.promotion.IBuilder;
@@ -94,7 +93,6 @@ public class SdkPromotion extends SingletonBase {
 
     private void handleCashBack(CashBackEvent pCashBackEvent, IResourceLoader pResourceLoader) {
         if (mPromotionBuilder != null) {
-            Log.d(this, "promotion event is updated", pCashBackEvent);
             mPromotionBuilder.setPromotion(pCashBackEvent);
             return;
         }
@@ -174,7 +172,7 @@ public class SdkPromotion extends SingletonBase {
                             try {
                                 mPromotionResult.onNavigateToAction(mContext, pPromotionEvent);
                             } catch (Exception e) {
-                                Log.e(this, e);
+                                Timber.w(e, "Exception navigte to action");
                             }
                         }
                     }

@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.business.webview.atm;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Handler;
@@ -16,7 +17,6 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptInput;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
@@ -174,21 +174,18 @@ public class BidvWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        Log.i(this, "===onPageStarted: ===" + url);
-
         mStartedtUrl = url;
         mIsLoadingFinished = false;
-
         // Modify this variable to inform that it not run in ajax mode
         mLastStartPageTime++;
-        if (mStartedtUrl.contains(GlobalData.getStringResource(RS.string.sdk_website_callback_domain))) {
+        if (!TextUtils.isEmpty(mStartedtUrl)
+                && mStartedtUrl.contains(GlobalData.getStringResource(RS.string.sdk_website_callback_domain))) {
             view.stopLoading();
         }
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Timber.d("===shouldOverrideUrlLoading: ===" + url);
         if (!mIsLoadingFinished) {
             mIsRedirect = true;
         }
@@ -260,11 +257,18 @@ public class BidvWebViewClient extends PaymentWebViewClient {
     @JavascriptInterface
     public void onJsPaymentResult(String pResult) {
         mIsRunningScript = false;
-        Log.d(this, "onJsPaymentResult %s", pResult);
+        Timber.d("onJsPaymentResult %s", pResult);
         mLastStartPageTime++;
         final String result = pResult;
         try {
-            getAdapter().getActivity().runOnUiThread(() -> {
+            if (getAdapter() == null) {
+                return;
+            }
+            Activity activity = getAdapter().getActivity();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+            activity.runOnUiThread(() -> {
                 DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
                 countIntervalCheck = 0;
                 EEventType eventType = convertPageIdToEvent(mEventID);

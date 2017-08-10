@@ -5,7 +5,6 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.SDKReportImpl;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 
@@ -84,7 +83,6 @@ public class SDKReportTask extends BaseTask<BaseResponse> {
     @Override
     protected void doRequest() {
         if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-            Log.e(this, "can not send log report error because networking is offline");
             return;
         }
         newDataRepository().setTask(this).postData(new SDKReportImpl(), getDataParams());

@@ -25,7 +25,6 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.entity.staticconfig.CardRule;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
@@ -203,7 +202,7 @@ public class ResourceManager extends SingletonBase {
         try {
             return String.format("file://%s%s%s%s%s", getResourceFolderPath(), File.separator, PREFIX_IMG, File.separator, pImageName);
         } catch (Exception e) {
-            Log.e("getAbsolutePath", e);
+            Timber.w(e, "Exception getAbsoluteImagePath");
         }
         return null;
     }

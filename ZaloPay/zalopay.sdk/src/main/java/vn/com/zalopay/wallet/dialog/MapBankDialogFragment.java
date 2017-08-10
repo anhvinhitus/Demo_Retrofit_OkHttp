@@ -26,7 +26,6 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -62,15 +61,15 @@ public class MapBankDialogFragment extends BaseDialogFragment {
     private EventBus mBus;
     private WeakReference<ZPWResultCallBackListener> mZPZpwResultCallBackListener;
 
-    private void setDialogListener(ZPWResultCallBackListener pListener) {
-        mZPZpwResultCallBackListener = new WeakReference<>(pListener);
-    }
-
     public static BaseDialogFragment newInstance(Bundle args, ZPWResultCallBackListener pListener) {
         MapBankDialogFragment fragment = new MapBankDialogFragment();
         fragment.setArguments(args);
         fragment.setDialogListener(pListener);
         return fragment;
+    }
+
+    private void setDialogListener(ZPWResultCallBackListener pListener) {
+        mZPZpwResultCallBackListener = new WeakReference<>(pListener);
     }
 
     @Override
@@ -80,7 +79,7 @@ public class MapBankDialogFragment extends BaseDialogFragment {
         if (SdkUtils.isTablet(getActivity().getApplicationContext())) {
             percentWitdh = getResources().getInteger(R.integer.dialog_percent_ontablet);
         }
-        return (int)  (metrics.widthPixels * percentWitdh / 100);
+        return (int) (metrics.widthPixels * percentWitdh / 100);
     }
 
     @Override
@@ -94,13 +93,13 @@ public class MapBankDialogFragment extends BaseDialogFragment {
             orderAmount = bundle.getDouble(AMOUNT_EXTRA);
         }
     }
+
     @Override
     protected void initData() {
         try {
             mChannelList = getMapChannel();
             setupRecycler(mChannelList);
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
     }
 
@@ -124,8 +123,7 @@ public class MapBankDialogFragment extends BaseDialogFragment {
         List<Object> objectList = new ArrayList<>();
         try {
             objectList = PayProxy.get().getChannels();
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         for (int i = 0; i < objectList.size(); i++) {
             Object object = objectList.get(i);
@@ -180,7 +178,7 @@ public class MapBankDialogFragment extends BaseDialogFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnSelectChannelEvent(SdkSelectedChannelMessage pMessage) {
-        Log.d(this, "select at position", pMessage.position);
+        Timber.d("select at position %s", pMessage.position);
         if (mChannelList == null || mChannelList.size() <= 0) {
             Timber.d("channel list is empty");
             return;
@@ -188,8 +186,7 @@ public class MapBankDialogFragment extends BaseDialogFragment {
         if (pMessage.position >= 0) {
             try {
                 setOK(mChannelList.get(pMessage.position).position);
-            } catch (Exception e) {
-                Log.e(this, e);
+            } catch (Exception ignored) {
             }
         }
     }

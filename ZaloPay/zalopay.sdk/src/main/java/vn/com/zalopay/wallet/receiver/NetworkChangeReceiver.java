@@ -8,7 +8,6 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
-import vn.com.zalopay.wallet.business.data.Log;
 
 import static vn.com.zalopay.wallet.constants.Constants.RECEIVER;
 

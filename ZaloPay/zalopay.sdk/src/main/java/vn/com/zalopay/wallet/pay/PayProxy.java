@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -22,7 +21,6 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.IRequest;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
@@ -135,7 +133,7 @@ public class PayProxy extends SingletonBase {
     }
 
     private void onOrderSubmitedFailed(Throwable throwable) {
-        Log.d(this, "submit order on error", throwable);
+        Timber.d(throwable, "submit order on error");
         if (!networkException(throwable)) {
             //check trans status by app trans id
             getTransStatusByAppTrans();
@@ -143,7 +141,6 @@ public class PayProxy extends SingletonBase {
     }
 
     private void onOrderSubmittedSuccess(StatusResponse statusResponse) {
-        Log.d(this, "submit order on complete", statusResponse);
         if (statusResponse == null) {
             //check trans status by app trans id
             getTransStatusByAppTrans();
@@ -153,7 +150,6 @@ public class PayProxy extends SingletonBase {
             try {
                 processStatus(statusResponse);
             } catch (Exception e) {
-                Log.e(this, e);
                 markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
             }
         }
@@ -203,7 +199,7 @@ public class PayProxy extends SingletonBase {
             try {
                 getView().showInfoDialog(mContext.getResources().getString(R.string.sdk_order_processing_warning_mess));
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.w(e, "Exception preventSubmitOrder");
             }
         }
         return isSubmitted;
@@ -226,16 +222,13 @@ public class PayProxy extends SingletonBase {
     }
 
     private void processStatus(StatusResponse pResponse) throws Exception {
-        Log.d(this, "process status", pResponse);
         try {
             getView().updateDefaultTitle();
         } catch (Exception e) {
-            Log.e(this, e);
         }
         if (pResponse == null) {
             markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
             return;
-
         }
 
         mStatusResponse = pResponse;
@@ -403,7 +396,6 @@ public class PayProxy extends SingletonBase {
             mSubscription = transStatus();
             getPresenter().addSubscription(mSubscription);
         } catch (Exception e) {
-            Log.e(this, e);
             markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         }
     }
@@ -413,7 +405,6 @@ public class PayProxy extends SingletonBase {
             mSubscription = appTransStatus();
             getPresenter().addSubscription(mSubscription);
         } catch (Exception e) {
-            Log.e(this, e);
             markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         }
     }
@@ -426,8 +417,7 @@ public class PayProxy extends SingletonBase {
                 .doOnSubscribe(() -> {
                     try {
                         getView().setTitle(mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
-                    } catch (Exception e) {
-                        Log.e(this, e);
+                    } catch (Exception ignored) {
                     }
                 })
                 .subscribe(this::onTransStatusSuccess, this::onTransStatusError);
@@ -614,9 +604,9 @@ public class PayProxy extends SingletonBase {
                 showPassword(pActivity);
             }
 
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            Timber.d(e, "Exception startPasswordFlow");
             showPassword(pActivity);
-            Log.e(this, ex);
         }
     }
 
@@ -624,7 +614,7 @@ public class PayProxy extends SingletonBase {
         try {
             showPassword(getActivity());
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception showPassword");
             markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         }
     }
@@ -633,7 +623,7 @@ public class PayProxy extends SingletonBase {
         try {
             mAuthenActor.showPasswordPopup(pActivity, mChannel);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception showPassword");
             markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
         }
     }
@@ -642,7 +632,7 @@ public class PayProxy extends SingletonBase {
         try {
             return mAuthenActor.showFingerPrint(pActivity);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception showFingerPrint");
             Timber.d("use password instead of fingerprint");
             return false;
         }
@@ -666,7 +656,7 @@ public class PayProxy extends SingletonBase {
     }
 
     public void OnTransEvent(Object... pEventData) throws Exception {
-        Log.d(this, "on trans event", pEventData);
+        Timber.d("on trans event %s", GsonUtils.toJsonString(pEventData));
         if (pEventData == null || pEventData.length < 2) {
             Timber.d("trans event invalid");
             return;
@@ -683,7 +673,7 @@ public class PayProxy extends SingletonBase {
 
     private void processSuccessTransNotification(SdkSuccessTransEvent pEvent) {
         if (!Constants.TRANSACTION_SUCCESS_NOTIFICATION_TYPES.contains(pEvent.notification_type)) {
-            Log.d(this, "notification type is not accepted for this kind of transaction", pEvent.notification_type);
+            Timber.d("notification type is not accepted for this kind of transaction %s", pEvent.notification_type);
             return;
         }
         if (pEvent.transid != Long.parseLong(mTransId)) {
@@ -735,10 +725,9 @@ public class PayProxy extends SingletonBase {
             return;
         }
         if (!TextUtils.isEmpty(pHashPassword)) {
-            Log.d(this, "start submit trans pw", pHashPassword);
             submitOrder(pHashPassword);
         } else {
-            Log.e(this, "empty password");
+            Timber.w("empty password");
         }
     }
 
@@ -756,27 +745,23 @@ public class PayProxy extends SingletonBase {
             try {
                 showPassword(getActivity());
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception onCompleteFingerPrint");
                 markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
             }
         } else {
             //submit password
-            Log.d(this, "start submit trans pw", pHashPassword);
             submitOrder(pHashPassword);
         }
     }
 
     public void onErrorFingerPrint() {
         try {
-            getView().showInfoDialog(mContext.getResources().getString(R.string.sdk_fingerprint_error_suggest_password_mess), new ZPWOnEventDialogListener() {
-                @Override
-                public void onOKEvent() {
-                    try {
-                        showPassword(getActivity());
-                    } catch (Exception e) {
-                        Log.e(this, e);
-                        markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
-                    }
+            getView().showInfoDialog(mContext.getResources().getString(R.string.sdk_fingerprint_error_suggest_password_mess), () -> {
+                try {
+                    showPassword(getActivity());
+                } catch (Exception e) {
+                    Timber.d(e, "Exception onErrorFingerPrint");
+                    markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
                 }
             });
         } catch (Exception e) {

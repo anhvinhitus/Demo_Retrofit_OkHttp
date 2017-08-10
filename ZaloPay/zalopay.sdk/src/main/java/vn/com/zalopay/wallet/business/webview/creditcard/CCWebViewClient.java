@@ -15,7 +15,6 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
@@ -115,8 +114,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
         if (getAdapter() != null) {
             try {
                 getAdapter().getView().hideLoading();
-            } catch (Exception e) {
-                Log.e(this, e);
+            } catch (Exception ignored) {
             }
             // BIDVWebFlow(null, url, view);
         }

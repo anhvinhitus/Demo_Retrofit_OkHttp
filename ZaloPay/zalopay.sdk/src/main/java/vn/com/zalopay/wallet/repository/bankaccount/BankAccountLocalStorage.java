@@ -6,14 +6,13 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.ListUtils;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
+import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -69,7 +68,6 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
 
     @Override
     public void saveResponse(String pUserId, BankAccountListResponse pResponse) {
-        Log.d(this, "start save bank account list", pResponse);
         if (pResponse == null || pResponse.returncode != 1) {
             Timber.d("stop save bank account cache because result fail");
             return;
@@ -83,7 +81,7 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
         try {
             checksum = mSharedPreferences.getBankAccountCheckSum();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getCheckSum");
         }
         return !TextUtils.isEmpty(checksum) ? checksum : "";
     }
@@ -94,7 +92,7 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
         try {
             bankAccounts = mSharedPreferences.getBankAccountList(userid);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getBankAccountList");
         }
         return bankAccounts;
     }
@@ -130,7 +128,7 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
                 return true;
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception needUpdate");
         }
         return false;
     }

@@ -11,10 +11,7 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.BaseTask;
-import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -22,6 +19,8 @@ import vn.com.zalopay.wallet.event.SdkOrderStatusEvent;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
+import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 /***
  * get transaction status class
@@ -102,11 +101,11 @@ public class GetStatus extends BaseTask<StatusResponse> {
         }
 
         try {
-            if(mAdapter == null){
+            if (mAdapter == null) {
                 return;
             }
             ChannelFragment fragment = mAdapter.getView();
-            if(fragment == null){
+            if (fragment == null) {
                 return;
             }
             fragment.showRetryDialog(pMessage, new ZPWOnEventConfirmDialogListener() {
@@ -140,8 +139,7 @@ public class GetStatus extends BaseTask<StatusResponse> {
             } else {
                 mAdapter.getView().hideLoading();
             }
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
     }
 
@@ -243,7 +241,6 @@ public class GetStatus extends BaseTask<StatusResponse> {
             GetStatusShare.shared().onPrepareParamsGetStatus(String.valueOf(mAppId), mDataParams, mUserInfo, mTransID);
             return true;
         } catch (Exception e) {
-            Log.e(this, e);
             onRequestFail(e);
             return false;
         }

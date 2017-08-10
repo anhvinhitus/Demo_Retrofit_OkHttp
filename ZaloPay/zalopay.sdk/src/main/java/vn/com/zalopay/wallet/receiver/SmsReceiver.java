@@ -9,7 +9,6 @@ import android.telephony.SmsMessage;
 import android.text.TextUtils;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
 
@@ -86,7 +85,7 @@ public class SmsReceiver extends BroadcastReceiver {
         try {
             prepareMessageAndSendBroadCast(extras);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception onReceive");
         }
     }
 }

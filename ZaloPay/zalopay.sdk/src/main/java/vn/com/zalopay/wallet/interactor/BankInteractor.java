@@ -15,7 +15,6 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
@@ -160,7 +159,6 @@ public class BankInteractor implements BankStore.Interactor {
             }
             return Observable.just(supportBank);
         } catch (Exception e) {
-            Log.e(this, e);
             return Observable.error(e);
         }
     }
@@ -305,7 +303,6 @@ public class BankInteractor implements BankStore.Interactor {
             }
             return Observable.just(withDrawBanks);
         } catch (Exception e) {
-            Log.e(this, e);
             return Observable.error(e);
         }
     }

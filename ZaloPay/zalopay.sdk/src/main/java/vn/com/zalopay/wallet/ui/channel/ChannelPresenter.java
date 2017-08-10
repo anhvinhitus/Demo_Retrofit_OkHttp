@@ -25,7 +25,6 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
@@ -517,7 +516,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         try {
             getViewOrThrow().showSnackBar(message, btnActionText, duration, mOnCloseSnackBarListener);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception showNetworkOfflineSnackBar");
         }
     }
 
@@ -560,8 +559,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     private void onExit(String pMessage, boolean showDialog) {
         try {
             getViewOrThrow().hideLoading();
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         //just exit without show dialog.
         if (!showDialog) {
@@ -576,7 +574,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         try {
             getViewOrThrow().showError(message);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.w(e, "Exception onExit");
         }
     }
 

@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.ImageView;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
@@ -102,18 +100,15 @@ public class CardNumberFragment extends CreditCardFragment {
 
             }
             // get height when iconQuestion loadconplete
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        FrameLayout.LayoutParams virtualParams = new FrameLayout.LayoutParams(width + mImageViewQuestion.getWidth(), mImageViewQuestion.getHeight() + 20);
-                        mVirtualView.setLayoutParams(virtualParams);
-                        mRootView.removeView(mVirtualView);
-                        mRootView.addView(mVirtualView);
-                        mRootView.requestLayout();
-                    } catch (Exception e) {
-                        Log.e(this, e);
-                    }
+            new Handler().postDelayed(() -> {
+                try {
+                    FrameLayout.LayoutParams virtualParams = new FrameLayout.LayoutParams(width + mImageViewQuestion.getWidth(), mImageViewQuestion.getHeight() + 20);
+                    mVirtualView.setLayoutParams(virtualParams);
+                    mRootView.removeView(mVirtualView);
+                    mRootView.addView(mVirtualView);
+                    mRootView.requestLayout();
+                } catch (Exception e) {
+                    Timber.d(e, "Exception showQuestionIcon");
                 }
             }, 100);
         }
@@ -204,7 +199,6 @@ public class CardNumberFragment extends CreditCardFragment {
     @Override
     public String getError() {
         String errorMess = null;
-
         if (mCardNumberView != null && mCardNumberView.getTextInputLayout() != null) {
             errorMess = (String) (mCardNumberView.getTextInputLayout()).getHint();
             Object tag = mCardNumberView.getTextInputLayout().getTag();
@@ -212,28 +206,23 @@ public class CardNumberFragment extends CreditCardFragment {
                 errorMess = null;
             }
         }
-
         //this is not error hint,it is detected bank name
         String warning = null;
         try {
             warning = getPaymentAdapter().getGuiProcessor().warningCardExist();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception warningCardExist");
         }
         if (!TextUtils.isEmpty(errorMess) && !errorMess.equalsIgnoreCase(warning)) {
             try {
                 if ((getPaymentAdapter().isATMFlow() && (BankDetector.getInstance().detected()
                         || CreditCardDetector.getInstance().detected()))) {
                     errorMess = null;
-
                 } else if (getPaymentAdapter().isCCFlow() && (CreditCardDetector.getInstance().detected()
                         || BankDetector.getInstance().detected())) {
                     errorMess = null;
                 }
-
             } catch (Exception e) {
-                Log.e(this, e);
-
                 errorMess = null;
             }
         }

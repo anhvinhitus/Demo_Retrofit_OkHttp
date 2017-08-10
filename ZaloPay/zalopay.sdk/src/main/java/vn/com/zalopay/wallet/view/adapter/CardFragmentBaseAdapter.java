@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardCVVFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardExpiryFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardIssueFragment;

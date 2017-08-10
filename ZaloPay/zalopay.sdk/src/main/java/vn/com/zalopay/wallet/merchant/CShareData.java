@@ -10,7 +10,6 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -66,7 +65,7 @@ public class CShareData extends SingletonBase {
                 String json = ResourceManager.loadJsonConfig();
                 mConfigFromServer = (new DConfigFromServer()).fromJsonString(json);
             } catch (Exception e) {
-                Log.e("===loadConfigBundle===", e);
+                Timber.d(e, "Exception loadConfigBundle");
             }
         }
         return mConfigFromServer;
@@ -98,7 +97,6 @@ public class CShareData extends SingletonBase {
 
     @UiThread
     private void sendNotifyBankAccountFinishToSDK(Object... pObject) {
-        Log.d(this, "start send notify finish link/unlink bank account into sdk", pObject);
         ChannelActivity activity = BaseActivity.getChannelActivity();
         if (activity != null && !activity.isFinishing() && activity.getWorkFlow() instanceof AccountLinkWorkFlow) {
             ((AccountLinkWorkFlow) activity.getWorkFlow()).onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
@@ -124,7 +122,6 @@ public class CShareData extends SingletonBase {
     @UiThread
     private void sendNotifyTransactionFinishIntoSDK(Object... pObject) {
         try {
-            Log.d(this, "start send notify finish transaction into sdk", pObject);
             SdkSuccessTransEvent successTransEvent = getSuccessTransEvent(pObject);
             if (successTransEvent != null) {
                 SDKApplication
@@ -181,7 +178,7 @@ public class CShareData extends SingletonBase {
 
             if (successPayment && !TextUtils.isEmpty(transactionID)) {
                 SdkPromotion promotion = SdkPromotion.shared();
-                if(promotion.showing()){
+                if (promotion.showing()) {
                     Timber.d("There are a showing promotion popup - skip render again");
                     return;
                 }

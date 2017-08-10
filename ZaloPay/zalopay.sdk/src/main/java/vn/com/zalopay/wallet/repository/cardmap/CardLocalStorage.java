@@ -6,14 +6,13 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.ListUtils;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
+import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -47,7 +46,7 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
         try {
             checksum = mSharedPreferences.getCardInfoCheckSum();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getCheckSum");
         }
         return !TextUtils.isEmpty(checksum) ? checksum : "";
     }
@@ -58,7 +57,7 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
         try {
             cardKeyList = mSharedPreferences.getMapCardKeyList(userid);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getCardKeyList");
         }
         return !TextUtils.isEmpty(cardKeyList) ? cardKeyList : "";
     }
@@ -97,7 +96,7 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
                 return true;
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception needUpdate");
         }
         return false;
     }
@@ -131,7 +130,6 @@ public class CardLocalStorage extends AbstractLocalStorage implements CardStore.
 
     @Override
     public void saveResponse(String pUserId, CardInfoListResponse pResponse) {
-        Log.d(this, "start save card info to cache", pResponse);
         if (pResponse == null || pResponse.returncode != 1) {
             Timber.d("stop save card info cache because result fail");
             return;

@@ -8,7 +8,6 @@ import android.widget.EditText;
 import rx.Subscription;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -132,7 +131,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNumberFragment.class.getName());
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
             return 0;
         }
@@ -140,7 +139,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
             try {
                 return mCardAdapter.getIndexOfFragment(CardExpiryFragment.class.getName());
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
             return 1;
         }
@@ -149,7 +148,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
             try {
                 return mCardAdapter.getIndexOfFragment(CardCVVFragment.class.getName());
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
             return 2;
         }
@@ -158,7 +157,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNameFragment.class.getName());
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
             return 3;
         }

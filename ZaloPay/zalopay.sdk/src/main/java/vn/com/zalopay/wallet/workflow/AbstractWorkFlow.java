@@ -34,7 +34,6 @@ import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.api.task.SendLogTask;
 import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
@@ -161,7 +160,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                                     try {
                                         getGuiProcessor().reloadUrl();
                                     } catch (Exception e) {
-                                        Log.e(this, e);
+                                        Timber.d(e, "Exception reload url");
                                     }
                                 }
                             });
@@ -956,8 +955,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         if (isNeedCloseSDK && !ConnectionUtil.isOnline(mContext)) {
             try {
                 SdkUtils.hideSoftKeyboard(mContext, getActivity());
-            } catch (Exception e) {
-                Log.e(this, e);
+            } catch (Exception ignored) {
             }
             String offlineMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getOfflineMessage(mContext) :
                     mContext.getResources().getString(R.string.sdk_trans_networking_offine_mess);
@@ -999,7 +997,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             mTransactionAdapter.getTransactionStatus(pTransID, pCheckData, pMessage);
         } catch (Exception e) {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
-            Log.e(this, e);
         }
     }
 
@@ -1270,7 +1267,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             }
             getActivity().finish();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception terminate");
+            ;
         }
         Timber.d("callback transaction");
     }

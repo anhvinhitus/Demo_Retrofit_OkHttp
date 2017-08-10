@@ -24,7 +24,6 @@ import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -289,7 +288,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
             try {
                 renderTransDetail(trans_detail_view, isLink, pTransID, order, appName, visibleTrans);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception render trans detail");
             }
         }
         // The inform text would be set from server

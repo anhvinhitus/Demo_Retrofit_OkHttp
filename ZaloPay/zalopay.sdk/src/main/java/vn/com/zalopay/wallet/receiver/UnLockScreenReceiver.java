@@ -7,7 +7,6 @@ import android.content.Intent;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
-import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * receiver to capture unlock screen event

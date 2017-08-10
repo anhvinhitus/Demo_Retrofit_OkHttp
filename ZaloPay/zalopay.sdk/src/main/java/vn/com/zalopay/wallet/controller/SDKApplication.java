@@ -15,7 +15,6 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.constants.TransactionType;
@@ -47,7 +46,7 @@ public class SDKApplication extends Application {
     }
 
     private static void handleUncaughtException(Thread thread, Throwable e) {
-        Log.e("handleUncaughtException", e != null ? GsonUtils.toJsonString(e) : "error");
+        Timber.w(e, "handleUncaughtException in SDK");
         //System.exit(1); // kill off the crashed app
     }
 

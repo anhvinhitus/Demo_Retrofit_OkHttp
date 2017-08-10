@@ -27,7 +27,6 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,6 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.BitmapUtils;
 import vn.com.zalopay.utility.SpinnerUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
@@ -133,7 +131,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                 }
                 closeSpinnerView();
             } catch (Exception ex) {
-                Log.e(this, ex);
+                Timber.d(ex);
             }
         }
     };
@@ -150,7 +148,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         try {
             getView().setVisible(R.id.zpw_threesecurity_webview, pIsUseWebView);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
     }
 
@@ -186,7 +184,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
             try {
                 getView().setVisible(R.id.zpw_vcb_dialog_spinner, false);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
         }, 300);
     }
@@ -244,7 +242,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         try {
             return (LinearLayout) getView().findViewById(R.id.ll_layout_rootview);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
         return null;
     }
@@ -406,7 +404,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
             submitButton = getView().findViewById(R.id.zpw_vcb_submit);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
 
         getLoginHolder().getEdtUsername().addTextChangedListener(mLoginEditTextWatcher);
@@ -754,7 +752,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                 return false;
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
         return false;
     }
@@ -771,7 +769,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                 return false;
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
         return false;
     }
@@ -788,7 +786,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                 return false;
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
         return false;
     }
@@ -805,7 +803,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                 return false;
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
         return false;
     }

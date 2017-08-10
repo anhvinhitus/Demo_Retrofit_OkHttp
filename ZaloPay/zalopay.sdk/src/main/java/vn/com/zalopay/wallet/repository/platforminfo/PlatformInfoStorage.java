@@ -2,24 +2,16 @@ package vn.com.zalopay.wallet.repository.platforminfo;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PlatformInfoResponse;
-import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.merchant.entities.Maintenance;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
-
-import static vn.com.zalopay.wallet.BuildConfig.CC_CODE;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -43,7 +35,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
                 Timber.d("request not success...stopping saving response to cache");
                 return;
             }
-            Log.d(this, "start update platform info to cache", pResponse);
+            Timber.d("start update platform info to cache %s", GsonUtils.toJsonString(pResponse));
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
             setExpireTime(expiredTime);
             mSharedPreferences.setAppVersion(SdkUtils.getAppVersion(GlobalData.getAppContext()));
@@ -57,7 +49,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             maintenance.maintainwithdrawfrom = pResponse.maintainwithdrawfrom;
             maintenance.maintainwithdrawto = pResponse.maintainwithdrawto;
             mSharedPreferences.setMaintenanceWithDraw(GsonUtils.toJsonString(maintenance));
-            Log.d(this, "save maintain withdraw to cache", maintenance);
+            Timber.d("save maintain withdraw to cache %s", GsonUtils.toJsonString(maintenance));
             // need to update cache data if chechsum is changed.
             if (isUpdatePlatformInfoOnCache(pResponse.platforminfochecksum)) {
                 setCheckSum(pResponse.platforminfochecksum);
@@ -112,7 +104,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
             linkInteractor.putCards(userId, pResponse.cardinfochecksum, pResponse.cardinfos);
             linkInteractor.putBankAccounts(userId, pResponse.bankaccountchecksum, pResponse.bankaccounts);
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception save platform info");
         }
     }
 
@@ -122,7 +114,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
         try {
             expiretime = mSharedPreferences.getPlatformInfoExpriedTimeDuration();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getExpireTimeDuration");
         }
         return expiretime;
     }
@@ -133,7 +125,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
         try {
             expiretime = mSharedPreferences.getPlatformInfoExpriedTime();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getExpireTime");
         }
         return expiretime;
     }
@@ -149,7 +141,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
         try {
             checksum = mSharedPreferences.getPlatformInfoCheckSum();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getPlatformInfoCheckSum");
         }
         return checksum;
     }
@@ -160,7 +152,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
         try {
             appVer = mSharedPreferences.getAppVersion();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getAppVersion");
         }
         return appVer;
     }
@@ -176,7 +168,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
         try {
             resourcePath = mSharedPreferences.getUnzipPath();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getResourcePath");
         }
         return resourcePath;
     }
@@ -192,7 +184,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
         try {
             resoureVersion = mSharedPreferences.getResourceVersion();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getResourceVersion");
         }
         return resoureVersion;
     }
@@ -208,7 +200,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
         try {
             checksum = mSharedPreferences.getCardInfoCheckSum();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getCardInfoCheckSum");
         }
         return checksum;
     }
@@ -229,7 +221,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
         try {
             checksum = mSharedPreferences.getBankAccountCheckSum();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getBankAccountCheckSum");
         }
         return checksum;
     }
@@ -245,7 +237,7 @@ public class PlatformInfoStorage extends AbstractLocalStorage implements Platfor
         try {
             userId = mSharedPreferences.getCurrentUserID();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getUserId");
         }
         return userId;
     }

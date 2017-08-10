@@ -13,12 +13,11 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDateEdittext;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
-import vn.com.zalopay.wallet.repository.ResourceManager;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public class VPaymentValidDateEditText extends VPaymentEditText implements IDoActionDateEdittext {
     public static final int FIELD_MONTH = 1;
@@ -106,70 +105,48 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
     @Override
     public boolean isValid() {
         String strMonth = getTextField(FIELD_MONTH);
-
         String strYear = getTextField(FIELD_YEAR);
-
         int month = 0, year = 0;
-
         try {
-            if (!TextUtils.isEmpty(strMonth))
+            if (!TextUtils.isEmpty(strMonth)) {
                 month = Integer.parseInt(strMonth);
-            if (!TextUtils.isEmpty(strYear))
+            }
+            if (!TextUtils.isEmpty(strYear)) {
                 year = Integer.parseInt(strYear);
-        } catch (Exception ex) {
-            Log.e(this, ex);
+            }
+        } catch (Exception e) {
+            Timber.d(e, "Exception valid input");
         }
 
-        if (month <= 0 || year <= 0 || month > 12)
+        if (month <= 0 || year <= 0 || month > 12) {
             return false;
-
+        }
         if (mIsCheckNow) {
             try {
                 if ((year < SdkUtils.getYear())
                         || ((year == SdkUtils.getYear()) && (month < SdkUtils.getMonth()))) {
-                    Timber.d("**** " + mEditTextConfig.id + "NOW NOT MATCH ****");
-
                     return false;
-                } else {
-                    Timber.d("**** " + mEditTextConfig.id + " NOW MATCH ****");
                 }
-
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception valid input");
             }
         }
-        /***
-         * ISSUE DAY MUST LESS THAN TODAY
-         */
-
         if (mIsCheckPass) {
             try {
                 if ((year > SdkUtils.getYear())
                         || ((year == SdkUtils.getYear()) && (month > SdkUtils.getMonth()))) {
-                    Timber.d("**** " + mEditTextConfig.id + "PASS NOT MATCH ****");
                     return false;
-                } else {
-                    Timber.d("**** " + mEditTextConfig.id + " PASS MATCH ****");
                 }
-
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception valid input");
             }
         }
-        /**
-         * MONTH < 12
-         */
-        try {
-            if (month > 12)
-                return false;
-        } catch (Exception e) {
-            Log.e(this, e);
+        //MONTH < 12
+        if (month > 12) {
+            return false;
         }
 
-        /***
-         * check pattern get from bundle
-         */
-
+        //check pattern get from bundle
         if (mIsPattern) {
             ChannelActivity channelActivity = BaseActivity.getChannelActivity();
             if (channelActivity == null || channelActivity.isFinishing()) {
@@ -190,17 +167,12 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
 
             if (mPattern != null) {
                 String text = getString();
-
                 if (text.matches(mPattern)) {
-                    Timber.d("**** " + mEditTextConfig.id + " MATCH ****");
                     return true;
-                } else {
-                    Timber.d("**** " + mEditTextConfig.id + " NOT MATCH ****");
                 }
             }
             return false;
         }
-
         return super.isValid();
     }
 

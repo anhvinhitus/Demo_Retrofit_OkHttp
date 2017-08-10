@@ -15,7 +15,6 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
@@ -49,7 +48,7 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
     }
 
     @Override
-    public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, boolean isInternationalBank,String bankCode) {
+    public MiniPmcTransType getPmcTranstype(long pAppId, @TransactionType int transtype, boolean isBankAcount, boolean isInternationalBank, String bankCode) {
         return this.mLocalStorage.getPmcTranstype(pAppId, transtype, isBankAcount, isInternationalBank, bankCode);
     }
 
@@ -169,8 +168,7 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
                             .getTranstypeCheckSum(mLocalStorage.getTranstypeCheckSumKey(appId, transtypes[i]));
                 }
             }
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");

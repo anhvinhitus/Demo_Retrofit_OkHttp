@@ -11,13 +11,12 @@ import android.util.AttributeSet;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDrawableEdittext;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
-import vn.com.zalopay.wallet.repository.ResourceManager;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.validation.CardValidation;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
+import vn.com.zalopay.wallet.validation.CardValidation;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public class VPaymentDrawableEditText extends VPaymentEditText implements IDoActionDrawableEdittext {
     public static final char VERTICAL_SEPERATOR = ' ';
@@ -96,20 +95,17 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
                     String text = getString();
 
                     if (text.matches(mPattern)) {
-                        Timber.d("===" + mEditTextConfig.id + "===is match");
+                        Timber.d("id %s is match", mEditTextConfig.id);
                         return true;
                     } else {
-                        Timber.d("===" + mEditTextConfig.id + "===not match");
+                        Timber.d("id %s not match", mEditTextConfig.id);
                     }
                 }
-
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.w(e, "Exception valid input");
             }
-
             return false;
         }
-
         return super.isValid();
     }
 

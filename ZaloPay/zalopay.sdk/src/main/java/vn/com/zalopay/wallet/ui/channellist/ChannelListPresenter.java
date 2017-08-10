@@ -31,7 +31,6 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.entity.MultiValueMap;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
@@ -320,8 +319,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             if (offline) {
                 getViewOrThrow().showOpenSettingNetwokingDialog(null);
             }
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         return offline;
     }
@@ -1063,7 +1061,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnNetworkChanged(SdkNetworkEvent networkEvent) {
-        Log.d(this, "networking is changed ", networkEvent.online);
         if (!networkEvent.online) {
             showNetworkOfflineSnackBar();
         } else {
@@ -1088,8 +1085,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     mContext.getResources().getString(R.string.sdk_offline_networking_mess),
                     mContext.getResources().getString(R.string.sdk_turn_on_networking_mess),
                     TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
     }
 

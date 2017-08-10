@@ -12,7 +12,6 @@ import java.lang.reflect.Field;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
@@ -71,11 +70,11 @@ public abstract class CreditCardFragment extends Fragment {
         }
     }
 
-    public CardGuiProcessor getGuiProcessor() throws Exception{
-        if(mGuiProcessor != null && mGuiProcessor.get() != null){
+    public CardGuiProcessor getGuiProcessor() throws Exception {
+        if (mGuiProcessor != null && mGuiProcessor.get() != null) {
             return mGuiProcessor.get();
         }
-        if(getPaymentAdapter() == null){
+        if (getPaymentAdapter() == null) {
             throw new Exception("Invalid paymentflow");
         }
         mGuiProcessor = new WeakReference<>(getPaymentAdapter().getGuiProcessor());

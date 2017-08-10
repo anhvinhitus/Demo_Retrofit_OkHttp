@@ -8,9 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.api.ServiceManager;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -61,7 +60,7 @@ public class SingletonLifeCircleManager {
      * active objects.
      */
     private static void dispose(Class<?> clazz) {
-        Log.i("RELEASE_STATIC_OBJ", "======== Considering to :" + clazz.getName());
+        Timber.d("RELEASE_STATIC_OBJ Considering to : %s", clazz.getName());
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             if (Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers())
@@ -71,27 +70,9 @@ public class SingletonLifeCircleManager {
                         field.setAccessible(true);
                     }
                     field.set(null, null);
-                    Log.i("RELEASE_STATIC_OBJ", "**** Release " + field.getName());
+                    Timber.d("RELEASE_STATIC_OBJ Release %s", field.getName());
                 } catch (Exception e) {
-                    Timber.d("RELEASE_STATIC_OBJ: %s", e.getMessage());
-                }
-            }
-        }
-    }
-
-    private static void disposeNoStaticObject(Class<?> clazz) {
-        Log.i("RELEASE_OBJ", "======== Considering to :" + clazz.getName());
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            if (!Modifier.isFinal(field.getModifiers()) && !field.getType().isPrimitive()) {
-                try {
-                    if (Modifier.isPrivate(field.getModifiers())) {
-                        field.setAccessible(true);
-                    }
-                    field.set(null, null);
-                    Log.i("RELEASE_OBJ", "**** Release " + field.getName());
-                } catch (Exception e) {
-                    Timber.d("RELEASE_OBJ: %s", e.getMessage());
+                    Timber.d(e, "RELEASE_STATIC_OBJ");
                 }
             }
         }

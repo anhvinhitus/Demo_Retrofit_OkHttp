@@ -9,7 +9,6 @@ import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
@@ -68,7 +67,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                                 defaultPmcTranstype.resetToDefault();
                             }
                             mSharedPreferences.setPmcConfig(pmcKey, GsonUtils.toJsonString(defaultPmcTranstype));//set 1 channel
-                            Log.d(this, "save channel to cache key " + pmcKey, defaultPmcTranstype);
+                            Timber.d("save channel to cache key %s value %s", pmcKey, GsonUtils.toJsonString(defaultPmcTranstype));
                         }
                         //min amount support of atm
                         if (miniPmcTransType.isAtmChannel() && miniPmcTransType.minvalue < bankMinValueSupport) {
@@ -87,13 +86,13 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                         StringBuilder pmcId = new StringBuilder();
                         pmcId.append(pmcKey).append(Constants.UNDERLINE).append(miniPmcTransType.bankcode);
                         mSharedPreferences.setPmcConfig(pmcId.toString(), GsonUtils.toJsonString(miniPmcTransType));//set 1 channel
-                        Log.d(this, "save channel to cache key " + pmcId.toString(), miniPmcTransType);
+                        Timber.d("save channel to cache key %s value %s", pmcId.toString(), GsonUtils.toJsonString(miniPmcTransType));
                     }
                     mSharedPreferences.setPmcTranstypeKeyList(appInfoTranstypeKey, transtypePmcIdList);//set ids channel list
                     mSharedPreferences.setTranstypePmcCheckSum(appInfoTranstypeKey, miniPmcTransTypeResponse.checksum); //set transtype checksum
                     mSharedPreferences.setBankMinAmountSupport(appInfoTranstypeKey, bankMinValueSupport);
-                    Log.d(this, "save bank min value support", bankMinValueSupport);
-                    Timber.d("save ids channel list to cache " + transtypePmcIdList.toString());
+                    Timber.d("save bank min value support %s", bankMinValueSupport);
+                    Timber.d("save ids channel list to cache %s", transtypePmcIdList.toString());
                     //save min,max value for each channel.those values is used when user input amount
                     if (transtype == TransactionType.MONEY_TRANSFER || transtype == TransactionType.TOPUP || transtype == TransactionType.WITHDRAW) {
                         if (minValue != MIN_VALUE_CHANNEL) {
@@ -112,10 +111,10 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                 //save app info to cache(id,name,icon...)
                 mSharedPreferences.setApp(String.valueOf(pAppId), GsonUtils.toJsonString(pResponse.info));
                 mSharedPreferences.setCheckSumAppChannel(String.valueOf(pAppId), pResponse.appinfochecksum);
-                Log.d(this, "save app info to cache and update new checksum", pResponse.info);
+                Timber.d("save app info to cache and update new checksum %s", GsonUtils.toJsonString(pResponse.info));
             }
         } catch (Exception ex) {
-            Timber.w(ex.getMessage());
+            Timber.w(ex, "Exception save app info");
         }
     }
 
@@ -133,7 +132,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
                 AppInfo appInfo = getSync(appId);
                 if (appInfo != null) {
                     appInfo.expriretime = getExpireTime(appId);
-                    Log.d(this, "load app info from cache", appInfo);
+                    Timber.d("load app info from cache %s", GsonUtils.toJsonString(appInfo));
                     return Observable.just(appInfo);
                 } else {
                     return Observable.just(null);
@@ -154,11 +153,11 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
         MiniPmcTransType pmcTransType = null;
         try {
             String pmc;
-            if(isBankAcount){
+            if (isBankAcount) {
                 pmc = mSharedPreferences.getBankAccountChannelConfig(pAppId, transtype, bankCode);
-            }else if(isInternationalBank){
+            } else if (isInternationalBank) {
                 pmc = mSharedPreferences.getCreditCardChannelConfig(pAppId, transtype, bankCode);
-            }else{
+            } else {
                 pmc = mSharedPreferences.getATMChannelConfig(pAppId, transtype, bankCode);
             }
             if (!TextUtils.isEmpty(pmc)) {
@@ -202,8 +201,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
     public long getExpireTime(long appId) {
         try {
             return mSharedPreferences.getExpiredTimeAppChannel(String.valueOf(appId));
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         return 0;
     }
@@ -213,8 +211,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
         String checksum = null;
         try {
             checksum = mSharedPreferences.getCheckSumAppChannel(String.valueOf(appId));
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         return !TextUtils.isEmpty(checksum) ? checksum : "";
     }
@@ -224,8 +221,7 @@ public class AppInfoLocalStorage extends AbstractLocalStorage implements AppInfo
         String checksum = null;
         try {
             checksum = mSharedPreferences.getTransypePmcCheckSum(key);
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         return !TextUtils.isEmpty(checksum) ? checksum : "";
     }

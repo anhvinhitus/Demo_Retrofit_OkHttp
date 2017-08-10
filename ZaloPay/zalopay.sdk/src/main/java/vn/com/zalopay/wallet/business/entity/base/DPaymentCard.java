@@ -2,8 +2,6 @@ package vn.com.zalopay.wallet.business.entity.base;
 
 import android.text.TextUtils;
 
-import vn.com.zalopay.wallet.business.data.Log;
-
 public class DPaymentCard {
     protected String cardnumber;
     protected String cardholdername;
@@ -69,7 +67,7 @@ public class DPaymentCard {
         return cardnumber.substring(0, 6) + cardnumber.substring(cardnumber.length() - 4);
     }
 
-    public boolean isValid(){
+    public boolean isValid() {
         return !TextUtils.isEmpty(bankcode) && !TextUtils.isEmpty(cardnumber);
     }
 }

@@ -12,12 +12,11 @@ import java.util.Map;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
+import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 
 /**
  * Created by chucvv on 6/7/17.
@@ -37,8 +36,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
         String checkSumOnCache = null;
         try {
             checkSumOnCache = mSharedPreferences.getCheckSumBankList();
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         return TextUtils.isEmpty(checkSumOnCache) || (!TextUtils.isEmpty(pNewCheckSum) && !checkSumOnCache.equalsIgnoreCase(pNewCheckSum));
     }
@@ -48,8 +46,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
         String checksum = null;
         try {
             checksum = mSharedPreferences.getCheckSumBankList();
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         return !TextUtils.isEmpty(checksum) ? checksum : "";
     }
@@ -61,8 +58,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
             java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
             }.getType();
             bankPrefix = GsonUtils.fromJsonString(mSharedPreferences.getBankPrefix(), type);
-        } catch (Exception e) {
-            Log.e(this, e);
+        } catch (Exception ignored) {
         }
         return bankPrefix;
     }
@@ -73,7 +69,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
         try {
             expireTime = mSharedPreferences.getExpiredBankList();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getExpireTime");
         }
         return expireTime;
     }
@@ -128,7 +124,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
                 BankConfigResponse bankConfigResponse = new BankConfigResponse();
                 bankConfigResponse.bankcardprefixmap = getBankPrefix();
                 bankConfigResponse.expiredtime = getExpireTime();
-                Log.d(this, "load bank list from cache", bankConfigResponse);
+                Timber.d("load bank list from cache %s", GsonUtils.toJsonString(bankConfigResponse));
                 return Observable.just(bankConfigResponse);
             } catch (Exception e) {
                 return Observable.error(e);
@@ -142,7 +138,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
         try {
             bankCodeList = mSharedPreferences.getBankCodeList();
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getBankCodeList");
         }
         return bankCodeList;
     }
@@ -154,13 +150,13 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
             try {
                 bankConfig = mSharedPreferences.getBankConfig(bankCode);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception getBankConfig");
             }
             if (!TextUtils.isEmpty(bankConfig)) {
                 return GsonUtils.fromJsonString(bankConfig, BankConfig.class);
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getBankConfig");
         }
         return null;
     }

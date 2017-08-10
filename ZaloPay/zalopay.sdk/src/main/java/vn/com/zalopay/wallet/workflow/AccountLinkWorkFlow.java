@@ -22,6 +22,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.HashMapUtils;
 import vn.com.zalopay.utility.LayoutUtils;
 import vn.com.zalopay.utility.PaymentUtils;
@@ -31,7 +32,6 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.VcbUtils;
@@ -106,8 +106,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
                     try {
                         SdkUtils.hideSoftKeyboard(mContext, getActivity());
-                    } catch (Exception e) {
-                        Log.e(this, e);
+                    } catch (Exception ignored) {
                     }
                     linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
                     return;
@@ -127,35 +126,28 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     private TreeMap<String, String> mHashMapPhoneNum;
     private TreeMap<String, String> mHashMapPhoneNumUnReg;
     private List<BankAccount> mBankAccountList = null;
-    private Action1<Boolean> loadBankAccountSubscriber = new Action1<Boolean>() {
-        @Override
-        public void call(Boolean aBoolean) {
-            Timber.d("load bank account finish");
-            hideLoadingDialog();
-            try {
-                loadBankAccountSuccess();
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
+    private Action1<Boolean> loadBankAccountSubscriber = aBoolean -> {
+        Timber.d("load bank account finish");
+        hideLoadingDialog();
+        try {
+            loadBankAccountSuccess();
+        } catch (Exception e) {
+            Timber.d(e, "Exception loadBankAccountSuccess");
         }
     };
-    private Action1<Throwable> loadBankAccountException = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            hideLoadingDialog();
-            Log.d(this, "load bank account error", throwable);
-            String message = TransactionHelper.getMessage(mContext, throwable);
-            if (TextUtils.isEmpty(message)) {
-                message = mContext.getResources().getString(R.string.sdk_linkacc_error_networking_load_mapbankaccount_mess);
-            }
-            if (mPaymentInfoHelper.bankAccountLink()) {
-                linkAccFail(message, mTransactionID);
-            } else {
-                try {
-                    unlinkAccFail(message, mTransactionID);
-                } catch (Exception e) {
-                    Log.e(this, e);
-                }
+    private Action1<Throwable> loadBankAccountException = throwable -> {
+        hideLoadingDialog();
+        String message = TransactionHelper.getMessage(mContext, throwable);
+        if (TextUtils.isEmpty(message)) {
+            message = mContext.getResources().getString(R.string.sdk_linkacc_error_networking_load_mapbankaccount_mess);
+        }
+        if (mPaymentInfoHelper.bankAccountLink()) {
+            linkAccFail(message, mTransactionID);
+        } else {
+            try {
+                unlinkAccFail(message, mTransactionID);
+            } catch (Exception e) {
+                Timber.d(e, "Exception loadBankAccountException");
             }
         }
     };
@@ -170,10 +162,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
                 .compose(SchedulerHelper.applySchedulers())
                 .subscribe(loadBankAccountSubscriber, loadBankAccountException);
-        try {
-            getPresenter().addSubscription(subscription);
-        } catch (Exception e) {
-            Log.e(this, e);
+        if (mCompositeSubscription != null) {
+            mCompositeSubscription.add(subscription);
         }
     };
     private int mNumAllowLoginWrong;
@@ -184,8 +174,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
                     try {
                         SdkUtils.hideSoftKeyboard(mContext, getActivity());
-                    } catch (Exception e) {
-                        Log.e(this, e);
+                    } catch (Exception ignored) {
                     }
                     linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
                     return;
@@ -305,10 +294,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             getView().setTitle(mContext.getResources().getString(R.string.sdk_vcb_unlink_acc_title));
             try {
                 mBankAccountList = mLinkInteractor.getBankAccountList(mPaymentInfoHelper.getUserId());
-            } catch (Exception e) {
-                Log.e(this, e);
+            } catch (Exception ignored) {
             }
-
         } else {
             throw new Exception(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
         }
@@ -371,7 +358,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 linkAccGuiProcessor.showKeyBoardOnEditText((EditText) view);
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception forceVirtualKeyboard");
         }
     }
 
@@ -383,9 +370,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             json.put("firstaccountno", StringUtil.getFirstStringWithSize(pAccNum, 6));
             json.put("lastaccountno", StringUtil.getLastStringWithSize(pAccNum, 4));
         } catch (JSONException e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception submitMapAccount");
         }
-
         String jsonSt = json.toString();
         SubmitMapAccountTask submitMapAccount = new SubmitMapAccountTask(this, jsonSt);
         submitMapAccount.makeRequest();
@@ -425,7 +411,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 mPaymentInfoHelper.setMapBank(dBankAccountList.get(0));
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception linkAccSuccess");
         }
         String accountInfo = getAccNumValue();
         String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
@@ -454,7 +440,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 getView().setVisible(R.id.ll_test_rootview, true);
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception linkAccFail");
         }
         PaymentSnackBar.getInstance().dismiss();
     }
@@ -490,7 +476,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception unlinkAccFail");
         }
     }
 
@@ -505,7 +491,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             List<DOtpReceiverPattern> patternList = ResourceManager.getInstance(null).getOtpReceiverPattern(mPaymentInfoHelper.getLinkAccBankCode());
             if (patternList != null && patternList.size() > 0) {
                 for (DOtpReceiverPattern otpReceiverPattern : patternList) {
-                    Log.d(this, "checking pattern", otpReceiverPattern);
+                    Timber.d("checking pattern %s", GsonUtils.toJsonString(otpReceiverPattern));
                     if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
                         int start;
                         pOtp = pOtp.trim();
@@ -535,7 +521,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 }
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception autoFillOtp");
         }
     }
 
@@ -606,7 +592,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                     }
                 }
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e, "Exception validate_Phone_Zalopay_Vcb");
             }
         }
         return false;
@@ -875,15 +861,10 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText(null);
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
 
-                                    new Handler().postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                SdkUtils.focusAndSoftKeyboard(getActivity(), linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha());
-                                                Timber.d("mOnFocusChangeListener Link Acc");
-                                            } catch (Exception e) {
-                                                Log.e(this, e);
-                                            }
+                                    new Handler().postDelayed(() -> {
+                                        try {
+                                            SdkUtils.focusAndSoftKeyboard(getActivity(), linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha());
+                                        } catch (Exception ignored) {
                                         }
                                     }, 100);
                                 }
@@ -938,8 +919,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                             hideLoadingDialog();
                             try {
                                 unlinkAccFail(Message, mTransactionID);
-                            } catch (Exception e) {
-                                Log.e(this, e);
+                            } catch (Exception ignored) {
                             }
                         }
                         return null;
@@ -1041,8 +1021,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                                                     }
                                                 }
                                             });
-                                } catch (Exception e) {
-                                    Log.e(this, e);
+                                } catch (Exception ignored) {
                                 }
 
                             }/* else {
@@ -1143,7 +1122,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                     mWebViewProcessor = new LinkAccWebViewClient(this,
                             (PaymentWebView) getView().findViewById(R.id.zpw_threesecurity_webview));
                 } catch (Exception e) {
-                    Log.e(this, e);
+                    Timber.d(e);
                 }
             } else {
                 // hide webview && show web parse

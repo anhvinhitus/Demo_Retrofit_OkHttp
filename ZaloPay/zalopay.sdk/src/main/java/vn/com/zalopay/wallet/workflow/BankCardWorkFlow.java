@@ -16,7 +16,6 @@ import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
@@ -153,7 +152,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
 
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
-        Timber.d("sender " + pSender + " otp " + pOtp);
+        Timber.d("sender %s otp %s", pSender, pOtp);
         try {
             if (getGuiProcessor() == null || !(getGuiProcessor().getCardFinder() instanceof BankDetector)) {
                 return;
@@ -202,7 +201,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                         }
                         //clear whitespace and - character
                         String otp = PaymentUtils.clearOTP(validOtp);
-                        Timber.d("otp after split by space " + validOtp);
+                        Timber.d("otp after split by space %s", validOtp);
                         //check it whether length match length of otp in config
                         if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
                             continue;
@@ -220,7 +219,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 }
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception autoFillOtp");
         }
     }
 

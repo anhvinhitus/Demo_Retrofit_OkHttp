@@ -12,7 +12,6 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
@@ -142,7 +141,6 @@ public abstract class AbstractChannelLoader {
             }
             for (BankAccount bankAccount : bankAccounts) {
                 MiniPmcTransType activeChannel = mAppinfoInteractor.getPmcConfig(mAppId, mTranstype, bankAccount.bankcode);
-                Log.d(this, "active channel ", activeChannel);
                 if (activeChannel != null) {
                     //check this map card/map bankaccount is support or not
                     allowPaymentChannel(activeChannel);

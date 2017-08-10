@@ -36,7 +36,6 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
@@ -174,7 +173,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             try {
                 moveScrollViewToCurrentFocusView();
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
         }
     };
@@ -225,7 +224,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 populateTextOnCardViewNoPaintCard();
                 getAdapter().detectCard(mCardNumber);
             } catch (Exception e) {
-                Log.e(this, e);
+                Timber.d(e);
             }
         }
     };
@@ -256,7 +255,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 try {
                     isValidateOK = validateInputOnTextChange();
                 } catch (Exception e) {
-                    Log.e(this, e);
+                    Timber.d(e);
                 }
             }
         }
@@ -600,12 +599,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     //disable next button
                     disableNext();
                 } catch (Exception e) {
-                    Log.e(this, e);
+                    Timber.d(e);
                 }
                 return false;
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
         return true;
     }
@@ -631,14 +630,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     private void clearHighLightOnCardView() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    clearHighLight();
-                } catch (Exception e) {
-                    Log.e(this, e);
-                }
+        new Handler().postDelayed(() -> {
+            try {
+                clearHighLight();
+            } catch (Exception e) {
+                Timber.d(e);
             }
         }, 100);
     }
@@ -778,20 +774,17 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     private void showKeyBoardAndResizeButtonsIfNotSwitchChannel() throws Exception {
         if (!getAdapter().getPresenter().isSwitchAdapter()) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        //dialog process is showing. so when process dialog close, need to show keyboard again.
-                        if (DialogManager.showingLoadDialog()) {
-                            return;
-                        }
-                        showKeyBoardOnCardNumberView();
-                        moveScrollViewToCurrentFocusView();
-                        getAdapter().getPresenter().setSwitchAdapter(false);
-                    } catch (Exception e) {
-                        Log.e(this, e);
+            new Handler().postDelayed(() -> {
+                try {
+                    //dialog process is showing. so when process dialog close, need to show keyboard again.
+                    if (DialogManager.showingLoadDialog()) {
+                        return;
                     }
+                    showKeyBoardOnCardNumberView();
+                    moveScrollViewToCurrentFocusView();
+                    getAdapter().getPresenter().setSwitchAdapter(false);
+                } catch (Exception e) {
+                    Timber.d(e);
                 }
             }, 300);
         }
@@ -877,7 +870,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 autoMoveToNextFragment();
             }
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
     }
 
@@ -1749,7 +1742,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     }
                     disableNext();
                 } catch (Exception e) {
-                    Log.e(this, e);
+                    Timber.d(e);
                 }
             }
             //user delete input
@@ -1779,7 +1772,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             lastValue = pCardName;
 
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e);
         }
         isInputValidWithWhiteSpace = true;
         return true;

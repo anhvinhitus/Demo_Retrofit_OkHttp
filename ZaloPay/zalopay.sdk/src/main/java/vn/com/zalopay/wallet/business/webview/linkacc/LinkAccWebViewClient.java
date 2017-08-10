@@ -20,7 +20,6 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
@@ -35,6 +34,7 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.repository.ResourceManager;
+import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.workflow.AccountLinkWorkFlow;
 
@@ -108,7 +108,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        Log.i("onPageStarted: ", url);
         isRedirected = false;
 
     }
@@ -160,27 +159,28 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        Log.e("Error", "++++ Current error SSL on page: " + error.toString());
         try {
-            getAdapter().getView().hideLoading();
-            getAdapter().getView().showConfirmDialog(
+            if (getAdapter() == null) {
+                return;
+            }
+            ChannelFragment channelFragment = getAdapter().getView();
+            if (channelFragment == null) {
+                return;
+            }
+            channelFragment.hideLoading();
+            channelFragment.showConfirmDialog(
                     GlobalData.getAppContext().getString(R.string.sdk_parsewebsite_sslerror_mess),
                     GlobalData.getAppContext().getString(R.string.dialog_continue_button),
                     GlobalData.getAppContext().getString(R.string.dialog_close_button),
                     new ZPWOnEventConfirmDialogListener() {
                         @Override
                         public void onCancelEvent() {
-                            mAdapter.onEvent(EEventType.ON_FAIL);
                             try {
+                                mAdapter.onEvent(EEventType.ON_FAIL);
                                 mAdapter.getActivity().onBackPressed();
-                            } catch (Exception e) {
-                                Log.e(this, e);
-                            }
-                            try {
                                 SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
                                 reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, error.toString());
-                            } catch (Exception e) {
-                                Log.e(this, e);
+                            } catch (Exception ignored) {
                             }
                         }
 
@@ -190,7 +190,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                         }
                     });
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception onReceivedSslError");
         }
     }
 

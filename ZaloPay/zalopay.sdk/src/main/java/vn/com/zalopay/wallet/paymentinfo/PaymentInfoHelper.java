@@ -9,7 +9,6 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
@@ -297,7 +296,7 @@ public class PaymentInfoHelper extends SingletonBase {
                 setResult(PaymentStatus.INVALID_DATA);
             }
         } catch (Exception e) {
-            Log.e("updateTransactionResult", e);
+            Timber.w(e, "Exception updateTransactionResult");
         }
     }
 
@@ -407,7 +406,6 @@ public class PaymentInfoHelper extends SingletonBase {
         try {
             isOffNetworking = !ConnectionUtil.isOnline(BaseActivity.getCurrentActivity());
         } catch (Exception ex) {
-            Log.e("updateResultNetworkingError", ex);
             isOffNetworking = false;
         }
         if (isOffNetworking &&

@@ -18,13 +18,12 @@ import android.view.ViewParent;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IBaseDoActionEdittext;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public class VPaymentEditText extends TextInputEditText {
     public static final int OFFSET = (int) GlobalData.getAppContext().getResources().getDimension(R.dimen.zpw_offset_drawable_right);
@@ -131,12 +130,10 @@ public class VPaymentEditText extends TextInputEditText {
      * @return
      */
     protected Drawable getDrawable(String pIconName) {
-        //load bitmap
         try {
             return new BitmapDrawable(getResources(), ResourceManager.getImage(pIconName));
-
         } catch (Exception ex) {
-            Log.e(this, ex);
+            Timber.d(ex, "Exception getDrawable");
         }
         return null;
     }

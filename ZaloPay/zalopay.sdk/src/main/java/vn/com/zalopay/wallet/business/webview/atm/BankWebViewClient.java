@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.business.webview.atm;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Handler;
@@ -16,10 +17,7 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
-import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptInput;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
@@ -35,6 +33,8 @@ import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
 import vn.com.zalopay.wallet.repository.ResourceManager;
+import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
+import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 
@@ -104,7 +104,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
         matchAndRunJs(mCurrentUrl, EJavaScriptType.HIT, false);
     }
 
-    public DAtmScriptInput genJsInput() throws Exception{
+    public DAtmScriptInput genJsInput() throws Exception {
         DAtmScriptInput input = new DAtmScriptInput();
 
         if (getAdapter() != null && getAdapter().getGuiProcessor() != null) {
@@ -173,7 +173,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
             String jsContent;
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
                 jsContent = ResourceManager.getJavascriptContent(jsFile);
-                if(TextUtils.isEmpty(jsContent)){
+                if (TextUtils.isEmpty(jsContent)) {
                     continue;
                 }
                 jsContent = String.format(jsContent, pJsInput);
@@ -187,23 +187,22 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     public void onAjax(long pLastStartPageTime) {
         if (mIsLoadingFinished && mLastStartPageTime == pLastStartPageTime) {
-            Log.i(this, "///// onAjax: " + mCurrentUrl);
+            Timber.d("onAjax %s", mCurrentUrl);
             matchAndRunJs(mCurrentUrl, EJavaScriptType.AUTO, true);
         }
     }
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        Log.i(this, "///// onPageStarted: " + url);
-
+        Timber.d("onPageStarted %s", url);
         mStartedtUrl = url;
         mIsLoadingFinished = false;
 
         // Modify this variable to inform that it not run in ajax mode
         mLastStartPageTime++;
-
         //STOP WEBVIEW IF THIS IS THE FINAL STEP (REDIRECT SUCCESS FROM 123PAY)
-        if (mStartedtUrl.contains(GlobalData.getStringResource(RS.string.sdk_website_callback_domain))) {
+        if (!TextUtils.isEmpty(mStartedtUrl) &&
+                mStartedtUrl.contains(GlobalData.getStringResource(RS.string.sdk_website_callback_domain))) {
             view.stopLoading();
         }
     }
@@ -266,14 +265,18 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     @JavascriptInterface
     public void onJsPaymentResult(String pResult) {
-        Log.d(this, "onJsPaymentResult", pResult);
+        Timber.d("onJsPaymentResult %s", pResult);
         mLastStartPageTime++;
         final String result = pResult;
         try {
             if (getAdapter() == null) {
                 return;
             }
-            getAdapter().getActivity().runOnUiThread(() -> {
+            Activity activity = getAdapter().getActivity();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+            activity.runOnUiThread(() -> {
                 DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
                 Timber.d("onJsPaymentResult: %s", GsonUtils.toJsonString(scriptOutput));
                 EEventType eventType = convertPageIdToEvent(mEventID);
@@ -296,7 +299,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
             });
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception on onJsPaymentResult");
         }
     }
 
@@ -359,30 +362,28 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     @JavascriptInterface
     public void getHtml(final String pHtml) {
-        //pHtml = PaymentHtmlParser.getContent(pHtml);
-        Log.d(this, "Html", pHtml);
-        if (getAdapter() == null) {
-            return;
-        }
         try {
-            getAdapter().getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+            //pHtml = PaymentHtmlParser.getContent(pHtml);
+            if (getAdapter() == null) {
+                return;
+            }
+            Activity activity = getAdapter().getActivity();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+            activity.runOnUiThread(() -> {
+                try {
                     String paymentError = GlobalData.getAppContext().getResources().getString(R.string.sdk_report_error_format);
                     if (!TextUtils.isEmpty(paymentError)) {
                         paymentError = String.format(paymentError, null, getCurrentUrl(), pHtml);
                     }
-
-                    try {
-                        SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
-                        reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
-                    } catch (Exception e) {
-                        Log.e(this, e);
-                    }
+                    SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
+                    reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
+                } catch (Exception ignored) {
                 }
             });
         } catch (Exception e) {
-            Log.e(this, e);
+            Timber.d(e, "Exception getHtml");
         }
     }
 }

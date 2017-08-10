@@ -1,11 +1,10 @@
 package vn.com.zalopay.wallet.api.task;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.SendLogImpl;
+import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 
 public class SendLogTask extends BaseTask<BaseResponse> {
     protected UserInfo mUserInfo;
@@ -62,7 +61,6 @@ public class SendLogTask extends BaseTask<BaseResponse> {
             return true;
         } catch (Exception e) {
             onRequestFail(e);
-            Log.e(this, e);
             return false;
         }
     }
