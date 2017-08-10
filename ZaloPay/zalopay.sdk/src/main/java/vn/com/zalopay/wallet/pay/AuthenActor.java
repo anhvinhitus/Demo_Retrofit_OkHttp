@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.pay;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.password.interfaces.IPasswordCallBack;
@@ -10,14 +11,14 @@ import com.zalopay.ui.widget.password.managers.PasswordManager;
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
+import vn.com.zalopay.wallet.repository.ResourceManager;
 
-/**
+/*
  * Created by chucvv on 6/22/17.
  */
 
@@ -159,7 +160,11 @@ public class AuthenActor {
 
     public boolean showFingerPrint(Activity pActivity) throws Exception {
         mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(pActivity, mFingerPrintCallback);
-        if (mFingerPrintDialog != null) {
+        if (mFingerPrintDialog != null && !pActivity.isFinishing()) {
+            FragmentManager fragmentManager = pActivity.getFragmentManager();
+            if (fragmentManager == null) {
+                return false;
+            }
             mFingerPrintDialog.show(pActivity.getFragmentManager(), null);
             return true;
         } else {
@@ -167,9 +172,9 @@ public class AuthenActor {
         }
     }
 
-    private void closeFingerPrint() {
+    private void closeFingerPrint() throws Exception {
         if (mFingerPrintDialog != null && !mFingerPrintDialog.isDetached()) {
-            mFingerPrintDialog.dismiss();
+            mFingerPrintDialog.dismissAllowingStateLoss();
             mFingerPrintDialog = null;
             Timber.d("dismiss dialog fingerprint");
         }
@@ -200,8 +205,12 @@ public class AuthenActor {
     }
 
     public void closeAuthen() {
-        closeFingerPrint();
-        closePassword();
+        try {
+            closeFingerPrint();
+            closePassword();
+        } catch (Exception e) {
+            Timber.d(e, "Exception close authen");
+        }
     }
 
     private void closePassword() {
