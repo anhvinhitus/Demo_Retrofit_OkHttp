@@ -124,11 +124,11 @@ public class PhoneUtil {
     }
 
     private static boolean validMinLength(@NonNull String input) {
-        return input.length() >= mPhoneFormat.mMinLength;
+        return mPhoneFormat != null && input.length() >= mPhoneFormat.mMinLength;
     }
 
     private static boolean validMaxLength(@NonNull String input) {
-        return input.length() <= mPhoneFormat.mMaxLength;
+        return mPhoneFormat != null && input.length() <= mPhoneFormat.mMaxLength;
     }
 
     public static boolean validPatterns(@NonNull String input) {
