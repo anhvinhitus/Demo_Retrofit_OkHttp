@@ -430,6 +430,10 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     public void startBankSelection() {
         try {
             Intent bankSelectIntent = new Intent(BuildConfig.BANK_SELECT_ACTION);
+            String packageName = GlobalData.getAppContext() != null ? GlobalData.getAppContext().getPackageName() : null;
+            if (!TextUtils.isEmpty(packageName)) {
+                bankSelectIntent.setPackage(packageName);
+            }
             getViewOrThrow().startActivityForResult(bankSelectIntent, Constants.BANK_SELECT_REQUEST_CODE);
         } catch (Exception e) {
             Timber.d(e, "Exception start default payment");
