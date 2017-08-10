@@ -43,7 +43,6 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.bank.ui.BankActivity;
 import vn.com.vng.zalopay.bank.ui.BankSupportSelectionActivity;
-import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -88,8 +87,6 @@ import vn.com.vng.zalopay.zpc.ui.activity.SyncContactActivity;
 import vn.com.vng.zalopay.zpc.ui.activity.ZaloPayContactActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 
@@ -223,13 +220,8 @@ public class Navigator {
     }
 
     public void startDepositForResultActivity(Activity activity) {
-        startDepositForResultActivity(activity, false);
-    }
-
-    public void startDepositForResultActivity(Activity activity, boolean showNotificationLinkCard) {
         Intent intent = new Intent(activity, BalanceTopupActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constants.ARG_SHOW_NOTIFICATION_LINK_CARD, showNotificationLinkCard);
         activity.startActivityForResult(intent, Constants.REQUEST_CODE_DEPOSIT);
     }
 
@@ -523,6 +515,7 @@ public class Navigator {
             context.startActivity(intent);
         }
     }
+
     public void startSearchCategoryActivity(Context context) {
         Intent intent = new Intent(context, SearchCategoryActivity.class);
         context.startActivity(intent);
@@ -824,20 +817,6 @@ public class Navigator {
 
     public void startTutorialConnectInternetActivity(Context context) {
         Intent intent = new Intent(context, TutorialConnectInternetActivity.class);
-        context.startActivity(intent);
-    }
-
-    public void startNotificationLinkCardActivity(Context context, DMapCardResult mapCardResult) {
-        Timber.d("startNotificationLinkCardActivity context [%s] card [%s]", context, GsonUtils.toJsonString(mapCardResult));
-        if (context == null || mapCardResult == null) {
-            return;
-        }
-        Intent intent = new Intent(context, NotificationLinkCardActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.LAST4CARDNO, mapCardResult.getLast4Number());
-        bundle.putString(Constants.IMAGE_FILE_PATH, mapCardResult.getCardLogo());
-        bundle.putString(Constants.BANKNAME, mapCardResult.getBankName());
-        intent.putExtras(bundle);
         context.startActivity(intent);
     }
 

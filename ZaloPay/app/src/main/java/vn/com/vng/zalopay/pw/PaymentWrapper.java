@@ -71,7 +71,6 @@ public class PaymentWrapper {
     User mCurrentUser;
 
     Activity mActivity;
-    boolean mShowNotificationLinkCard;
     private AbstractOrder mPendingOrder;
     @TransactionType
     private int mPendingTransaction;
@@ -79,12 +78,11 @@ public class PaymentWrapper {
     private IBuilder mPaymentInfoBuilder;
 
     PaymentWrapper(IResponseListener responseListener, IRedirectListener redirectListener,
-                   ILinkCardListener linkCardListener, boolean showNotificationLinkCard) {
+                   ILinkCardListener linkCardListener) {
         Timber.d("Create new instance of PaymentWrapper[%s]", this);
         this.responseListener = responseListener;
         this.mRedirectListener = redirectListener;
         this.mLinkCardListener = linkCardListener;
-        this.mShowNotificationLinkCard = showNotificationLinkCard;
         this.mPaymentInfoBuilder = PaymentInfo.newBuilder().setLocation(transform(LocationProvider.getLocation()));
     }
 
@@ -508,10 +506,6 @@ public class PaymentWrapper {
     void clearPendingOrder() {
         Timber.d("clearPendingOrder");
         mPendingOrder = null;
-    }
-
-    public void setShowNotificationLinkCard(boolean showNotificationLinkCard) {
-        mShowNotificationLinkCard = showNotificationLinkCard;
     }
 
     public interface IGetOrderCallback {

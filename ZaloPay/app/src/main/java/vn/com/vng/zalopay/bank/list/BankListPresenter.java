@@ -94,7 +94,6 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
         mPaymentWrapper = new PaymentWrapperBuilder()
                 .setResponseListener(new PaymentResponseListener())
                 .setLinkCardListener(new LinkCardListener(this))
-                .setShowNotificationLinkCard(false)
                 .build();
         mPaymentWrapper.initializeComponents();
         mBankInteractor = SDKApplication

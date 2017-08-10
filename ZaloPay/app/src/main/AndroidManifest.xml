@@ -379,10 +379,6 @@
             android:label="@string/title.activity.tutorial.network.connection"/>
 
         <activity
-            android:name=".bank.ui.NotificationLinkCardActivity"
-            android:label="@string/title.activity.tutorial.link.card"/>
-
-        <activity
             android:name=".warningrooted.WarningRootedActivity"
             android:label="@string/title.activity.warning.root"/>
 

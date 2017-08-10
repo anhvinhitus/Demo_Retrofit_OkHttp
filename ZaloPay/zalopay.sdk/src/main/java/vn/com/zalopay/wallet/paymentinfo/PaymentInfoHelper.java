@@ -9,7 +9,6 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.creditcard.CardSubmit;
@@ -219,12 +218,6 @@ public class PaymentInfoHelper extends SingletonBase {
     public void setResult(@PaymentStatus int pStatus) {
         if (paymentInfo != null) {
             paymentInfo.putPaymentStatus(pStatus);
-        }
-    }
-
-    public void setMapCardResult(DMapCardResult mapBankResult) {
-        if (paymentInfo != null && paymentInfo.getBuilder() != null) {
-            paymentInfo.getBuilder().setMapCard(mapBankResult);
         }
     }
 

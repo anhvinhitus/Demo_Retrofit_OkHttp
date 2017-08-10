@@ -15,7 +15,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
-import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
@@ -89,12 +88,6 @@ class WalletListener implements ZPPaymentListener {
                 mPaymentWrapper.clearPendingOrder();
                 break;
             case SUCCESS:
-                if (mPaymentWrapper.mShowNotificationLinkCard) {
-                    DMapCardResult mapCard = mPaymentWrapper.getPaymentInfoBuilder().getMapCard();
-                    if (mPaymentWrapper.mActivity != null) {
-                        mPaymentWrapper.mNavigator.startNotificationLinkCardActivity(mPaymentWrapper.mActivity, mapCard);
-                    }
-                }
                 responseListener.onResponseSuccess(mPaymentWrapper.getPaymentInfoBuilder());
                 break;
             case TOKEN_EXPIRE:

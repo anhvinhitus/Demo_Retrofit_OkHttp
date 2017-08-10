@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.paymentinfo;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
@@ -11,15 +10,15 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
-/**
+/*
  * Created by chucvv on 6/5/17.
  */
 
 public final class PaymentInfoBuilder implements IBuilder {
-    private AbstractOrder order;
-    private VoucherInfo voucherInfo;
     @PaymentStatus
     public int status;//order status
+    private AbstractOrder order;
+    private VoucherInfo voucherInfo;
     @TransactionType
     private int transactionType;
     private UserInfo origin_user;
@@ -28,7 +27,6 @@ public final class PaymentInfoBuilder implements IBuilder {
     private int[] forceChannelIds;// force user go to 1 channel
     private PaymentLocation mLocation; // user location payment
     private BaseMap mapBank; //info about map bank after user payment success
-    private DMapCardResult mapCardResult;//notify about card map success in payment
     @CardType
     private String mCardTypeLink;//bank code to link bank
 
@@ -82,11 +80,6 @@ public final class PaymentInfoBuilder implements IBuilder {
     }
 
     @Override
-    public DMapCardResult getMapCard() {
-        return mapCardResult;
-    }
-
-    @Override
     public IBuilder setCardTypeLink(@CardType String pCardType) {
         mCardTypeLink = pCardType;
         return this;
@@ -95,12 +88,6 @@ public final class PaymentInfoBuilder implements IBuilder {
     @Override
     public String getCardTypeLink() {
         return mCardTypeLink;
-    }
-
-    @Override
-    public IBuilder setMapCard(DMapCardResult mapCard) {
-        this.mapCardResult = mapCard;
-        return this;
     }
 
     @Override
@@ -187,7 +174,6 @@ public final class PaymentInfoBuilder implements IBuilder {
         destination_user = null;
         link_acc_info = null;
         mapBank = null;
-        mapCardResult = null;
         mCardTypeLink = null;
     }
 }

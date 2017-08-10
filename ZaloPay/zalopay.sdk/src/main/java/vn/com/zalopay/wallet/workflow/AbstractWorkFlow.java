@@ -36,7 +36,6 @@ import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
@@ -231,32 +230,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 message = mContext.getResources().getString(R.string.sdk_error_load_card_mess);
             }
             getView().showInfoDialog(message);
-        } catch (Exception e) {
-            Timber.d(e);
-        }
-    }
-
-    void onLoadMapCardListSuccess(boolean finish) {
-        try {
-            if (mPaymentInfoHelper == null) {
-                return;
-            }
-            String cardKey = null;
-            if (getCard() != null) {
-                cardKey = getCard().getCardKey();
-            }
-            if (TextUtils.isEmpty(cardKey)) {
-                return;
-            }
-            MapCard mapCard = SDKApplication
-                    .getApplicationComponent()
-                    .linkInteractor()
-                    .getCard(mPaymentInfoHelper.getUserId(), cardKey);
-            if (mapCard != null) {
-                DMapCardResult mapCardResult = BankHelper.cast(mapCard);
-                mPaymentInfoHelper.setMapCardResult(mapCardResult);
-                Timber.d("send map card to app %s", GsonUtils.toJsonString(mapCardResult));
-            }
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -1360,7 +1333,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                     .linkInteractor()
                     .getCards(userInfo.zalopay_userid, userInfo.accesstoken, false, appVersion)
                     .compose(SchedulerHelper.applySchedulers())
-                    .subscribe(this::onLoadMapCardListSuccess, this::onLoadMapCardListException);
+                    .subscribe(aBoolean -> Timber.d("Reload map card list success"), this::onLoadMapCardListException);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
             Timber.w(e, "Exception reload map card list");

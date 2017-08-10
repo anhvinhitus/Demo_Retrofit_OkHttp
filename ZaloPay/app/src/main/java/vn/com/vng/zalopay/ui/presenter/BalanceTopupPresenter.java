@@ -109,14 +109,6 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
         mSubscription.add(subscription);
     }
 
-    public void initData(Bundle bundle) {
-        if (bundle == null) {
-            return;
-        }
-        boolean showNotificationLinkCard = bundle.getBoolean(Constants.ARG_SHOW_NOTIFICATION_LINK_CARD, true);
-        paymentWrapper.setShowNotificationLinkCard(showNotificationLinkCard);
-    }
-
     private void onCreateWalletOrderError(Throwable e) {
         Timber.d(e, "Create wallet order error");
         hideLoading();

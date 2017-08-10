@@ -4,7 +4,6 @@ public class PaymentWrapperBuilder {
     private PaymentWrapper.IResponseListener mResponseListener;
     private PaymentWrapper.IRedirectListener mRedirectListener = null;
     private PaymentWrapper.ILinkCardListener mLinkCardListener = null;
-    private boolean mShowNotificationLinkCard = true;
 
     public PaymentWrapperBuilder setResponseListener(PaymentWrapper.IResponseListener responseListener) {
         mResponseListener = responseListener;
@@ -21,12 +20,7 @@ public class PaymentWrapperBuilder {
         return this;
     }
 
-    public PaymentWrapperBuilder setShowNotificationLinkCard(boolean showNotificationLinkCard) {
-        mShowNotificationLinkCard = showNotificationLinkCard;
-        return this;
-    }
-
     public PaymentWrapper build() {
-        return new PaymentWrapper(mResponseListener, mRedirectListener, mLinkCardListener, mShowNotificationLinkCard);
+        return new PaymentWrapper(mResponseListener, mRedirectListener, mLinkCardListener);
     }
 }

@@ -49,7 +49,6 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
                         return mWeakReference.get();
                     }
                 })
-                .setShowNotificationLinkCard(false)
                 .build();
         this.paymentWrapper.initializeComponents();
 
