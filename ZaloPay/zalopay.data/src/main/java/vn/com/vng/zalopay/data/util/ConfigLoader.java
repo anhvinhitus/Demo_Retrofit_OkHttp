@@ -133,7 +133,7 @@ public class ConfigLoader {
      * Default sử dụng https
      */
     public static boolean isHttpsRoute() {
-        boolean isHttpsRoute = mConfig == null || !"connector".equals(mConfig.mApi.apiRoute);
+        boolean isHttpsRoute = mConfig == null || mConfig.mApi == null || !"connector".equals(mConfig.mApi.apiRoute);
         Timber.d("Network routing through: [%s]", mConfig == null ? "https" : mConfig.mApi.apiRoute);
         return isHttpsRoute;
     }
@@ -143,11 +143,11 @@ public class ConfigLoader {
      * apiName trong danh sách api_names sẽ được gọi thông qua Payment Connector
      */
     public static boolean containsApi(String apiName) {
-        return !(mConfig == null || mConfig.mApi.apiNames == null) && mConfig.mApi.apiNames.contains(apiName);
+        return !(mConfig == null || mConfig.mApi == null || mConfig.mApi.apiNames == null) && mConfig.mApi.apiNames.contains(apiName);
     }
 
     public static List<Long> getDenominationWithdraw() {
-        if (mConfig == null || Lists.isEmptyOrNull(mConfig.mWithdraw.denominationWithdraw)) {
+        if (mConfig == null || mConfig.mWithdraw == null || Lists.isEmptyOrNull(mConfig.mWithdraw.denominationWithdraw)) {
             return Arrays.asList(100000L, 200000L, 500000L, 1000000L, 2000000L, 5000000L);
         } else {
             return mConfig.mWithdraw.denominationWithdraw;
@@ -155,7 +155,7 @@ public class ConfigLoader {
     }
 
     public static long getMinMoneyWithdraw() {
-        if (mConfig == null || mConfig.mWithdraw.minWithdrawMoney <= 0) {
+        if (mConfig == null || mConfig.mWithdraw == null || mConfig.mWithdraw.minWithdrawMoney <= 0) {
             return 20000L;
         } else {
             return mConfig.mWithdraw.minWithdrawMoney;
@@ -163,7 +163,7 @@ public class ConfigLoader {
     }
 
     public static long getMaxMoneyWithdraw() {
-        if (mConfig == null || mConfig.mWithdraw.minWithdrawMoney <= 0) {
+        if (mConfig == null || mConfig.mWithdraw == null || mConfig.mWithdraw.minWithdrawMoney <= 0) {
             return 20000000L;
         } else {
             return mConfig.mWithdraw.maxWithdrawMoney;
@@ -171,7 +171,7 @@ public class ConfigLoader {
     }
 
     public static long getMultipleMoneyWithdraw() {
-        if (mConfig == null || mConfig.mWithdraw.multipleWithdrawMoney <= 0) {
+        if (mConfig == null || mConfig.mWithdraw == null || mConfig.mWithdraw.multipleWithdrawMoney <= 0) {
             return 10000L;
         } else {
             return mConfig.mWithdraw.multipleWithdrawMoney;
@@ -179,7 +179,7 @@ public class ConfigLoader {
     }
 
     public static String getFeedbackUrl() {
-        if (mConfig == null || TextUtils.isEmpty(mConfig.mTabMe.mFeedbackUrl)) {
+        if (mConfig == null || mConfig.mTabMe == null || TextUtils.isEmpty(mConfig.mTabMe.mFeedbackUrl)) {
             return FEEDBACK_URL;
         } else {
             return mConfig.mTabMe.mFeedbackUrl;
@@ -187,7 +187,7 @@ public class ConfigLoader {
     }
 
     public static List<String> getAllowUrls() {
-        if (mConfig == null || Lists.isEmptyOrNull(mConfig.mWebApp.allowUrls)) {
+        if (mConfig == null || mConfig.mWebApp == null || Lists.isEmptyOrNull(mConfig.mWebApp.allowUrls)) {
             return Arrays.asList("^((.+)\\.)?zalopay\\.vn",
                     "^((.+)\\.)?zalopay\\.com\\.vn",
                     "^((.+)\\.)?zalopay\\.zing\\.vn",
@@ -198,7 +198,7 @@ public class ConfigLoader {
     }
 
     public static List<Integer> getListVibrateNotificationType() {
-        if (mConfig == null || Lists.isEmptyOrNull(mConfig.mNotification.mVibrateNotificationType)) {
+        if (mConfig == null || mConfig.mNotification == null || Lists.isEmptyOrNull(mConfig.mNotification.mVibrateNotificationType)) {
             return Arrays.asList(6, 7, 9, 105, 106, 111);
         } else {
             return mConfig.mNotification.mVibrateNotificationType;
@@ -206,7 +206,7 @@ public class ConfigLoader {
     }
 
     public static List<InternalApp> listInternalApp() {
-        if (mConfig == null || mConfig.mTabHome.mInternalApps == null) {
+        if (mConfig == null || mConfig.mTabHome == null || mConfig.mTabHome.mInternalApps == null) {
             String json = "[{\"appId\": -1, \"order\": 2, \"display_name\": \"Chuyển Tiền\", \"icon_name\": \"app_1_transfers\", \"icon_color\": \"#4387f6\"}, " +
                     "{\"appId\": -2, \"order\": 3, \"display_name\": \"Nhận Tiền\", \"icon_name\": \"app_1_receivemoney\", \"icon_color\": \"#4286F6\"}, " +
                     "{\"appId\": -3, \"order\": 6, \"display_name\": \"Nạp Tiền\", \"icon_name\": \"app_recharge\", \"icon_color\": \"#129d5a\"}]";
@@ -229,7 +229,7 @@ public class ConfigLoader {
     }
 
     public static boolean isEnableRegisterZalopayID() {
-        return (mConfig != null && mConfig.mTabMe.mEnableRegisterZalopayID == 1);
+        return (mConfig != null && mConfig.mTabMe != null && mConfig.mTabMe.mEnableRegisterZalopayID == 1);
     }
 
     public static int maxCCLinkNum() {

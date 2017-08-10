@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Notification {
 
-    @SerializedName("notification_types_vibrate")
+    @SerializedName("vibrate")
     public List<Integer> mVibrateNotificationType;
 
 }
