@@ -258,7 +258,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public void startPayment() {
         try {
-            if (validPaymentInfo()) {
+            if (!validPaymentInfo()) {
                 return;
             }
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(mContext));
