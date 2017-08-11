@@ -1,2 +1,2 @@
-Zalo Pay (Sandbox v2.17.0 - build 402) - Released on 2017-08-11 09:02
-+ [React] Fix bug get muid and maccesstoken by hieuvm (#2646827)
+Zalo Pay (Staging v2.17.0 - build 403) - Released on 2017-08-11 09:03
+
