@@ -197,7 +197,7 @@ public class SDKPayment {
 
         SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START_ACTIVITY);
         paymentInfoHelper.setResult(PaymentStatus.PROCESSING);
-        GlobalData.paymentInfoHelper = paymentInfoHelper;
+        GlobalData.mPaymentInfoHelper = paymentInfoHelper;
         GlobalData.updateBankFuncByTranstype();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);

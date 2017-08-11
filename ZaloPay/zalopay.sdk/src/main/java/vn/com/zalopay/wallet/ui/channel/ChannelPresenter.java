@@ -36,6 +36,7 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.dialog.ZPWResultCallBackListener;
+import vn.com.zalopay.wallet.event.SdkInvalidPaymentInfo;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
 import vn.com.zalopay.wallet.event.SdkSmsMessage;
@@ -45,7 +46,6 @@ import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
-import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.ui.BaseActivity;
@@ -81,7 +81,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     Context mContext;
     @Inject
     AppInfoStore.Interactor appInfoInteractor;
-    boolean mTimerRunning = false;
     AbstractWorkFlow mAbstractWorkFlow = null;
     private onCloseSnackBar mOnCloseSnackBarListener = () -> {
         if (mAbstractWorkFlow != null) {
@@ -139,15 +138,16 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     };
 
     public ChannelPresenter() {
-        try {
-            mPaymentInfoHelper = PayProxy.get().getPaymentInfoHelper();
-        } catch (Exception ignored) {
-        }
-        if (mPaymentInfoHelper == null) {
-            mPaymentInfoHelper = GlobalData.paymentInfoHelper;
-        }
+        mPaymentInfoHelper = GlobalData.getPaymentInfoHelper();
         SDKApplication.getApplicationComponent().inject(this);
         Timber.d("call constructor ChannelPresenter");
+    }
+
+    private boolean validPaymentInfo() {
+        if (mPaymentInfoHelper == null) {
+            mPaymentInfoHelper = GlobalData.getPaymentInfoHelper();
+        }
+        return mPaymentInfoHelper != null;
     }
 
     public AbstractWorkFlow getWorkFlow() {
@@ -209,7 +209,11 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             return false;
         } else {
-            getViewOrThrow().showQuitConfirm(mPaymentInfoHelper.getQuitMessByTrans(mContext), new ZPWOnEventConfirmDialogListener() {
+            String quitMessage = mPaymentInfoHelper != null ? mPaymentInfoHelper.getQuitMessByTrans(mContext) : null;
+            if (TextUtils.isEmpty(quitMessage)) {
+                return false;
+            }
+            getViewOrThrow().showQuitConfirm(quitMessage, new ZPWOnEventConfirmDialogListener() {
                 @Override
                 public void onCancelEvent() {
                     try {
@@ -254,11 +258,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public void startPayment() {
         try {
-            if (mPaymentInfoHelper == null) {
-                mPaymentInfoHelper = GlobalData.getPaymentInfoHelper();
-            }
-            if (mPaymentInfoHelper == null) {
-                callback();
+            if (validPaymentInfo()) {
                 return;
             }
             getViewOrThrow().setTitle(mPaymentInfoHelper.getTitleByTrans(mContext));
@@ -280,7 +280,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
             }
             initWorkFlow();
         } catch (Exception e) {
-            Timber.w(e, "Exception on start payment");
+            Timber.d(e, "Exception on start payment");
             onExit(mContext.getResources().getString(R.string.zpw_string_error_layout), true);
         }
     }
@@ -304,7 +304,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
         Timber.d("payment info on error %s", message.mError.getMessage());
         String error = TransactionHelper.getMessage(mContext, message.mError);
-        boolean showDialog = ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
+        boolean showDialog = mPaymentInfoHelper != null && ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
         onExit(error, showDialog);
     }
 
@@ -326,8 +326,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     private void startLink() {
         try {
-            if (mPaymentInfoHelper == null) {
-                onExit(mContext.getResources().getString(R.string.sdk_invalid_payment_data), true);
+            if (!validPaymentInfo()) {
                 return;
             }
             @CardType String bankCode = mPaymentInfoHelper.getCardTypeLink();
@@ -354,7 +353,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 showKeyBoard();
             }
         } catch (Exception e) {
-            Timber.w(e, "Exception start link");
+            Timber.d(e, "Exception start link");
             onExit(mContext.getResources().getString(R.string.sdk_error_init_data), true);
         }
     }
@@ -574,6 +573,12 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     public void showFeedbackDialog() throws Exception {
+        if (!validPaymentInfo()) {
+            return;
+        }
+        if (mAbstractWorkFlow == null) {
+            return;
+        }
         FeedBackCollector feedBackCollector = FeedBackCollector.shared();
         String transTitle = mPaymentInfoHelper.getTitleByTrans(mContext);
         int errorCode = mAbstractWorkFlow.getResponseStatus() != null ? mAbstractWorkFlow.getResponseStatus().returncode : Constants.NULL_ERRORCODE;
@@ -588,6 +593,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     }
 
     public void setPaymentStatusAndCallback(@PaymentStatus int pStatus) {
+        if (!validPaymentInfo()) {
+            return;
+        }
         mPaymentInfoHelper.setResult(pStatus);
         callback();
     }
@@ -671,6 +679,15 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                     TSnackbar.LENGTH_INDEFINITE);
         } else {
             PaymentSnackBar.getInstance().dismiss();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onInvalidPaymentInfo(SdkInvalidPaymentInfo event) {
+        try {
+            getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_paymentinfo_empty));
+        } catch (Exception e) {
+            Timber.w(e, "Exception invalid payment info");
         }
     }
 

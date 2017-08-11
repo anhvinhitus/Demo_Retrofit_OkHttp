@@ -291,7 +291,9 @@ public class PayProxy extends SingletonBase {
             mStatusResponse.returncode = -1;
             mStatusResponse.returnmessage = mContext.getResources().getString(R.string.sdk_fail_trans_status);
         }
-        mAuthenActor.closeAuthen();
+        if(mAuthenActor != null){
+            mAuthenActor.closeAuthen();
+        }
         showResultScreen();
     }
 

@@ -3,6 +3,8 @@ package vn.com.zalopay.wallet.business.data;
 import android.app.Activity;
 import android.content.Context;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.lang.ref.WeakReference;
 
 import rx.Subscription;
@@ -27,6 +29,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
+import vn.com.zalopay.wallet.event.SdkInvalidPaymentInfo;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.feedback.IFeedBack;
 import vn.com.zalopay.wallet.helper.TrackHelper;
@@ -46,7 +49,7 @@ public class GlobalData {
     @CardChannel
     public static int cardChannelType = CardChannel.ATM;
     public static ZPAnalyticsTrackerWrapper analyticsTrackerWrapper;
-    public static PaymentInfoHelper paymentInfoHelper;
+    public static PaymentInfoHelper mPaymentInfoHelper;
     public static boolean mShowFingerPrintToast = false;
     @BankFunctionCode
     private static int bankFunction = BankFunctionCode.PAY;
@@ -54,16 +57,20 @@ public class GlobalData {
     private static ZPPaymentListener mListener = null;
 
     public static PaymentInfoHelper getPaymentInfoHelper() {
-        return paymentInfoHelper;
+        if (mPaymentInfoHelper == null || mPaymentInfoHelper.getUserInfo() == null) {
+            EventBus.getDefault().post(new SdkInvalidPaymentInfo());
+        }
+        return mPaymentInfoHelper;
     }
 
     public static
     @TransactionType
     int transtype() {
-        return paymentInfoHelper != null ? paymentInfoHelper.getTranstype() : TransactionType.PAY;
+        return mPaymentInfoHelper != null ? mPaymentInfoHelper.getTranstype() : TransactionType.PAY;
     }
 
     public static void updatePaymentInfo(boolean isBankAccount) {
+        PaymentInfoHelper paymentInfoHelper = getPaymentInfoHelper();
         if (paymentInfoHelper == null) {
             return;
         }
@@ -93,14 +100,14 @@ public class GlobalData {
     }
 
     public static void updateBankFuncByTranstype() {
-        if (paymentInfoHelper == null) {
+        if (mPaymentInfoHelper == null) {
             return;
         }
-        if (paymentInfoHelper.isBankAccountTrans()) {
+        if (mPaymentInfoHelper.isBankAccountTrans()) {
             bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
             return;
         }
-        switch (paymentInfoHelper.getTranstype()) {
+        switch (mPaymentInfoHelper.getTranstype()) {
             case TransactionType.LINK:
                 bankFunction = BankFunctionCode.LINK_CARD;
                 break;
@@ -184,6 +191,7 @@ public class GlobalData {
     }
 
     public static void extraJobOnPaymentCompleted(StatusResponse pStatusResponse, String pBankCode) {
+        PaymentInfoHelper paymentInfoHelper = getPaymentInfoHelper();
         if (pStatusResponse == null || paymentInfoHelper == null) {
             return;
         }
@@ -227,7 +235,7 @@ public class GlobalData {
         if (!ConfigLoader.allowPaymentVoucher()) {
             return;
         }
-        if (paymentInfoHelper == null || paymentInfoHelper.getUserInfo() == null) {
+        if (mPaymentInfoHelper == null || mPaymentInfoHelper.getUserInfo() == null) {
             return;
         }
         if (!ConnectionUtil.isOnline(getAppContext())) {
@@ -237,13 +245,13 @@ public class GlobalData {
                 .getApplicationComponent()
                 .voucherInteractor();
 
-        String userId = paymentInfoHelper.getUserId();
+        String userId = mPaymentInfoHelper.getUserId();
         if (!voucherInteractor.hasRevertVouchers(userId)) {
             Timber.d("Have no voucher to revert");
             return;
         }
 
-        String accessToken = paymentInfoHelper.getUserInfo().accesstoken;
+        String accessToken = mPaymentInfoHelper.getUserInfo().accesstoken;
         Subscription subscription = voucherInteractor
                 .revertVoucher(userId, accessToken)
                 .subscribeOn(Schedulers.io())

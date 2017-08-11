@@ -84,7 +84,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
 
     void showFeedbackDialog() throws Exception {
         if (!validPaymentInfo()) {
-            getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
+            getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_paymentinfo_empty));
             return;
         }
         FeedBackCollector feedBackCollector = FeedBackCollector.shared();
@@ -122,7 +122,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
         try {
             mStatusResponse = pResponse;
             if (!validPaymentInfo()) {
-                getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
+                getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_paymentinfo_empty));
                 return;
             }
             GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getBankCode());

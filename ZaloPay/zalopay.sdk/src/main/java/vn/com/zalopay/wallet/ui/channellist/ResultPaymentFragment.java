@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ScrollView;
 
+import com.zalopay.ui.widget.dialog.DialogManager;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
@@ -133,12 +135,14 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
 
     @Override
     public void hideLoading() {
-
+        DialogManager.closeLoadDialog();
     }
 
     @Override
     public void showError(String pMessage) {
-
+        hideLoading();
+        DialogManager.showSweetDialogCustom(getActivity(), pMessage, getResources().getString(R.string.dialog_close_button),
+                SweetAlertDialog.WARNING_TYPE, this::callbackThenTerminate);
     }
 
     @Override
