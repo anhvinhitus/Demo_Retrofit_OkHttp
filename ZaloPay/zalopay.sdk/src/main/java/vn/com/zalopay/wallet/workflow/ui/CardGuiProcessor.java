@@ -880,7 +880,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             int currentCcLinkNum = getAdapter().mCurrentCcLinkNumber;
             if (BankHelper.isInternationalBank(bankCode)
                     && currentCcLinkNum >= max_cc_link) {
-                String mess = String.format(mContext.getString(R.string.sdk_bank_link_cc_limit_warning), max_cc_link);
+                String mess = String.format(mContext.getString(R.string.sdk_bank_link_cc_limit_warning), String.valueOf(max_cc_link));
                 getView().showInfoDialog(mess, mContext.getResources().getString(R.string.dialog_agree_button), this::clearCardNumberAndShowKeyBoard);
                 return true;
             }
@@ -1434,6 +1434,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         mBankSupportAdapter = new BankSupportAdapter(getActivity());
         BankListDialogFragment dialog = new BankListDialogFragment();
         dialog.setAdapter(mBankSupportAdapter);
+        dialog.setCloseCardSupportDialog(() -> clearCardNumberAndShowKeyBoard());
         mBankSupportAdapter.insertItems(getListCardSupport(isATMChannel()));
         getAdapter().getPresenter();
         dialog.show(getActivity().getFragmentManager(), BankListDialogFragment.TAG);

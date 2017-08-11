@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnCloseDialogListener;
+
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
@@ -28,6 +30,7 @@ import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 public class BankListDialogFragment extends BaseDialogFragment implements View.OnClickListener {
     public static final String TAG = "BankListDialogFragment";
     protected WeakReference<BankSupportAdapter> mCardSupportAdapter;
+    protected static WeakReference<ZPWOnCloseDialogListener> mCloseCardSupportDialogListener;
     protected View mRippleButtonSelectBank;
     protected TextView txtLabel;
     private RecyclerView mCardSupportRecyclerView;
@@ -42,6 +45,10 @@ public class BankListDialogFragment extends BaseDialogFragment implements View.O
 
     public void setAdapter(BankSupportAdapter pAdapter) {
         mCardSupportAdapter = new WeakReference<>(pAdapter);
+    }
+
+    public void setCloseCardSupportDialog(ZPWOnCloseDialogListener pListener) {
+        mCloseCardSupportDialogListener = new WeakReference<>(pListener);
     }
 
     public BankListDialogFragment newInstance() {
@@ -119,6 +126,9 @@ public class BankListDialogFragment extends BaseDialogFragment implements View.O
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.rippleButtonSelectBank) {
+            if (mCloseCardSupportDialogListener != null) {
+                mCloseCardSupportDialogListener.get().onCloseCardSupportDialog();
+            }
             this.dismiss();
         }
     }
