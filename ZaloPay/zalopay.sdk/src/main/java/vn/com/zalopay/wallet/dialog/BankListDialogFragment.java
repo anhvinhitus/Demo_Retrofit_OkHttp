@@ -69,6 +69,14 @@ public class BankListDialogFragment extends BaseDialogFragment implements View.O
     }
 
     @Override
+    public void onDestroyView() {
+        if (mCloseCardSupportDialogListener != null && mCloseCardSupportDialogListener.get() != null) {
+            mCloseCardSupportDialogListener.get().onCloseCardSupportDialog();
+        }
+        super.onDestroyView();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -126,10 +134,8 @@ public class BankListDialogFragment extends BaseDialogFragment implements View.O
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.rippleButtonSelectBank) {
-            if (mCloseCardSupportDialogListener != null) {
-                mCloseCardSupportDialogListener.get().onCloseCardSupportDialog();
-            }
             this.dismiss();
         }
     }
+
 }
