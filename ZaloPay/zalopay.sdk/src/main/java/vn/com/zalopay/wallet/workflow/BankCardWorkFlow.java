@@ -24,7 +24,9 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
+import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
+import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -37,7 +39,6 @@ import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
 import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
-import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
@@ -84,19 +85,6 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     }
 
     @Override
-    public void init() throws Exception {
-        super.init();
-        if (isChannelHasInputCard()) {
-            initializeGuiProcessor();
-        }
-        if (TransactionHelper.isSecurityFlow(mStatusResponse)) {
-            initializeGuiProcessor();
-            handleEventGetStatusComplete(mStatusResponse);
-            detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
-        }
-    }
-
-    @Override
     protected void initializeGuiProcessor() throws Exception {
         this.mGuiProcessor = new BankCardGuiProcessor(mContext, this, getPresenter().getViewOrThrow());
         this.mGuiProcessor.initPager();
@@ -118,21 +106,27 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     @Override
     public void detectCard(String pCardNumber) {
         try {
-            getGuiProcessor().getCreditCardFinder().reset();
-            Subscription subscription = getGuiProcessor()
-                    .getCardFinder()
+            CreditCardDetector creditCardDetector = getGuiProcessor().getCreditCardFinder();
+            if (creditCardDetector != null) {
+                creditCardDetector.reset();
+            }
+            AbstractCardDetector cardDetector = getGuiProcessor().getCardFinder();
+            if (cardDetector == null) {
+                return;
+            }
+            Subscription subscription = cardDetector
                     .detectOnAsync(pCardNumber)
                     .compose(SchedulerHelper.applySchedulers())
                     .subscribe(detected -> {
                         try {
                             getGuiProcessor().onDetectCardComplete(detected);
                         } catch (Exception e) {
-                            Timber.w(e);
+                            Timber.d(e);
                         }
                     }, Timber::d);
             mCompositeSubscription.add(subscription);
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.d(e);
         }
     }
 
@@ -149,79 +143,6 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         int channelId = super.getChannelID();
         return channelId != -1 ? channelId : getDefaultChannelId();
     }
-
-   /* @Override
-    public void autoFillOtp(String pSender, String pOtp) {
-        Timber.d("sender %s otp %s", pSender, pOtp);
-        try {
-            if (getGuiProcessor() == null || !(getGuiProcessor().getCardFinder() instanceof BankDetector)) {
-                return;
-            }
-            if (!((BankCardGuiProcessor) getGuiProcessor()).isBankOtpPhase()) {
-                Timber.d("user is not in otp phase, skip auto fill otp");
-                return;
-            }
-            List<DOtpReceiverPattern> patternList = ((BankDetector) getGuiProcessor().getCardFinder()).getFoundOtpRules();
-            if (patternList != null && patternList.size() > 0) {
-                for (DOtpReceiverPattern otpReceiverPattern : patternList) {
-                    if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
-                        pOtp = pOtp.trim();
-                        *//*
-                         vietinbank has 2 type of sms
-                         1. 6 number otp in the fist of content
-                         2. 6 number otp in the last of content
-                         need extract splited otp by search space ' ' again
-                         then compare #validOtp and length otp in config
-                         *//*
-                        int index = -1;
-                        String validOtp = null;
-                        if (otpReceiverPattern.begin) {
-                            for (int i = otpReceiverPattern.start; i < pOtp.length(); i++) {
-                                if (pOtp.charAt(i) == ' ') {
-                                    index = i;
-                                    break;
-                                }
-                            }
-                            if (index != -1) {
-                                validOtp = pOtp.substring(otpReceiverPattern.start, index);
-                            }
-                        } else {
-                            for (int i = (pOtp.length() - otpReceiverPattern.start) - 1; i >= 0; i--) {
-                                if (pOtp.charAt(i) == ' ') {
-                                    index = i;
-                                    break;
-                                }
-                            }
-                            if (index != -1) {
-                                validOtp = pOtp.substring(index, (pOtp.length() - otpReceiverPattern.start));
-                            }
-                        }
-                        if (!TextUtils.isEmpty(validOtp)) {
-                            validOtp = validOtp.trim();
-                        }
-                        //clear whitespace and - character
-                        String otp = PaymentUtils.clearOTP(validOtp);
-                        Timber.d("otp after split by space %s", validOtp);
-                        //check it whether length match length of otp in config
-                        if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
-                            continue;
-                        }
-                        if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
-                            continue;
-                        }
-                        if (CardType.PBIDV.equals(otpReceiverPattern.bankcode)) {
-                            getGuiProcessor().bidvAutoFillOtp(otp);
-                        }
-                        ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);
-                        getView().setVisible(R.id.txtOtpInstruction, false);
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Timber.d(e, "Exception autoFillOtp");
-        }
-    }*/
 
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
@@ -461,7 +382,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
 					*/
 
         }
-        getView().renderKeyBoard(RS.layout.screen__card, getDetectedBankCode());
+        getView().renderKeyBoard(RS.layout.screen__card, getBankCode());
         getView().hideLoading();
     }
 

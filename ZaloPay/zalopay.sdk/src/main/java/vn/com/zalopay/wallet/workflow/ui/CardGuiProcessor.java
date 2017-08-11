@@ -435,7 +435,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             } else {
                 initForMapCardAndZaloPay();
             }
-            getAdapter().setECardFlowType(BankFlow.API);
+            mAdapter.setECardFlowType(BankFlow.API);
             getCardFinder();
             setCardDateOnCardView();
             initMutualView();
@@ -745,7 +745,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             getView().visibleWebView(true);
             getView().visibleInputCardView(false);
             getView().visibleSubmitButton(false);
-            if (CardType.PBIDV.equals(getDetectedBankCode())) {
+            if (CardType.PBIDV.equals(getBankCode())) {
                 registerKeyboardEventForBidv();
                 getView().showMenuItem();
             }
@@ -820,7 +820,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return;
             }
             String bankName = getDetectedBankName();
-            String bankCode = getDetectedBankCode();
+            String bankCode = getBankCode();
             setCardNumberHint(bankName);
             MiniPmcTransType miniPmcTransType = null;
             if (TextUtils.isEmpty(bankCode)) {
@@ -1038,7 +1038,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         return getCardFinder().getBankName();
     }
 
-    public String getDetectedBankCode() {
+    public String getBankCode() {
         return getCardFinder().getDetectBankCode();
     }
 

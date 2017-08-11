@@ -9,7 +9,6 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 
 /**
  * Created by huuhoa on 7/19/17.
@@ -52,7 +51,7 @@ public class SdkErrorReporter {
             return;
         }
         try {
-            String bankCode = errorContext.getDetectedBankCode();
+            String bankCode = errorContext.getBankCode();
             SDKReportTask.makeReportError(errorContext.getUserInfo(), pErrorCode, errorContext.getTransactionId(), pMessage, bankCode);
         } catch (Exception ex) {
             Timber.d(ex.getMessage());

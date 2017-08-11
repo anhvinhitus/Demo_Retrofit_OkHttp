@@ -668,7 +668,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     @Override
-    public String getDetectedBankCode() {
+    public String getBankCode() {
         try {
             if (getAdapter().getPaymentInfoHelper() == null) {
                 return "";

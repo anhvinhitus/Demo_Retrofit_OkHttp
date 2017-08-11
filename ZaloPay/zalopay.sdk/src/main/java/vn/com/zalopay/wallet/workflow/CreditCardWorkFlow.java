@@ -8,9 +8,11 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.card.AbstractCardDetector;
+import vn.com.zalopay.wallet.card.BankDetector;
+import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
-import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.workflow.ui.CreditCardGuiProcessor;
@@ -27,34 +29,27 @@ public class CreditCardWorkFlow extends AbstractWorkFlow {
     @Override
     public void detectCard(String pCardNumber) {
         try {
-            getGuiProcessor().getBankCardFinder().reset();
-            Subscription subscription = getGuiProcessor()
-                    .getCardFinder()
+            BankDetector bankDetector = getGuiProcessor().getBankCardFinder();
+            if (bankDetector != null) {
+                bankDetector.reset();
+            }
+            AbstractCardDetector cardDetector = getGuiProcessor().getCardFinder();
+            if (cardDetector == null) {
+                return;
+            }
+            Subscription subscription = cardDetector
                     .detectOnAsync(pCardNumber)
                     .compose(SchedulerHelper.applySchedulers())
                     .subscribe(detected -> {
                         try {
                             getGuiProcessor().onDetectCardComplete(detected);
                         } catch (Exception e) {
-                            Timber.w(e);
+                            Timber.d(e);
                         }
                     }, Timber::d);
             mCompositeSubscription.add(subscription);
         } catch (Exception e) {
-            Timber.w(e, "Exception detect card");
-        }
-    }
-
-    @Override
-    public void init() throws Exception {
-        super.init();
-        if (isChannelHasInputCard()) {
-            initializeGuiProcessor();
-        }
-        if (TransactionHelper.isSecurityFlow(mStatusResponse)) {
-            initializeGuiProcessor();
-            handleEventGetStatusComplete(mStatusResponse);
-            detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
+            Timber.d(e, "Exception detect card");
         }
     }
 

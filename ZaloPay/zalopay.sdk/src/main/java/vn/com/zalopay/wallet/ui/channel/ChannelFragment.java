@@ -405,6 +405,10 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         }
     }
 
+    public void visibleCardNumberInput(boolean pVisible){
+        setVisible(R.id.card_field_container_pager, pVisible);
+    }
+
     public void visibleCardInfo(boolean pIsVisible) {
         setVisible(R.id.zpw_card_info, pIsVisible);
     }

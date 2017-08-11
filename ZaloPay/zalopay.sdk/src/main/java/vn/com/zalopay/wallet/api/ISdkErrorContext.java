@@ -9,7 +9,7 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 
 public interface ISdkErrorContext {
     boolean hasCardGuiProcessor();
-    String getDetectedBankCode();
+    String getBankCode();
     String getTransactionId();
     UserInfo getUserInfo();
 }

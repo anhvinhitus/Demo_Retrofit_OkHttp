@@ -47,7 +47,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
-import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -272,8 +271,18 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             } else if (!TransactionHelper.isSecurityFlow(mStatusResponse)) {
                 showTransactionFailView(mStatusResponse.returnmessage);
             }
-        } else if (mPaymentInfoHelper != null) {
-            mCurrentCcLinkNumber = BankHelper.getMaxCCLinkNumber(mPaymentInfoHelper.getUserId());
+        }
+        if (isChannelHasInputCard()) {
+            initializeGuiProcessor();
+            if (mPaymentInfoHelper != null) {
+                mCurrentCcLinkNumber = BankHelper.getMaxCCLinkNumber(mPaymentInfoHelper.getUserId());
+            }
+        }
+        if (TransactionHelper.isSecurityFlow(mStatusResponse)) {
+            initializeGuiProcessor();
+            getView().visibleCardNumberInput(false);
+            handleEventGetStatusComplete(mStatusResponse);
+            //detectCard(mPaymentInfoHelper.getMapBank().getFirstNumber());
         }
         Timber.d("start adapter with page name %s", mPageName);
     }
@@ -545,10 +554,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             }
             if (!TextUtils.isEmpty(otpPattern.sender) && otpPattern.sender.equalsIgnoreCase(pSender)) {
                 pMessage = pMessage.trim();
-
                 //read the begining of sms content
                 int start = (otpPattern.begin) ? otpPattern.start : (pMessage.length() - otpPattern.length - otpPattern.start);
-
                 String otp = pMessage.substring(start, start + otpPattern.length);
                 //clear whitespace and - character
                 return PaymentUtils.clearOTP(otp);
@@ -715,6 +722,20 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     }
 
     private void handleEventFlow3DS_Atm_cc(SecurityResponse dataResponse) throws Exception {
+        String bankCode = getBankCode();
+        if (TextUtils.isEmpty(bankCode)) {
+            showTransactionFailView(mContext.getString(R.string.sdk_error_init_data));
+            return;
+        }
+        CardGuiProcessor guiProcessor = null;
+        try {
+            guiProcessor = getGuiProcessor();
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+        if (guiProcessor == null) {
+            return;
+        }
         if (PaymentStatusHelper.is3DSResponse(dataResponse)) {
             //no link for parsing
             if (TextUtils.isEmpty(dataResponse.redirecturl)) {
@@ -723,15 +744,16 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 return;
             }
             //flow cover parse web (vietinbank)
-            BankConfig bankConfig = null;
-            String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : null;
-            if (!TextUtils.isEmpty(bankCode)) {
-                bankConfig = SDKApplication.getApplicationComponent().bankListInteractor().getBankConfig(bankCode);
+            BankConfig bankConfig = SDKApplication
+                    .getApplicationComponent()
+                    .bankListInteractor()
+                    .getBankConfig(bankCode);
+            if (bankConfig == null) {
+                showTransactionFailView(mContext.getString(R.string.sdk_load_bankconfig_error_mess));
+                return;
             }
-            if (bankConfig == null && getGuiProcessor().getCardFinder() instanceof BankDetector) {
-                bankConfig = ((BankDetector) getGuiProcessor().getCardFinder()).getFoundBankConfig();
-            }
-            if (isCardFlow() && bankConfig != null && bankConfig.isParseWebsite()) {
+            Timber.d("start flow 3ds banconfig %s", GsonUtils.toJsonString(bankConfig));
+            if (isCardFlow() && bankConfig.isParseWebsite()) {
                 setECardFlowType(BankFlow.PARSEWEB);
                 showTimeoutProgressDialog(mContext.getResources().getString(R.string.sdk_trans_processing_bank_mess));
                 startParseBankWebsite(dataResponse.redirecturl);
@@ -744,12 +766,15 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         } else if (PaymentStatusHelper.isOtpResponse(dataResponse)) {
             //otp flow
             mPageName = Constants.PAGE_AUTHEN;
-            ((BankCardGuiProcessor) getGuiProcessor()).showOtpTokenView();
+            if (guiProcessor instanceof BankCardGuiProcessor) {
+                ((BankCardGuiProcessor) guiProcessor).showOtpTokenView();
+            }
             getView().hideLoading();
-            getView().renderKeyBoard(RS.layout.screen__card, getDetectedBankCode());
+            getView().renderKeyBoard(RS.layout.screen__card, bankCode);
             getView().setVisible(R.id.order_info_line_view, false);
             //request permission read/view sms on android 6.0+
-            if (((BankCardGuiProcessor) getGuiProcessor()).isOtpAuthenPayerProcessing()) {
+            if (guiProcessor instanceof BankCardGuiProcessor
+                    && ((BankCardGuiProcessor) guiProcessor).isOtpAuthenPayerProcessing()) {
                 requestReadOtpPermission();
             }
         } else {
@@ -1076,7 +1101,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.d(e, "Exception dismiss loading view");
         }
-        GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
+        GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getBankCode());
         //save payment card for show on channel list later
         String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
         if (!TextUtils.isEmpty(userId)) {
@@ -1161,7 +1186,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.d(e);
         }
-        GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
+        GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getBankCode());
         try {
             mGuiProcessor.useWebView(false);
         } catch (Exception e) {
@@ -1383,13 +1408,13 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     }
 
     @Override
-    public String getDetectedBankCode() {
+    public String getBankCode() {
         try {
             if (mPaymentInfoHelper != null && mPaymentInfoHelper.getMapBank() != null) {
                 return mPaymentInfoHelper.getMapBank().bankcode;
             }
             if (mGuiProcessor != null) {
-                return mGuiProcessor.getDetectedBankCode();
+                return mGuiProcessor.getBankCode();
             }
         } catch (Exception e) {
             Timber.w(e);

@@ -416,5 +416,5 @@
     <string name="sdk_default_link_channel_name">Thêm liên kết mới</string>
 
     <string name="sdk_bank_link_cc_limit_warning">Tổng số lượng thẻ Visa, Master được liên kết tối đa là %1$s. Vui lòng hủy liên kết cũ để thực hiện liên kết thêm thẻ mới</string>
-
+    <string name="sdk_load_bankconfig_error_mess">Không tải được thông tin ngân hàng. Vui lòng thử lại !</string>
 </resources>

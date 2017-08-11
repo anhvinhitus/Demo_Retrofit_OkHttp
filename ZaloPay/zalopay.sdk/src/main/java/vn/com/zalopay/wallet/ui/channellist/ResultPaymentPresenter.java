@@ -125,7 +125,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
                 getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
                 return;
             }
-            GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getDetectedBankCode());
+            GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getBankCode());
             boolean success = TransactionHelper.isTransactionSuccess(pResponse);
             if (success) {
                 doOnSuccessPayment();
@@ -244,7 +244,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
     }
 
     @Override
-    public String getDetectedBankCode() {
+    public String getBankCode() {
         if (mPaymentInfoHelper == null) {
             return "";
         }
