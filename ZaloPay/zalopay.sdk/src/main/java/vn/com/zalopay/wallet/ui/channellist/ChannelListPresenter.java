@@ -857,7 +857,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 && mZaloPayChannel != null
                 && mZaloPayChannel.meetPaymentCondition()) {
             selectAndScrollToChannel(mZaloPayChannel, mZaloPayChannel.position);
-            startDefaultPayment();
+            if (shouldAutoPayment()) {
+                startDefaultPayment();
+            }
             mHasActiveChannel = true;
             return;
         }
