@@ -14,6 +14,4 @@ public interface ITransferMoneyView {
     void showError(String message);
 
     void onGetProfileSuccess(Person person, String zaloPayName);
-
-    boolean isTransferViaPN();
 }

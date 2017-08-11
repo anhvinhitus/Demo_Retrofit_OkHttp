@@ -33,6 +33,40 @@
             app:iconRightName="@string/general_arrowright"
             app:iconRightSize="@dimen/font_size_arrow_right" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate_stroke"
+            android:layout_marginLeft="60dp"
+            android:background="@color/separate" />
+
+        <com.zalopay.ui.widget.IconFontTextView
+            android:id="@+id/layoutTransferContactList"
+            style="@style/TextView.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/default_white_selector"
+            android:drawablePadding="@dimen/app_padding"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/app_padding"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:paddingTop="@dimen/app_padding"
+            android:text="@string/transfer.contact.list"
+            android:textColor="@color/txt_item_main"
+            android:textSize="@dimen/personal_general_text_main"
+            app:iconLeftColor="@color/menu_font_ic_blue"
+            app:iconLeftName="@string/sendmoney_friend"
+            app:iconLeftSize="@dimen/font_size_transfer_header"
+            app:iconRightColor="@color/arrow_right"
+            app:iconRightName="@string/general_arrowright"
+            app:iconRightSize="@dimen/font_size_arrow_right" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate_stroke"
+            android:layout_marginLeft="60dp"
+            android:background="@color/separate" />
+
         <com.zalopay.ui.widget.IconFontTextView
             android:id="@+id/layoutTransferViaAccount"
             style="@style/TextView.Title"
@@ -50,34 +84,6 @@
             android:textSize="@dimen/personal_general_text_main"
             app:iconLeftColor="@color/menu_font_ic_green"
             app:iconLeftName="@string/sendmoney_zalopayid"
-            app:iconLeftSize="@dimen/font_size_transfer_header"
-            app:iconRightColor="@color/arrow_right"
-            app:iconRightName="@string/general_arrowright"
-            app:iconRightSize="@dimen/font_size_arrow_right" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separate_stroke"
-            android:layout_marginLeft="60dp"
-            android:background="@color/separate" />
-
-        <com.zalopay.ui.widget.IconFontTextView
-            android:id="@+id/layoutTransferAccZaloPay"
-            style="@style/TextView.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/default_white_selector"
-            android:drawablePadding="@dimen/app_padding"
-            android:gravity="center_vertical"
-            android:paddingBottom="@dimen/app_padding"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:paddingTop="@dimen/app_padding"
-            android:text="@string/transfer_acc_zalopay"
-            android:textColor="@color/txt_item_main"
-            android:textSize="@dimen/personal_general_text_main"
-            app:iconLeftColor="@color/menu_font_ic_blue"
-            app:iconLeftName="@string/sendmoney_friend"
             app:iconLeftSize="@dimen/font_size_transfer_header"
             app:iconRightColor="@color/arrow_right"
             app:iconRightName="@string/general_arrowright"
@@ -112,7 +118,6 @@
             android:layout_height="@dimen/separate_stroke"
             android:background="@color/separate" />
     </LinearLayout>
-
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"

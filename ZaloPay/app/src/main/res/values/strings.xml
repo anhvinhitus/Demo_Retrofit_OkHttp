@@ -172,6 +172,8 @@
     <string name="hint_otp">Mã OTP</string>
     <string name="otp_note">Mã OTP được gửi qua SMS đến điện thoại của bạn</string>
 
+    <string name="transfer.contact.list">Danh bạ</string>
+
     <string name="transfer_acc_zalopay">Bạn bè Zalo</string>
     <string name="transaction_recent">Giao dịch gần đây</string>
     <string name="hint_zalo_contact">Nhập tên hoặc số điện thoại</string>

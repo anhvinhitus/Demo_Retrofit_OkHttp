@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.react.model.ZPCViewMode;
-import vn.com.vng.zalopay.transfer.model.TransferMode;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -57,8 +56,15 @@ public class TransferHomeFragment extends BaseFragment implements
     @BindView(R.id.imgIntroduction)
     ImageView imgIntroduction;
 
-    @OnClick(R.id.layoutTransferAccZaloPay)
-    public void onClickTransferAccZaloPay() {
+    @OnClick(R.id.layoutTransferViaPhoneNumber)
+    public void onClickTransferViaPhoneNumber() {
+        Bundle bundle = new Bundle();
+        bundle.putString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardPhone);
+        navigator.startZaloContactActivity(this, bundle);
+    }
+
+    @OnClick(R.id.layoutTransferContactList)
+    public void onClickTransferContactList() {
         Bundle bundle = new Bundle();
         bundle.putString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardABC);
         navigator.startZaloContactActivity(this, bundle);
@@ -66,12 +72,7 @@ public class TransferHomeFragment extends BaseFragment implements
 
     @OnClick(R.id.layoutTransferViaAccount)
     public void onClickTransferViaAccountName() {
-        navigator.startTransfer(this, TransferMode.ACCOUNT_NAME);
-    }
-
-    @OnClick(R.id.layoutTransferViaPhoneNumber)
-    public void onClickTransferViaPhoneNumber() {
-        navigator.startTransfer(this, TransferMode.PHONE_NUMBER);
+        navigator.startTransferViaAccountName(this);
     }
 
     /**

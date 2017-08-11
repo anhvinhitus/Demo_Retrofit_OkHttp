@@ -20,7 +20,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.transfer.model.TransferMode;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.view.ITransferMoneyView;
@@ -42,12 +41,9 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
     @BindView(R.id.edtAccountName)
     ZPEditText mEdtAccountNameView;
 
-    public static TransferViaZaloPayNameFragment newInstance(String transferMode) {
+    public static TransferViaZaloPayNameFragment newInstance() {
 
         Bundle args = new Bundle();
-        if (transferMode != null) {
-            args.putString(Constants.TRANSFER_MODE, transferMode);
-        }
 
         TransferViaZaloPayNameFragment fragment = new TransferViaZaloPayNameFragment();
         fragment.setArguments(args);
@@ -73,21 +69,14 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-
-        if (isTransferViaPN()) {
-            mEdtAccountNameView.setHint("Số điện thoại");
-            // TODO: code here for init Validator editText
-        } else {
-            mEdtAccountNameView.addValidator(new MinCharactersValidate(getString(R.string.exception_account_name_length), 4));
-            mEdtAccountNameView.addValidator(new ZPEditTextValidate(getString(R.string.exception_transfer_for_self)) {
-                @Override
-                public boolean isValid(@NonNull CharSequence s) {
-                    return !s.toString().equals(user.zalopayname);
-                }
-            });
-            mEdtAccountNameView.addValidator(new SpecialCharactersValidate(getString(R.string.exception_account_name_special_char)));
-        }
-
+        mEdtAccountNameView.addValidator(new MinCharactersValidate(getString(R.string.exception_account_name_length), 4));
+        mEdtAccountNameView.addValidator(new ZPEditTextValidate(getString(R.string.exception_transfer_for_self)) {
+            @Override
+            public boolean isValid(@NonNull CharSequence s) {
+                return !s.toString().equals(user.zalopayname);
+            }
+        });
+        mEdtAccountNameView.addValidator(new SpecialCharactersValidate(getString(R.string.exception_account_name_special_char)));
         mBtnContinue.setEnabled(mEdtAccountNameView.isValid());
     }
 
@@ -131,16 +120,6 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
     }
 
     @Override
-    public boolean isTransferViaPN() {
-        if (getArguments() != null && getArguments().containsKey(Constants.TRANSFER_MODE)) {
-            String str = getArguments().getString(Constants.TRANSFER_MODE);
-            if (str != null && str.equals(TransferMode.PHONE_NUMBER))
-                return true;
-        }
-        return false;
-    }
-
-    @Override
     public void showError(String message) {
         mEdtAccountNameView.setError(message);
     }
@@ -151,11 +130,7 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
             return;
         }
 
-        if (isTransferViaPN()) {
-            presenter.getPhoneNumberInfo(mEdtAccountNameView.getText().toString().trim());
-        } else {
-            presenter.getUserInfo(mEdtAccountNameView.getText().toString().trim());
-        }
+        presenter.getUserInfo(mEdtAccountNameView.getText().toString().trim());
     }
 
     @OnTextChanged(value = R.id.edtAccountName, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
