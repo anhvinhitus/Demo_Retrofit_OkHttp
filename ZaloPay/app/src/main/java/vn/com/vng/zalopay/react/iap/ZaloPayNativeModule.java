@@ -44,7 +44,6 @@ import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
-import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -60,20 +59,23 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
     private static final int TOPUP_REQUEST_CODE = 100;
     private final IPaymentService mPaymentService;
-    private final NetworkService mNetworkService;
+    private final long mAppId; // AppId này là appid js cắm vào
+    private final NetworkService mNetworkServiceWithRetry;
     private final User mUser;
-    private final CompositeSubscription compositeSubscription = new CompositeSubscription();
-    private final Navigator mNavigator;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private Navigator mNavigator;
     private WeakReference<Promise> mPromiseTopup = null;
 
     ZaloPayNativeModule(ReactApplicationContext reactContext,
                         User user,
                         IPaymentService paymentService,
-                        NetworkService networkService,
+                        long appId,
+                        NetworkService networkServiceWithRetry,
                         Navigator navigator) {
         super(reactContext);
         this.mPaymentService = paymentService;
-        this.mNetworkService = networkService;
+        this.mAppId = appId;
+        this.mNetworkServiceWithRetry = networkServiceWithRetry;
         this.mUser = user;
         this.mNavigator = navigator;
 
@@ -182,13 +184,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void getUserInfo(Promise promise) {
-        long appId = getCurrentAppId();
-        if (appId <= 0) {
-            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_UNKNOWN.value(), "Cannot get information appId");
-            return;
-        }
-
-        mPaymentService.getUserInfo(promise, appId);
+        mPaymentService.getUserInfo(promise, mAppId);
     }
 
     @ReactMethod
@@ -206,7 +202,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void logout() {
-        Timber.d("Payment app %s request to logout", getCurrentAppId());
+        Timber.d("Payment app %s request to logout", mAppId);
         EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
         eventBus.post(new TokenPaymentExpiredEvent());
     }
@@ -312,7 +308,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
         ReadableMap queries = addQueriesUser(content);
 
-        Subscription subscription = mNetworkService.requestWithoutRetry(baseUrl, queries)
+        Subscription subscription = mNetworkServiceWithRetry.requestWithoutRetry(baseUrl, queries)
                 .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
@@ -320,8 +316,8 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     private boolean shouldAddQueriesUser() {
-        Timber.d("Should add QueriesUser: [appId:%s]", getCurrentAppId());
-        return getCurrentAppId() == BuildConfig.VOUCHER_APP_ID;
+        Timber.d("Should add QueriesUser: [appId:%s]",mAppId);
+        return mAppId == BuildConfig.VOUCHER_APP_ID;
     }
 
     private ReadableMap addQueriesUser(@NonNull ReadableMap content) {
@@ -349,7 +345,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void requestWithRetry(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("requestWithRetry: baseUrl [%s] String content [%s]", baseUrl, content);
-        Subscription subscription = mNetworkService.request(baseUrl, content)
+        Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, content)
                 .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
@@ -472,14 +468,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
             }
         }
 
-    }
-
-    private long getCurrentAppId() {
-        Activity activity = getCurrentActivity();
-        if (activity instanceof PaymentApplicationActivity) {
-            return ((PaymentApplicationActivity) activity).getCurrentAppId();
-        }
-        return -1;
     }
 
 }

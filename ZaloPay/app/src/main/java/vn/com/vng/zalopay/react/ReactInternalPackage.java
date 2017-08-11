@@ -49,7 +49,7 @@ public class ReactInternalPackage implements ReactPackage {
     private final EventBus mEventBus;
     private final ReactNativeHostable mReactNativeHostable;
     private final User mUser;
-    private final NetworkService mNetworkService;
+    private final NetworkService mNetworkServiceWithRetry;
     private final NotificationService mNotificationService;
 
     @Inject
@@ -65,7 +65,7 @@ public class ReactInternalPackage implements ReactPackage {
                                 ReactNativeHostable reactNativeHostable,
                                 AppResourceStore.Repository resourceRepository,
                                 User user,
-                                NetworkService networkService,
+                                @Named("NetworkServiceWithRetry") NetworkService networkServiceWithRetry,
                                 NotificationService notificationService
 
     ) {
@@ -81,7 +81,7 @@ public class ReactInternalPackage implements ReactPackage {
         this.mReactNativeHostable = reactNativeHostable;
         this.resourceRepository = resourceRepository;
         this.mUser = user;
-        this.mNetworkService = networkService;
+        this.mNetworkServiceWithRetry = networkServiceWithRetry;
         this.mNotificationService = notificationService;
 
     }
@@ -91,7 +91,7 @@ public class ReactInternalPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new ReactInternalNativeModule(reactContext, mUser, navigator, mNotificationRepository, mNetworkService));
+        modules.add(new ReactInternalNativeModule(reactContext, mUser, navigator, mNotificationRepository, mNetworkServiceWithRetry));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, navigator, mTransactionRepository, resourceRepository, mNotificationRepository, mEventBus));
         modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUser, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mUser, mNotificationRepository, mEventBus, mNotificationService));

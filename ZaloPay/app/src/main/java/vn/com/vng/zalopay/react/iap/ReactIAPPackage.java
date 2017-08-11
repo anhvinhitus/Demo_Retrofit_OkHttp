@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 
@@ -26,28 +24,29 @@ import vn.com.vng.zalopay.navigation.Navigator;
 public class ReactIAPPackage implements ReactPackage {
     private final IPaymentService paymentService;
     private final User mUser;
-    private final NetworkService mNetworkService;
+    private final long appId;
+    private final NetworkService mNetworkServiceWithRetry;
     private final Navigator mNavigator;
     private ReactNativeHostable mNativeHost;
 
-    @Inject
     public ReactIAPPackage(IPaymentService paymentService,
-                           User user,
-                           NetworkService networkService,
+                           User user, long appId,
+                           NetworkService networkServiceWithRetry,
                            Navigator navigator,
-                           ReactNativeHostable hostable) {
+                           ReactNativeHostable nativeHost) {
         this.paymentService = paymentService;
         this.mUser = user;
-        this.mNetworkService = networkService;
+        this.appId = appId;
+        this.mNetworkServiceWithRetry = networkServiceWithRetry;
         this.mNavigator = navigator;
-        this.mNativeHost = hostable;
+        this.mNativeHost = nativeHost;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZaloPayNativeModule(reactContext, mUser, paymentService,
-                mNetworkService, mNavigator));
+        modules.add(new ZaloPayNativeModule(reactContext, mUser, paymentService, appId,
+                mNetworkServiceWithRetry, mNavigator));
         return modules;
     }
 

@@ -170,7 +170,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     @Override
-    public void handleException(@NonNull Throwable e) {
+    public void handleException(Throwable e) {
         eventBus.post(new InternalAppExceptionEvent(e));
         super.handleException(e);
     }

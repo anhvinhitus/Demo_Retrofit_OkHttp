@@ -105,6 +105,7 @@ public class UserSocketModule {
 
     @Provides
     @UserScope
+    @Named("NetworkServiceWithRetry")
     NetworkService providesNetworkService(@Named("retrofitReact") Retrofit retrofit) {
         return new NetworkServiceImpl(retrofit.create(DynamicUrlService.class));
     }
