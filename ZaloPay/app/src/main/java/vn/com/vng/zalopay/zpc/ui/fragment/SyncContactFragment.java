@@ -38,6 +38,8 @@ public class SyncContactFragment extends RuntimePermissionFragment implements IS
     TextView mTimeView;
     @BindView(R.id.tvPermission)
     View mPermissionView;
+    @BindView(R.id.layoutContact)
+    View mLayoutContact;
     @Inject
     SyncContactPresenter mPresenter;
 
@@ -59,6 +61,7 @@ public class SyncContactFragment extends RuntimePermissionFragment implements IS
         switch (permissionRequestCode) {
             case PERMISSION_CODE.READ_CONTACTS:
                 mPermissionView.setVisibility(View.GONE);
+                mLayoutContact.setEnabled(false);
                 mPresenter.syncContact();
                 break;
         }
@@ -80,6 +83,7 @@ public class SyncContactFragment extends RuntimePermissionFragment implements IS
         mPresenter.attachView(this);
         boolean isReadContact = isPermissionGranted(Manifest.permission.READ_CONTACTS);
         mPermissionView.setVisibility(isReadContact ? View.GONE : View.VISIBLE);
+        mLayoutContact.setEnabled(!isReadContact);
     }
 
 
@@ -148,6 +152,13 @@ public class SyncContactFragment extends RuntimePermissionFragment implements IS
 
     @OnClick(R.id.btnUpdate)
     public void onViewClicked() {
+        if (isPermissionGrantedAndRequest(Manifest.permission.READ_CONTACTS, PERMISSION_CODE.READ_CONTACTS)) {
+            mPresenter.syncContact();
+        }
+    }
+
+    @OnClick(R.id.layoutContact)
+    public void onClickLayoutContact(){
         if (isPermissionGrantedAndRequest(Manifest.permission.READ_CONTACTS, PERMISSION_CODE.READ_CONTACTS)) {
             mPresenter.syncContact();
         }
