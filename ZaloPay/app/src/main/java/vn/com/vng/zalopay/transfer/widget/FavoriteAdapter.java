@@ -10,18 +10,13 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnFavoriteItemClickListener;
-import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
-import vn.com.vng.zalopay.domain.model.Person;
 
 /**
  * Created by hieuvm on 7/23/17.
@@ -30,25 +25,8 @@ import vn.com.vng.zalopay.domain.model.Person;
 
 final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAdapter.ViewHolder> {
 
-    interface OnClickFavoriteListener {
-        void onRemoveFavorite(FavoriteData favorite);
-        void onFavoriteItemClick(FavoriteData favoriteData);
-    }
-
-    private boolean mEditMode = false;
-
     protected OnClickFavoriteListener mListener;
-
-    FavoriteAdapter(Context context, OnClickFavoriteListener listener) {
-        super(context);
-        mListener = listener;
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.row_favorite_layout, parent, false), mOnItemClickListener);
-    }
-
+    private boolean mEditMode = false;
     private OnFavoriteItemClickListener mOnItemClickListener = new OnFavoriteItemClickListener() {
 
         @Override
@@ -76,6 +54,21 @@ final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAda
         }
     };
 
+    FavoriteAdapter(Context context, OnClickFavoriteListener listener) {
+        super(context);
+        mListener = listener;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(mInflater.inflate(R.layout.row_favorite_layout, parent, false), mOnItemClickListener);
+    }
+
+    void setEditMode(boolean isEdit) {
+        mEditMode = isEdit;
+        notifyDataSetChanged();
+    }
+
 //    @Override
 //    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 //        return new ViewHolder(mInflater.inflate(R.layout.row_favorite_layout, parent, false), mOnItemClickListener);
@@ -100,17 +93,18 @@ final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAda
 //        }
 //    };
 
-    void setEditMode(boolean isEdit) {
-        mEditMode = isEdit;
-        notifyDataSetChanged();
-    }
-
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         FavoriteData profile = getItem(position);
         if (profile != null) {
             holder.bindView(profile, mEditMode);
         }
+    }
+
+    interface OnClickFavoriteListener {
+        void onRemoveFavorite(FavoriteData favorite);
+
+        void onFavoriteItemClick(FavoriteData favoriteData);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -121,11 +115,10 @@ final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAda
         View mEdit;
         @BindView(R.id.tvDisplayName)
         TextView mTvDisplayName;
-        private OnFavoriteItemClickListener mListener;
-//        private OnItemClickListener mListener;
-
         @BindView(R.id.placeHolder)
         TextView mPlaceHolder;
+        //        private OnItemClickListener mListener;
+        private OnFavoriteItemClickListener mListener;
 
         public ViewHolder(View itemView, OnFavoriteItemClickListener listener) {
             super(itemView);
@@ -158,7 +151,6 @@ final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAda
         public void onClickEdit(View v) {
             if (mListener != null) {
                 mListener.onRemoveItemClick(v, getAdapterPosition());
-//                mListener.onListItemClick(v, getAdapterPosition());
             }
         }
 
@@ -167,7 +159,12 @@ final class FavoriteAdapter extends AbsRecyclerAdapter<FavoriteData, FavoriteAda
             if (mListener == null) {
                 return;
             }
-            mListener.onListItemClick(v, getAdapterPosition());
+
+            if (mEdit.isShown()) {
+                mListener.onRemoveItemClick(v, getAdapterPosition());
+            } else {
+                mListener.onListItemClick(v, getAdapterPosition());
+            }
         }
     }
 }

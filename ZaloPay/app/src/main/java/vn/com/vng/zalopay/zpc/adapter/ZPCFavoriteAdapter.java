@@ -50,6 +50,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
                     mListener.onRemoveFavorite(favorite);
                     notifyDataSetChanged();
                 }
+                ToastUtil.showCustomToast(mContext, mContext.getString(R.string.friend_favorite_removed), false);
             }
 
             @Override
