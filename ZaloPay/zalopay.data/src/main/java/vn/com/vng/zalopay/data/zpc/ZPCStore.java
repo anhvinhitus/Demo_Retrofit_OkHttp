@@ -78,6 +78,8 @@ public interface ZPCStore {
         @API_NAME(https = ZPEvents.API_UM_CHECKLISTZALOIDFORCLIENT, connector = ZPEvents.CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT)
         @GET(Constants.UM_API.CHECKLISTZALOIDFORCLIENT)
         Observable<ListUserExistResponse> checklistzaloidforclient(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("zaloidlist") String zaloidlist);
+
+        @API_NAME(https = ZPEvents.API_ZPC_GETUSERINFOBYPHONE, connector = ZPEvents.CONNECTOR_ZPC_GETUSERINFOBYPHONE)
         @GET(Constants.UM_API.GETUSERINFOBYPHONE)
         Observable<ZPCGetByPhone> getuserinfobyphone(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("phonenumber") String phone);
     }

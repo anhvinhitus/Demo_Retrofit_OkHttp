@@ -4,6 +4,8 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
+import vn.com.vng.zalopay.network.API_NAME;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.voucher.UseVoucherResponse;
 import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
@@ -44,12 +46,13 @@ public class VoucherStore {
 
     public interface VoucherService {
         @GET(Constants.URL_GET_VOUCHER_STATUS)
-            //@API_NAME(https = ZPEvents.API_V001_TPE_GETTRANSSTATUS, connector = ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS)
+        @API_NAME(https = ZPEvents.API_GET_VOUCHER_STATUS, connector = ZPEvents.CONNECTOR_GET_VOUCHER_STATUS)
         Observable<VoucherStatusResponse> getVoucherStatus(@Query("userid") String userID,
                                                            @Query("accesstoken") String accessToken,
                                                            @Query("vouchersig") String voucherSig);
 
         @POST(Constants.URL_USE_VOUCHER)
+        @API_NAME(https = ZPEvents.API_USE_VOUCHER, connector = ZPEvents.CONNECTOR_USE_VOUCHER)
         Observable<UseVoucherResponse> useVoucher(@Query("userid") String userID,
                                                   @Query("accesstoken") String accessToken,
                                                   @Query("apptransid") String appTransID,
@@ -59,6 +62,7 @@ public class VoucherStore {
                                                   @Query("vouchercode") String voucherCode);
 
         @POST(Constants.URL_REVERT_VOUCHER)
+        @API_NAME(https = ZPEvents.API_REVERT_VOUCHER, connector = ZPEvents.CONNECTOR_REVERT_VOUCHER)
         Observable<BaseResponse> revertVoucher(@Query("userid") String userID,
                                                @Query("accesstoken") String accessToken,
                                                @Query("timestamp") long timestamp,
