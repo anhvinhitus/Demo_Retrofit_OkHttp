@@ -61,6 +61,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     protected long mStartCachedTime;
     private ZPCGetByPhone mZPCGetByPhone;
     private List<ZPCGetByPhone> mListCachedData;
+    private String mCurrentPhoneNumber;
     private final SharedPreferences mPreferences = AndroidApplication.instance().getAppComponent().sharedPreferences();
 
     @ZpcViewType
@@ -324,7 +325,9 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
             }
         }
 
-        if (System.currentTimeMillis() - mStartCachedTime > API_RESPONE_LONG_LIFE) {
+        if (System.currentTimeMillis() - mStartCachedTime > API_RESPONE_LONG_LIFE ||
+                !number.equals(mCurrentPhoneNumber)) {
+            mCurrentPhoneNumber = number;
             Timber.d("Access local cached object: over 5 minutes or not in cached data");
             Subscription subscription = mFriendRepository.getUserInfoByPhone(user.zaloPayId, user.accesstoken, number)
                     .subscribeOn(Schedulers.io())
@@ -333,7 +336,11 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
 
             mSubscription.add(subscription);
         } else {
-            loadProfileNotInZPC(mZPCGetByPhone);
+            if(mZPCGetByPhone.returnCode == 1) {
+                loadProfileNotInZPC(mZPCGetByPhone);
+            } else {
+                loadDefaultNotInZPC(mZPCGetByPhone);
+            }
             Timber.d("Access local cached object: cached object still available in 5 minutes");
         }
     }
@@ -455,8 +462,8 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
 
             if (zpcGetByPhone.returnCode == 1) {
                 presenter.mStartCachedTime = System.currentTimeMillis();
-                presenter.mZPCGetByPhone = zpcGetByPhone;
                 presenter.mListCachedData.add(zpcGetByPhone);
+                presenter.mZPCGetByPhone = zpcGetByPhone;
                 presenter.loadProfileNotInZPC(zpcGetByPhone);
             } else {
                 Timber.d("User get by phone [error :  %s]", zpcGetByPhone.returnMessage == null ? "" : zpcGetByPhone.returnMessage);
