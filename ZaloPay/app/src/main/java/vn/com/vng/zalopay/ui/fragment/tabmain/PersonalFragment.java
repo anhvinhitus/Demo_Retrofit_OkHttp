@@ -16,6 +16,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.ConfigLoader;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
@@ -124,7 +125,7 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
     @Override
     public void setPhoneNumber(long phoneNumber) {
         if (tvZaloPayPhoneNumber != null && phoneNumber > 0) {
-            String PhoneNumber = String.valueOf(phoneNumber);
+            String PhoneNumber = PhoneUtil.formatPhoneNumber(phoneNumber);
             tvZaloPayPhoneNumber.setText(PhoneNumber);
         }
     }

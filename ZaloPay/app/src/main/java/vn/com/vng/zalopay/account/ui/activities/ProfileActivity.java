@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.util.ConfigLoader;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
@@ -78,7 +79,7 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
     @Override
     public void setPhoneNumber(long phoneNumber) {
         if (tvZaloPayPhoneNumber != null && phoneNumber > 0) {
-            String PhoneNumber = String.valueOf(phoneNumber);
+            String PhoneNumber = PhoneUtil.formatPhoneNumber(phoneNumber);
             tvZaloPayPhoneNumber.setText(PhoneNumber);
         }
     }
