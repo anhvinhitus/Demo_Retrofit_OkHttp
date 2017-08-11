@@ -753,6 +753,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
         } else {
             try {
+                markPosition();
                 makeFullLineOnLastItem();
                 makeDefaultChannel();
             } catch (Exception e) {
@@ -802,7 +803,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             }
             if (channel.isMapValid() && lastPaymentBank.equals(channel.cardKey())) {
                 paymentChannel = channel;
-                paymentChannel.position = position;
                 break;
             }
         }
@@ -844,6 +844,17 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             mChannelAdapter.notifyBinderItemChanged(lastIndex);
         } catch (Exception e) {
             Timber.d(e, "Exception make full line item");
+        }
+    }
+
+    private void markPosition() {
+        int pos = -1;
+        for (Object ob : mChannelList) {
+            pos++;
+            if (!(ob instanceof PaymentChannel)) {
+                continue;
+            }
+            ((PaymentChannel) ob).position = pos;
         }
     }
 
