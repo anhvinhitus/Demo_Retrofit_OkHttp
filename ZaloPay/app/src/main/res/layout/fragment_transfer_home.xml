@@ -16,15 +16,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@drawable/default_white_selector"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/app_padding"
+            android:paddingTop="@dimen/app_padding">
 
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/app_padding"
-                android:paddingLeft="@dimen/spacing.medium"
-                android:paddingRight="@dimen/spacing.medium"
+                android:paddingLeft="@dimen/spacing.medium.s"
+                android:paddingRight="@dimen/spacing.medium.s"
                 android:paddingTop="@dimen/app_padding"
                 android:textColor="@color/transfer_font_phone_number"
                 app:iconName="@string/sendmoney_phonenumber"
@@ -47,22 +50,20 @@
                     style="@style/TextView.Item.Sub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="@dimen/spacing.tiny"
                     android:text="@string/phone.zalo.pay.content" />
             </LinearLayout>
-
 
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/spacing.medium.s"
+                android:layout_marginRight="@dimen/spacing.medium.s"
                 android:gravity="center"
                 android:textColor="@color/arrow_right"
                 app:iconName="@string/general_arrowright"
                 app:iconSize="12dp" />
-
         </LinearLayout>
 
         <View
@@ -76,15 +77,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@drawable/default_white_selector"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/app_padding"
+            android:paddingTop="@dimen/app_padding">
 
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/app_padding"
-                android:paddingLeft="@dimen/spacing.medium"
-                android:paddingRight="@dimen/spacing.medium"
+                android:paddingLeft="@dimen/spacing.medium.s"
+                android:paddingRight="@dimen/spacing.medium.s"
                 android:paddingTop="@dimen/app_padding"
                 android:textColor="@color/transfer_font_contacts"
                 app:iconName="@string/sendmoney_contacts"
@@ -107,17 +111,16 @@
                     style="@style/TextView.Item.Sub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="@dimen/spacing.tiny"
                     android:text="@string/transfer.contact.list.content" />
             </LinearLayout>
-
 
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/spacing.medium.s"
+                android:layout_marginRight="@dimen/spacing.medium.s"
                 android:gravity="center"
                 android:textColor="@color/arrow_right"
                 app:iconName="@string/general_arrowright"
@@ -136,15 +139,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@drawable/default_white_selector"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/app_padding"
+            android:paddingTop="@dimen/app_padding">
 
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/app_padding"
-                android:paddingLeft="@dimen/spacing.medium"
-                android:paddingRight="@dimen/spacing.medium"
+                android:paddingLeft="@dimen/spacing.medium.s"
+                android:paddingRight="@dimen/spacing.medium.s"
                 android:paddingTop="@dimen/app_padding"
                 android:textColor="@color/transfer_font_zalopay_id"
                 app:iconName="@string/sendmoney_zalopayid"
@@ -167,17 +173,16 @@
                     style="@style/TextView.Item.Sub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="@dimen/spacing.tiny"
                     android:text="@string/transfer.zalo.pay.content" />
             </LinearLayout>
-
 
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/spacing.medium.s"
+                android:layout_marginRight="@dimen/spacing.medium.s"
                 android:gravity="center"
                 android:textColor="@color/arrow_right"
                 app:iconName="@string/general_arrowright"
