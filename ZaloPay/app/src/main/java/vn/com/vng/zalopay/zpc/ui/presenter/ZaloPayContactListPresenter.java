@@ -3,13 +3,18 @@ package vn.com.vng.zalopay.zpc.ui.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,6 +24,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -30,7 +36,6 @@ import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
-import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -39,7 +44,6 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
 import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
-import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /**
  * Created by AnhHieu on 10/10/16.
@@ -47,12 +51,17 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
  */
 
 public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFriendListView> implements OnFavoriteListener {
-
     private static final int MAX_FAVORITE = 10;
+    private static final long API_RESPONE_LONG_LIFE = 5 * 60 * 1000; // 5 minutes
+    private final String PREF_CACHED_NOT_IN_ZPC = "pref_cached_not_in_zpc";
 
     private final ZPCStore.Repository mFriendRepository;
     protected final Context mContext;
     protected final Navigator mNavigator;
+    protected long mStartCachedTime;
+    private ZPCGetByPhone mZPCGetByPhone;
+    private List<ZPCGetByPhone> mListCachedData;
+    private final SharedPreferences mPreferences = AndroidApplication.instance().getAppComponent().sharedPreferences();
 
     @ZpcViewType
     private int mViewType = ZpcViewType.ZPC_All;
@@ -65,6 +74,70 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         this.mFriendRepository = friendRepository;
         this.mContext = context;
         this.mNavigator = navigator;
+        this.mStartCachedTime = 0;
+        this.mListCachedData = new ArrayList<>();
+    }
+
+    @Override
+    public void onRemoveFavorite(FavoriteData favoriteData) {
+        if (favoriteData == null) {
+            return;
+        }
+
+        Subscription subscription =
+                mFriendRepository.removeFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
+                        .doOnError(Timber::d)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
+
+        if (mView == null) {
+            return;
+        }
+        mView.closeAllSwipeItems();
+    }
+
+    @Override
+    public void onAddFavorite(FavoriteData favoriteData) {
+        if (favoriteData == null) {
+            return;
+        }
+
+        Subscription subscription =
+                mFriendRepository.addFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
+                        .doOnError(Timber::d)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
+    }
+
+    @Override
+    public void onMaximumFavorite() {
+        if (mView == null) {
+            return;
+        }
+
+        mView.showNotificationDialog();
+    }
+
+    @Override
+    public void onSelectFavorite(FavoriteData favoriteData) {
+        if (favoriteData == null) {
+            return;
+        }
+
+        onSelectContactItem(getFragment(), favoriteData);
+    }
+
+    @Override
+    public void pause() {
+        if (mListCachedData == null || mListCachedData.size() <= 0) {
+            return;
+        }
+
+        String jsonDataToCached = getStringJsonFromListCached(mListCachedData);
+        cacheData(jsonDataToCached);
+        Timber.d("Json string to cached list data not in zpc: %s", jsonDataToCached);
     }
 
     public Fragment getFragment() {
@@ -72,6 +145,22 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
             return null;
         }
         return mView.getFragment();
+    }
+
+    void showLoadingView() {
+        if (mView == null) {
+            return;
+        }
+
+        mView.showLoading();
+    }
+
+    void hideLoadingView() {
+        if (mView == null) {
+            return;
+        }
+
+        mView.hideLoading();
     }
 
     private boolean isPhoneBook() {
@@ -100,6 +189,11 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
             getFriendList();
         }
         getFavorite(MAX_FAVORITE);
+
+        String jsonListCachedData = mPreferences.getString(PREF_CACHED_NOT_IN_ZPC, "");
+        if (!TextUtils.isEmpty(jsonListCachedData)) {
+            mListCachedData = getListCachedData(jsonListCachedData);
+        }
         initView();
     }
 
@@ -159,7 +253,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         if (isPhoneBook()) {
             backTopup(fragment, profile);
         } else {
-            startTransfer(profile);
+            startTransfer(fragment, profile);
         }
     }
 
@@ -178,7 +272,29 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         if (isPhoneBook()) {
             backTopup(fragment, profile);
         } else {
-            startTransfer(profile);
+            startTransfer(fragment, profile);
+        }
+    }
+
+    public void onSelectContactItem(Fragment fragment, ZPCGetByPhone zpcGetByPhone, String phoneNumber) {
+        if (zpcGetByPhone == null) {
+            Timber.d("click contact not in zpc data is null");
+            return;
+        }
+
+        ZPProfile profile = new ZPProfile();
+        if(!TextUtils.isEmpty(zpcGetByPhone.avatar)) {
+            profile.avatar = zpcGetByPhone.avatar;
+        }
+        profile.displayName = TextUtils.isEmpty(zpcGetByPhone.displayName) ? "" : zpcGetByPhone.displayName;
+        profile.phonenumber = TextUtils.isEmpty(PhoneUtil.formatPhoneNumber(zpcGetByPhone.phoneNumber)) ?
+                phoneNumber : PhoneUtil.formatPhoneNumber(zpcGetByPhone.phoneNumber);
+        profile.status = zpcGetByPhone.returnCode;
+
+        if (isPhoneBook()) {
+            backTopup(fragment, profile);
+        } else {
+            startTransfer(fragment, profile);
         }
     }
 
@@ -191,33 +307,70 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         activity.finish();
     }
 
-    private void startTransfer(ZPProfile profile) {
-        Subscription subscription = mFriendRepository.getUserInfoByPhone(user.zaloPayId, user.accesstoken, profile.phonenumber)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetUserByPhoneSubscriber(this, profile));
-
-        mSubscription.add(subscription);
-//        if (profile.status != 1) {
-//            Timber.d("user profile [status %s]", profile.status);
-//            showDialogNotUsingApp(profile);
-//            return;
-//        }
-//
-//        TransferObject object = new TransferObject(profile);
-//        object.transferMode = Constants.TransferMode.TransferToZaloFriend;
-//        object.activateSource = Constants.ActivateSource.FromTransferActivity;
-//        mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
-    }
-
-    void startTransfer(TransferObject transferObject){
-        if(mNavigator == null){
-            return;
-        }
+    public void getUserInfoNotInZPC(String number) {
         if (mView == null) {
             return;
         }
-        mNavigator.startTransferActivity((Fragment) mView, transferObject, Constants.REQUEST_CODE_TRANSFER);
+
+        showLoadingView();
+        if (mListCachedData != null && mListCachedData.size() > 0) {
+            Timber.d("Check the phone input in list cached data");
+            for (ZPCGetByPhone zpcGetByPhone : mListCachedData) {
+                String phoneNo = PhoneUtil.formatPhoneNumber(zpcGetByPhone.phoneNumber);
+                if (number.equals(phoneNo)) {
+                    mView.updateProfileNotInZPC(zpcGetByPhone);
+                    return;
+                }
+            }
+        }
+
+        if (System.currentTimeMillis() - mStartCachedTime > API_RESPONE_LONG_LIFE) {
+            Timber.d("Access local cached object: over 5 minutes or not in cached data");
+            Subscription subscription = mFriendRepository.getUserInfoByPhone(user.zaloPayId, user.accesstoken, number)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new GetUserByPhoneSubscriber(this));
+
+            mSubscription.add(subscription);
+        } else {
+            doTransfer(mZPCGetByPhone);
+            Timber.d("Access local cached object: cached object still available in 5 minutes");
+        }
+    }
+
+    private void startTransfer(Fragment fragment, ZPProfile profile) {
+        if (profile.status != 1) {
+            Timber.d("user profile [status %s]", profile.status);
+            showDialogNotUsingApp(profile);
+            return;
+        }
+
+        TransferObject object = new TransferObject(profile);
+        object.transferMode = Constants.TransferMode.TransferToZaloFriend;
+        object.activateSource = Constants.ActivateSource.FromTransferActivity;
+        mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
+    }
+
+    void doTransfer(ZPCGetByPhone zpcGetByPhone) {
+        if (mNavigator == null) {
+            return;
+        }
+
+        if (mView == null) {
+            return;
+        }
+
+        if (zpcGetByPhone == null) {
+            Timber.d("Access local cached object: cached object get null");
+            return;
+        }
+
+        hideLoadingView();
+        TransferObject object = new TransferObject(zpcGetByPhone);
+        object.transferMode = Constants.TransferMode.TransferToZaloFriend;
+        object.activateSource = Constants.ActivateSource.FromTransferActivity;
+
+        mNavigator.startTransferActivity((Fragment) mView, object, Constants.REQUEST_CODE_TRANSFER);
     }
 
     void showDialogNotUsingApp(ZPProfile zaloProfile) {
@@ -250,79 +403,35 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         mSubscription.add(subscription);
     }
 
-    public void handleNumberNotInZPC(String phoneNumber) {
-        if (getFragment() == null) {
-            return;
-        }
-
-        if (!PhoneUtil.isMobileNumber(phoneNumber)) {
-            return;
-        }
-
-        FavoriteData favoriteData = new FavoriteData();
-        favoriteData.displayName = "";
-        favoriteData.phoneNumber = phoneNumber;
-        onSelectContactItem(getFragment(), favoriteData);
+    void cacheData(String value) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putString(PREF_CACHED_NOT_IN_ZPC, value);
+        editor.apply();
     }
 
-    @Override
-    public void onRemoveFavorite(FavoriteData favoriteData) {
-        if (favoriteData == null) {
-            return;
-        }
-
-        Subscription subscription =
-                mFriendRepository.removeFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
-                        .doOnError(Timber::d)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(new DefaultSubscriber<>());
-        mSubscription.add(subscription);
-
-        if (mView == null) {
-            return;
-        }
-        mView.closeAllSwipeItems();
+    String getStringJsonFromListCached(List<ZPCGetByPhone> listCached) {
+        return new Gson().toJson(listCached);
     }
 
-    @Override
-    public void onAddFavorite(FavoriteData favoriteData) {
-        if (favoriteData == null) {
-            return;
-        }
-
-        Subscription subscription =
-                mFriendRepository.addFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
-                        .doOnError(Timber::d)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(new DefaultSubscriber<>());
-        mSubscription.add(subscription);
+    List<ZPCGetByPhone> getListCachedData(String json) {
+        List<ZPCGetByPhone> list = new Gson().fromJson(json, new TypeToken<ArrayList<ZPCGetByPhone>>() {
+        }.getType());
+        return list;
     }
 
-    @Override
-    public void onMaximumFavorite() {
+    void loadDefaultNotInZPC(ZPCGetByPhone zpcGetByPhone) {
         if (mView == null) {
             return;
         }
 
-        mView.showNotificationDialog();
-    }
-
-    @Override
-    public void onSelectFavorite(FavoriteData favoriteData) {
-        if (favoriteData == null) {
-            return;
-        }
-
-        onSelectContactItem(getFragment(), favoriteData);
+        mView.loadDefaultNotInZPCView(zpcGetByPhone);
     }
 
     static class GetUserByPhoneSubscriber extends DefaultSubscriber<ZPCGetByPhone> {
         private WeakReference<ZaloPayContactListPresenter> mPresenter;
-        private ZPProfile mProfile;
 
-        GetUserByPhoneSubscriber(ZaloPayContactListPresenter presenter, ZPProfile profile) {
+        GetUserByPhoneSubscriber(ZaloPayContactListPresenter presenter) {
             mPresenter = new WeakReference<>(presenter);
-            mProfile = profile;
         }
 
         @Override
@@ -330,20 +439,31 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
             if (zpcGetByPhone == null) {
                 return;
             }
+
             ZaloPayContactListPresenter presenter = mPresenter.get();
-            if(presenter == null){
+            if (presenter == null) {
                 return;
             }
 
             if (zpcGetByPhone.returnCode == 1) {
-                TransferObject object = new TransferObject(zpcGetByPhone);
-                object.transferMode = Constants.TransferMode.TransferToZaloFriend;
-                object.activateSource = Constants.ActivateSource.FromTransferActivity;
-                presenter.startTransfer(object);
+                presenter.mStartCachedTime = System.currentTimeMillis();
+                presenter.mZPCGetByPhone = zpcGetByPhone;
+                presenter.mListCachedData.add(zpcGetByPhone);
+                presenter.doTransfer(zpcGetByPhone);
             } else {
-                Timber.d("user get by phone [error :  %s]", zpcGetByPhone.returnMessage == null ? "" : zpcGetByPhone.returnMessage);
-                presenter.showDialogNotUsingApp(mProfile);
+                Timber.d("User get by phone [error :  %s]", zpcGetByPhone.returnMessage == null ? "" : zpcGetByPhone.returnMessage);
+                presenter.loadDefaultNotInZPC(zpcGetByPhone);
             }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (mPresenter.get() == null) {
+                return;
+            }
+
+            mPresenter.get().hideLoadingView();
+            Timber.d("User get by phone call api [error :  %s]", e.getMessage());
         }
     }
 }

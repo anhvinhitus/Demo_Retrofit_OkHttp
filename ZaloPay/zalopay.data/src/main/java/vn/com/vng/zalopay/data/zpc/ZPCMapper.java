@@ -92,7 +92,6 @@ final class ZPCMapper {
         long zaloId = ConvertHelper.parseLong(entity.zaloid, 0);
         long zalopayId = ConvertHelper.parseLong(entity.userid, 0);
         if (zaloId <= 0 || zalopayId <= 0) {
-            Timber.d("Transform user error [zaloid:%s - zalopayid:%s]", entity.zaloid, entity.userid);
             return null;
         }
 

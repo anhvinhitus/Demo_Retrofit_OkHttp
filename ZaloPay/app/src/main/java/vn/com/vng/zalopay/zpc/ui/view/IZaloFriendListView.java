@@ -7,6 +7,7 @@ import android.widget.AbsListView;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.FavoriteData;
+import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
@@ -40,4 +41,8 @@ public interface IZaloFriendListView extends ILoadDataView {
     Fragment getFragment();
 
     void focusEdtSearchView();
+
+    void updateProfileNotInZPC(ZPCGetByPhone user);
+
+    void loadDefaultNotInZPCView(ZPCGetByPhone user);
 }

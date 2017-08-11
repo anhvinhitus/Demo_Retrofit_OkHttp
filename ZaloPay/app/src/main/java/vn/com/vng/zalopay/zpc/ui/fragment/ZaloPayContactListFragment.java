@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.shamanland.fonticon.FontIconDrawable;
 import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
@@ -45,6 +46,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
+import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
 import vn.com.vng.zalopay.react.model.ZPCViewMode;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
@@ -82,14 +84,20 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     IconFont mSwitchKeyboardView;
     @BindView(R.id.itemNumberNotSaveYet)
     LinearLayout mItemNumberNotSaveYet;
-    @BindView(R.id.tvNumberNotSave)
+    @BindView(R.id.not_save_yet_tv_phone_number)
     TextView mTvNumberNotSave;
+    @BindView(R.id.not_save_yet_tv_display_name)
+    TextView mTvDisplayNameNotSave;
+    @BindView(R.id.not_save_yet_iv_avatar)
+    SimpleDraweeView mAvatar;
+
     @ZpcViewType
     private int mViewType = ZpcViewType.ZPC_All;
     private String mKeySearch = null;
     private String mNavigatorTitle = null;
     private String mViewMode = ZPCViewMode.keyboardABC;
     private String mPhoneNumber = null;
+    private ZPCGetByPhone mUserNotInZPC;
     private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -309,7 +317,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         }
 
         String phoneNumber = mEdtSearchView.getText().toString().trim();
-        mPresenter.handleNumberNotInZPC(phoneNumber);
+        mPresenter.onSelectContactItem(this, mUserNotInZPC, phoneNumber);
     }
 
     @Override
@@ -432,11 +440,8 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         } else {
             String phoneNumber = mEdtSearchView.getText().toString();
             if (PhoneUtil.isMobileNumber(phoneNumber)) {
-                mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
-                mTvNumberNotSave.setText(phoneNumber);
-                mLlEmptyView.setVisibility(View.GONE);
-            }
-            else {
+                mPresenter.getUserInfoNotInZPC(phoneNumber);
+            } else {
                 mTvEmptyView.setText(R.string.no_result_your_search);
                 mItemNumberNotSaveYet.setVisibility(View.GONE);
                 mLlEmptyView.setVisibility(View.VISIBLE);
@@ -495,6 +500,43 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
             mEdtSearchView.setSelection(mEdtSearchView.getText().length()); // set cursor to end
             imm.showSoftInput(mEdtSearchView, 0);
         }, 200);
+    }
+
+    @Override
+    public void updateProfileNotInZPC(ZPCGetByPhone user) {
+        hideLoading();
+        if (user == null) {
+            return;
+        }
+
+        mUserNotInZPC = user;
+
+        mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
+        mTvDisplayNameNotSave.setText(TextUtils.isEmpty(user.displayName) ? "" : user.displayName);
+        mTvNumberNotSave.setText(TextUtils.isEmpty(PhoneUtil.formatPhoneNumber(user.phoneNumber)) ? "" : PhoneUtil.formatPhoneNumber(user.phoneNumber));
+        if (!TextUtils.isEmpty(user.avatar)) {
+            mAvatar.setImageURI(user.avatar);
+        }
+        mLlEmptyView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void loadDefaultNotInZPCView(ZPCGetByPhone user) {
+        hideLoading();
+        mUserNotInZPC = user;
+        String phoneNumber = mEdtSearchView.getText().toString();
+        if (PhoneUtil.isMobileNumber(phoneNumber)) {
+            mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
+            mTvDisplayNameNotSave.setText(phoneNumber);
+            mTvNumberNotSave.setText(getString(R.string.not_number_save_yet));
+            mAvatar.setImageResource(R.drawable.ic_avatar_default);
+            mLlEmptyView.setVisibility(View.GONE);
+        } else {
+            mTvEmptyView.setText(R.string.no_result_your_search);
+            mItemNumberNotSaveYet.setVisibility(View.GONE);
+            mLlEmptyView.setVisibility(View.VISIBLE);
+        }
+
     }
 
 //    private OnFavoriteListener mOnFavoriteListener = new OnFavoriteListener() {
