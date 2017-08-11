@@ -318,7 +318,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
             for (ZPCGetByPhone zpcGetByPhone : mListCachedData) {
                 String phoneNo = PhoneUtil.formatPhoneNumber(zpcGetByPhone.phoneNumber);
                 if (number.equals(phoneNo)) {
-                    mView.updateProfileNotInZPC(zpcGetByPhone);
+                    loadProfileNotInZPC(zpcGetByPhone);
                     return;
                 }
             }
@@ -333,7 +333,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
 
             mSubscription.add(subscription);
         } else {
-            doTransfer(mZPCGetByPhone);
+            loadProfileNotInZPC(mZPCGetByPhone);
             Timber.d("Access local cached object: cached object still available in 5 minutes");
         }
     }
@@ -427,6 +427,14 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         mView.loadDefaultNotInZPCView(zpcGetByPhone);
     }
 
+    void loadProfileNotInZPC(ZPCGetByPhone zpcGetByPhone) {
+        if (mView == null) {
+            return;
+        }
+
+        mView.updateProfileNotInZPC(zpcGetByPhone);
+    }
+
     static class GetUserByPhoneSubscriber extends DefaultSubscriber<ZPCGetByPhone> {
         private WeakReference<ZaloPayContactListPresenter> mPresenter;
 
@@ -449,7 +457,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
                 presenter.mStartCachedTime = System.currentTimeMillis();
                 presenter.mZPCGetByPhone = zpcGetByPhone;
                 presenter.mListCachedData.add(zpcGetByPhone);
-                presenter.doTransfer(zpcGetByPhone);
+                presenter.loadProfileNotInZPC(zpcGetByPhone);
             } else {
                 Timber.d("User get by phone [error :  %s]", zpcGetByPhone.returnMessage == null ? "" : zpcGetByPhone.returnMessage);
                 presenter.loadDefaultNotInZPC(zpcGetByPhone);
