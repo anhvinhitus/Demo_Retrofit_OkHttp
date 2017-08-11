@@ -22,8 +22,12 @@
     <string name="menu_logout">menu_logout</string>
     <!--Menu END-->
 
-    <string name="sendmoney_zalopayid">sendmoney_zalopayid</string>
     <string name="sendmoney_friend">sendmoney_friend</string>
+
+    <string name="sendmoney_phonenumber">sendmoney_phonenumber</string>
+    <string name="sendmoney_contacts">sendmoney_contacts</string>
+    <string name="sendmoney_zalopayid">sendmoney_zalopayid</string>
+
 
     <string name="notify_1_receivemoney">notify_1_receivemoney</string>
     <string name="notify_1_withdraw">notify_1_withdraw</string>
