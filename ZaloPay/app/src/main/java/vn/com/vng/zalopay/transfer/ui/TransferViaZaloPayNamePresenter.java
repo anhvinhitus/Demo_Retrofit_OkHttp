@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -37,6 +36,15 @@ public class TransferViaZaloPayNamePresenter extends AbstractPresenter<ITransfer
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UserInfoSubscriber(zpName));
         mSubscription.add(subscription);
+    }
+
+    void getPhoneNumberInfo(String zpPhone) {
+        // TODO: code here for get UserInfo by Phone Number
+//        Subscription subscription = mAccountRepository.getUserInfoByZaloPayName(zpName)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new UserInfoSubscriber(zpName));
+//        mSubscription.add(subscription);
     }
 
     private class UserInfoSubscriber extends DefaultSubscriber<Person> {

@@ -12,6 +12,28 @@
         android:orientation="vertical">
 
         <com.zalopay.ui.widget.IconFontTextView
+            android:id="@+id/layoutTransferViaPhoneNumber"
+            style="@style/TextView.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/default_white_selector"
+            android:drawablePadding="@dimen/app_padding"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/app_padding"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:paddingTop="@dimen/app_padding"
+            android:text="@string/phone.zalo.pay"
+            android:textColor="@color/txt_item_main"
+            android:textSize="@dimen/personal_general_text_main"
+            app:iconLeftColor="@color/menu_font_ic_green"
+            app:iconLeftName="@string/sendmoney_zalopayid"
+            app:iconLeftSize="@dimen/font_size_transfer_header"
+            app:iconRightColor="@color/arrow_right"
+            app:iconRightName="@string/general_arrowright"
+            app:iconRightSize="@dimen/font_size_arrow_right" />
+
+        <com.zalopay.ui.widget.IconFontTextView
             android:id="@+id/layoutTransferViaAccount"
             style="@style/TextView.Title"
             android:layout_width="match_parent"

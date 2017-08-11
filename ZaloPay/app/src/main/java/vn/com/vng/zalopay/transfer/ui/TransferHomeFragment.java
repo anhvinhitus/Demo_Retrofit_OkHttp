@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.react.model.ZPCViewMode;
+import vn.com.vng.zalopay.transfer.model.TransferMode;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -65,7 +66,12 @@ public class TransferHomeFragment extends BaseFragment implements
 
     @OnClick(R.id.layoutTransferViaAccount)
     public void onClickTransferViaAccountName() {
-        navigator.startTransferViaAccountName(this);
+        navigator.startTransfer(this, TransferMode.ACCOUNT_NAME);
+    }
+
+    @OnClick(R.id.layoutTransferViaPhoneNumber)
+    public void onClickTransferViaPhoneNumber() {
+        navigator.startTransfer(this, TransferMode.PHONE_NUMBER);
     }
 
     /**

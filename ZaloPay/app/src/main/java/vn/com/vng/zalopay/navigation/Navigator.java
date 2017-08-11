@@ -58,6 +58,7 @@ import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
 import vn.com.vng.zalopay.searchcategory.SearchCategoryActivity;
 import vn.com.vng.zalopay.service.UserSession;
+import vn.com.vng.zalopay.transfer.model.TransferMode;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferActivity;
@@ -806,8 +807,9 @@ public class Navigator {
         return false;
     }
 
-    public void startTransferViaAccountName(Fragment fragment) {
+    public void startTransfer(Fragment fragment, @TransferMode String mode) {
         Intent intent = new Intent(fragment.getContext(), TransferViaZaloPayNameActivity.class);
+        intent.putExtra(Constants.TRANSFER_MODE, mode);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID);
         ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_ZPID);
     }

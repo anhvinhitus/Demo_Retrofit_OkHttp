@@ -97,6 +97,8 @@ public interface Constants {
     String ARGUMENT_KEY_OAUTHTOKEN = "oauthtoken";
     String ARGUMENT_KEY_TRANSFER = "transfer";
 
+    String TRANSFER_MODE = "transfermode";
+
     interface MoneyTransfer {
         int STAGE_PRETRANSFER = 1;
         int STAGE_TRANSFER_SUCCEEDED = 2;
