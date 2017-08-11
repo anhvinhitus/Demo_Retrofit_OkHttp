@@ -2,22 +2,32 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false">
         <shape>
-            <solid android:color="@color/bg_btn_gray"/>
-            <corners android:radius="18dp"/>
+            <solid android:color="@color/bg_btn_gray" />
+            <corners android:radius="22dp" />
         </shape>
-
     </item>
-    <item android:state_pressed="true">
+    <item android:state_focused="true" android:state_pressed="true">
         <shape>
-            <solid android:color="@color/colorPrimaryDark"/>
-            <corners android:radius="18dp"/>
+            <solid android:color="@color/bg_btn_sky_blue_selected" />
+            <corners android:radius="22dp" />
         </shape>
-
     </item>
-    <item>
+    <item android:state_focused="false" android:state_pressed="true">
         <shape>
-            <solid android:color="@color/colorPrimary"/>
-            <corners android:radius="18dp"/>
+            <solid android:color="@color/bg_btn_sky_blue_selected" />
+            <corners android:radius="22dp" />
+        </shape>
+    </item>
+    <item android:state_focused="false" android:state_selected="true">
+        <shape>
+            <solid android:color="@color/bg_btn_blue" />
+            <corners android:radius="22dp" />
+        </shape>
+    </item>
+    <item android:state_focused="false" android:state_pressed="false">
+        <shape>
+            <solid android:color="@color/bg_btn_blue" />
+            <corners android:radius="22dp" />
         </shape>
     </item>
 </selector>
