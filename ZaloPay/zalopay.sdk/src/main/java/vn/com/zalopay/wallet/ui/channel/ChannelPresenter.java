@@ -35,7 +35,6 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.dialog.ZPWResultCallBackListener;
 import vn.com.zalopay.wallet.event.SdkInvalidPaymentInfo;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
@@ -59,15 +58,8 @@ import vn.com.zalopay.wallet.workflow.WorkFlowFactoryCreator;
 import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
-import static vn.com.zalopay.wallet.constants.Constants.AMOUNT_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.API;
-import static vn.com.zalopay.wallet.constants.Constants.BANKCODE_EXTRA;
-import static vn.com.zalopay.wallet.constants.Constants.BUTTON_LEFT_TEXT_EXTRA;
-import static vn.com.zalopay.wallet.constants.Constants.CARDNUMBER_EXTRA;
-import static vn.com.zalopay.wallet.constants.Constants.MAP_POPUP_RESULT_CODE;
-import static vn.com.zalopay.wallet.constants.Constants.NOTICE_CONTENT_EXTRA;
 import static vn.com.zalopay.wallet.constants.Constants.PMC_CONFIG;
-import static vn.com.zalopay.wallet.constants.Constants.SELECTED_PMC_POSITION;
 import static vn.com.zalopay.wallet.constants.Constants.STATUS_RESPONSE;
 
 /*
@@ -107,33 +99,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                     Timber.w(e);
                 }
                 break;
-        }
-    };
-    private ZPWResultCallBackListener resultCallBackListener = new ZPWResultCallBackListener() {
-        @Override
-        public void onResultOk(int pReturnCode, int pData) {
-            try {
-                Timber.d("onActivityResult data %s", pData);
-                Intent intent = new Intent();
-                intent.putExtra(SELECTED_PMC_POSITION, pData);
-                setResult(MAP_POPUP_RESULT_CODE, intent);
-                getViewOrThrow().terminate();
-            } catch (Exception e) {
-                Timber.w(e);
-            }
-        }
-
-        @Override
-        public void onCancel(int pReturnCode) {
-            Timber.d("cancel popup map selection");
-            try {
-                if (mAbstractWorkFlow == null || mAbstractWorkFlow.getGuiProcessor() == null) {
-                    return;
-                }
-                mAbstractWorkFlow.getGuiProcessor().clearCardNumberAndShowKeyBoard();
-            } catch (Exception e) {
-                Timber.w(e.getMessage());
-            }
         }
     };
 
@@ -612,27 +577,6 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
 
     public void setSwitchAdapter(boolean pSwitching) {
         this.mIsSwitching = pSwitching;
-    }
-
-    public void showMapBankDialog(boolean isBIDVBank) throws Exception {
-        if (mPaymentInfoHelper == null) {
-            return;
-        }
-        if (!isBIDVBank) {
-            Bundle bundle = new Bundle();
-            bundle.putDouble(AMOUNT_EXTRA, mPaymentInfoHelper.getAmountTotal());
-            bundle.putString(BUTTON_LEFT_TEXT_EXTRA, mContext.getString(R.string.dialog_retry_input_card_button));
-            bundle.putString(BANKCODE_EXTRA, CardType.PVCB);
-            getViewOrThrow().showMapBankDialog(bundle, resultCallBackListener);
-        } else if (getWorkFlow().getGuiProcessor() != null) {
-            Bundle bundle = new Bundle();
-            bundle.putDouble(AMOUNT_EXTRA, mPaymentInfoHelper.getAmountTotal());
-            bundle.putString(BUTTON_LEFT_TEXT_EXTRA, mContext.getString(R.string.dialog_retry_input_card_button));
-            bundle.putString(BANKCODE_EXTRA, CardType.PBIDV);
-            bundle.putString(CARDNUMBER_EXTRA, getWorkFlow().getGuiProcessor().getCardNumber());
-            bundle.putString(NOTICE_CONTENT_EXTRA, GlobalData.getAppContext().getResources().getString(R.string.zpw_warning_bidv_select_linkcard_payment));
-            getViewOrThrow().showMapBankDialog(bundle, resultCallBackListener);
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

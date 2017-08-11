@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.constants;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import vn.com.zalopay.wallet.business.data.RS;
@@ -17,8 +16,6 @@ public class Constants {
     public static final String URL_SUBMIT_ORDER = "v001/tpe/submittrans";
     public static final String URL_GET_STATUS = "v001/tpe/gettransstatus";
     public static final String URL_CHECK_SUBMIT_ORDER_STATUS = "v001/tpe/getstatusbyapptransidforclient";
-    public static final String URL_SAVE_CARD = "v001/tpe/mapcard";
-    public static final String URL_GETBALANCE_ZALOPAY = "v001/tpe/getbalance";
     public static final String URL_APP_INFO = "v001/tpe/getappinfov1";
     public static final String URL_REMOVE_MAPCARD = "v001/tpe/removemapcard";
     public static final String URL_GET_BANKLIST = "v001/tpe/getbanklist";
@@ -33,46 +30,27 @@ public class Constants {
     public static final String URL_LISTBANKACCCOUNT = "/um/listbankaccountforclient";
     public static final int REQUEST_CODE_SMS = 101;
     public static final String BITMAP_EXTENSION = ".png";
-    public static final String SUPPORT_INTRO_ACTION_FEEDBACK = "vn.com.vng.zalopay.action.FEEDBACK";
     public static final String SUPPORT_INTRO_ACTION_SUPPORT_CENTER = "vn.com.vng.zalopay.action.SUPPORT_CENTER";
     public static final int TIMES_DELAY_TO_GET_NOTIFY = 5000;//ms
     public static final int MAX_INTERVAL_OF_RETRY = 30000;//ms
     public static final int SLEEPING_INTERVAL_OF_RETRY = 1000;//ms
-    public static final int API_CONNECTING_REQUEST_TIMEOUT = 10000;//ms
-    public static final int API_READ_REQUEST_TIMEOUT = 5000;//ms
-    public static final int API_PLATFORM_TIMEOUT = 30000;//ms
     public static final int API_MAX_RETRY = 3;
     public static final int API_DELAY_RETRY = 500;//ms
-    public static final int PLATFORM_RETRY_INTERVAL = 7000;//ms.
-    public static final int PLATFORM_MAX_RETRY = 10;
-    public static final int DOWNLOAD_RESOURCE_RETRY_INTERVAL = 10000;//ms.
-    public static final int DOWNLOAD_RESOURCE_MAX_RETRY = 10;
     public static final int MAX_RETRY_GETSTATUS = 5;
     public static final int MIN_CC_LENGTH = 6;
     public static final int MIN_ATM_LENGTH = 6;
     public static final int RETRY_PASSWORD_MAX = 5;
     public static final int MAX_COUNT_RETRY_CAPTCHA = 5;
-    public static final int MAX_RETRY_OPEN_NETWORKING = 3;
     public static final int PIN_WRONG_RETURN_CODE = -117;
-    public static final int CARD_ALREADY_MAP = -164;
     public static final int SERVER_MAINTENANCE_CODE = -999;
     public static final int UPGRADE_LEVEL_CODE = -119;
     public static final List<Integer> MONEY_NOT_ENOUGH_CODE = Arrays.asList(-62, -63);
-    public static final List<Integer> PAYMENT_LIMIT_PER_DAY_CODE = Collections.singletonList(-133);
     public static final int TRANSACTION_PROCESSING = 5;
     public static final int AUTHEN_PAYER_OTP_WRONG_CODE = 17;
     public static final List<Integer> GET_STATUS_AUTHEN_PAYER_CODE = Arrays.asList(14, 18);
     public static final List<Long> TRANSACTION_SUCCESS_NOTIFICATION_TYPES = Arrays.asList(1L, 2L, 3L, 4L, 5L);//filter list notification app push notification into sdk
     //user submited order to server fail
     public static final int TRANSACTION_NOT_SUBMIT = -49;
-    public static final int FORCE_UP_VERSION_CODE = -1001;
-    public static final int UP_VERSION_CODE = -1002;
-    public static final int LEVELMAP_INVALID = -1;
-    public static final int LEVELMAP_BAN = 1;
-    public static final int LEVELMAP_ALLOW = 0;
-    public static final int INPUT_INVALID = -1;
-    public static final int REQUIRE_PIN = 1;
-    public static final int REQUIRE_OTP = 2;
     public static final int RECEIVER = -888;
     public static final int API = -999;
     public static final String SHOW_DIALOG = "show";
@@ -104,23 +82,20 @@ public class Constants {
     public static final String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
     public static final String PMC_CONFIG = "config";
     public static final String STATUS_RESPONSE = "status";
-    public static final String SHOWFFTOAST = "fftoast";
-    public static final String BUTTON_LEFT_TEXT_EXTRA = "button_left_text";
-    public static final String BANKCODE_EXTRA = "bankcode";
-    public static final String CARDNUMBER_EXTRA = "cardnumber";
-    public static final String NOTICE_CONTENT_EXTRA = "content";
-    public static final String AMOUNT_EXTRA = "amount";
     public static final String SELECTED_PMC_POSITION = "pmc_name";
-    public static final int MAP_POPUP_REQUEST_CODE = 1000;
     public static final int CHANNEL_PAYMENT_REQUEST_CODE = 1001;
     public static final int BANK_SELECT_REQUEST_CODE = 1002;
-    public static final int SUPPORT_BANK_LIST_REQUEST_CODE = 990;
     public static final int MAP_POPUP_RESULT_CODE = 880;
     public static final int LINK_ACCOUNT_RESULT_CODE = 881;
     public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
     public static final int TRANS_STATUS_MAX_RETRY = 30;
     public static final int VOUCHER_STATUS_DELAY_RETRY = 1000;//ms
     public static final int VOUCHER_STATUS_MAX_RETRY = 30;
+    public static final int DEFAULT_LINK_ID = 35;
+    public static final String URL_USE_VOUCHER = "usevoucher";
+    public static final String URL_GET_VOUCHER_STATUS = "getvoucherstatus";
+    public static final String URL_REVERT_VOUCHER = "revertvoucher";
+    public static final String BANKLINK_TYPE_EXTRA = "bank_data_after_link";
     public static int PAYMENT_INIT = 1;
     public static int INPUT_CARDINFO_PHARSE = 2;
     public static int ORDER_SUBMIT = 3;
@@ -131,18 +106,9 @@ public class Constants {
     public static int RESULT_PHARSE = 8;
     public static int UNDEFINE = 9;
     public static int NULL_ERRORCODE = -747;
+    public static long RESULT_TYPE2_APPID = 12;
 
     public interface CHANNEL_CONST {
         String layout = "layout";
     }
-
-    public static long RESULT_TYPE2_APPID = 12;
-
-    public static final int DEFAULT_LINK_ID = 35;
-
-    public static final String URL_USE_VOUCHER = "usevoucher";
-    public static final String URL_GET_VOUCHER_STATUS = "getvoucherstatus";
-    public static final String URL_REVERT_VOUCHER = "revertvoucher";
-
-    public static final String BANKLINK_TYPE_EXTRA = "bank_data_after_link";
 }

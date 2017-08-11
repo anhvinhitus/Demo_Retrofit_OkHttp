@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import vn.com.zalopay.wallet.R;
 
-/**
+/*
  * Created by lytm on 14/07/2017.
  */
 
@@ -69,7 +69,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(getDialog() == null || getDialog().getWindow() == null){
+        if (getDialog() == null || getDialog().getWindow() == null) {
             return;
         }
         if (getLayoutSize() > 0) {

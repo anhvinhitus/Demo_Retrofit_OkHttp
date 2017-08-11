@@ -1,5 +1,5 @@
 package com.zalopay.ui.widget.dialog.listener;
 
-public interface ZPWOnCloseDialogListener {
+public interface OnCloseDialogListener {
     void onCloseCardSupportDialog();
 }

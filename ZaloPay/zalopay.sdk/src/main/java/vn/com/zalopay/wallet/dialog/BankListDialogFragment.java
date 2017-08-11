@@ -1,7 +1,7 @@
 package vn.com.zalopay.wallet.dialog;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.dialog.listener.ZPWOnCloseDialogListener;
+import com.zalopay.ui.widget.dialog.listener.OnCloseDialogListener;
 
 import java.lang.ref.WeakReference;
 
@@ -23,32 +23,30 @@ import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.view.adapter.BankSupportAdapter;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 
-/**
+/*
  * Created by lytm on 14/07/2017.
  */
 
 public class BankListDialogFragment extends BaseDialogFragment implements View.OnClickListener {
-    public static final String TAG = "BankListDialogFragment";
-    protected WeakReference<BankSupportAdapter> mCardSupportAdapter;
-    protected static WeakReference<ZPWOnCloseDialogListener> mCloseCardSupportDialogListener;
-    protected View mRippleButtonSelectBank;
+    protected static WeakReference<OnCloseDialogListener> mCloseDialogListener;
+    protected WeakReference<BankSupportAdapter> mBankSupportAdapter;
+    protected View mSelectBankBtn;
     protected TextView txtLabel;
     private RecyclerView mCardSupportRecyclerView;
-    private int SPAN_COUNT = 2;
 
     public BankSupportAdapter getAdapter() throws Exception {
-        if (mCardSupportAdapter.get() == null) {
-            throw new IllegalAccessException("mCardSupportAdapter is null");
+        if (mBankSupportAdapter.get() == null) {
+            throw new IllegalAccessException("mBankSupportAdapter is null");
         }
-        return mCardSupportAdapter.get();
+        return mBankSupportAdapter.get();
     }
 
     public void setAdapter(BankSupportAdapter pAdapter) {
-        mCardSupportAdapter = new WeakReference<>(pAdapter);
+        mBankSupportAdapter = new WeakReference<>(pAdapter);
     }
 
-    public void setCloseCardSupportDialog(ZPWOnCloseDialogListener pListener) {
-        mCloseCardSupportDialogListener = new WeakReference<>(pListener);
+    public void setCloseCardSupportDialog(OnCloseDialogListener pListener) {
+        mCloseDialogListener = new WeakReference<>(pListener);
     }
 
     public BankListDialogFragment newInstance() {
@@ -70,18 +68,13 @@ public class BankListDialogFragment extends BaseDialogFragment implements View.O
 
     @Override
     public void onDestroyView() {
-        if (mCloseCardSupportDialogListener != null && mCloseCardSupportDialogListener.get() != null) {
-            mCloseCardSupportDialogListener.get().onCloseCardSupportDialog();
+        if (mCloseDialogListener != null && mCloseDialogListener.get() != null) {
+            mCloseDialogListener.get().onCloseCardSupportDialog();
         }
         super.onDestroyView();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Nullable
+    @NonNull
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().setTitle(getString(R.string.confirm));
@@ -94,14 +87,14 @@ public class BankListDialogFragment extends BaseDialogFragment implements View.O
     @Override
     protected void initData() {
         try {
-            if (getAdapter() != null) {
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), SPAN_COUNT);
-                mCardSupportRecyclerView.setHasFixedSize(true);
-                mCardSupportRecyclerView.setLayoutManager(gridLayoutManager);
-                mCardSupportRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                mCardSupportRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity().getApplicationContext(), mCardSupportRecyclerView));
-                mCardSupportRecyclerView.setAdapter(getAdapter());
-            }
+            int SPAN_COUNT = 2;
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), SPAN_COUNT);
+            mCardSupportRecyclerView.setHasFixedSize(true);
+            mCardSupportRecyclerView.setLayoutManager(gridLayoutManager);
+            mCardSupportRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            mCardSupportRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity().getApplicationContext(), mCardSupportRecyclerView));
+            mCardSupportRecyclerView.setAdapter(getAdapter());
+
             if (GlobalData.transtype() == TransactionType.LINK) {
                 txtLabel.setText(Html.fromHtml(GlobalData.getAppContext().getResources().getString(R.string.sdk_support_banklist_link_title)));
             } else {
@@ -115,9 +108,9 @@ public class BankListDialogFragment extends BaseDialogFragment implements View.O
     @Override
     protected void initViews(View v) {
         mCardSupportRecyclerView = (RecyclerView) v.findViewById(R.id.list_card_view);
-        mRippleButtonSelectBank = v.findViewById(R.id.rippleButtonSelectBank);
+        mSelectBankBtn = v.findViewById(R.id.select_bank_btn);
         txtLabel = (TextView) v.findViewById(R.id.cardsupport_label);
-        mRippleButtonSelectBank.setOnClickListener(this);
+        mSelectBankBtn.setOnClickListener(this);
     }
 
     @Override
@@ -133,7 +126,7 @@ public class BankListDialogFragment extends BaseDialogFragment implements View.O
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.rippleButtonSelectBank) {
+        if (v.getId() == R.id.select_bank_btn) {
             this.dismiss();
         }
     }

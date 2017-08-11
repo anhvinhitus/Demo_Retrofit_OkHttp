@@ -1,13 +1,10 @@
 package vn.com.zalopay.wallet.ui.channel;
 
-import android.os.Bundle;
-
 import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
-import vn.com.zalopay.wallet.dialog.ZPWResultCallBackListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.IContract;
 
@@ -43,7 +40,5 @@ public interface ChannelContract extends IContract {
         void visibleOrderInfo(boolean visible);
 
         void showMaintenanceServiceDialog(String message);
-
-        void showMapBankDialog(Bundle args, ZPWResultCallBackListener pZpwResultCallBackListener);
     }
 }

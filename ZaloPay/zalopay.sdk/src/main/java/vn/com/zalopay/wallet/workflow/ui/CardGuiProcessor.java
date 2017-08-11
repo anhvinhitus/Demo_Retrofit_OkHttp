@@ -25,9 +25,11 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.ConfigLoader;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PaymentUtils;
@@ -49,7 +51,6 @@ import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
-import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.dialog.BankListDialogFragment;
 import vn.com.zalopay.wallet.dialog.CardSupportHelper;
@@ -1434,21 +1435,25 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         mBankSupportAdapter = new BankSupportAdapter(getActivity());
         BankListDialogFragment dialog = new BankListDialogFragment();
         dialog.setAdapter(mBankSupportAdapter);
-        dialog.setCloseCardSupportDialog(() -> clearCardNumberAndShowKeyBoard());
-        mBankSupportAdapter.insertItems(getListCardSupport(isATMChannel()));
-        getAdapter().getPresenter();
-        dialog.show(getActivity().getFragmentManager(), BankListDialogFragment.TAG);
+        dialog.setCloseCardSupportDialog(this::clearCardNumberAndShowKeyBoard);
+        List<String> items = getListCardSupport(isATMChannel());
+        if (Lists.isEmptyOrNull(items)) {
+            return;
+        }
+        mBankSupportAdapter.insertItems(items);
+        dialog.show(getActivity().getFragmentManager(), BankListDialogFragment.class.getSimpleName());
     }
 
     private ArrayList<String> getListCardSupport(boolean isATMChannel) throws Exception {
-        if (getAdapter().getPaymentInfoHelper() != null) {
-            if (getAdapter().getPaymentInfoHelper().getTranstype() == TransactionType.LINK) {
-                return CardSupportHelper.getLinkCardSupport();
-            } else {
-                return isATMChannel ? CardSupportHelper.getLocalBankSupport() : CardSupportHelper.getCardSupport();
-            }
+        PaymentInfoHelper paymentInfoHelper = getAdapter().getPaymentInfoHelper();
+        if (paymentInfoHelper == null) {
+            return null;
         }
-        return null;
+        if (paymentInfoHelper.isLinkTrans()) {
+            return CardSupportHelper.getLinkCardSupport();
+        } else {
+            return isATMChannel ? CardSupportHelper.getLocalBankSupport() : CardSupportHelper.getCardSupport();
+        }
     }
 
     public View.OnClickListener getOnQuestionIconClick() {

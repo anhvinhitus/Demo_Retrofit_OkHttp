@@ -30,9 +30,6 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
-import vn.com.zalopay.wallet.dialog.BaseDialogFragment;
-import vn.com.zalopay.wallet.dialog.MapBankDialogFragment;
-import vn.com.zalopay.wallet.dialog.ZPWResultCallBackListener;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
@@ -355,12 +352,6 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     }
 
     @Override
-    public void showMapBankDialog(Bundle args, ZPWResultCallBackListener pZpwResultCallBackListener) {
-        BaseDialogFragment dialog = MapBankDialogFragment.newInstance(args, pZpwResultCallBackListener);
-        dialog.show(getActivity().getFragmentManager(), MapBankDialogFragment.TAG);
-    }
-
-    @Override
     public void showRetryDialog(String pMessage, ZPWOnEventConfirmDialogListener pListener) {
         DialogManager.showRetryDialog(getActivity(), pMessage, pListener);
     }
@@ -405,7 +396,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         }
     }
 
-    public void visibleCardNumberInput(boolean pVisible){
+    public void visibleCardNumberInput(boolean pVisible) {
         setVisible(R.id.card_field_container_pager, pVisible);
     }
 
