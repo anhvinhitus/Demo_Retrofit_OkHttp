@@ -316,7 +316,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         onSelectContactItem(getFragment(), favoriteData);
     }
 
-    private static class GetUserByPhoneSubscriber extends DefaultSubscriber<ZPCGetByPhone> {
+    static class GetUserByPhoneSubscriber extends DefaultSubscriber<ZPCGetByPhone> {
         private WeakReference<ZaloPayContactListPresenter> mPresenter;
         private ZPProfile mProfile;
 
