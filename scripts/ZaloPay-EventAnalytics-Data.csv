@@ -238,6 +238,7 @@ EventId,Category,Action
 12030,Timing UM,api_um_loginviazalo
 12031,Timing UM,api_um_registerphonenumber
 12032,Timing UM,api_um_authenphonenumber
+12033,Timing UM,api_zpc_getuserinfobyphone
 12040,Timing UM,connector_um_createaccesstoken
 12041,Timing UM,connector_um_removeaccesstoken
 12042,Timing UM,connector_um_verifycodetest
@@ -261,6 +262,7 @@ EventId,Category,Action
 12060,Timing UM,connector_um_loginviazalo
 12061,Timing UM,connector_um_registerphonenumber
 12062,Timing UM,connector_um_authenphonenumber
+12063,Timing UM,connector_zpc_getuserinfobyphone
 12070,Timing TPE,api_v001_tpe_getbalance
 12071,Timing TPE,api_v001_tpe_createwalletorder
 12072,Timing TPE,api_v001_tpe_getinsideappresource
@@ -319,3 +321,9 @@ EventId,Category,Action
 12217,Timing RedPacket,connector_redpackage_submittosendbundlebyzalopayinfo
 12218,Timing RedPacket,connector_redpackage_getlistpackagestatus
 12300,Timing Notification,api_notification_ping_pong
+12500,Timing  Voucher,api_get_voucher_status
+12501,Timing  Voucher,api_use_voucher
+12502,Timing  Voucher,api_revert_voucher
+12503,Timing  Voucher,connector_get_voucher_status
+12504,Timing  Voucher,connector_use_voucher
+12505,Timing  Voucher,connector_revert_voucher

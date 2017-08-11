@@ -243,6 +243,7 @@ public class ZPEvents {
     public static final int API_UM_LOGINVIAZALO = 12030;
     public static final int API_UM_REGISTERPHONENUMBER = 12031;
     public static final int API_UM_AUTHENPHONENUMBER = 12032;
+    public static final int API_ZPC_GETUSERINFOBYPHONE = 12033;
     public static final int CONNECTOR_UM_CREATEACCESSTOKEN = 12040;
     public static final int CONNECTOR_UM_REMOVEACCESSTOKEN = 12041;
     public static final int CONNECTOR_UM_VERIFYCODETEST = 12042;
@@ -266,6 +267,7 @@ public class ZPEvents {
     public static final int CONNECTOR_UM_LOGINVIAZALO = 12060;
     public static final int CONNECTOR_UM_REGISTERPHONENUMBER = 12061;
     public static final int CONNECTOR_UM_AUTHENPHONENUMBER = 12062;
+    public static final int CONNECTOR_ZPC_GETUSERINFOBYPHONE = 12063;
     public static final int API_V001_TPE_GETBALANCE = 12070;
     public static final int API_V001_TPE_CREATEWALLETORDER = 12071;
     public static final int API_V001_TPE_GETINSIDEAPPRESOURCE = 12072;
@@ -324,6 +326,12 @@ public class ZPEvents {
     public static final int CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO = 12217;
     public static final int CONNECTOR_REDPACKAGE_GETLISTPACKAGESTATUS = 12218;
     public static final int API_NOTIFICATION_PING_PONG = 12300;
+    public static final int API_GET_VOUCHER_STATUS = 12500;
+    public static final int API_USE_VOUCHER = 12501;
+    public static final int API_REVERT_VOUCHER = 12502;
+    public static final int CONNECTOR_GET_VOUCHER_STATUS = 12503;
+    public static final int CONNECTOR_USE_VOUCHER = 12504;
+    public static final int CONNECTOR_REVERT_VOUCHER = 12505;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -805,6 +813,8 @@ public class ZPEvents {
                 return "api_um_registerphonenumber";
             case API_UM_AUTHENPHONENUMBER:
                 return "api_um_authenphonenumber";
+            case API_ZPC_GETUSERINFOBYPHONE:
+                return "api_zpc_getuserinfobyphone";
             case CONNECTOR_UM_CREATEACCESSTOKEN:
                 return "connector_um_createaccesstoken";
             case CONNECTOR_UM_REMOVEACCESSTOKEN:
@@ -851,6 +861,8 @@ public class ZPEvents {
                 return "connector_um_registerphonenumber";
             case CONNECTOR_UM_AUTHENPHONENUMBER:
                 return "connector_um_authenphonenumber";
+            case CONNECTOR_ZPC_GETUSERINFOBYPHONE:
+                return "connector_zpc_getuserinfobyphone";
             case API_V001_TPE_GETBALANCE:
                 return "api_v001_tpe_getbalance";
             case API_V001_TPE_CREATEWALLETORDER:
@@ -967,6 +979,18 @@ public class ZPEvents {
                 return "connector_redpackage_getlistpackagestatus";
             case API_NOTIFICATION_PING_PONG:
                 return "api_notification_ping_pong";
+            case API_GET_VOUCHER_STATUS:
+                return "api_get_voucher_status";
+            case API_USE_VOUCHER:
+                return "api_use_voucher";
+            case API_REVERT_VOUCHER:
+                return "api_revert_voucher";
+            case CONNECTOR_GET_VOUCHER_STATUS:
+                return "connector_get_voucher_status";
+            case CONNECTOR_USE_VOUCHER:
+                return "connector_use_voucher";
+            case CONNECTOR_REVERT_VOUCHER:
+                return "connector_revert_voucher";
             default:
                 return "DefaultAction";
         }
@@ -1452,6 +1476,8 @@ public class ZPEvents {
                 return "Timing UM";
             case API_UM_AUTHENPHONENUMBER:
                 return "Timing UM";
+            case API_ZPC_GETUSERINFOBYPHONE:
+                return "Timing UM";
             case CONNECTOR_UM_CREATEACCESSTOKEN:
                 return "Timing UM";
             case CONNECTOR_UM_REMOVEACCESSTOKEN:
@@ -1497,6 +1523,8 @@ public class ZPEvents {
             case CONNECTOR_UM_REGISTERPHONENUMBER:
                 return "Timing UM";
             case CONNECTOR_UM_AUTHENPHONENUMBER:
+                return "Timing UM";
+            case CONNECTOR_ZPC_GETUSERINFOBYPHONE:
                 return "Timing UM";
             case API_V001_TPE_GETBALANCE:
                 return "Timing TPE";
@@ -1614,6 +1642,18 @@ public class ZPEvents {
                 return "Timing RedPacket";
             case API_NOTIFICATION_PING_PONG:
                 return "Timing Notification";
+            case API_GET_VOUCHER_STATUS:
+                return "Timing  Voucher";
+            case API_USE_VOUCHER:
+                return "Timing  Voucher";
+            case API_REVERT_VOUCHER:
+                return "Timing  Voucher";
+            case CONNECTOR_GET_VOUCHER_STATUS:
+                return "Timing  Voucher";
+            case CONNECTOR_USE_VOUCHER:
+                return "Timing  Voucher";
+            case CONNECTOR_REVERT_VOUCHER:
+                return "Timing  Voucher";
             default:
                 return "DefaultCategory";
         }
