@@ -21,6 +21,9 @@ public class ZaloUserEntity {
     public String avatar;
     public boolean usingApp;
 
+    public ZaloUserEntity() {
+    }
+
     public ZaloUserEntity(long userId) {
         this.userId = userId;
     }

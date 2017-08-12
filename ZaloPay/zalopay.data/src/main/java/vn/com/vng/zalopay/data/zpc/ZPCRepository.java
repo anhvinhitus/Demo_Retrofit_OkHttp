@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.zpc;
 
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.exception.StringResGenericException;
 import vn.com.vng.zalopay.data.exception.UserNotFoundException;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.zpc.ZPCAlias.ColumnAlias;
 import vn.com.vng.zalopay.data.zpc.contactloader.Contact;
@@ -45,6 +47,7 @@ public class ZPCRepository implements ZPCStore.Repository {
     private static final int TIME_RELOAD = 5 * 60;
     private static final int TIMEOUT_REQUEST_FRIEND = 10;
     private static final int INTERVAL_SYNC_CONTACT = 259200;
+    private static final String MY_NUMBER = "Số của tôi";
 
     private final ZPCStore.RequestService mRequestService;
     private final ZPCStore.ZaloRequestService mZaloRequestService;
@@ -70,6 +73,15 @@ public class ZPCRepository implements ZPCStore.Repository {
     public Observable<Boolean> fetchZaloFriends() {
         Timber.d("Fetch zalo friend");
         return mZaloRequestService.fetchFriendList()
+                .map(entities -> {
+                    ZaloUserEntity entity = transformUserZalo(mUser);
+
+                    if(entity != null) {
+                        entities.add(entity);
+                    }
+
+                    return entities;
+                })
                 .doOnNext(mLocalStorage::putZaloUser)
                 .last()
                 .timeout(TIMEOUT_REQUEST_FRIEND, TimeUnit.SECONDS)
@@ -222,7 +234,15 @@ public class ZPCRepository implements ZPCStore.Repository {
     private Observable<List<ZaloPayUserEntity>> fetchZaloPayUserByZaloId(String zaloidlist) {
         Timber.d("Fetching zalopay info : zaloidlist [%s]", zaloidlist);
         return mRequestService.checklistzaloidforclient(mUser.zaloPayId, mUser.accesstoken, zaloidlist)
-                .map(response -> response.userList)
+                .map(response -> {
+                    ZaloPayUserEntity myAccount = transform(mUser);
+
+                    if(myAccount != null) {
+                        response.userList.add(myAccount);
+                    }
+
+                    return response.userList;
+                })
                 .doOnNext(mLocalStorage::putZaloPayUser)
                 ;
     }
@@ -386,6 +406,38 @@ public class ZPCRepository implements ZPCStore.Repository {
         return makeObservable(() -> mLocalStorage.getFavorites(limit))
                 .map(entities -> Lists.transform(entities, this::transform))
                 ;
+    }
+
+    private ZaloUserEntity transformUserZalo(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        ZaloUserEntity myAccount = new ZaloUserEntity();
+        myAccount.avatar = mUser.avatar;
+        myAccount.displayName = MY_NUMBER;
+        myAccount.userId = user.zaloId;
+
+        return myAccount;
+    }
+
+    private ZaloPayUserEntity transform(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        ZaloPayUserEntity myAccount = new ZaloPayUserEntity();
+        myAccount.avatar = mUser.avatar;
+        myAccount.displayName = MY_NUMBER;
+        myAccount.phonenumber = PhoneUtil.formatPhoneNumber(mUser.phonenumber);
+        // Need to confirm to get exactly value to put in db
+//        myAccount.status = TextUtils.isEmpty(mUser.zaloPayId) ? 0 : 1;
+        myAccount.status = mUser.hasZaloPayId() ? 1 : 0;
+        myAccount.userid = mUser.zaloPayId;
+        myAccount.zaloid = PhoneUtil.formatPhoneNumber(mUser.zaloId);
+        myAccount.zalopayname = mUser.zalopayname;
+
+        return myAccount;
     }
 
     private FavoriteData transform(FavoriteEntity entity) {
