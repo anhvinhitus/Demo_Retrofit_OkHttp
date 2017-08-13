@@ -272,9 +272,7 @@ public class ZPCRepository implements ZPCStore.Repository {
         Timber.d("fetch user by phone: %s", phone);
         return mRequestService.getuserinfobyphone(mUser.zaloPayId, mUser.accesstoken, phone)
                 .map(this::transform)
-                .doOnNext(entity -> {
-                    mLocalStorage.putZaloPayUser(Collections.singletonList(entity));
-                })
+                .doOnNext(entity -> mLocalStorage.putZaloPayUser(Collections.singletonList(entity)))
                 .doOnError(throwable -> {
                     if (throwable instanceof BodyException) {
                         mExpiringPhoneMap.put(phone, System.currentTimeMillis());

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:background="@color/white"
         android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:background="@color/white">
+        android:focusableInTouchMode="true">
 
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_search" />
+            android:src="@drawable/ic_search"/>
 
         <com.zalopay.ui.widget.edittext.ZPEditText
             android:id="@+id/edtSearch"
@@ -31,7 +31,7 @@
             android:inputType="text|textCapWords"
             android:paddingLeft="50dp"
             app:zlp_floatingLabel="none"
-            tools:ignore="RtlHardcoded,RtlSymmetry" />
+            tools:ignore="RtlHardcoded,RtlSymmetry"/>
 
         <com.zalopay.ui.widget.IconFont
             android:id="@+id/switchKeyboard"
@@ -42,34 +42,11 @@
             android:textColor="@color/profile_font_gray"
             app:iconName="@string/ct_list_123"
             app:iconSize="30dp"
-            tools:ignore="RtlHardcoded" />
+            tools:ignore="RtlHardcoded"/>
 
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="56dp"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_search_emty" />
-
-        <TextView
-            android:id="@+id/tv_empty"
-            style="@style/TextViewEmpty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"/>
-
-    </LinearLayout>
-
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -82,14 +59,40 @@
                 android:id="@+id/listview"
                 style="@style/ListView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"/>
         </com.zalopay.ui.widget.MultiSwipeRefreshLayout>
 
-        <include layout="@layout/progress_layout" />
+        <include
+            layout="@layout/progress_layout"/>
 
         <include
             layout="@layout/row_number_not_save_yet"
-            android:visibility="gone" />
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/ll_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingTop="56dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_search_emty"/>
+
+            <TextView
+                android:id="@+id/tv_empty"
+                style="@style/TextViewEmpty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_large"
+                android:text="@string/no.result.your.search"/>
+
+        </LinearLayout>
 
     </FrameLayout>
 

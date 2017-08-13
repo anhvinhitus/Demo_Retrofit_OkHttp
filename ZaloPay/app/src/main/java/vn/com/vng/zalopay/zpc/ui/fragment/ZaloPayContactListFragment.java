@@ -501,6 +501,11 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
     @Override
     public void setProfileNotInZPC(@NonNull ZPProfile profile) {
+        String phone = mEdtSearchView.getText().toString();
+        if (!phone.equals(profile.phonenumber)) {
+            return;
+        }
+
         mItemNumberNotSaveYet.setTag(profile);
         mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
         mTvDisplayNameNotSave.setText(profile.displayName);
@@ -518,12 +523,15 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
 
     @Override
     public void showDefaultProfileNotInZPC(@NonNull ZPProfile profile) {
-        String phoneNumber = profile.phonenumber;
-        mItemNumberNotSaveYet.setTag(profile);
+        String phone = mEdtSearchView.getText().toString();
+        if (!phone.equals(profile.phonenumber)) {
+            return;
+        }
 
-        if (PhoneUtil.isMobileNumber(phoneNumber)) {
+        mItemNumberNotSaveYet.setTag(profile);
+        if (PhoneUtil.isMobileNumber(profile.phonenumber)) {
             mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
-            mTvDisplayNameNotSave.setText(phoneNumber);
+            mTvDisplayNameNotSave.setText(profile.phonenumber);
             mTvNumberNotSave.setText(getString(R.string.not_number_save_yet));
             mAvatar.setImageResource(R.drawable.ic_avatar_default);
             mLlEmptyView.setVisibility(View.GONE);

@@ -30,17 +30,19 @@ class ContactListSubscriber extends DefaultSubscriber<Cursor> {
             return;
         }
 
-        if (mViewReference.get() == null) {
+
+        IZaloFriendListView view = mViewReference.get();
+        if (view == null) {
             return;
         }
 
-        mViewReference.get().swapCursor(cursor);
-        mViewReference.get().hideLoading();
-        mViewReference.get().setRefreshing(false);
-        mViewReference.get().checkIfEmpty();
+        view.swapCursor(cursor);
+        view.hideLoading();
+        view.setRefreshing(false);
+        view.checkIfEmpty();
 
         if (!mIsSearch) {
-            mViewReference.get().setSubTitle(String.format("(%s)", cursor.getCount()));
+            view.setSubTitle(String.format("(%s)", cursor.getCount()));
         }
     }
 
@@ -51,12 +53,13 @@ class ContactListSubscriber extends DefaultSubscriber<Cursor> {
             return;
         }
 
-        if (mViewReference.get() == null) {
+        IZaloFriendListView view = mViewReference.get();
+        if (view == null) {
             return;
         }
 
-        mViewReference.get().showError(ErrorMessageFactory.create(mViewReference.get().getContext(), e));
-        mViewReference.get().setRefreshing(false);
-        mViewReference.get().hideLoading();
+        view.showError(ErrorMessageFactory.create(view.getContext(), e));
+        view.setRefreshing(false);
+        view.hideLoading();
     }
 }

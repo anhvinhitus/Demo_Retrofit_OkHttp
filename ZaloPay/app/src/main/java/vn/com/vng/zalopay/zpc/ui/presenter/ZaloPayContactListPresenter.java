@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -16,10 +17,12 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.zpc.ZPCConfig;
 import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -40,7 +43,9 @@ import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
  */
 
 public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFriendListView> implements OnFavoriteListener {
+
     private static final int MAX_FAVORITE = 10;
+    private static final int TIME_DELAY_SEARCH = 300;
 
     private final ZPCStore.Repository mZPCRepository;
     protected final Context mContext;
@@ -49,6 +54,8 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     @ZpcViewType
     private int mViewType = ZpcViewType.ZPC_All;
 
+    private final PublishSubject<String> mDelaySubject;
+
     @Inject
     ZaloPayContactListPresenter(Context context,
                                 Navigator navigator,
@@ -56,6 +63,35 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         this.mZPCRepository = zpcRepository;
         this.mContext = context;
         this.mNavigator = navigator;
+        mDelaySubject = PublishSubject.create();
+    }
+
+    @Override
+    public void attachView(IZaloFriendListView view) {
+        super.attachView(view);
+        initSearchPhoneContact();
+    }
+
+    private void initSearchPhoneContact() {
+        Subscription subscription = mDelaySubject.debounce(TIME_DELAY_SEARCH, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .filter(PhoneUtil::isMobileNumber)
+                .onBackpressureLatest()
+                .flatMap(this::searchPhoneSkipError)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GetUserInfoByPhoneSubscriber(mView));
+        mSubscription.add(subscription);
+    }
+
+    private Observable<ZPProfile> searchPhoneSkipError(String s) {
+        return mZPCRepository.getUserInfoByPhone(s)
+                .onErrorResumeNext(throwable -> {
+                    ZPProfile profile = new ZPProfile();
+                    profile.phonenumber = s;
+                    profile.isDataValid = false;
+                    return Observable.just(profile);
+                });
     }
 
     @Override
@@ -281,48 +317,6 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     public void getUserInfoNotInZPC(String phone) {
-        Subscription subscription = mZPCRepository.getUserInfoByPhone(phone)
-                .doOnError(Timber::d)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<ZPProfile>() {
-
-                    @Override
-                    public void onStart() {
-                        if (mView != null) {
-                            mView.showLoading();
-                        }
-                    }
-
-                    @Override
-                    public void onNext(ZPProfile profile) {
-                        if (mView == null) {
-                            return;
-                        }
-
-                        mView.hideLoading();
-
-                        if (profile.isDataValid) {
-                            mView.setProfileNotInZPC(profile);
-                        } else {
-                            profile.phonenumber = phone;
-                            mView.showDefaultProfileNotInZPC(profile);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (mView == null) {
-                            return;
-                        }
-
-                        mView.hideLoading();
-
-                        ZPProfile profile = new ZPProfile();
-                        profile.phonenumber = phone;
-                        mView.showDefaultProfileNotInZPC(profile);
-                    }
-                });
-        mSubscription.add(subscription);
+        mDelaySubject.onNext(phone);
     }
 }
