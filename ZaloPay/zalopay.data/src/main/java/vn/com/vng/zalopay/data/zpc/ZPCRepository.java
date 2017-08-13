@@ -252,7 +252,7 @@ public class ZPCRepository implements ZPCStore.Repository {
 
     @Override
     public Observable<ZPProfile> getUserInfoByPhone(String phone) {
-        return getZaloPayUserByPhone(phone)
+        return makeObservable(() -> mLocalStorage.getZaloPayUserByPhone(phone))
                 .flatMap(entity -> {
                     if (entity != null) {
                         return Observable.just(entity);
@@ -268,24 +268,18 @@ public class ZPCRepository implements ZPCStore.Repository {
 
     }
 
-    private Observable<ZaloPayUserEntity> getZaloPayUserByPhone(String phone) {
-        return makeObservable(() -> mLocalStorage.getZaloPayUserByPhone(phone));
-    }
-
     private Observable<ZaloPayUserEntity> fetchUserInfoByPhone(String phone) {
         Timber.d("fetch user by phone: %s", phone);
         return mRequestService.getuserinfobyphone(mUser.zaloPayId, mUser.accesstoken, phone)
                 .map(this::transform)
                 .doOnNext(entity -> {
-                    mExpiringPhoneMap.put(phone, System.currentTimeMillis());
                     mLocalStorage.putZaloPayUser(Collections.singletonList(entity));
                 })
                 .doOnError(throwable -> {
                     if (throwable instanceof BodyException) {
                         mExpiringPhoneMap.put(phone, System.currentTimeMillis());
                     }
-                })
-                ;
+                });
     }
 
     @Override
@@ -520,28 +514,39 @@ public class ZPCRepository implements ZPCStore.Repository {
         entity.status = response.status;
         entity.userid = response.userid;
         entity.phonenumber = response.phonenumber;
+        if (!TextUtils.isEmpty(response.userid)) {
+            long zalopayId = ConvertHelper.parseLong(response.userid, 0);
+            if (zalopayId > 0) {
+                // has valid userid
+                entity.status = 1;
+            }
+        }
+        if (!TextUtils.isEmpty(entity.displayName)) {
+            entity.status = 1;
+        }
         return entity;
     }
 
     private ZPProfile transformToZPProfile(ZaloPayUserEntity entity) {
+        ZPProfile profile = new ZPProfile();
+        profile.isDataValid = false;
         if (entity == null) {
-            return null;
+            return profile;
         }
 
         long zaloId = ConvertHelper.parseLong(entity.zaloid, 0);
         long zalopayId = ConvertHelper.parseLong(entity.userid, 0);
         if (zaloId <= 0 || zalopayId <= 0) {
-            return null;
+            return profile;
         }
 
         if (TextUtils.isEmpty(entity.displayName)) {
-            return null;
+            return profile;
         }
 
-        ZPProfile item = new ZPProfile();
-        item.userId = zaloId;
-        item.zaloPayId = entity.userid;
-        item.status = entity.status;
+        profile.userId = zaloId;
+        profile.zaloPayId = entity.userid;
+        profile.status = entity.status;
 
         long phone = 0;
         try {
@@ -551,16 +556,17 @@ public class ZPCRepository implements ZPCStore.Repository {
 
         String phoneNumber = PhoneUtil.formatPhoneNumber(phone);
         if (!TextUtils.isEmpty(phoneNumber)) {
-            item.phonenumber = phoneNumber;
+            profile.phonenumber = phoneNumber;
         }
 
         if (!TextUtils.isEmpty(entity.zalopayname)) {
-            item.zalopayname = entity.zalopayname;
+            profile.zalopayname = entity.zalopayname;
         }
 
-        item.displayName = entity.displayName;
-        item.avatar = entity.avatar;
-        return item;
+        profile.displayName = entity.displayName;
+        profile.avatar = entity.avatar;
+        profile.isDataValid = true;
+        return profile;
     }
 
 }
