@@ -21,6 +21,7 @@ public class ZPProfile extends AbstractData implements Parcelable {
     public long status;
     public String firstName;
     public String lastName;
+    public boolean isDataValid;
 
     @Override
     public int describeContents() {
@@ -41,9 +42,11 @@ public class ZPProfile extends AbstractData implements Parcelable {
         dest.writeLong(this.status);
         dest.writeString(this.firstName);
         dest.writeString(this.lastName);
+        dest.writeByte(this.isDataValid ? (byte) 1 : (byte) 0);
     }
 
     public ZPProfile() {
+        isDataValid = true;
     }
 
     protected ZPProfile(Parcel in) {
@@ -59,6 +62,7 @@ public class ZPProfile extends AbstractData implements Parcelable {
         this.status = in.readLong();
         this.firstName = in.readString();
         this.lastName = in.readString();
+        this.isDataValid = in.readByte() != 0;
     }
 
     public static final Creator<ZPProfile> CREATOR = new Creator<ZPProfile>() {

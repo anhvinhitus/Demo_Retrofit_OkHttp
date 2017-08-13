@@ -42,7 +42,7 @@ import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFriendListView> implements OnFavoriteListener {
     private static final int MAX_FAVORITE = 10;
 
-    private final ZPCStore.Repository mFriendRepository;
+    private final ZPCStore.Repository mZPCRepository;
     protected final Context mContext;
     protected final Navigator mNavigator;
 
@@ -52,8 +52,8 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     @Inject
     ZaloPayContactListPresenter(Context context,
                                 Navigator navigator,
-                                ZPCStore.Repository friendRepository) {
-        this.mFriendRepository = friendRepository;
+                                ZPCStore.Repository zpcRepository) {
+        this.mZPCRepository = zpcRepository;
         this.mContext = context;
         this.mNavigator = navigator;
     }
@@ -65,7 +65,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         }
 
         Subscription subscription =
-                mFriendRepository.removeFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
+                mZPCRepository.removeFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
                         .doOnError(Timber::d)
                         .subscribeOn(Schedulers.io())
                         .subscribe(new DefaultSubscriber<>());
@@ -84,7 +84,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         }
 
         Subscription subscription =
-                mFriendRepository.addFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
+                mZPCRepository.addFavorite(favoriteData.phoneNumber, favoriteData.zaloId)
                         .doOnError(Timber::d)
                         .subscribeOn(Schedulers.io())
                         .subscribe(new DefaultSubscriber<>());
@@ -121,8 +121,8 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     public void refreshFriendList() {
-        Subscription subscription = mFriendRepository.fetchZaloFriendFullInfo()
-                .flatMap(aBoolean -> mFriendRepository.getZaloFriendsCursor(isPhoneBook()))
+        Subscription subscription = mZPCRepository.fetchZaloFriendFullInfo()
+                .flatMap(aBoolean -> mZPCRepository.getZaloFriendsCursor(isPhoneBook()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ContactListSubscriber(false, mView));
@@ -158,7 +158,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
 
     private void getFriendList() {
 //        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_START);
-        Subscription subscription = mFriendRepository.getZaloFriendsCursor(isPhoneBook())
+        Subscription subscription = mZPCRepository.getZaloFriendsCursor(isPhoneBook())
                 .concatWith(retrieveZaloFriendsAsNeeded(isPhoneBook()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -168,22 +168,22 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     private Observable<Cursor> retrieveZaloFriendsAsNeeded(boolean isTopup) {
-        return mFriendRepository.shouldUpdateFriendList()
+        return mZPCRepository.shouldUpdateFriendList()
                 .filter(Boolean::booleanValue)
-                .flatMap(aBoolean -> mFriendRepository.fetchZaloFriendFullInfo())
-                .flatMap(aBoolean -> mFriendRepository.getZaloFriendsCursor(isTopup))
+                .flatMap(aBoolean -> mZPCRepository.fetchZaloFriendFullInfo())
+                .flatMap(aBoolean -> mZPCRepository.getZaloFriendsCursor(isTopup))
                 ;
     }
 
     public void syncContact() {
-        Subscription subscription = mFriendRepository.syncContact()
+        Subscription subscription = mZPCRepository.syncContact()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
 
     public void doSearch(String s) {
-        Subscription subscription = mFriendRepository.findFriends(s, isPhoneBook())
+        Subscription subscription = mZPCRepository.findFriends(s, isPhoneBook())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ContactListSubscriber(true, mView));
@@ -192,7 +192,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     public void onSelectContactItem(Fragment fragment, Cursor cursor) {
-        ZPProfile profile = mFriendRepository.transform(cursor);
+        ZPProfile profile = mZPCRepository.transform(cursor);
         if (profile == null) {
             Timber.d("click contact profile is null");
             return;
@@ -260,7 +260,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     private void getFavorite(int limitFavorite) {
-        Subscription subscription = mFriendRepository.getFavorites(limitFavorite)
+        Subscription subscription = mZPCRepository.getFavorites(limitFavorite)
                 .filter(data -> !Lists.isEmptyOrNull(data))
                 .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
@@ -277,7 +277,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     public void getUserInfoNotInZPC(String phone) {
-        Subscription subscription = mFriendRepository.getUserInfoByPhone(phone)
+        Subscription subscription = mZPCRepository.getUserInfoByPhone(phone)
                 .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -298,10 +298,10 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
 
                         mView.hideLoading();
 
-                        if (profile == null) {
-                            mView.showDefaultProfileNotInZPC();
-                        } else {
+                        if (profile.isDataValid) {
                             mView.setProfileNotInZPC(profile);
+                        } else {
+                            mView.showDefaultProfileNotInZPC();
                         }
                     }
 
