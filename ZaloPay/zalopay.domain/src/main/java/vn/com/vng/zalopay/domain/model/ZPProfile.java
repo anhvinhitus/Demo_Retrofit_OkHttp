@@ -46,7 +46,7 @@ public class ZPProfile extends AbstractData implements Parcelable {
     public ZPProfile() {
     }
 
-    private ZPProfile(Parcel in) {
+    protected ZPProfile(Parcel in) {
         this.userId = in.readLong();
         this.zaloPayId = in.readString();
         this.userName = in.readString();

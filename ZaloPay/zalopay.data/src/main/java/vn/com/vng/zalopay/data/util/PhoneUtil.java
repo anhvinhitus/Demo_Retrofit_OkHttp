@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.domain.model.PhoneFormat;
  * Update 11->10 number: http://news.zing.vn/sim-11-so-duoc-chuyen-thanh-10-so-nhu-the-nao-post718826.html
  */
 public class PhoneUtil {
+    private static final int INDEX_PHONE_FORMAT = 7;
     private static final List<String> PHONE_VN_CODE = new ArrayList<>();
     private static final List<String> INTERNATIONAL_CODE = new ArrayList<>();
 
@@ -216,5 +217,19 @@ public class PhoneUtil {
             Timber.e(e, "Function getPhoneNumber throw exception [%s]", e.getMessage());
         }
         return phoneNumber;
+    }
+
+
+    public static String formatPhoneNumberZPC(@NonNull String phone) {
+        int lengthPhone = phone.length();
+        String formattedNumber;
+        if (lengthPhone > INDEX_PHONE_FORMAT) {
+            int endIndex = lengthPhone - INDEX_PHONE_FORMAT;
+            formattedNumber = phone.substring(0, endIndex) + " " + phone.substring(endIndex, lengthPhone);
+        } else {
+            formattedNumber = phone;
+        }
+
+        return formattedNumber;
     }
 }

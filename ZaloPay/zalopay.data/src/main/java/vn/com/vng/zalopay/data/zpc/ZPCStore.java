@@ -14,12 +14,12 @@ import vn.com.vng.zalopay.data.api.entity.FavoriteEntity;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
-import vn.com.vng.zalopay.data.api.response.ListUserExistResponse;
+import vn.com.vng.zalopay.data.api.response.GetZaloPayEntityResponse;
+import vn.com.vng.zalopay.data.api.response.ListZaloPayEntityResponse;
 import vn.com.vng.zalopay.data.cache.SqlBaseScope;
 import vn.com.vng.zalopay.data.zpc.contactloader.Contact;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.Person;
-import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -39,6 +39,9 @@ public interface ZPCStore {
 
         @Nullable
         ZaloPayUserEntity getZaloPayUserByZaloId(long zaloId);
+
+        @Nullable
+        ZaloPayUserEntity getZaloPayUserByPhone(String phone);
 
         @NonNull
         List<RedPacketUserEntity> getRedPacketUsersEntity(List<Long> zaloIds);
@@ -67,6 +70,8 @@ public interface ZPCStore {
         List<String> getAvatarZaloFriends(int limit);
 
         List<FavoriteEntity> getFavorites(int limit);
+
+
     }
 
     interface ZaloRequestService {
@@ -77,11 +82,11 @@ public interface ZPCStore {
 
         @API_NAME(https = ZPEvents.API_UM_CHECKLISTZALOIDFORCLIENT, connector = ZPEvents.CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT)
         @GET(Constants.UM_API.CHECKLISTZALOIDFORCLIENT)
-        Observable<ListUserExistResponse> checklistzaloidforclient(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("zaloidlist") String zaloidlist);
+        Observable<ListZaloPayEntityResponse> checklistzaloidforclient(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("zaloidlist") String zaloidlist);
 
         @API_NAME(https = ZPEvents.API_ZPC_GETUSERINFOBYPHONE, connector = ZPEvents.CONNECTOR_ZPC_GETUSERINFOBYPHONE)
         @GET(Constants.UM_API.GETUSERINFOBYPHONE)
-        Observable<ZPCGetByPhone> getuserinfobyphone(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("phonenumber") String phone);
+        Observable<GetZaloPayEntityResponse> getuserinfobyphone(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("phonenumber") String phone);
     }
 
     /**
@@ -134,7 +139,7 @@ public interface ZPCStore {
 
         Observable<List<FavoriteData>> getFavorites(int limit);
 
-        Observable<ZPCGetByPhone> getUserInfoByPhone(String userID, String token, String phone);
+        Observable<ZPProfile> getUserInfoByPhone(String phone);
 
     }
 }

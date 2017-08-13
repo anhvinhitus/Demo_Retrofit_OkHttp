@@ -94,6 +94,20 @@ public class ZPCLocalStorage extends SqlBaseScopeImpl implements ZPCStore.LocalS
         return mMapper.transform(zpc);
     }
 
+    @Nullable
+    @Override
+    public ZaloPayUserEntity getZaloPayUserByPhone(String phone) {
+        List<ZPC> list = mZPCDao.queryBuilder()
+                .where(ZPCDao.Properties.PhoneNumber.eq(phone))
+                .list();
+
+        if (Lists.isEmptyOrNull(list)) {
+            return null;
+        }
+
+        return mMapper.transform(list.get(0));
+    }
+
     @NonNull
     @Override
     public List<RedPacketUserEntity> getRedPacketUsersEntity(List<Long> zaloids) {

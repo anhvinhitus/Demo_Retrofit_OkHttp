@@ -26,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.zpc.ZPCAlias.ColumnAlias;
 
@@ -41,7 +42,6 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
     private final int mResLayout;
     private final float mBorderAvatar;
     private final int mPrimaryColor;
-    private static final int INDEX_PHONE_FORMAT = 7;
 
     ZPCAdapter(Context context, @LayoutRes int resLayout) {
         super(context);
@@ -152,7 +152,7 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
         holder.bindView(zaloId, phone, displayName, aliasDisplayName, avatar, status);
 
         if (TextUtils.isEmpty(avatar)) {
-            if(TextUtils.isEmpty(aliasDisplayName) || aliasDisplayName.length() <= 0) {
+            if (TextUtils.isEmpty(aliasDisplayName) || aliasDisplayName.length() <= 0) {
                 return;
             }
 
@@ -199,14 +199,7 @@ abstract class ZPCAdapter<T extends ViewHolder> extends CursorSectionAdapter {
             return;
         }
 
-        int lengthPhone = phone.length();
-        String formattedNumber;
-        if (lengthPhone > INDEX_PHONE_FORMAT) {
-            int endIndex = lengthPhone - INDEX_PHONE_FORMAT;
-            formattedNumber = phone.substring(0, endIndex) + " " + phone.substring(endIndex, lengthPhone);
-        } else {
-            formattedNumber = phone;
-        }
+        String formattedNumber = PhoneUtil.formatPhoneNumberZPC(phone);
 
         int startIndex = indexOfSearchQuery(formattedNumber);
 

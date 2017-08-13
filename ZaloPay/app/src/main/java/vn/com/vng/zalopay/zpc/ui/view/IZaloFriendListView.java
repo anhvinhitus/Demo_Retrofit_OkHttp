@@ -1,13 +1,14 @@
 package vn.com.vng.zalopay.zpc.ui.view;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.widget.AbsListView;
 
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.FavoriteData;
-import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
@@ -42,7 +43,7 @@ public interface IZaloFriendListView extends ILoadDataView {
 
     void focusEdtSearchView();
 
-    void updateProfileNotInZPC(ZPCGetByPhone user);
+    void setProfileNotInZPC(@NonNull ZPProfile profile);
 
-    void loadDefaultNotInZPCView(ZPCGetByPhone user);
+    void showDefaultProfileNotInZPC();
 }

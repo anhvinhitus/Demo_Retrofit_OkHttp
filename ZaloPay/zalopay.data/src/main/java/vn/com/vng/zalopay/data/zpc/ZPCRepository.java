@@ -19,20 +19,20 @@ import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.entity.FavoriteEntity;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
-import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
+import vn.com.vng.zalopay.data.api.response.GetZaloPayEntityResponse;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.StringResGenericException;
 import vn.com.vng.zalopay.data.exception.UserNotFoundException;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.data.util.SelfExpiringHashMap;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.zpc.ZPCAlias.ColumnAlias;
-import vn.com.vng.zalopay.data.zpc.contactloader.Contact;
 import vn.com.vng.zalopay.data.zpc.contactloader.ContactFetcher;
-import vn.com.vng.zalopay.data.zpc.contactloader.ContactPhone;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
@@ -47,13 +47,15 @@ public class ZPCRepository implements ZPCStore.Repository {
     private static final int TIME_RELOAD = 5 * 60;
     private static final int TIMEOUT_REQUEST_FRIEND = 10;
     private static final int INTERVAL_SYNC_CONTACT = 259200;
-    private static final String MY_NUMBER = "Số của tôi";
-
+    private static final long MAX_LIFE_TIME_MILLIS = 60000;
+private static final String MY_NUMBER = "Số của tôi";
     private final ZPCStore.RequestService mRequestService;
     private final ZPCStore.ZaloRequestService mZaloRequestService;
     private final ZPCStore.LocalStorage mLocalStorage;
     private final User mUser;
     private final ContactFetcher mContactFetcher;
+
+    private final SelfExpiringHashMap<String, Long> mExpiringPhoneMap;
 
     public ZPCRepository(User user, ZPCStore.ZaloRequestService zaloRequestService,
                          ZPCStore.RequestService requestService,
@@ -63,6 +65,7 @@ public class ZPCRepository implements ZPCStore.Repository {
         mZaloRequestService = zaloRequestService;
         mUser = user;
         mContactFetcher = contactFetcher;
+        mExpiringPhoneMap = new SelfExpiringHashMap<>(MAX_LIFE_TIME_MILLIS);
     }
 
     /**
@@ -248,9 +251,41 @@ public class ZPCRepository implements ZPCStore.Repository {
     }
 
     @Override
-    public Observable<ZPCGetByPhone> getUserInfoByPhone(String userID, String token, String phone) {
-        Timber.d("Getting user by phone: phone number [%s]", phone);
-        return mRequestService.getuserinfobyphone(userID, token, phone);
+    public Observable<ZPProfile> getUserInfoByPhone(String phone) {
+        return getZaloPayUserByPhone(phone)
+                .flatMap(entity -> {
+                    if (entity != null) {
+                        return Observable.just(entity);
+                    }
+
+                    if (mExpiringPhoneMap.containsKey(phone)) {
+                        return Observable.error(new UserNotFoundException());
+                    }
+
+                    return fetchUserInfoByPhone(phone);
+                })
+                .map(this::transformToZPProfile);
+
+    }
+
+    private Observable<ZaloPayUserEntity> getZaloPayUserByPhone(String phone) {
+        return makeObservable(() -> mLocalStorage.getZaloPayUserByPhone(phone));
+    }
+
+    private Observable<ZaloPayUserEntity> fetchUserInfoByPhone(String phone) {
+        Timber.d("fetch user by phone: %s", phone);
+        return mRequestService.getuserinfobyphone(mUser.zaloPayId, mUser.accesstoken, phone)
+                .map(this::transform)
+                .doOnNext(entity -> {
+                    mExpiringPhoneMap.put(phone, System.currentTimeMillis());
+                    mLocalStorage.putZaloPayUser(Collections.singletonList(entity));
+                })
+                .doOnError(throwable -> {
+                    if (throwable instanceof BodyException) {
+                        mExpiringPhoneMap.put(phone, System.currentTimeMillis());
+                    }
+                })
+                ;
     }
 
     @Override
@@ -453,34 +488,6 @@ public class ZPCRepository implements ZPCStore.Repository {
         return fav;
     }
 
-    private Person transform(Contact entity) {
-        if (entity == null || Lists.isEmptyOrNull(entity.numbers)) {
-            return null;
-        }
-        Person person = new Person();
-        person.avatar = entity.photoUri;
-        person.displayName = entity.name;
-        ContactPhone contactPhone = entity.numbers.get(0);
-        try {
-            person.phonenumber = Long.valueOf(contactPhone.number);
-        } catch (Exception e) {
-            Timber.d(e);
-        }
-        return person;
-    }
-
-    private Person transform(ZaloUserEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-
-        Person person = new Person();
-        person.avatar = entity.avatar;
-        person.displayName = entity.displayName;
-        person.zaloId = entity.userId;
-        return person;
-    }
-
     private Person transform(ZaloPayUserEntity entity) {
         if (entity == null) {
             return null;
@@ -503,6 +510,58 @@ public class ZPCRepository implements ZPCStore.Repository {
         }
         person.status = entity.status;
         return person;
+    }
+
+    private ZaloPayUserEntity transform(@NonNull GetZaloPayEntityResponse response) {
+        ZaloPayUserEntity entity = new ZaloPayUserEntity();
+        entity.zaloid = response.zaloid;
+        entity.zalopayname = response.zalopayname;
+        entity.avatar = response.avatar;
+        entity.displayName = response.displayName;
+        entity.status = response.status;
+        entity.userid = response.userid;
+        entity.phonenumber = response.phonenumber;
+        return entity;
+    }
+
+    private ZPProfile transformToZPProfile(ZaloPayUserEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        long zaloId = ConvertHelper.parseLong(entity.zaloid, 0);
+        long zalopayId = ConvertHelper.parseLong(entity.userid, 0);
+        if (zaloId <= 0 || zalopayId <= 0) {
+            return null;
+        }
+
+        if (TextUtils.isEmpty(entity.displayName)) {
+            return null;
+        }
+
+        ZPProfile item = new ZPProfile();
+        item.userId = zaloId;
+        item.zaloPayId = entity.userid;
+        item.status = entity.status;
+
+        long phone = 0;
+        try {
+            phone = Long.valueOf(entity.phonenumber);
+        } catch (NumberFormatException ignore) {
+        }
+
+        String phoneNumber = PhoneUtil.formatPhoneNumber(phone);
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            item.phonenumber = phoneNumber;
+        }
+
+        if (!TextUtils.isEmpty(entity.zalopayname)) {
+            item.zalopayname = entity.zalopayname;
+        }
+
+        item.displayName = entity.displayName;
+        item.avatar = entity.avatar;
+        return item;
     }
 
 }

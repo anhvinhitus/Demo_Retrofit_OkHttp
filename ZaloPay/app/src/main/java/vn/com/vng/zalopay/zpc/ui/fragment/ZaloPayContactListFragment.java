@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -46,7 +47,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
-import vn.com.vng.zalopay.domain.model.ZPCGetByPhone;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.react.model.ZPCViewMode;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
@@ -63,7 +64,6 @@ import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 
 public class ZaloPayContactListFragment extends RuntimePermissionFragment implements IZaloFriendListView,
         SwipeRefreshLayout.OnRefreshListener {
-
 
     @BindView(R.id.listview)
     ListView mListView;
@@ -97,7 +97,6 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     private String mNavigatorTitle = null;
     private String mViewMode = ZPCViewMode.keyboardABC;
     private String mPhoneNumber = null;
-    private ZPCGetByPhone mUserNotInZPC;
     private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -183,7 +182,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mPresenter.initialize(mEdtSearchView.getText().toString(), mViewType, mListView);
+        mPresenter.initialize(mEdtSearchView.getText().toString(), mViewType);
     }
 
     @SuppressWarnings("ResourceType")
@@ -311,13 +310,11 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     }
 
     @OnClick(R.id.itemNumberNotSaveYet)
-    public void onClickItemNumberNotSaveYet() {
-        if (mEdtSearchView == null) {
-            return;
+    public void onClickItemNumberNotSaveYet(View view) {
+        Object tag = view.getTag();
+        if (tag instanceof ZPProfile) {
+            mPresenter.startTransfer(this, (ZPProfile) tag);
         }
-
-        String phoneNumber = mEdtSearchView.getText().toString().trim();
-        mPresenter.onSelectContactItem(this, mUserNotInZPC, phoneNumber);
     }
 
     @Override
@@ -503,27 +500,24 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     }
 
     @Override
-    public void updateProfileNotInZPC(ZPCGetByPhone user) {
-        hideLoading();
-        if (user == null) {
-            return;
+    public void setProfileNotInZPC(@NonNull ZPProfile profile) {
+        mItemNumberNotSaveYet.setTag(profile);
+        mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
+        mTvDisplayNameNotSave.setText(profile.displayName);
+
+        if (!TextUtils.isEmpty(profile.phonenumber)) {
+            String formattedNumber = PhoneUtil.formatPhoneNumberZPC(profile.phonenumber);
+            mTvNumberNotSave.setText(formattedNumber);
         }
 
-        mUserNotInZPC = user;
-
-        mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
-        mTvDisplayNameNotSave.setText(TextUtils.isEmpty(user.displayName) ? "" : user.displayName);
-        mTvNumberNotSave.setText(TextUtils.isEmpty(PhoneUtil.formatPhoneNumber(user.phoneNumber)) ? "" : PhoneUtil.formatPhoneNumber(user.phoneNumber));
-        if (!TextUtils.isEmpty(user.avatar)) {
-            mAvatar.setImageURI(user.avatar);
+        if (!TextUtils.isEmpty(profile.avatar)) {
+            mAvatar.setImageURI(profile.avatar);
         }
         mLlEmptyView.setVisibility(View.GONE);
     }
 
     @Override
-    public void loadDefaultNotInZPCView(ZPCGetByPhone user) {
-        hideLoading();
-        mUserNotInZPC = user;
+    public void showDefaultProfileNotInZPC() {
         String phoneNumber = mEdtSearchView.getText().toString();
         if (PhoneUtil.isMobileNumber(phoneNumber)) {
             mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
@@ -538,41 +532,4 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         }
 
     }
-
-//    private OnFavoriteListener mOnFavoriteListener = new OnFavoriteListener() {
-//        @Override
-//        public void onRemoveFavorite(FavoriteData f) {
-//
-//            if (mPresenter != null) {
-//                mPresenter.favorite(false, f);
-//            }
-//
-//            closeAllSwipeItems(mListView);
-//        }
-//
-//        @Override
-//        public void onAddFavorite(FavoriteData f) {
-//            if (mPresenter != null) {
-//                mPresenter.favorite(true, f);
-//            }
-//        }
-//
-//        @Override
-//        public void onMaximumFavorite() {
-//            if (!isAdded()) {
-//                return;
-//            }
-//
-//            if (mAdapter == null) {
-//                return;
-//            }
-//
-//            showNotificationDialog(getString(R.string.friend_favorite_maximum_format, mAdapter.getMaxFavorite()));
-//        }
-//
-//        @Override
-//        public void onSelectFavorite(FavoriteData favoriteData) {
-//            mPresenter.onSelectContactItem(ZaloPayContactListFragment.this, favoriteData);
-//        }
-//    };
 }
