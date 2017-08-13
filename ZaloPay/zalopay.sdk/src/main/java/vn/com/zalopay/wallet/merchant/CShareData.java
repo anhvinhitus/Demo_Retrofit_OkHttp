@@ -76,7 +76,10 @@ public class CShareData extends SingletonBase {
                 })
                 .filter(config -> config != null)
                 .map(config -> mCardRuleList = config.CCIdentifier)
-                .subscribe(cardRules -> Timber.d("finish load card rule"), throwable -> Timber.d(throwable, "load card rule on error"));
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .subscribe(cardRules -> Timber.d("finish load card rule"),
+                        throwable -> Timber.d(throwable, "load card rule on error"));
     }
 
     public void notifyPromotionEvent(Object... pObjects) {

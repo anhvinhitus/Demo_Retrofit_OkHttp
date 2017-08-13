@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDrawableEdittext;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
@@ -49,18 +49,24 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
         this.setEnabled(true);
         this.setDoActionListner(this);
         if (drawableRightDelete == null) {
-            drawableRightDelete = getDrawable(RS.drawable.ic_delete);
+            getDrawableRight();
         }
-
-        if (drawableRightDelete != null) {
-            Rect rectIcon = drawableRightDelete.getBounds();
-            //extend the bound
-            bounds = new Rect();
-            bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
-                    rectIcon.bottom + OFFSET);
-        }
-
         SPACE_SEPERATOR = VERTICAL_SEPERATOR;
+    }
+
+    public void getDrawableRight() {
+        super.loadDeleteIco()
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(bitmap -> {
+                            drawableRightDelete = bitmap;
+                            Rect rectIcon = drawableRightDelete.getBounds();
+                            //extend the bound
+                            bounds = new Rect();
+                            bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
+                                    rectIcon.bottom + OFFSET);
+                        },
+                        throwable -> Timber.d(throwable, "Exception load bitmap delete ico"));
+
     }
 
     public boolean isValidInput() {
@@ -166,15 +172,7 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
 
         if (s.length() > 0) {
             if (drawableRightDelete == null) {
-                drawableRightDelete = getDrawable(RS.drawable.ic_delete);
-
-                if (drawableRightDelete != null) {
-                    Rect rectIcon = drawableRightDelete.getBounds();
-                    //extend the bound
-                    bounds = new Rect();
-                    bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
-                            rectIcon.bottom + OFFSET);
-                }
+                getDrawableRight();
             }
             if (drawableRightDelete != null) {
                 setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRightDelete, null);

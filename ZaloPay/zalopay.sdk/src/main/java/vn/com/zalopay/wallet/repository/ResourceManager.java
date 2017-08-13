@@ -136,7 +136,7 @@ public class ResourceManager extends SingletonBase {
             File file = new File(resPath);
             if (file.exists()) {
                 StorageUtil.deleteRecursive(file);
-                Timber.d("delete order resource %s", resPath);
+                Timber.d("delete resource %s", resPath);
             }
         } catch (Exception e) {
             Timber.w(e.getMessage());
@@ -188,19 +188,21 @@ public class ResourceManager extends SingletonBase {
         });
     }
 
-    public static Bitmap getImage(String imageName) {
-        if (imageName.equals(HIDE_IMG_NAME)) {
-            return null;
-        }
-        String imgLocalPath;
-        Bitmap bitmap = null;
-        try {
-            imgLocalPath = String.format("%s%s%s%s%s", getResourceFolderPath(), File.separator, PREFIX_IMG, File.separator, imageName);
-            bitmap = BitmapFactory.decodeFile(imgLocalPath);
-        } catch (Exception e) {
-            Timber.d(e, "Exception get image");
-        }
-        return bitmap;
+    public static Observable<Bitmap> getImage(String imageName) {
+        return Observable.defer(() -> {
+            if (imageName.equals(HIDE_IMG_NAME)) {
+                return Observable.empty();
+            }
+            String imgLocalPath;
+            Bitmap bitmap = null;
+            try {
+                imgLocalPath = String.format("%s%s%s%s%s", getResourceFolderPath(), File.separator, PREFIX_IMG, File.separator, imageName);
+                bitmap = BitmapFactory.decodeFile(imgLocalPath);
+            } catch (Exception e) {
+                Observable.error(e);
+            }
+            return Observable.just(bitmap);
+        });
     }
 
     public static String getAbsoluteImagePath(String pImageName) {

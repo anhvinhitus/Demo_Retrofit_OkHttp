@@ -13,7 +13,7 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDateEdittext;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
@@ -59,19 +59,25 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
         this.setEnabled(true);
         this.setDoActionListner(this);
 
-        if (drawableRight == null)
-            drawableRight = getDrawable(RS.drawable.ic_delete);
-
-        if (drawableRight != null) {
-            Rect rectIcon = drawableRight.getBounds();
-
-            //extend the bound
-            bounds = new Rect();
-            bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
-                    rectIcon.bottom + OFFSET);
+        if (drawableRight == null) {
+            getDrawableRight();
         }
-
         SPACE_SEPERATOR = VERTICAL_SEPERATOR;
+    }
+
+    public void getDrawableRight() {
+        super.loadDeleteIco()
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(bitmap -> {
+                            drawableRight = bitmap;
+                            Rect rectIcon = drawableRight.getBounds();
+                            //extend the bound
+                            bounds = new Rect();
+                            bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
+                                    rectIcon.bottom + OFFSET);
+                        },
+                        throwable -> Timber.d(throwable, "Exception load bitmap delete ico"));
+
     }
 
     public String getTextField(int pField) {
@@ -249,16 +255,7 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
 
         if (s.length() > 0) {
             if (drawableRight == null) {
-                drawableRight = getDrawable(RS.drawable.ic_delete);
-
-                if (drawableRight != null) {
-                    Rect rectIcon = drawableRight.getBounds();
-
-                    //extend the bound
-                    bounds = new Rect();
-                    bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
-                            rectIcon.bottom + OFFSET);
-                }
+                getDrawableRight();
             }
             if (drawableRight != null) {
                 setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRight, null);

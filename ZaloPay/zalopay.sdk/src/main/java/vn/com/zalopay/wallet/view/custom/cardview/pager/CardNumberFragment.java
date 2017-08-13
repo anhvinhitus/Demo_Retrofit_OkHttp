@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.view.custom.cardview.pager;
 
-import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -20,6 +19,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
@@ -47,22 +47,18 @@ public class CardNumberFragment extends CreditCardFragment {
     public void showQuestionIcon() {
         if (mImageViewQuestion == null) {
             mImageViewQuestion = new ImageView(GlobalData.getAppContext());
+            ResourceManager.getImage(RS.drawable.ic_bank_support_help)
+                    .compose(SchedulerHelper.applySchedulers())
+                    .filter(bitmap -> bitmap != null)
+                    .subscribe(bitmap -> mImageViewQuestion.setImageBitmap(bitmap),
+                            throwable -> Timber.d(throwable, "Exception load bitmap icon question"));
 
-            Bitmap bmBankSupportHelp = ResourceManager.getImage(RS.drawable.ic_bank_support_help);
-
-            if (bmBankSupportHelp == null) {
-                Timber.d("===bmBankSupportHelp=null===");
-            }
-
-            if (bmBankSupportHelp != null) {
-                mImageViewQuestion.setImageBitmap(bmBankSupportHelp);
-                try {
-                    if (getGuiProcessor() != null) {
-                        mImageViewQuestion.setOnClickListener(getGuiProcessor().getOnQuestionIconClick());
-                    }
-                } catch (Exception e) {
-                    Timber.w(e);
+            try {
+                if (getGuiProcessor() != null) {
+                    mImageViewQuestion.setOnClickListener(getGuiProcessor().getOnQuestionIconClick());
                 }
+            } catch (Exception e) {
+                Timber.w(e);
             }
         }
 

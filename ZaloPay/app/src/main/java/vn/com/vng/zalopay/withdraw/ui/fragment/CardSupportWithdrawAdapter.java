@@ -14,8 +14,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.withdraw.models.BankSupportWithdraw;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 
 /**
@@ -106,7 +108,15 @@ class CardSupportWithdrawAdapter extends AbsRecyclerAdapter<BankSupportWithdraw,
                 mLinearLayout.setVisibility(View.VISIBLE);
 
             }
-            mImBankIcon.setImageBitmap(ResourceManager.getImage(card.mBankConfig.bankLogo));
+            String bankLogoName = card.mBankConfig.bankLogo;
+            if (TextUtils.isEmpty(bankLogoName)) {
+                return;
+            }
+            ResourceManager.getImage(bankLogoName)
+                    .compose(SchedulerHelper.applySchedulers())
+                    .filter(bitmap -> bitmap != null)
+                    .subscribe(bitmap -> mImBankIcon.setImageBitmap(bitmap),
+                            throwable -> Timber.d(throwable, "Exception load bitmap from sdk %s", bankLogoName));
         }
     }
 }

@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.view.custom;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -15,10 +14,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 
+import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IBaseDoActionEdittext;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
@@ -67,6 +68,12 @@ public class VPaymentEditText extends TextInputEditText {
 
     protected void setDoActionListner(IBaseDoActionEdittext pListener) {
         this.mBaseDoActionEdittextListner = pListener;
+    }
+
+    public Observable<BitmapDrawable> loadDeleteIco() {
+        return ResourceManager.getImage(RS.drawable.ic_delete)
+                .filter(bitmap -> bitmap != null)
+                .map(bitmap -> new BitmapDrawable(getResources(), bitmap));
     }
 
     /***
@@ -120,21 +127,6 @@ public class VPaymentEditText extends TextInputEditText {
             }
         }
 
-        return null;
-    }
-
-    /***
-     * load bitmap from bundle and convert to drawable
-     *
-     * @param pIconName
-     * @return
-     */
-    protected Drawable getDrawable(String pIconName) {
-        try {
-            return new BitmapDrawable(getResources(), ResourceManager.getImage(pIconName));
-        } catch (Exception ex) {
-            Timber.d(ex, "Exception getDrawable");
-        }
         return null;
     }
 
