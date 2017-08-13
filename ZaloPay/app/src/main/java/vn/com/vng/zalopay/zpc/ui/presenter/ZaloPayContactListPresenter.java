@@ -198,6 +198,10 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
             return;
         }
 
+        onSelectContactItem(fragment, profile);
+    }
+
+    public void onSelectContactItem(Fragment fragment, ZPProfile profile) {
         if (isPhoneBook()) {
             backTopup(fragment, profile);
         } else {
@@ -301,7 +305,8 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
                         if (profile.isDataValid) {
                             mView.setProfileNotInZPC(profile);
                         } else {
-                            mView.showDefaultProfileNotInZPC();
+                            profile.phonenumber = phone;
+                            mView.showDefaultProfileNotInZPC(profile);
                         }
                     }
 
@@ -312,7 +317,10 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
                         }
 
                         mView.hideLoading();
-                        mView.showDefaultProfileNotInZPC();
+
+                        ZPProfile profile = new ZPProfile();
+                        profile.phonenumber = phone;
+                        mView.showDefaultProfileNotInZPC(profile);
                     }
                 });
         mSubscription.add(subscription);

@@ -313,7 +313,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     public void onClickItemNumberNotSaveYet(View view) {
         Object tag = view.getTag();
         if (tag instanceof ZPProfile) {
-            mPresenter.startTransfer(this, (ZPProfile) tag);
+            mPresenter.onSelectContactItem(this, (ZPProfile) tag);
         }
     }
 
@@ -517,8 +517,10 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     }
 
     @Override
-    public void showDefaultProfileNotInZPC() {
-        String phoneNumber = mEdtSearchView.getText().toString();
+    public void showDefaultProfileNotInZPC(@NonNull ZPProfile profile) {
+        String phoneNumber = profile.phonenumber;
+        mItemNumberNotSaveYet.setTag(profile);
+
         if (PhoneUtil.isMobileNumber(phoneNumber)) {
             mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
             mTvDisplayNameNotSave.setText(phoneNumber);
@@ -526,8 +528,8 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
             mAvatar.setImageResource(R.drawable.ic_avatar_default);
             mLlEmptyView.setVisibility(View.GONE);
         } else {
-            mTvEmptyView.setText(R.string.no_result_your_search);
             mItemNumberNotSaveYet.setVisibility(View.GONE);
+            mTvEmptyView.setText(R.string.no_result_your_search);
             mLlEmptyView.setVisibility(View.VISIBLE);
         }
 

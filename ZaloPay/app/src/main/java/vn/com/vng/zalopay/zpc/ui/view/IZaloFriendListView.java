@@ -45,5 +45,5 @@ public interface IZaloFriendListView extends ILoadDataView {
 
     void setProfileNotInZPC(@NonNull ZPProfile profile);
 
-    void showDefaultProfileNotInZPC();
+    void showDefaultProfileNotInZPC(@NonNull ZPProfile profile);
 }
