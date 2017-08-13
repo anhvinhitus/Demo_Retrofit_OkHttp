@@ -9,6 +9,7 @@ import rx.Subscription;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
+import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -34,7 +35,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected void init(AbstractWorkFlow pAdapter, ChannelFragment pChannelFragment) {
         super.init(pAdapter, pChannelFragment);
-        checkAutoMoveCardNumberFromBundle = false;
+        checkValidCardNumberFromBundle = false;
     }
 
     @Override
@@ -45,14 +46,13 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
         //flip card side
         if (pPosition == 2) {
             mCardView.showBack();
-        } else if ((pPosition == 1 && mLastPageSelected == 2) || (pPosition == 3 && mLastPageSelected != 0 && mLastPageSelected != 1)) {
+        } else if ((pPosition == 1
+                && mLastPageSelected == 2)
+                || (pPosition == 3
+                && mLastPageSelected != 0
+                && mLastPageSelected != 1)) {
             mCardView.showFront();
         }
-    }
-
-    @Override
-    public void setCardDateOnCardView() {
-        // Set hint card expiry here
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
                         populateTextOnCardView();
                         if (detected) {
                             onDetectedBank(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
-                            checkAutoMoveCardNumberFromBundle = true;
+                            checkValidCardNumberFromBundle = true;
                         } else {
                             onDetectedBank();
                         }
@@ -78,6 +78,11 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
                     }
                 }, Timber::d);
         workFlow.mCompositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void setCardDateOnCardView() {
+
     }
 
     @Override
@@ -95,7 +100,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
         try {
             getAdapter().onClickSubmission();
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e, "Exception actionAfterFinishInputCard");
         }
     }
 
@@ -106,7 +111,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
                     && getBankCardFinder().detected()
                     || getCreditCardFinder().isValidCardLength();
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.d(e, "Exception validateCardNumberLength");
         }
         return true;
     }
@@ -128,10 +133,16 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected int validateInputCard() {
+        if (mCardAdapter == null) {
+            return 0;
+        }
         int errorFragmentIndex = mCardAdapter.hasError();
-        if (errorFragmentIndex > -1)
+        if (errorFragmentIndex > -1) {
             return errorFragmentIndex;
-        if (!getCardFinder().isValidCardLength() || !getCardFinder().detected()) {
+        }
+
+        if (!getCardFinder().isValidCardLength()
+                || !getCardFinder().detected()) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNumberFragment.class.getName());
             } catch (Exception e) {
@@ -148,7 +159,8 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
             return 1;
         }
 
-        if (TextUtils.isEmpty(getCardCVV()) || getCardCVV().length() < 3) {
+        if (TextUtils.isEmpty(getCardCVV())
+                || getCardCVV().length() < 3) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardCVVFragment.class.getName());
             } catch (Exception e) {
@@ -157,7 +169,8 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
             return 2;
         }
 
-        if (TextUtils.isEmpty(getCardName()) || getCardName().length() <= 3) {
+        if (TextUtils.isEmpty(getCardName())
+                || getCardName().length() <= 3) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNameFragment.class.getName());
             } catch (Exception e) {
@@ -171,15 +184,19 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected void populateBankCode() {
         try {
-            getAdapter().getCard().setBankcode(BuildConfig.CC_CODE);
+            DPaymentCard paymentCard = getAdapter().getCard();
+            if (paymentCard != null) {
+                paymentCard.setBankcode(BuildConfig.CC_CODE);
+            }
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.d(e, "Exception populateBankCode");
         }
     }
 
     @Override
     public boolean needToWarningNotSupportCard() {
-        return needToWarningNotSupportCard && (getCardNumber().length() >= Constants.MIN_CC_LENGTH);
+        return needToWarningNotSupportCard
+                && (getCardNumber().length() >= Constants.MIN_CC_LENGTH);
     }
 
     @Override
@@ -189,13 +206,15 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected boolean checkValidRequiredEditText(EditText pView) {
-        if (pView.getVisibility() != View.VISIBLE) {
+        if (pView != null && pView.getVisibility() != View.VISIBLE) {
             return true;
         }
+        boolean isCheckPattern = !(pView instanceof VPaymentDrawableEditText
+                || pView instanceof VPaymentValidDateEditText)
+                || ((VPaymentEditText) pView).isValid();
 
-        boolean isCheckPattern = !(pView instanceof VPaymentDrawableEditText || pView instanceof VPaymentValidDateEditText) || ((VPaymentEditText) pView).isValid();
-
-        return isCheckPattern && (pView.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(pView.getText().toString()));
+        return isCheckPattern
+                && (pView != null && pView.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(pView.getText().toString()));
     }
 
     @Override
@@ -232,7 +251,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
         try {
             return getAdapter().isCCFlow();
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.d(e);
         }
         return false;
     }
@@ -243,7 +262,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
             Timber.d("start switch to atm adapter");
             getAdapter().getPresenter().switchWorkFlow(BuildConfig.channel_atm, getCardNumber());
         } catch (Exception e) {
-            Timber.w(e, "Exception switch atm adapter");
+            Timber.d(e, "Exception switch atm adapter");
         }
     }
 
@@ -255,7 +274,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
         try {
             super.checkForSwitchChannel();
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.d(e);
         }
     }
 }

@@ -36,6 +36,7 @@ import vn.com.zalopay.utility.SpinnerUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.helper.RenderHelper;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
@@ -85,8 +86,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     };
     private ConfirmOTPHolder confirmOTPHolder;
-    ///////LISTENER////////
-    // listener EditText
     private TextWatcher mConfirmOtpEditTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
@@ -168,7 +167,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                 v.startAnimation(hyperspaceJumpAnimation);
             }
         } catch (Exception e) {
-            Timber.d(e.getMessage());
+            Timber.d(e);
         }
 
     }
@@ -193,7 +192,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         try {
             return getView().findViewById(R.id.number_picker);
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e);
         }
         return null;
     }
@@ -430,7 +429,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     }
 
-    public void setCaptchaImgB64Login(String pB64Encoded) {
+    public void setCaptchaImgB64Login(String pB64Encoded) throws Exception {
         if (TextUtils.isEmpty(pB64Encoded)) {
             return;
         }
@@ -451,7 +450,8 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("<!DOCTYPE html><html><head></head><body style='margin:0;padding:0'><img src='").append(pUrl)
+        sb.append("<!DOCTYPE html><html><head></head><body style='margin:0;padding:0'><img src='")
+                .append(pUrl)
                 .append("' style='margin:0;padding:0;' width='120px' alt='' /></body>");
         getLoginHolder().getWebCaptcha().setOnTouchListener((v, event) -> true);
 
@@ -468,8 +468,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getLoginHolder().getWebCaptcha().setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
-        getLoginHolder().getWebCaptcha().loadDataWithBaseURL(pUrl, sb.toString(),
-                "text/html", null, null);
+        getLoginHolder().getWebCaptcha().loadDataWithBaseURL(pUrl, sb.toString(), "text/html", null, null);
     }
 
     public void setCaptchaImgB64Confirm(String pB64Encoded) {
@@ -510,25 +509,22 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     public boolean isLinkAccOtpPhase() {
-        return (getConfirmOTPHolder().getEdtConfirmOTP() != null && getConfirmOTPHolder().getEdtConfirmOTP().getVisibility() == View.VISIBLE);
+        return (getConfirmOTPHolder().getEdtConfirmOTP() != null
+                && getConfirmOTPHolder().getEdtConfirmOTP().getVisibility() == View.VISIBLE);
     }
 
     public void setMessage(String pMessage) {
         if (pMessage == null) {
             return;
         }
-
-        // set Message
         getTxtMessage().setText(pMessage);
     }
 
     public void resetCaptchaInput() {
-        // clear captcha form
         getLoginHolder().getEdtCaptcha().setText("");
     }
 
     public void resetCaptchaConfirm() {
-        // clear captcha form
         getRegisterHolder().getEdtCaptcha().setText("");
     }
 
@@ -550,18 +546,19 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
             getRegisterHolder().getSpnAccNumberDefault().setClickable(true);
             getRegisterHolder().getSpnAccNumberDefault().setOnTouchListener((view, motionEvent) -> {
                 showDialogSpinnerView();
-                if (getNumberPickerView() != null) {
-                    NumberPicker picker = (NumberPicker) getNumberPickerView();
-                    picker.setMinValue(0);
-                    picker.setMaxValue(getRegisterHolder().getSpnAccNumberDefault().getCount() - 1);
-                    picker.setDisplayedValues(SpinnerUtils.getItems(getRegisterHolder().getSpnAccNumberDefault()));
-                    picker.setWrapSelectorWheel(false);
-                    picker.setValue(getRegisterHolder().getSpnAccNumberDefault().getSelectedItemPosition());
-                    picker.setOnScrollListener((numberPicker, i) -> {
-                        // selection position i
-                        mPositionSpn = numberPicker.getValue();
-                    });
+                if (getNumberPickerView() == null) {
+                    return true;
                 }
+                NumberPicker picker = (NumberPicker) getNumberPickerView();
+                picker.setMinValue(0);
+                picker.setMaxValue(getRegisterHolder().getSpnAccNumberDefault().getCount() - 1);
+                picker.setDisplayedValues(SpinnerUtils.getItems(getRegisterHolder().getSpnAccNumberDefault()));
+                picker.setWrapSelectorWheel(false);
+                picker.setValue(getRegisterHolder().getSpnAccNumberDefault().getSelectedItemPosition());
+                picker.setOnScrollListener((numberPicker, i) -> {
+                    // selection position i
+                    mPositionSpn = numberPicker.getValue();
+                });
                 return true;
             });
         }
@@ -670,10 +667,8 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     @Override
     public String getBankCode() {
         try {
-            if (getAdapter().getPaymentInfoHelper() == null) {
-                return "";
-            }
-            return getAdapter().getPaymentInfoHelper().getLinkAccBankCode();
+            PaymentInfoHelper paymentInfoHelper = getAdapter().getPaymentInfoHelper();
+            return paymentInfoHelper != null ? paymentInfoHelper.getLinkAccBankCode() : "";
         } catch (Exception e) {
             Timber.w(e);
         }
@@ -681,16 +676,18 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     }
 
     public boolean checkValidRequiredEditText(EditText pView) {
-        if (pView.getVisibility() != View.VISIBLE) {
+        if (pView != null
+                && pView.getVisibility() != View.VISIBLE) {
             return true;
         }
 
         boolean isCheckPattern = true;
-
-        if (pView instanceof VPaymentDrawableEditText || pView instanceof VPaymentValidDateEditText)
+        if (pView instanceof VPaymentDrawableEditText
+                || pView instanceof VPaymentValidDateEditText) {
             isCheckPattern = ((VPaymentEditText) pView).isValid();
-
-        return isCheckPattern && (pView.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(pView.getText().toString()));
+        }
+        return isCheckPattern
+                && (pView != null && pView.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(pView.getText().toString()));
     }
 
     @Override
@@ -743,7 +740,9 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         boolean isLoginName = checkValidRequiredEditText(getLoginHolder().getEdtUsername());
         boolean isLoginPassword = checkValidRequiredEditText(getLoginHolder().getEdtPassword());
         try {
-            if (isLoginPassword && isLoginName && isLoginCaptcha) {
+            if (isLoginPassword
+                    && isLoginName
+                    && isLoginCaptcha) {
                 getView().enablePaymentButton();
                 getView().changeBgPaymentButton(getAdapter().isFinalStep());
                 return true;

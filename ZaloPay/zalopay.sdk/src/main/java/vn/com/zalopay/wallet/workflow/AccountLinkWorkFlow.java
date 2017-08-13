@@ -674,7 +674,11 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 }
                 // set captcha
                 if (!TextUtils.isEmpty(response.otpimg) && response.otpimg.length() > 10) {
-                    linkAccGuiProcessor.setCaptchaImgB64Login(response.otpimg);
+                    try {
+                        linkAccGuiProcessor.setCaptchaImgB64Login(response.otpimg);
+                    } catch (Exception e) {
+                        Timber.d(e);
+                    }
                     linkAccGuiProcessor.resetCaptchaInput();
                 } else if (!TextUtils.isEmpty(response.otpimgsrc)) {
                     linkAccGuiProcessor.setCaptchaImgLogin(response.otpimgsrc);

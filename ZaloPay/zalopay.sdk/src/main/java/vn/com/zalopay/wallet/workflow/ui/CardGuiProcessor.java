@@ -87,7 +87,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     View mRootView;
     ScrollView mScrollViewRoot;
     int mLastPageSelected = 0;
-    boolean checkAutoMoveCardNumberFromBundle = true;
+    boolean checkValidCardNumberFromBundle = true;
     String mIssueDate;
     CardFragmentBaseAdapter mCardAdapter;
     boolean needToWarningNotSupportCard = true;
@@ -428,7 +428,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected abstract void actionAfterFinishInputCard();
 
-    protected abstract int validateInputCard();
+    protected abstract int validateInputCard() throws Exception;
 
     protected abstract boolean validateCardNumberLength();
 
@@ -1736,7 +1736,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
 
         if (currentFocusView.getId() == R.id.edittext_localcard_number) {
-            if (!checkAutoMoveCardNumberFromBundle && length == 16) {
+            if (!checkValidCardNumberFromBundle && length == 16) {
                 showNext();
                 return;
             }
@@ -1782,44 +1782,51 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             return true;
         }
 
-        if (getActivity().getCurrentFocus() instanceof VPaymentEditText) {
-            VPaymentEditText currentFocusView = (VPaymentEditText) getCurrentFocusView();
-            //card name input
-            if (currentFocusView.getId() == R.id.edittext_localcard_name && !currentFocusView.isValidInput()) {
-                showHintError(currentFocusView, mContext.getResources().getString(R.string.sdk_invalid_cardname_mess));
-                return false;
-            }
-            //empty or input valid
-            else if (TextUtils.isEmpty(currentFocusView.getText().toString()) || (currentFocusView.isValidPattern())) {
-                clearHintError(currentFocusView);
-                return true;
-            }
-            //special case for issue day card.
-            else if (currentFocusView.getId() == R.id.edittext_issue_date || currentFocusView.getId() == R.id.CreditCardExpiredDate) {
-                try {
-                    VPaymentValidDateEditText cardIssueDate = (VPaymentValidDateEditText) currentFocusView;
-                    if (cardIssueDate.isInputMaxLength()) {
-                        if (cardIssueDate.isValidPattern()) {
-                            clearHintError(cardIssueDate);
-                            return true;
-                        } else {
-                            showHintError(cardIssueDate, cardIssueDate.getPatternErrorMessage());
-                            return false;
-                        }
-                    } else if (mLengthBeforeChange > currentFocusView.getLength()) {
-                        showHintError(currentFocusView, currentFocusView.getPatternErrorMessage());
+        if (!(getActivity().getCurrentFocus() instanceof VPaymentEditText)) {
+            return true;
+        }
+        VPaymentEditText currentFocusView = (VPaymentEditText) getCurrentFocusView();
+        if (currentFocusView == null) {
+            return true;
+        }
+        //card name input
+        if (currentFocusView.getId() == R.id.edittext_localcard_name
+                && !currentFocusView.isValidInput()) {
+            showHintError(currentFocusView, mContext.getResources().getString(R.string.sdk_invalid_cardname_mess));
+            return false;
+        }
+        //empty or input valid
+        else if (TextUtils.isEmpty(currentFocusView.getText().toString())
+                || (currentFocusView.isValidPattern())) {
+            clearHintError(currentFocusView);
+            return true;
+        }
+        //special case for issue day card.
+        else if (currentFocusView.getId() == R.id.edittext_issue_date
+                || currentFocusView.getId() == R.id.CreditCardExpiredDate) {
+            try {
+                VPaymentValidDateEditText cardIssueDate = (VPaymentValidDateEditText) currentFocusView;
+                if (cardIssueDate.isInputMaxLength()) {
+                    if (cardIssueDate.isValidPattern()) {
+                        clearHintError(cardIssueDate);
+                        return true;
+                    } else {
+                        showHintError(cardIssueDate, cardIssueDate.getPatternErrorMessage());
                         return false;
                     }
-                    disableNext();
-                } catch (Exception e) {
-                    Timber.d(e);
+                } else if (mLengthBeforeChange > currentFocusView.getLength()) {
+                    showHintError(currentFocusView, currentFocusView.getPatternErrorMessage());
+                    return false;
                 }
+                disableNext();
+            } catch (Exception e) {
+                Timber.d(e);
             }
-            //user delete input
-            else if (mLengthBeforeChange > currentFocusView.getLength()) {
-                showHintError(currentFocusView, currentFocusView.getPatternErrorMessage());
-                return false;
-            }
+        }
+        //user delete input
+        else if (mLengthBeforeChange > currentFocusView.getLength()) {
+            showHintError(currentFocusView, currentFocusView.getPatternErrorMessage());
+            return false;
         }
         return true;
     }

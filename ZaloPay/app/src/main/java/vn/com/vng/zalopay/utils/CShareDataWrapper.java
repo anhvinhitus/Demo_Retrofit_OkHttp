@@ -47,7 +47,7 @@ public class CShareDataWrapper {
         try {
             return CShareDataWrapper.detectCardType(first6CardNo);
         } catch (Exception e) {
-            Timber.w(e, "detectCardType exception [%s]", e.getMessage());
+            Timber.w(e, "detectInternationalCard exception [%s]", e.getMessage());
         }
         return CardType.UNDEFINE;
     }
@@ -71,7 +71,7 @@ public class CShareDataWrapper {
     }
 
     public static String detectCardType(String first6CardNo) {
-        return CShareData.getInstance().detectCardType(first6CardNo);
+        return CShareData.getInstance().detectInternationalCard(first6CardNo);
     }
 
     public static void pushNotificationToSdk(User user, int notificationType, String message) {

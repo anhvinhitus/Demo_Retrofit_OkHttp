@@ -491,7 +491,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         return getPresenter().getViewOrThrow();
     }
 
-    protected void startSubmitTransaction() {
+    void startSubmitTransaction() {
         if (!checkAndOpenNetworkingSetting()) {
             return;
         }
@@ -963,7 +963,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
      * after show network error dialog.
      * close sdk if user is submitted order
      */
-    private void whetherQuitPaymentOffline() {
+    void whetherQuitPaymentOffline() {
         boolean isNeedCloseSDK = isOrderSubmit() || isLinkAccFlow();
         if (isNeedCloseSDK && !ConnectionUtil.isOnline(mContext)) {
             try {
@@ -986,7 +986,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         return existTransWithoutConfirm;
     }
 
-    private boolean hasTransId() {
+    boolean hasTransId() {
         return !TextUtils.isEmpty(mTransactionID);
     }
 

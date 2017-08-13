@@ -26,11 +26,13 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.constants.AuthenType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
+import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.LocalCardFragmentAdapter;
@@ -127,7 +129,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
             mOnlinePasswordEditText = (VPaymentDrawableEditText) getView().findViewById(R.id.zpsdk_card_password_ctl);
 
-            if (mOtpWebEditText != null && mCaptchaWebEditText != null && mAccountNameEditText != null && mAccountPasswordEditText != null && mOnlinePasswordEditText != null) {
+            if (mOtpWebEditText != null && mCaptchaWebEditText != null && mAccountNameEditText != null
+                    && mAccountPasswordEditText != null && mOnlinePasswordEditText != null) {
                 mAccountNameEditText.setGroupText(false);
                 mAccountPasswordEditText.setGroupText(false);
                 mCaptchaWebEditText.setGroupText(false);
@@ -169,7 +172,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                 mTokenAuthenEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
                 mTokenAuthenEditText.setOnTouchListener(mOnTouchListener);
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Timber.d(e, "Exception init");
         }
     }
 
@@ -192,7 +196,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                         populateTextOnCardView();
                         if (detected) {
                             onDetectedBank(getCreditCardFinder().getBankName(), getCreditCardFinder().getDetectBankCode());
-                            checkAutoMoveCardNumberFromBundle = false;
+                            checkValidCardNumberFromBundle = false;
                             mCardView.visibleCardDate();
                             isInputBankMaintenance();
                         } else {
@@ -215,7 +219,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         try {
             return new LocalCardFragmentAdapter(getActivity().getSupportFragmentManager(), getActivity().getIntent().getExtras());
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.d(e);
         }
         return null;
     }
@@ -241,12 +245,14 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     @Override
-    protected int validateInputCard() {
+    protected int validateInputCard() throws Exception {
+        if (mCardAdapter == null) {
+            throw new IllegalStateException("CardAdapter is released");
+        }
         int errorFragmentIndex = mCardAdapter.hasError();
-
-        if (errorFragmentIndex > -1)
+        if (errorFragmentIndex > -1) {
             return errorFragmentIndex;
-
+        }
         if (!getCardFinder().detected()) {
             try {
                 return mCardAdapter.getIndexOfFragment(CardNumberFragment.class.getName());
@@ -305,24 +311,15 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     public VPaymentDrawableEditText getCaptchaEditText() {
-        if (mCaptchaWebEditText != null) {
-            return mCaptchaWebEditText;
-        }
-        return null;
+        return mCaptchaWebEditText != null ? mCaptchaWebEditText : null;
     }
 
     public VPaymentDrawableEditText getOtpWebEditText() {
-        if (mOtpWebEditText != null) {
-            return mOtpWebEditText;
-        }
-        return null;
+        return mOtpWebEditText != null ? mOtpWebEditText : null;
     }
 
     public VPaymentDrawableEditText getOtpAuthenPayerEditText() {
-        if (mOtpAuthenEditText != null) {
-            return mOtpAuthenEditText;
-        }
-        return null;
+        return mOtpAuthenEditText != null ? mOtpAuthenEditText : null;
     }
 
     public void resetOtpWeb() {
@@ -339,19 +336,26 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected void populateBankCode() {
         try {
-            if (!getCardFinder().detected()) {
+            AbstractCardDetector cardDetector = getCardFinder();
+            if (cardDetector == null) {
                 return;
             }
-            if (!(getCardFinder() instanceof BankDetector)) {
+            if (!cardDetector.detected()) {
                 return;
             }
-            BankConfig bankConfig = ((BankDetector) getCardFinder()).getFoundBankConfig();
+            if (!(cardDetector instanceof BankDetector)) {
+                return;
+            }
+            BankConfig bankConfig = ((BankDetector) cardDetector).getFoundBankConfig();
             if (bankConfig == null) {
                 return;
             }
-            getAdapter().getCard().setBankcode(bankConfig.code);
+            DPaymentCard paymentCard = getAdapter().getCard();
+            if (paymentCard != null) {
+                paymentCard.setBankcode(bankConfig.code);
+            }
         } catch (Exception e) {
-            Timber.w(e, "Exception populate bank code");
+            Timber.d(e, "Exception populate bank code");
         }
     }
 
@@ -362,13 +366,13 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         } catch (Exception e) {
             Timber.w(e, "Exception populate card info");
         }
-        if (mOtpTockenLayoutView.getVisibility() == View.VISIBLE) {
-            if (mInputRadioGroupAuthenType.getCheckedRadioButtonId() == R.id.radioButtonToken)
-                mAuthenType = AuthenType.TOKEN;
+        if (mOtpTockenLayoutView.getVisibility() == View.VISIBLE
+                && mInputRadioGroupAuthenType.getCheckedRadioButtonId() == R.id.radioButtonToken) {
+            mAuthenType = AuthenType.TOKEN;
         }
-        if (mOtpTokenLayoutRootView.getVisibility() == View.VISIBLE) {
-            if (mAuthenRadioGroup.getCheckedRadioButtonId() == R.id.radioSelectionToken)
-                mAuthenType = AuthenType.TOKEN;
+        if (mOtpTokenLayoutRootView.getVisibility() == View.VISIBLE
+                && mAuthenRadioGroup.getCheckedRadioButtonId() == R.id.radioSelectionToken) {
+            mAuthenType = AuthenType.TOKEN;
         }
     }
 
@@ -376,7 +380,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         try {
             getView().setVisible(R.id.linearlayout_authenticate_local_card, pVisible);
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e, "Exception visualOtpToken");
         }
     }
 
@@ -394,17 +398,17 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         }
     }
 
-    public void showOtpTokenView() {
+    public void showOtpTokenView() throws Exception {
         try {
             getView().visibleInputCardView(false);
-            getView().setText(R.id.zpsdk_btn_submit,
-                    mContext.getResources().getString(R.string.sdk_button_submit_text));
-            if (getAdapter().getPaymentInfoHelper().payByCardMap()
-                    || getAdapter().getPaymentInfoHelper().payByBankAccountMap()) {
+            getView().setText(R.id.zpsdk_btn_submit, mContext.getResources().getString(R.string.sdk_button_submit_text));
+            PaymentInfoHelper paymentInfoHelper = getAdapter().getPaymentInfoHelper();
+            if (paymentInfoHelper != null
+                    && (paymentInfoHelper.payByCardMap() || paymentInfoHelper.payByBankAccountMap())) {
                 getView().visibleOrderInfo(true);
             }
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e, "Exception show otp token");
         }
         mOtpTokenLayoutRootView.setVisibility(View.VISIBLE);
         switch (mAuthenType) {
@@ -435,8 +439,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     public boolean isBankOtpPhase() {
-        return (mOtpWebEditText != null && mOtpWebEditText.getVisibility() == View.VISIBLE) ||
-                (mOtpAuthenEditText != null && mOtpAuthenEditText.getVisibility() == View.VISIBLE);
+        return (mOtpWebEditText != null && mOtpWebEditText.getVisibility() == View.VISIBLE)
+                || (mOtpAuthenEditText != null && mOtpAuthenEditText.getVisibility() == View.VISIBLE);
     }
 
     public boolean isCoverBankInProcess() {
@@ -451,7 +455,10 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     public boolean needToWarningNotSupportCard() {
-        return needToWarningNotSupportCard && (getCardNumber().length() >= Constants.MIN_ATM_LENGTH);
+        String cardNumber = getCardNumber();
+        int length = !TextUtils.isEmpty(cardNumber) ? cardNumber.length() : 0;
+        return needToWarningNotSupportCard
+                && length >= Constants.MIN_ATM_LENGTH;
     }
 
     public String getAuthenValue() {
@@ -460,12 +467,12 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         } else if (mTokenAuthenEditText.getVisibility() == View.VISIBLE) {
             return mTokenAuthenEditText.getString();
         }
-
         return "";
     }
 
     public String getOnlinePassword() {
-        return mOnlinePasswordEditText.getString();
+        return mOnlinePasswordEditText != null
+                ? mOnlinePasswordEditText.getString() : null;
     }
 
     private String getIssueDate() {
@@ -473,17 +480,19 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     public String getCardMonth() {
-        if (!TextUtils.isEmpty(mIssueDate))
-            return mIssueDate.split("/")[0];
-
-        return null;
+        if (TextUtils.isEmpty(mIssueDate)) {
+            return null;
+        }
+        String[] arr = mIssueDate.split("/");
+        return arr.length >= 1 ? arr[0] : null;
     }
 
     public String getCardYear() {
-        if (!TextUtils.isEmpty(mIssueDate)) {
-            return mIssueDate.split("/")[1];
+        if (TextUtils.isEmpty(mIssueDate)) {
+            return null;
         }
-        return null;
+        String[] arr = mIssueDate.split("/");
+        return arr.length >= 2 ? arr[1] : null;
     }
 
     public String getCardPass() {
@@ -491,53 +500,63 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     public String getOtp() {
-        if (mOtpWebEditText == null) {
-            return null;
-        }
-        return mOtpWebEditText.getString();
+        return mOtpWebEditText != null ? mOtpWebEditText.getString() : null;
     }
 
     public void setOtp(String pOtp) {
-        if (mOtpWebEditText != null && mOtpWebEditText.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(pOtp)) {
+        if (mOtpWebEditText != null
+                && mOtpWebEditText.getVisibility() == View.VISIBLE
+                && !TextUtils.isEmpty(pOtp)) {
             mOtpWebEditText.setText(pOtp);
             mOtpWebEditText.setSelection(pOtp.length());
-        } else if (mOtpAuthenEditText != null && mOtpAuthenEditText.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(pOtp)) {
+        } else if (mOtpAuthenEditText != null
+                && mOtpAuthenEditText.getVisibility() == View.VISIBLE
+                && !TextUtils.isEmpty(pOtp)) {
             mOtpAuthenEditText.setText(pOtp);
             mOtpAuthenEditText.setSelection(pOtp.length());
         }
     }
 
     public boolean isCaptchaProcessing() {
-        return mCaptchaWebEditText.getVisibility() == View.VISIBLE;
+        return mCaptchaWebEditText != null
+                && mCaptchaWebEditText.getVisibility() == View.VISIBLE;
     }
 
     public boolean isOtpWebProcessing() {
-        return mOtpWebEditText.getVisibility() == View.VISIBLE;
+        return mOtpWebEditText != null
+                && mOtpWebEditText.getVisibility() == View.VISIBLE;
     }
 
     public boolean isOtpAuthenPayerProcessing() {
-        return mOtpAuthenEditText.getVisibility() == View.VISIBLE;
+        return mOtpAuthenEditText != null
+                && mOtpAuthenEditText.getVisibility() == View.VISIBLE;
     }
 
     public String getCaptcha() {
-        return mCaptchaWebEditText.getString();
+        return mCaptchaWebEditText != null ? mCaptchaWebEditText.getString() : null;
     }
 
     public String getUsername() {
-        return mAccountNameEditText.getString();
+        return mAccountNameEditText != null ? mAccountNameEditText.getString() : null;
     }
 
     public String getPassword() {
-        return mAccountPasswordEditText.getString();
+        return mAccountPasswordEditText != null ? mAccountPasswordEditText.getString() : null;
     }
 
     public void setCaptchaImage(String pB64Encoded, String pUrl) {
         if (pB64Encoded.length() > 10) {
-            mCaptchaImage.setVisibility(View.VISIBLE);
-            mCaptchaFrame.setVisibility(View.GONE);
-            setCaptchaImage(pB64Encoded);
-            mScrollViewRoot.fullScroll(View.FOCUS_DOWN);
-        } else {
+            if (mCaptchaImage != null) {
+                mCaptchaImage.setVisibility(View.VISIBLE);
+                mCaptchaFrame.setVisibility(View.GONE);
+            }
+            try {
+                setCaptchaImage(pB64Encoded);
+                mScrollViewRoot.fullScroll(View.FOCUS_DOWN);
+            } catch (Exception e) {
+                Timber.d(e);
+            }
+        } else if (mCaptchaImage != null) {
             mCaptchaImage.setVisibility(View.GONE);
             mCaptchaFrame.setVisibility(View.VISIBLE);
             setCaptchaUrl(pUrl);
@@ -555,22 +574,26 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         visualOtpToken(true);
     }
 
-    private void setCaptchaImage(String pB64Encoded) {
+    private void setCaptchaImage(String pB64Encoded) throws Exception {
         if (TextUtils.isEmpty(pB64Encoded))
             return;
         Bitmap bitmap = BitmapUtils.b64ToImage(pB64Encoded);
-        if (bitmap != null) {
+        if (bitmap != null && mCaptchaImage != null) {
             mCaptchaImage.setImageBitmap(bitmap);
         }
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setCaptchaUrl(String pUrl) {
-        if (TextUtils.isEmpty(pUrl))
+        if (TextUtils.isEmpty(pUrl)) {
             return;
-
+        }
+        if (mCaptchaWebview == null) {
+            return;
+        }
         StringBuilder sb = new StringBuilder();
-        sb.append("<!DOCTYPE html><html><head></head><body style='margin:0;padding:0'><img src='").append(pUrl)
+        sb.append("<!DOCTYPE html><html><head></head><body style='margin:0;padding:0'><img src='")
+                .append(pUrl)
                 .append("' style='margin:0;padding:0;' width='120px' alt='' /></body>");
         mCaptchaWebview.setOnTouchListener((v, event) -> true);
 
@@ -588,21 +611,25 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mCaptchaWebview.loadDataWithBaseURL(((BankCardWorkFlow) getAdapter()).getWebViewProcessor().getCurrentUrl(), sb.toString(),
                     "text/html", null, null);
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e, "Exception set captcha");
         }
 
     }
 
     @Override
     protected boolean checkValidRequiredEditText(EditText pView) {
-        if (pView.getVisibility() != View.VISIBLE) {
+        if (pView != null
+                && pView.getVisibility() != View.VISIBLE) {
             return true;
         }
         boolean isCheckPattern = true;
-        if (pView instanceof VPaymentDrawableEditText || pView instanceof VPaymentValidDateEditText) {
+        if (pView instanceof VPaymentDrawableEditText
+                || pView instanceof VPaymentValidDateEditText) {
             isCheckPattern = ((VPaymentEditText) pView).isValid();
         }
-        return isCheckPattern && (pView.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(pView.getText().toString()));
+        return isCheckPattern
+                && pView != null
+                && (pView.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(pView.getText().toString()));
     }
 
     /*
@@ -617,12 +644,19 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         boolean isOnlinePassword = checkValidRequiredEditText(mOnlinePasswordEditText);
         boolean isOtp = true;
         boolean isToken = true;
-        if (mOtpTokenLayoutRootView.getVisibility() == View.VISIBLE) {
+        if (mOtpTokenLayoutRootView != null
+                && mOtpTokenLayoutRootView.getVisibility() == View.VISIBLE) {
             isOtp = checkValidRequiredEditText(mOtpAuthenEditText);
             isToken = checkValidRequiredEditText(mTokenAuthenEditText);
         }
         try {
-            if (isOtp && isToken && isCoverBankOtp && isCoverBankCaptcha && isAccountName && isAccountPassword && isOnlinePassword) {
+            if (isOtp
+                    && isToken
+                    && isCoverBankOtp
+                    && isCoverBankCaptcha
+                    && isAccountName
+                    && isAccountPassword
+                    && isOnlinePassword) {
                 getView().enablePaymentButton();
                 getView().changeBgPaymentButton(getAdapter().isFinalStep());
                 return true;
@@ -650,7 +684,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         try {
             return getAdapter().isATMFlow();
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.d(e);
         }
         return false;
     }
@@ -661,7 +695,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             Timber.d("start switch to cc adapter");
             getAdapter().getPresenter().switchWorkFlow(BuildConfig.channel_credit_card, getCardNumber());
         } catch (Exception e) {
-            Timber.w(e, "Exception switch cc adapter");
+            Timber.d(e, "Exception switch cc adapter");
         }
     }
 }

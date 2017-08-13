@@ -63,7 +63,6 @@ public class ResourceManager extends SingletonBase {
             if (mCommonResourceManager == null) {
                 mCommonResourceManager = new ResourceManager();
             }
-
             return mCommonResourceManager;
         }
 
@@ -105,8 +104,6 @@ public class ResourceManager extends SingletonBase {
 
     /***
      * load config from config.json
-     * @return
-     * @throws Exception
      */
     public static String loadJsonConfig() throws Exception {
         StringBuilder path = new StringBuilder();
@@ -123,12 +120,13 @@ public class ResourceManager extends SingletonBase {
     public static synchronized void deleteResFolder() {
         try {
             String resPath = getResourceFolderPath();
-            if (!TextUtils.isEmpty(resPath)) {
-                File file = new File(resPath);
-                if (file.exists()) {
-                    StorageUtil.deleteRecursive(file);
-                    Timber.d("delete order resource %s", resPath);
-                }
+            if (TextUtils.isEmpty(resPath)) {
+                return;
+            }
+            File file = new File(resPath);
+            if (file.exists()) {
+                StorageUtil.deleteRecursive(file);
+                Timber.d("delete order resource %s", resPath);
             }
         } catch (Exception e) {
             Timber.w(e.getMessage());
@@ -155,7 +153,7 @@ public class ResourceManager extends SingletonBase {
                     }
                 }
             } catch (Exception e) {
-                Timber.w(e.getMessage());
+                Timber.d(e);
                 deleteResFolder();
                 return Observable.error(new SdkResourceException(GlobalData.getAppContext().getString(R.string.sdk_error_load_resource)));
             }
@@ -193,7 +191,7 @@ public class ResourceManager extends SingletonBase {
             imgLocalPath = String.format("%s%s%s%s%s", getResourceFolderPath(), File.separator, PREFIX_IMG, File.separator, imageName);
             bitmap = BitmapFactory.decodeFile(imgLocalPath);
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.d(e, "Exception get image");
         }
         return bitmap;
     }
@@ -286,35 +284,27 @@ public class ResourceManager extends SingletonBase {
     }
 
     public String getPattern(String pViewID, String pPmcID) {
-        if (mConfigFromServer != null && mConfigFromServer.pattern != null) {
-            HashMap<String, String> patternMap = mConfigFromServer.pattern.get(pViewID);
-            if (patternMap != null) {
-                return patternMap.get(pPmcID);
-            }
+        if (mConfigFromServer == null || mConfigFromServer.pattern == null) {
+            return null;
+        }
+        HashMap<String, String> patternMap = mConfigFromServer.pattern.get(pViewID);
+        if (patternMap != null) {
+            return patternMap.get(pPmcID);
         }
         return null;
     }
 
 
     public List<CardRule> getCreditCardIdentifier() {
-        if (mConfigFromServer == null) {
-            return null;
-        }
-        return mConfigFromServer.CCIdentifier;
+        return mConfigFromServer != null ? mConfigFromServer.CCIdentifier : null;
     }
 
     public List<CardRule> getBankCardIdentifier() {
-        if (mConfigFromServer == null) {
-            return null;
-        }
-        return mConfigFromServer.BankIdentifier;
+        return mConfigFromServer != null ? mConfigFromServer.BankIdentifier : null;
     }
 
     public List<DBankScript> getBankScripts() {
-        if (mConfigFromServer == null) {
-            return null;
-        }
-        return mConfigFromServer.bankScripts;
+        return mConfigFromServer != null ? mConfigFromServer.bankScripts : null;
     }
 
     //get otp pattern for each of bank.
@@ -322,24 +312,31 @@ public class ResourceManager extends SingletonBase {
         if (mConfigFromServer == null || mConfigFromServer.otpReceiverPattern == null) {
             return null;
         }
+        if (TextUtils.isEmpty(pBankCode)) {
+            return null;
+        }
         ArrayList<DOtpReceiverPattern> otpReceiverPattern = new ArrayList<>();
         for (DOtpReceiverPattern pattern : mConfigFromServer.otpReceiverPattern) {
-            if (pattern.bankcode.equals(pBankCode)) {
-                otpReceiverPattern.add(pattern);
+            if (!pBankCode.equals(pattern.bankcode)) {
+                continue;
             }
+            otpReceiverPattern.add(pattern);
         }
         return otpReceiverPattern;
     }
 
     //get otp pattern for each of bank.
-    public CardRule getBankIdentifier(String pCode) {
+    public CardRule getBankIdentifier(String pBankCode) {
         if (mConfigFromServer == null || mConfigFromServer.BankIdentifier == null) {
-            Timber.d("mConfigFromServer is null");
+            Timber.d("ConfigFromServer is null");
+            return null;
+        }
+        if (TextUtils.isEmpty(pBankCode)) {
             return null;
         }
         CardRule cardIdentifier = null;
         for (CardRule item : mConfigFromServer.BankIdentifier) {
-            if (item.code.equalsIgnoreCase(pCode)) {
+            if (pBankCode.equalsIgnoreCase(item.code)) {
                 cardIdentifier = item;
                 break;
             }
@@ -348,19 +345,15 @@ public class ResourceManager extends SingletonBase {
     }
 
     public List<DKeyBoardConfig> getKeyBoardConfig() {
-        if (mConfigFromServer == null) {
-            Timber.d("mConfigFromServer is null");
-            return null;
-        }
-        return mConfigFromServer.keyboard;
+        return mConfigFromServer != null ? mConfigFromServer.keyboard : null;
     }
 
     public DStaticViewGroup getStaticView() {
-        return this.mPageConfig.staticView;
+        return this.mPageConfig != null ? this.mPageConfig.staticView : null;
     }
 
     public DDynamicViewGroup getDynamicView() {
-        return this.mPageConfig.dynamicView;
+        return this.mPageConfig != null ? this.mPageConfig.dynamicView : null;
     }
 
     public ResourceRender produceRendering(RenderFragment renderFragment) {
