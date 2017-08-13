@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
@@ -22,6 +24,7 @@ import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsEvent;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
@@ -169,17 +172,23 @@ public class CCWebViewClient extends PaymentWebViewClient {
     }
 
     public void executeJs(String pJsFileName, String pJsInput, WebView pView) {
-        if (!TextUtils.isEmpty(pJsFileName)) {
-            String jsContent;
-            Timber.d(pJsFileName);
-            Timber.d(pJsInput);
-            for (String jsFile : pJsFileName.split(Constants.COMMA)) {
-                jsContent = ResourceManager.getJavascriptContent(jsFile);
-                if (TextUtils.isEmpty(jsContent)) {
-                    continue;
-                }
-                jsContent = String.format(jsContent, pJsInput);
-                runScript(jsContent, pView);
+        if (TextUtils.isEmpty(pJsFileName)) {
+            return;
+        }
+        Timber.d(pJsFileName);
+        Timber.d(pJsInput);
+        for (String jsFile : pJsFileName.split(Constants.COMMA)) {
+            Subscription subscription =
+                    ResourceManager.getJavascriptContent(jsFile)
+                            .filter(s -> !TextUtils.isEmpty(s))
+                            .compose(SchedulerHelper.applySchedulers())
+                            .subscribe(jsContent -> {
+                                String content = String.format(jsContent, pJsInput);
+                                runScript(content, pView);
+                            }, throwable -> Timber.w(throwable, "Exception load js file"));
+            CompositeSubscription compositeSubscription = getAdapter() != null ? getAdapter().mCompositeSubscription : null;
+            if (compositeSubscription != null) {
+                compositeSubscription.add(subscription);
             }
         }
     }

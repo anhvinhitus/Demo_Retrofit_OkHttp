@@ -95,12 +95,9 @@ public class BankInteractor implements BankStore.Interactor {
                 .doOnError(throwable -> Timber.d(throwable != null ? throwable.getMessage() : "Exception"));
     }
 
-    /***
+    /*
      * reload bank list
      * and return support card list
-     * @param appVersion
-     * @param currentTime
-     * @return
      */
     @Override
     public Observable<List<ZPBank>> getSupportBanks(String appVersion, long currentTime) {

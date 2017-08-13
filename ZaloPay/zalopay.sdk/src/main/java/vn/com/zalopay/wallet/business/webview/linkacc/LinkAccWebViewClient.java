@@ -15,6 +15,8 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.util.List;
 
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
@@ -33,6 +35,7 @@ import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
@@ -366,17 +369,25 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     }
 
     public void executeJs(String pJsFileName, String pJsInput) {
-        if (!TextUtils.isEmpty(pJsFileName)) {
-            String jsContent;
-            Timber.d(pJsFileName);
-            Timber.d(pJsInput);
-            for (String jsFile : pJsFileName.split(Constants.COMMA)) {
-                jsContent = ResourceManager.getJavascriptContent(jsFile);
-                if (TextUtils.isEmpty(jsContent)) {
-                    continue;
-                }
-                jsContent = String.format(jsContent, pJsInput);
-                mWebPaymentBridge.runScript(jsContent);
+        if (TextUtils.isEmpty(pJsFileName)) {
+            return;
+        }
+        Timber.d(pJsFileName);
+        Timber.d(pJsInput);
+        for (String jsFile : pJsFileName.split(Constants.COMMA)) {
+            Subscription subscription =
+                    ResourceManager.getJavascriptContent(jsFile)
+                            .filter(s -> !TextUtils.isEmpty(s))
+                            .compose(SchedulerHelper.applySchedulers())
+                            .subscribe(jsContent -> {
+                                String content = String.format(jsContent, pJsInput);
+                                if (mWebPaymentBridge != null) {
+                                    mWebPaymentBridge.runScript(content);
+                                }
+                            }, throwable -> Timber.w(throwable, "Exception load js file"));
+            CompositeSubscription compositeSubscription = getAdapter() != null ? getAdapter().mCompositeSubscription : null;
+            if (compositeSubscription != null) {
+                compositeSubscription.add(subscription);
             }
         }
     }

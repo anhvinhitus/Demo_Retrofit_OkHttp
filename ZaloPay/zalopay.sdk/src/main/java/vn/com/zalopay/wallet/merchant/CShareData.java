@@ -6,11 +6,19 @@ import android.os.Looper;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
 
+import java.lang.ref.WeakReference;
+import java.util.List;
+
+import rx.Observable;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.business.entity.staticconfig.CardRule;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
@@ -35,16 +43,17 @@ import vn.zalopay.promotion.IPromotionResult;
  */
 public class CShareData extends SingletonBase {
     protected static CShareData _object;
-    protected static DConfigFromServer mConfigFromServer;
+    private List<CardRule> mCardRuleList;
 
     public CShareData() {
         super();
+        loadCardRule();
     }
 
     public static CShareData getInstance() {
-        if (CShareData._object == null)
+        if (CShareData._object == null) {
             CShareData._object = new CShareData();
-
+        }
         return CShareData._object;
     }
 
@@ -56,19 +65,18 @@ public class CShareData extends SingletonBase {
         Timber.d("dispose merchant");
     }
 
-    /***
-     * load config from json file
-     */
-    public static DConfigFromServer loadConfigBundle() {
-        if (mConfigFromServer == null || mConfigFromServer.CCIdentifier == null) {
-            try {
-                String json = ResourceManager.loadJsonConfig();
-                mConfigFromServer = (new DConfigFromServer()).fromJsonString(json);
-            } catch (Exception e) {
-                Timber.d(e, "Exception loadConfigBundle");
-            }
-        }
-        return mConfigFromServer;
+    private void loadCardRule() {
+        ResourceManager.loadJsonConfig()
+                .filter(s -> !TextUtils.isEmpty(s))
+                .flatMap(new Func1<String, Observable<DConfigFromServer>>() {
+                    @Override
+                    public Observable<DConfigFromServer> call(String jsonConfig) {
+                        return Observable.just(GsonUtils.fromJsonString(jsonConfig, DConfigFromServer.class));
+                    }
+                })
+                .filter(config -> config != null)
+                .map(config -> mCardRuleList = config.CCIdentifier)
+                .subscribe(cardRules -> Timber.d("finish load card rule"), throwable -> Timber.d(throwable, "load card rule on error"));
     }
 
     public void notifyPromotionEvent(Object... pObjects) {
@@ -111,7 +119,7 @@ public class CShareData extends SingletonBase {
                             .linkInteractor()
                             .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
                             .subscribeOn(Schedulers.io())
-                            .subscribe(new LoadBankListSubscriber(mIReloadMapInfoListener));
+                            .subscribe(new LoadBankAccountSubscriber(mIReloadMapInfoListener));
                 }
             } catch (Exception ex) {
                 Timber.w(ex);
@@ -200,25 +208,22 @@ public class CShareData extends SingletonBase {
         }
     }
 
-    /***
-     * support app detect type of visa card.
-     */
-    public String detectCardType(String pCardNumber) {
-        loadConfigBundle();
-        if (mConfigFromServer != null) {
-            CreditCardDetector cardCheck = new CreditCardDetector(mConfigFromServer.CCIdentifier);
-            cardCheck.detectOnSync(pCardNumber);
-            return CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerifyCC());
-        } else {
+    public String detectInternationalCard(String pCardNumber) {
+        if (Lists.isEmptyOrNull(mCardRuleList)) {
+            Timber.d("card rule list is not loaded");
+            loadCardRule();
             return CardType.UNDEFINE;
         }
+        CreditCardDetector cardCheck = new CreditCardDetector(mCardRuleList);
+        cardCheck.detectOnSync(pCardNumber);
+        return CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerifyCC());
     }
 
-    private class LoadBankListSubscriber extends DefaultSubscriber<Boolean> {
-        IReloadMapInfoListener mIReloadMapInfoListener;
+    static class LoadBankAccountSubscriber extends DefaultSubscriber<Boolean> {
+        WeakReference<IReloadMapInfoListener> mIReloadMapInfoListener;
 
-        public LoadBankListSubscriber(IReloadMapInfoListener iReloadMapInfoListener) {
-            mIReloadMapInfoListener = iReloadMapInfoListener;
+        LoadBankAccountSubscriber(IReloadMapInfoListener iReloadMapInfoListener) {
+            mIReloadMapInfoListener = new WeakReference<>(iReloadMapInfoListener);
         }
 
         @Override
@@ -229,19 +234,19 @@ public class CShareData extends SingletonBase {
         @Override
         public void onNext(Boolean aBoolean) {
             Timber.d("reload bank account finish");
-            if (mIReloadMapInfoListener == null) {
+            if (mIReloadMapInfoListener == null || mIReloadMapInfoListener.get() == null) {
                 return;
             }
-            mIReloadMapInfoListener.onComplete(null);
+            mIReloadMapInfoListener.get().onComplete(null);
         }
 
         @Override
         public void onError(Throwable e) {
             Timber.d("reload bank account error %s", e);
-            if (mIReloadMapInfoListener == null) {
+            if (mIReloadMapInfoListener == null || mIReloadMapInfoListener.get() == null) {
                 return;
             }
-            mIReloadMapInfoListener.onError(e.getMessage());
+            mIReloadMapInfoListener.get().onError(e.getMessage());
         }
     }
 }

@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
+import rx.functions.Func0;
+import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.R;
@@ -48,11 +50,11 @@ public class ResourceManager extends SingletonBase {
     private static final String PREFIX_IMG = "/img/";
     private static final String PREFIX_FONT = "/fonts/";
     private static final String HIDE_IMG_NAME = "0.png";
+    static DConfigFromServer mConfigFromServer = null;
     private static ResourceManager mCommonResourceManager = null;
     private static Map<String, ResourceManager> mResourceManagerMap = null;
-    private static DConfigFromServer mConfigFromServer = null;
+    DPage mPageConfig = null;
     private HashMap<String, String> mStringMap = null;
-    private DPage mPageConfig = null;
 
     public ResourceManager() {
         super();
@@ -84,14 +86,14 @@ public class ResourceManager extends SingletonBase {
         return resourceManager;
     }
 
-    private static String getResourceFolderPath() {
+    static String getResourceFolderPath() {
         return SDKApplication
                 .getApplicationComponent()
                 .platformInfoInteractor()
                 .getResourcePath();
     }
 
-    private static String loadFile(String pathPrefix, String fileName) throws Exception {
+    static String loadFile(String pathPrefix, String fileName) throws Exception {
         StringBuilder path = new StringBuilder();
         path.append(getResourceFolderPath())
                 .append(File.separator);
@@ -105,12 +107,20 @@ public class ResourceManager extends SingletonBase {
     /***
      * load config from config.json
      */
-    public static String loadJsonConfig() throws Exception {
-        StringBuilder path = new StringBuilder();
-        path.append(getResourceFolderPath())
-                .append(File.separator)
-                .append(ResourceManager.CONFIG_FILE);
-        return loadAbsolutePath(path.toString());
+    public static Observable<String> loadJsonConfig() {
+        return Observable.defer(() -> {
+            String jsonConfig = null;
+            try {
+                StringBuilder path = new StringBuilder();
+                path.append(getResourceFolderPath())
+                        .append(File.separator)
+                        .append(ResourceManager.CONFIG_FILE);
+                jsonConfig = loadAbsolutePath(path.toString());
+            } catch (Exception e) {
+                Observable.error(e);
+            }
+            return Observable.just(jsonConfig);
+        });
     }
 
     public static boolean isInit() {
@@ -134,52 +144,49 @@ public class ResourceManager extends SingletonBase {
     }
 
     public static synchronized Observable<Boolean> initResource() {
-        return Observable.defer(() -> {
-            try {
-                Timber.d("initializing SDK resource");
-                String json = loadJsonConfig();
-                if (TextUtils.isEmpty(json)) {
-                    throw new Exception("Empty resource file config");
-                } else {
-                    mConfigFromServer = (new DConfigFromServer()).fromJsonString(json);
-                    ResourceManager commonResourceManager = getInstance(null);
-                    if (mConfigFromServer.stringMap != null) {
-                        commonResourceManager.setString(mConfigFromServer.stringMap);
-                    }
-                    if (mConfigFromServer.pageList != null) {
-                        for (DPage page : mConfigFromServer.pageList) {
-                            getInstance(page.pageName).mPageConfig = page;
+        return loadJsonConfig()
+                .flatMap(new Func1<String, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(String jsonConfig) {
+                        if (TextUtils.isEmpty(jsonConfig)) {
+                            return Observable.error(new SdkResourceException(GlobalData.getAppContext().getString(R.string.sdk_error_load_resource)));
                         }
+                        try {
+                            mConfigFromServer = (new DConfigFromServer()).fromJsonString(jsonConfig);
+                            ResourceManager commonResourceManager = getInstance(null);
+                            if (mConfigFromServer.stringMap != null) {
+                                commonResourceManager.setString(mConfigFromServer.stringMap);
+                            }
+                            if (mConfigFromServer.pageList != null) {
+                                for (DPage page : mConfigFromServer.pageList) {
+                                    getInstance(page.pageName).mPageConfig = page;
+                                }
+                            }
+                        } catch (Exception e) {
+                            return Observable.error(new SdkResourceException(GlobalData.getAppContext().getString(R.string.sdk_error_load_resource)));
+                        }
+                        return Observable.just(true);
                     }
+                })
+                .doOnError(throwable -> {
+                    Timber.d(throwable);
+                    deleteResFolder();
+                });
+    }
+
+    public static Observable<String> getJavascriptContent(String pJsName) {
+        return Observable.defer(new Func0<Observable<String>>() {
+            @Override
+            public Observable<String> call() {
+                try {
+                    Observable.just(loadFile(PREFIX_JS, pJsName));
+                } catch (Exception e) {
+                    Observable.error(e);
                 }
-            } catch (Exception e) {
-                Timber.d(e);
-                deleteResFolder();
-                return Observable.error(new SdkResourceException(GlobalData.getAppContext().getString(R.string.sdk_error_load_resource)));
-            }
-            return Observable.just(true);
-        });
-    }
-
-    public static String getJavascriptContent(String pJsName) {
-        try {
-            String content = loadFile(PREFIX_JS, pJsName);
-            return !TextUtils.isEmpty(content) ? content : "";
-        } catch (Exception e) {
-            Timber.w("getJavascriptContent on error %s", e);
-        }
-        return null;
-    }
-
-   /* public static Single<String> getJavascriptContent(String pJsName) {
-        return Single.create(singleSubscriber -> {
-            try {
-                singleSubscriber.onSuccess(loadJsonConfig(PREFIX_JS, pJsName));
-            } catch (Exception e) {
-                singleSubscriber.onError(e);
+                return Observable.just(null);
             }
         });
-    }*/
+    }
 
     public static Bitmap getImage(String imageName) {
         if (imageName.equals(HIDE_IMG_NAME)) {
@@ -277,7 +284,7 @@ public class ResourceManager extends SingletonBase {
         return null;
     }
 
-    private void setString(HashMap<String, String> pMap) {
+    void setString(HashMap<String, String> pMap) {
         if (pMap != null) {
             this.mStringMap = pMap;
         }
