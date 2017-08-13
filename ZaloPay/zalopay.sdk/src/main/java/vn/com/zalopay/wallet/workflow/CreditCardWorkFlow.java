@@ -10,7 +10,6 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
-import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -77,7 +76,9 @@ public class CreditCardWorkFlow extends AbstractWorkFlow {
 
     @Override
     public void onProcessPhrase() {
-        if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
+        if (mGuiProcessor != null
+                && !mPaymentInfoHelper.payByCardMap()
+                && !mPaymentInfoHelper.payByBankAccountMap()) {
             try {
                 mGuiProcessor.populateCard();
             } catch (Exception e) {

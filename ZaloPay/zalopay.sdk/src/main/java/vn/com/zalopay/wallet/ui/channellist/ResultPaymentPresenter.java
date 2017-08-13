@@ -176,8 +176,10 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
             }
             String pageName = Constants.PAGE_SUCCESS;
             mView.renderByResource(pageName);
-            AppInfo appInfo = TransactionHelper.getAppInfoCache(mPaymentInfoHelper.getAppId());
-            String appName = TransactionHelper.getAppNameByTranstype(mContext, mPaymentInfoHelper.getTranstype());
+            long appId = mPaymentInfoHelper.getAppId();
+            AppInfo appInfo = TransactionHelper.getAppInfoCache(appId);
+            int transtype = mPaymentInfoHelper.getTranstype();
+            String appName = TransactionHelper.getAppNameByTranstype(mContext, transtype);
             if (TextUtils.isEmpty(appName)) {
                 appName = appInfo != null ? appInfo.appname : null;
             }

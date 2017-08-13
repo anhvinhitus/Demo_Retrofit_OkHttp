@@ -35,22 +35,18 @@ public class CFontManager extends SingletonBase {
         return CFontManager._object;
     }
 
-    /***
-     * @param pFontName
-     * @return
-     */
-
     public Typeface loadFont(String pFontName) {
         Typeface tf = fontMap.get(pFontName);
-        if (tf == null) {
-            try {
-                tf = Typeface.createFromFile(new File(ResourceManager.getFontFolder(), pFontName + ".ttf"));
-                if (tf != null) {
-                    fontMap.put(pFontName, tf);
-                }
-            } catch (Exception e) {
-                Timber.d(e.getMessage());
+        if (tf != null) {
+            return tf;
+        }
+        try {
+            tf = Typeface.createFromFile(new File(ResourceManager.getFontFolder(), pFontName + ".ttf"));
+            if (tf != null) {
+                fontMap.put(pFontName, tf);
             }
+        } catch (Exception e) {
+            Timber.d(e, "Exception load font");
         }
         return tf;
     }

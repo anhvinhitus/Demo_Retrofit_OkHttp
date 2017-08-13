@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.workflow.ui;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -82,6 +83,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected AbstractWorkFlow mAdapter;
     protected ChannelFragment mView;
     protected PaymentWebView mWebView;
+    protected CreditCardView mCardView;
     View mRootView;
     ScrollView mScrollViewRoot;
     int mLastPageSelected = 0;
@@ -90,18 +92,20 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     CardFragmentBaseAdapter mCardAdapter;
     boolean needToWarningNotSupportCard = true;
     View.OnFocusChangeListener mOnFocusChangeListener = (view, hasFocus) -> {
-        if (hasFocus) {
-            new Handler().postDelayed(() -> {
-                try {
-                    moveScrollViewToCurrentFocusView();
-                } catch (Exception e) {
-                    Timber.w(e);
-                }
-            }, 100);
+        if (!hasFocus) {
+            return;
         }
+        new Handler().postDelayed(() -> {
+            try {
+                moveScrollViewToCurrentFocusView();
+            } catch (Exception e) {
+                Timber.w(e);
+            }
+        }, 100);
     };
     View.OnTouchListener mOnTouchListener = (view, motionEvent) -> {
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+        if (motionEvent != null
+                && motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             moveScrollViewToCurrentFocusView();
         }
         return false;
@@ -110,13 +114,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     int mMaxPagerCount;
     String lastValue = "";
     boolean isInputValidWithWhiteSpace = true;
-    private ViewPager mViewPager;
+    ViewPager mViewPager;
     private BankSupportAdapter mBankSupportAdapter;
     private View mLayoutSwitch;
     private int mLengthBeforeChange;
     private View mCurrentFocusView;
     private boolean mUseOtpToken = false;
-    private CreditCardView mCardView;
     private String mCardHolderName;
     private String mExpiry;
     private String mCVV;
@@ -124,7 +127,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     /*
      * user tap on done on keyboard
      */
-    protected TextView.OnEditorActionListener mEditorActionListener = (v, actionId, event) -> {
+    TextView.OnEditorActionListener mEditorActionListener = (v, actionId, event) -> {
         try {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (getAdapter().isInputStep()) {
@@ -138,7 +141,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return true;
             }
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e);
         }
         return false;
     };
@@ -147,47 +150,47 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         @Override
         public void onClick(View view) {
             try {
-                if (getViewPager() == null || getViewPager().getAdapter() == null) {
+                if (mViewPager == null || mViewPager.getAdapter() == null) {
                     return;
                 }
-                mMaxPagerCount = getViewPager().getAdapter().getCount();
+                mMaxPagerCount = mViewPager.getAdapter().getCount();
                 // if last card
-                if (getViewPager().getCurrentItem() == mMaxPagerCount - 1) {
+                if (mViewPager.getCurrentItem() == mMaxPagerCount - 1) {
                     onDoneTapped();
                 } else {
                     showNext();
                 }
             } catch (Exception e) {
-                Timber.w(e, "Exception on next button clicked");
+                Timber.d(e, "Exception on next button clicked");
             }
         }
     };
     private View.OnClickListener mPreviousButtonClick = view -> {
-        if (getViewPager() == null) {
+        if (mViewPager == null) {
             return;
         }
         showPrevious();
     };
-    private View.OnClickListener mClickOnEditTextListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            try {
-                moveScrollViewToCurrentFocusView();
-            } catch (Exception e) {
-                Timber.d(e);
-            }
+    private View.OnClickListener mClickOnEditTextListener = view -> {
+        try {
+            moveScrollViewToCurrentFocusView();
+        } catch (Exception e) {
+            Timber.d(e);
         }
     };
     private View.OnTouchListener mOnTouchOnCardView = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (mViewPager == null) {
+                return true;
+            }
             int viewID = view.getId();
             if (viewID == R.id.front_card_number) {
-                getViewPager().setCurrentItem(0);
+                mViewPager.setCurrentItem(0);
             } else if (viewID == R.id.front_card_holder_name) {
-                getViewPager().setCurrentItem(mCardAdapter.getCount() - 1);
+                mViewPager.setCurrentItem(mCardAdapter.getCount() - 1);
             } else if (viewID == R.id.front_card_expiry) {
-                getViewPager().setCurrentItem(1);
+                mViewPager.setCurrentItem(1);
             }
             return false;
         }
@@ -230,7 +233,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
     };
     private String mLastCharacterCardName = "";
-    protected TextWatcher mEnabledTextWatcher = new TextWatcher() {
+    TextWatcher mEnabledTextWatcher = new TextWatcher() {
         private boolean isValidateOK = false;
 
         @Override
@@ -277,20 +280,25 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             //whether user input full of information,then need to enable button submit.
             checkEnableSubmitButton();
             if (isValidateOK) {
-                autoMoveToNextFragment();
+                try {
+                    autoMoveToNextFragment();
+                } catch (Exception e) {
+                    Timber.d(e, "Exception auto next input");
+                }
             }
         }
     };
     private View.OnFocusChangeListener mOnOtpCaptchFocusChangeListener = (view, hasFocus) -> {
-        if (hasFocus) {
-            new Handler().postDelayed(() -> {
-                try {
-                    moveScrollViewToCurrentFocusView();
-                } catch (Exception e) {
-                    Timber.w(e.getMessage());
-                }
-            }, 100);
+        if (!hasFocus) {
+            return;
         }
+        new Handler().postDelayed(() -> {
+            try {
+                moveScrollViewToCurrentFocusView();
+            } catch (Exception e) {
+                Timber.w(e.getMessage());
+            }
+        }, 100);
     };
     private View.OnClickListener mOnQuestionIconClick = view -> {
         if (supportCard()) {
@@ -306,7 +314,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     private ZPWOnEventDialogListener mBankMaintenanceDialogListener = () -> new Handler().postDelayed(() -> {
         //focus to edittext again after closing dialog
         try {
-            getViewPager().setCurrentItem(0);
+            if (mViewPager != null) {
+                mViewPager.setCurrentItem(0);
+            }
             getCardNumberView().setText(null);
             SdkUtils.focusAndSoftKeyboard(getActivity(), getCardNumberView());
         } catch (Exception e) {
@@ -343,7 +353,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     public void onDetectCardComplete(Boolean detected) {
         Timber.d("card number %s is detected %s", getCardNumber(), detected);
         try {
-            if (getAdapter().getPaymentInfoHelper().payByCardMap() || getAdapter().getPaymentInfoHelper().payByBankAccountMap()) {
+            PaymentInfoHelper paymentInfoHelper = getAdapter().getPaymentInfoHelper();
+            if (paymentInfoHelper == null) {
+                return;
+            }
+            if (paymentInfoHelper.payByCardMap() || paymentInfoHelper.payByBankAccountMap()) {
                 return;
             }
             if (TextUtils.isEmpty(getCardNumber())) {
@@ -351,10 +365,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
             if (!getAdapter().isNeedToSwitchChannel()) {
                 //workout prevent flicker when switch atm and cc
-                if (!detected && getAdapter().getPaymentInfoHelper().isLinkTrans()) {
+                if (!detected && paymentInfoHelper.isLinkTrans()) {
                     needToWarningNotSupportCard = false;
                 }
-                setDetectedCard();
+                onDetectedBank();
                 populateTextOnCardView();
                 //render view by bank type
                 if (detected && getAdapter().isATMFlow()) {
@@ -362,12 +376,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 }
             }
             //continue detect if haven't detected card type yet
-            if (!detected && getAdapter().getPaymentInfoHelper().isLinkTrans()) {
+            if (!detected && paymentInfoHelper.isLinkTrans()) {
                 needToWarningNotSupportCard = true;
                 continueDetectCardForLinkCard();
             }
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e);
         }
     }
 
@@ -448,9 +462,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     private void initForInputCard() throws Exception {
         mCardView = (CreditCardView) getView().findViewById(R.id.credit_card_view);
-        if (getCardView() != null) {
-            getCardView().initCardSelector();
-            getCardView().setOnClickOnCardView(this);
+        if (mCardView != null) {
+            mCardView.initCardSelector();
+            mCardView.setOnClickOnCardView(this);
         }
         mDotView = (LinearLayout) getView().findViewById(R.id.dotView);
         mButtonPre = (Button) getView().findViewById(R.id.previous);
@@ -489,14 +503,17 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public void checkForSwitchChannel() throws Exception {
-        if (getAdapter().needToSwitchChannel() && isOwnChannel()) {
-            getAdapter().resetNeedToSwitchChannel();
-            if (canSwitchChannelLinkCard()) {
-                switchChannel();
-            } else {
-                getViewPager().setCurrentItem(0);
-                getView().showDialogWarningLinkCardAndResetCardNumber();
+        if (!(getAdapter().needToSwitchChannel() && isOwnChannel())) {
+            return;
+        }
+        getAdapter().resetNeedToSwitchChannel();
+        if (canSwitchChannelLinkCard()) {
+            switchChannel();
+        } else {
+            if (mViewPager != null) {
+                mViewPager.setCurrentItem(0);
             }
+            getView().showDialogWarningLinkCardAndResetCardNumber();
         }
     }
 
@@ -514,14 +531,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             card.setCardvalidto(mExpiry.replace("/", ""));
         }
         populateBankCode();
-    }
-
-    protected CreditCardView getCardView() {
-        return mCardView;
-    }
-
-    protected ViewPager getViewPager() {
-        return mViewPager;
     }
 
     protected AbstractWorkFlow getAdapter() throws Exception {
@@ -544,19 +553,19 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     public void initPager() throws Exception {
         Timber.d("init viewpager");
-        if (getViewPager() == null) {
+        if (mViewPager == null) {
             mViewPager = (ViewPager) getView().findViewById(R.id.card_field_container_pager);
         }
-        getViewPager().addOnPageChangeListener(this);
+        mViewPager.addOnPageChangeListener(this);
         mCardAdapter = onCreateCardFragmentAdapter();
-        getViewPager().setOffscreenPageLimit(mCardAdapter.getCount());
-        getViewPager().setAdapter(mCardAdapter);
+        mViewPager.setOffscreenPageLimit(mCardAdapter.getCount());
+        mViewPager.setAdapter(mCardAdapter);
         updateDots();
         //auto show keyboard when the first time start
         showKeyBoardAndResizeButtonsIfNotSwitchChannel();
     }
 
-    protected boolean isValidCardNumber() {
+    boolean isValidCardNumber() {
         try {
             boolean validateLuhn = validateCardNumberLuhn();
             boolean isValidCardNumber = ((TextUtils.isEmpty(getCardNumber())
@@ -582,32 +591,30 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     private boolean validateCardNumber() {
         try {
-            if (!isValidCardNumber()) {
-                try {
-                    //come back last page
-                    getViewPager().setCurrentItem(mLastPageSelected);
-                    String errMes = getCardNumberView().getPatternErrorMessage();
-                    if (TextUtils.isEmpty(getCardNumber())) {
-                        errMes = mContext.getResources().getString(R.string.sdk_error_missing_cardnumber_mess);
-                    } else if (!validateCardNumberLength()) {
-                        errMes = getCardNumberView().getPatternErrorMessage();
-                    } else if (preventNextIfLinkCardExisted()) {
-                        errMes = warningCardExist();
-                    } else if (!validateCardNumberLuhn()) {
-                        errMes = mContext.getResources().getString(R.string.sdk_error_luhn_cardnumber_mess);
-                    }
-                    showHintError(getCardNumberView(), errMes);
-                    //disable next button
-                    disableNext();
-                } catch (Exception e) {
-                    Timber.d(e);
-                }
-                return false;
+            if (isValidCardNumber()) {
+                return true;
             }
+            //come back last page
+            if (mViewPager != null) {
+                mViewPager.setCurrentItem(mLastPageSelected);
+            }
+            String errMes = getCardNumberView().getPatternErrorMessage();
+            if (TextUtils.isEmpty(getCardNumber())) {
+                errMes = mContext.getResources().getString(R.string.sdk_error_missing_cardnumber_mess);
+            } else if (!validateCardNumberLength()) {
+                errMes = getCardNumberView().getPatternErrorMessage();
+            } else if (preventNextIfLinkCardExisted()) {
+                errMes = warningCardExist();
+            } else if (!validateCardNumberLuhn()) {
+                errMes = mContext.getResources().getString(R.string.sdk_error_luhn_cardnumber_mess);
+            }
+            showHintError(getCardNumberView(), errMes);
+            //disable next button
+            disableNext();
         } catch (Exception e) {
             Timber.d(e);
         }
-        return true;
+        return false;
     }
 
     private void updateLastPagePosition(int pPosition) {
@@ -619,12 +626,14 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
      */
     private void moveCursorToLastPositionOnText(int pPosition) {
         try {
+            if (mCardAdapter == null) {
+                Timber.d("mCardAdapter is null on moveCursorToLastPositionOnText");
+                return;
+            }
             CreditCardFragment currentFragment = mCardAdapter.getItemAtPosition(pPosition);
-
             if (currentFragment != null) {
                 currentFragment.onSelectText();
             }
-
         } catch (Exception e) {
             Timber.d(e, "Exception moveCursorToLastPositionOnText");
         }
@@ -645,17 +654,22 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
      */
     private boolean preventNavigateIfHasError(int pPosition) {
         boolean hasError = false;
-        if (pPosition >= 0 && pPosition < mCardAdapter.getCount()) {
-            //user swipe to next
-            if (mLastPageSelected < pPosition && !mCardAdapter.canNavigateToNext(pPosition)) {
-                getViewPager().setCurrentItem(mLastPageSelected);
-                hasError = true;
-            }
-            //user swipe to previous
-            else if (mLastPageSelected > pPosition && !mCardAdapter.canNavigateToPrevious(pPosition)) {
-                getViewPager().setCurrentItem(mLastPageSelected);
-                hasError = true;
-            }
+        if (mViewPager == null || mCardAdapter == null) {
+            Timber.d("NULL on preventNavigateIfHasError");
+            return false;
+        }
+        if (pPosition < 0 || pPosition > mCardAdapter.getCount()) {
+            return false;
+        }
+        //user swipe to next
+        if (mLastPageSelected < pPosition && !mCardAdapter.canNavigateToNext(pPosition)) {
+            mViewPager.setCurrentItem(mLastPageSelected);
+            hasError = true;
+        }
+        //user swipe to previous
+        else if (mLastPageSelected > pPosition && !mCardAdapter.canNavigateToPrevious(pPosition)) {
+            mViewPager.setCurrentItem(mLastPageSelected);
+            hasError = true;
         }
         return hasError;
     }
@@ -666,9 +680,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                     || getCardCVVView().isValidPattern()
                     && (getCardCVVView().getText().toString().length() == 3);
         } catch (Exception e) {
-            Timber.d(e.getMessage());
+            Timber.d(e);
         }
-
         return true;
     }
 
@@ -676,13 +689,15 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         try {
             boolean isValidCardCVV = isValidCardCVV();
             if (!isValidCardCVV) {
-                getViewPager().setCurrentItem(mLastPageSelected);
+                if (mViewPager != null) {
+                    mViewPager.setCurrentItem(mLastPageSelected);
+                }
                 String errMes = getCardCVVView().getPatternErrorMessage();
                 showHintError(getCardCVVView(), errMes);
             }
             return isValidCardCVV;
         } catch (Exception e) {
-            Timber.w(e, "Exception validate card cvv");
+            Timber.d(e, "Exception validate card cvv");
         }
         return true;
     }
@@ -702,7 +717,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         try {
             boolean isValidCardDate = isValidCardDate();
             if (!isValidCardDate) {
-                getViewPager().setCurrentItem(mLastPageSelected);
+                if (mViewPager != null) {
+                    mViewPager.setCurrentItem(mLastPageSelected);
+                }
                 String errMes = getCardDateView().getPatternErrorMessage();
                 showHintError(getCardDateView(), errMes);
             }
@@ -719,9 +736,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     private boolean validateCardNumberLuhn() throws Exception {
         boolean isDetected = getCardFinder().detected();
         if (getAdapter().getPaymentInfoHelper().isLinkTrans() && !isDetected) {
-            isDetected = getCreditCardFinder().detected() ? getCreditCardFinder().detected() : getBankCardFinder().detected();
+            isDetected = getCreditCardFinder().detected()
+                    ? getCreditCardFinder().detected() : getBankCardFinder().detected();
         }
-        return !(isAllowValidateCardNumberByLuhn() && isDetected) || getCardFinder().validCardNumberLuhnFormula(getCardNumber());
+        return !(isAllowValidateCardNumberByLuhn()
+                && isDetected)
+                || getCardFinder().validCardNumberLuhnFormula(getCardNumber());
     }
 
     /*
@@ -734,7 +754,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 SdkUtils.focusAndSoftKeyboard(getActivity(), (EditText) mCurrentFocusView);
             }
         } catch (Exception e) {
-            Timber.w(e, "Exception on focus view");
+            Timber.d(e, "Exception on focus view");
         }
     }
 
@@ -774,37 +794,40 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     private void showKeyBoardAndResizeButtonsIfNotSwitchChannel() throws Exception {
-        if (!getAdapter().getPresenter().isSwitchAdapter()) {
-            new Handler().postDelayed(() -> {
-                try {
-                    //dialog process is showing. so when process dialog close, need to show keyboard again.
-                    if (DialogManager.showingLoadDialog()) {
-                        return;
-                    }
-                    showKeyBoardOnCardNumberView();
-                    moveScrollViewToCurrentFocusView();
-                    getAdapter().getPresenter().setSwitchAdapter(false);
-                } catch (Exception e) {
-                    Timber.d(e);
-                }
-            }, 300);
+        if (getAdapter().getPresenter().isSwitchAdapter()) {
+            return;
         }
+        new Handler().postDelayed(() -> {
+            try {
+                //dialog process is showing. so when process dialog close, need to show keyboard again.
+                if (DialogManager.showingLoadDialog()) {
+                    return;
+                }
+                showKeyBoardOnCardNumberView();
+                moveScrollViewToCurrentFocusView();
+                getAdapter().getPresenter().setSwitchAdapter(false);
+            } catch (Exception e) {
+                Timber.d(e);
+            }
+        }, 300);
     }
 
-    public void clearCardNumberAndShowKeyBoard() {
+    void clearCardNumberAndShowKeyBoard() {
         try {
             mCardAdapter.getCardNumberFragment().clearText();
-            getCardView().setCardNumber("");
+            mCardView.setCardNumber("");
         } catch (Exception e) {
-            Timber.w(e, "Exception clear card number and show keyboard");
+            Timber.d(e, "Exception clear card number and show keyboard");
         }
-        getViewPager().setCurrentItem(0);
+        if (mViewPager != null) {
+            mViewPager.setCurrentItem(0);
+        }
         //auto show keyboard when the first time start
         new Handler().postDelayed(() -> {
             try {
                 showKeyBoardAndResizeButtons();
             } catch (Exception e) {
-                Timber.w(e.getMessage());
+                Timber.d(e);
             }
         }, 500);
     }
@@ -815,7 +838,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         Timber.d("showKeyBoardAndResizeButtons");
     }
 
-    public void setDetectedCard() {
+    void onDetectedBank() {
         try {
             if (isInputBankMaintenance()) {
                 return;
@@ -875,7 +898,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
     }
 
-    public boolean isMaxCcLink(String bankCode) {
+    private boolean isMaxCcLink(String bankCode) {
         try {
             int max_cc_link = ConfigLoader.maxCCLinkNum();
             int currentCcLinkNum = getAdapter().mCurrentCcLinkNumber;
@@ -891,15 +914,15 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         return false;
     }
 
-    protected void populateTextOnCardView() {
-        if (getCardView() != null) {
-            getCardView().setCardNumber(getCardNumber());
+    void populateTextOnCardView() {
+        if (mCardView != null) {
+            mCardView.setCardNumber(getCardNumber());
         }
     }
 
     void populateTextOnCardViewNoPaintCard() {
-        if (getCardView() != null) {
-            getCardView().setCardNumberNoPaintCard(getCardNumber());
+        if (mCardView != null) {
+            mCardView.setCardNumberNoPaintCard(getCardNumber());
         }
     }
 
@@ -993,7 +1016,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     /*
      * link card channel use this to update found card
      */
-    public void setDetectedCard(String pBankName, String pBankCode) {
+    void onDetectedBank(String pBankName, String pBankCode) {
         try {
             setCardNumberHint(pBankName);
             MiniPmcTransType miniPmcTransType = null;
@@ -1062,11 +1085,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
     }
 
-    /***
+    /*
      * show/hide issue date
      * after detected a card type
      */
-    void showViewByBankType() {
+    void showViewByBankType() throws Exception {
         if (!getCardFinder().detected()) {
             return;
         }
@@ -1105,7 +1128,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     private void updateDots() {
         if (mDotView == null) {
-            Timber.d("mDotView is null");
+            Timber.d("NULL on updateDots");
             return;
         }
         final int count = mCardAdapter.getCount();
@@ -1125,7 +1148,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         int dotSize = (int) mContext.getResources().getDimension(R.dimen.dot_size);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dotSize, dotSize);
         params.setMargins(dotSize, 0, dotSize, 0);
-        mDotView.addView(dot, params);
+        if (mDotView != null) {
+            mDotView.addView(dot, params);
+        }
     }
 
     private void selectDot(int pIndex) {
@@ -1135,51 +1160,52 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         final int childCount = mDotView.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View view = mDotView.getChildAt(i);
-            if (view instanceof ImageView) {
-                ImageView imageView = (ImageView) view;
-                if (i == pIndex) {
-                    imageView.setImageResource(R.drawable.dot_color);
-                } else {
-                    //reset previous
-                    imageView.setImageResource(R.drawable.dot);
-                }
+            if (!(view instanceof ImageView)) {
+                continue;
+            }
+            ImageView imageView = (ImageView) view;
+            if (i == pIndex) {
+                imageView.setImageResource(R.drawable.dot_color);
+            } else {
+                //reset previous
+                imageView.setImageResource(R.drawable.dot);
             }
         }
     }
 
     public void resetCardNumberAndShowKeyBoard() {
-        if (getViewPager() == null) {
-            return;
-        }
         try {
             getCardNumberView().setText(null);
             new Handler().postDelayed(() -> {
                 try {
                     SdkUtils.focusAndSoftKeyboard(getActivity(), mCardAdapter.getItemAtPosition(0).getEditText());
                 } catch (Exception e) {
-                    Timber.w(e.getMessage());
+                    Timber.w(e);
                 }
             }, 300);
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e);
         }
     }
 
     public void setCardInfo(String pCardNumber) {
-        if (getViewPager() != null && !TextUtils.isEmpty(pCardNumber)) {
-            try {
-                SdkUtils.focusAndSoftKeyboard(getActivity(), mCardAdapter.getItemAtPosition(1).getEditText());
-                applyFont(getView().findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.sdk_font_medium));
-                getCardNumberView().setText(pCardNumber);
-                getCardNumberView().formatText(true);
-                //reset other
-                getCardView().setCVV(null);
-                getCardView().setCardHolderName(null);
-                getCardView().setCardDate(null);
-                new Handler().postDelayed(() -> getViewPager().setCurrentItem(1), 300);
-            } catch (Exception e) {
-                Timber.w(e, "Exception set card info");
+        if (mViewPager == null || TextUtils.isEmpty(pCardNumber)) {
+            return;
+        }
+        try {
+            SdkUtils.focusAndSoftKeyboard(getActivity(), mCardAdapter.getItemAtPosition(1).getEditText());
+            applyFont(getView().findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.sdk_font_medium));
+            getCardNumberView().setText(pCardNumber);
+            getCardNumberView().formatText(true);
+            //reset other
+            if (mCardView != null) {
+                mCardView.setCVV(null);
+                mCardView.setCardHolderName(null);
+                mCardView.setCardDate(null);
             }
+            new Handler().postDelayed(() -> mViewPager.setCurrentItem(1), 300);
+        } catch (Exception e) {
+            Timber.w(e, "Exception set card info");
         }
     }
 
@@ -1209,7 +1235,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             if (errorFragmentIndex == (mMaxPagerCount - 1)) {
                 showHintError(getCardNameView(), mContext.getResources().getString(R.string.sdk_invalid_cardname_mess));
             }
-            getViewPager().setCurrentItem(errorFragmentIndex);
+            if (mViewPager != null) {
+                mViewPager.setCurrentItem(errorFragmentIndex);
+            }
         }
     }
 
@@ -1285,18 +1313,21 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         return (VPaymentDrawableEditText) mCardAdapter.getCardCVVFragment().getEditText();
     }
 
-    protected VPaymentValidDateEditText getCardIssueView() throws Exception {
+    VPaymentValidDateEditText getCardIssueView() throws Exception {
         return (VPaymentValidDateEditText) mCardAdapter.getCardIssueryFragment().getEditText();
     }
 
-    protected VPaymentValidDateEditText getCardExpiryView() throws Exception {
+    VPaymentValidDateEditText getCardExpiryView() throws Exception {
         return (VPaymentValidDateEditText) mCardAdapter.getCardExpiryFragment().getEditText();
     }
 
     void showNext() {
         try {
+            if (mCardAdapter == null || mViewPager == null) {
+                return;
+            }
             int max = mCardAdapter.getCount();
-            int currentIndex = getViewPager().getCurrentItem();
+            int currentIndex = mViewPager.getCurrentItem();
             //prevent user move to next if input existed card in link card
             if (currentIndex == 0 && preventNextIfLinkCardExisted() && getAdapter().getPaymentInfoHelper().isLinkTrans()) {
                 showHintError(getCardNumberView(), warningCardExist());
@@ -1307,7 +1338,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return;
             }
             if (currentIndex + 1 < max) {
-                getViewPager().setCurrentItem(currentIndex + 1);
+                mViewPager.setCurrentItem(currentIndex + 1);
             } else {
                 // completed the card entry.
                 SdkUtils.hideSoftKeyboard(mContext, getActivity());
@@ -1347,10 +1378,11 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     private void refreshNavigateButton() {
-        if (getViewPager() == null)
+        if (mViewPager == null || mViewPager.getAdapter() == null) {
             return;
-        int currentIndex = getViewPager().getCurrentItem();
-        int max = getViewPager().getAdapter().getCount();
+        }
+        int currentIndex = mViewPager.getCurrentItem();
+        int max = mViewPager.getAdapter().getCount();
         if (currentIndex == 0) {
             disablePrevious();
         } else if ((max - currentIndex == 1) && mCardAdapter.hasError() > -1) {
@@ -1362,9 +1394,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     private void showPrevious() {
-        int currentIndex = getViewPager().getCurrentItem();
+        if (mViewPager == null) {
+            return;
+        }
+        int currentIndex = mViewPager.getCurrentItem();
         if (currentIndex - 1 >= 0) {
-            getViewPager().setCurrentItem(currentIndex - 1);
+            mViewPager.setCurrentItem(currentIndex - 1);
         }
         refreshNavigateButton();
     }
@@ -1404,22 +1439,25 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                             mContext.getString(R.string.dialog_retry_input_card_button),
                             mBankMaintenanceDialogListener);
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.d(e);
         }
     }
 
     private void showWarningDisablePmc(String pBankName) throws Exception {
-        String mess = getAdapter().getPaymentInfoHelper().isLinkTrans() ?
-                mContext.getResources().getString(R.string.sdk_warning_pmc_transtype_disable_link) :
-                mContext.getResources().getString(R.string.sdk_warning_pmc_transtype_disable_payment);
-        String disableBankMessage = String.format(mess, pBankName);
         try {
+            String mess = getAdapter().getPaymentInfoHelper().isLinkTrans() ?
+                    mContext.getResources().getString(R.string.sdk_warning_pmc_transtype_disable_link) :
+                    mContext.getResources().getString(R.string.sdk_warning_pmc_transtype_disable_payment);
+
+            String disableBankMessage = String.format(mess, pBankName);
             getView().showInfoDialog(disableBankMessage,
                     mContext.getResources().getString(R.string.dialog_retry_input_card_button),
                     () -> new Handler().postDelayed(() -> {
                         //focus to edittext again after closing dialog
                         try {
-                            getViewPager().setCurrentItem(0);
+                            if (mViewPager != null) {
+                                mViewPager.setCurrentItem(0);
+                            }
                             getCardNumberView().setText(null);
                             SdkUtils.focusAndSoftKeyboard(getActivity(), getCardNumberView());
                         } catch (Exception e) {
@@ -1433,15 +1471,18 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     private void showSupportCardList() throws Exception {
         mBankSupportAdapter = new BankSupportAdapter(getActivity());
-        BankListDialogFragment dialog = new BankListDialogFragment();
-        dialog.setAdapter(mBankSupportAdapter);
-        dialog.setCloseCardSupportDialog(this::clearCardNumberAndShowKeyBoard);
+        BankListDialogFragment bankDialog = new BankListDialogFragment();
+        bankDialog.setAdapter(mBankSupportAdapter);
+        bankDialog.setCloseCardSupportDialog(this::clearCardNumberAndShowKeyBoard);
         List<String> items = getListCardSupport(isATMChannel());
         if (Lists.isEmptyOrNull(items)) {
             return;
         }
         mBankSupportAdapter.insertItems(items);
-        dialog.show(getActivity().getFragmentManager(), BankListDialogFragment.class.getSimpleName());
+        FragmentManager fragmentManager = getActivity().getFragmentManager();
+        if (fragmentManager != null) {
+            bankDialog.show(fragmentManager, BankListDialogFragment.class.getSimpleName());
+        }
     }
 
     private ArrayList<String> getListCardSupport(boolean isATMChannel) throws Exception {
@@ -1452,7 +1493,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         if (paymentInfoHelper.isLinkTrans()) {
             return CardSupportHelper.getLinkCardSupport();
         } else {
-            return isATMChannel ? CardSupportHelper.getLocalBankSupport() : CardSupportHelper.getCardSupport();
+            return isATMChannel
+                    ? CardSupportHelper.getLocalBankSupport() : CardSupportHelper.getCardSupport();
         }
     }
 
@@ -1500,9 +1542,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             return;
         }
 
-        CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();
+        CardNumberFragment cardNumberView = mCardAdapter != null
+                ? mCardAdapter.getCardNumberFragment() : null;
         if (cardNumberView == null) {
-            Timber.d("setCardNumberHint::cardNumberView is NULL");
+            Timber.d("NULL on setCardNumberHint");
             return;
         }
 
@@ -1532,7 +1575,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         disablePrevious();
         disableNext();
         if (pEdittext.getId() == R.id.edittext_localcard_number) {
-            CardNumberFragment cardNumberView = mCardAdapter.getCardNumberFragment();
+            CardNumberFragment cardNumberView = mCardAdapter != null
+                    ? mCardAdapter.getCardNumberFragment() : null;
             if (cardNumberView != null) {
                 cardNumberView.hideQuestionIcon();
             }
@@ -1581,9 +1625,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     boolean supportCard() {
         try {
-            if (mCardAdapter.getCardNumberFragment().hasError() &&
-                    (mCardAdapter.getCardNumberFragment().getError().equals(mContext.getResources().getString(R.string.sdk_card_not_support))
-                            || mCardAdapter.getCardNumberFragment().getError().contains("không hỗ trợ"))) {
+            if (mCardAdapter != null
+                    && mCardAdapter.getCardNumberFragment().hasError()
+                    && (mCardAdapter.getCardNumberFragment().getError().equals(mContext.getResources().getString(R.string.sdk_card_not_support))
+                    || mCardAdapter.getCardNumberFragment().getError().contains("không hỗ trợ"))) {
                 return false;
             }
         } catch (Exception e) {
@@ -1593,28 +1638,34 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     void clearHighLight() {
-        getCardView().clearHighLightCardNumber();
-        getCardView().clearHighLightCardHolderName();
-        getCardView().clearHighLightCardDate();
-        getCardView().clearHighLightCVV();
+        if (mCardView == null) {
+            return;
+        }
+        mCardView.clearHighLightCardNumber();
+        mCardView.clearHighLightCardHolderName();
+        mCardView.clearHighLightCardDate();
+        mCardView.clearHighLightCVV();
     }
 
     void updateCardInfoAfterTextChange(String pInfo) {
         if (getCurrentFocusView() == null) {
             return;
         }
+        if (mCardView == null) {
+            return;
+        }
         if (getCurrentFocusView().getId() == R.id.edittext_localcard_name) {
             mCardHolderName = PaymentUtils.clearCardName(pInfo.trim());
-            getCardView().setCardHolderName(mCardHolderName);
+            mCardView.setCardHolderName(mCardHolderName);
         } else if (getCurrentFocusView().getId() == R.id.edittext_issue_date) {
             mIssueDate = pInfo.trim();
-            getCardView().setCardDate(mIssueDate);
+            mCardView.setCardDate(mIssueDate);
         } else if (getCurrentFocusView().getId() == R.id.CreditCardExpiredDate) {
             mExpiry = pInfo.trim();
-            getCardView().setCardDate(mExpiry);
+            mCardView.setCardDate(mExpiry);
         } else if (getCurrentFocusView().getId() == R.id.CreditCardCVV) {
             mCVV = pInfo.trim();
-            getCardView().setCVV(mCVV);
+            mCardView.setCVV(mCVV);
         }
     }
 
@@ -1631,7 +1682,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
             return cardIdentifier;
         } catch (Exception e) {
-            Timber.w(e, "Exception get select bank identifier");
+            Timber.d(e, "Exception get select bank identifier");
         }
         return null;
     }
@@ -1657,40 +1708,53 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     /*
      * user finish input 1 field,auto swipe to next
      */
-    void autoMoveToNextFragment() {
+    void autoMoveToNextFragment() throws Exception {
         //card number
-        if (getCurrentFocusView() != null && getCurrentFocusView().getId() == R.id.edittext_localcard_number) {
-            VPaymentDrawableEditText numberCard = (VPaymentDrawableEditText) getCurrentFocusView();
-            if (!checkAutoMoveCardNumberFromBundle && numberCard.getString().length() == 16) {
+        View currentFocusView = getCurrentFocusView();
+        if (!(currentFocusView instanceof VPaymentEditText)) {
+            return;
+        }
+        EditText editText = null;
+        if (currentFocusView.getId() == R.id.edittext_localcard_number
+                || currentFocusView.getId() == R.id.CreditCardExpiredDate
+                || currentFocusView.getId() == R.id.edittext_issue_date
+                || currentFocusView.getId() == R.id.CreditCardCVV) {
+
+            editText = (EditText) currentFocusView;
+        }
+        int length = 0;
+        int maxLength = 0;
+        if (editText != null) {
+            String text = editText.getText().toString();
+            if (editText instanceof VPaymentDrawableEditText) {
+                text = ((VPaymentDrawableEditText) editText).getString();
+            }
+            length = !TextUtils.isEmpty(text) ? text.length() : 0;
+            if (currentFocusView instanceof VPaymentValidDateEditText) {
+                maxLength = ((VPaymentValidDateEditText) currentFocusView).getMaxLength();
+            }
+        }
+
+        if (currentFocusView.getId() == R.id.edittext_localcard_number) {
+            if (!checkAutoMoveCardNumberFromBundle && length == 16) {
                 showNext();
                 return;
             }
-            if (isCardLengthMatchIdentifier(numberCard.getString())) {
-                showNext();
+            if (currentFocusView instanceof VPaymentDrawableEditText) {
+                VPaymentDrawableEditText numberCard = (VPaymentDrawableEditText) currentFocusView;
+                if (isCardLengthMatchIdentifier(numberCard.getString())) {
+                    showNext();
+                }
             }
         }
-        //card expiry
-        else if (getCurrentFocusView() != null && getCurrentFocusView().getId() == R.id.CreditCardExpiredDate) {
-            VPaymentValidDateEditText expiredDateCard = (VPaymentValidDateEditText) getCurrentFocusView();
-
-            if (expiredDateCard.getText().toString().length() == expiredDateCard.getMaxLength()) {
-                showNext();
-            }
-        }
-        //card issue
-        else if (getCurrentFocusView() != null && getCurrentFocusView().getId() == R.id.edittext_issue_date) {
-            VPaymentValidDateEditText issueDateCard = (VPaymentValidDateEditText) getCurrentFocusView();
-
-            if (issueDateCard.getText().toString().length() == issueDateCard.getMaxLength()) {
-                showNext();
-            }
+        //card expiry || card issue
+        else if (length == maxLength &&
+                (currentFocusView.getId() == R.id.CreditCardExpiredDate || currentFocusView.getId() == R.id.edittext_issue_date)) {
+            showNext();
         }
         //card cvv
-        else if (getCurrentFocusView() != null && getCurrentFocusView().getId() == R.id.CreditCardCVV) {
-            VPaymentDrawableEditText cvvCard = (VPaymentDrawableEditText) getCurrentFocusView();
-
-            if (cvvCard.getString().length() == 3)
-                showNext();
+        else if (currentFocusView.getId() == R.id.CreditCardCVV && length == 3) {
+            showNext();
         }
     }
 

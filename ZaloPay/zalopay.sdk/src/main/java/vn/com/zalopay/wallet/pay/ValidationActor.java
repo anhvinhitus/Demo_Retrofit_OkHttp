@@ -40,6 +40,10 @@ public class ValidationActor extends SingletonBase {
     }
 
     private void warningSupportVersion() {
+        if (mChannel == null) {
+            Timber.d("Channel null - skip warningSupportVersion");
+            return;
+        }
         if (mChannel.isMapValid()) {
             BankConfig bankConfig = mBankInteractor.getBankConfig(mChannel.bankcode);
             if (bankConfig != null) {
@@ -55,6 +59,7 @@ public class ValidationActor extends SingletonBase {
 
     public boolean validate(PaymentChannel channel) throws Exception {
         if (channel == null) {
+            Timber.d("Channel null - skip validate");
             return false;
         }
         mChannel = channel;

@@ -33,11 +33,11 @@ public abstract class AbstractChannelLoader {
     public static final int MIN_VALUE_CHANNEL = 1000000000;
     public static final int MAX_VALUE_CHANNEL = -1;
     public ReplaySubject<PaymentChannel> source = ReplaySubject.create();
-    protected List<String> pmcConfigList = new ArrayList<>();
     @TransactionType
     int mTranstype;
     AppInfoStore.Interactor mAppinfoInteractor;
     ILinkSourceInteractor mLinkInteractor;
+    private List<String> pmcConfigList = new ArrayList<>();
     private double mMinValue = MIN_VALUE_CHANNEL, mMaxValue = MAX_VALUE_CHANNEL;
     private long mAppId;
     private String mUserId;
@@ -54,11 +54,8 @@ public abstract class AbstractChannelLoader {
         this.mLinkInteractor = SDKApplication.getApplicationComponent().linkInteractor();
     }
 
-    /***
-     * adapter create channel injector
-     * @return
-     */
-    public static AbstractChannelLoader createChannelInjector(long pAppId, String pUserId, long pAmount, long pBalance, @TransactionType int pTranstype) {
+    public static AbstractChannelLoader createChannelInjector(long pAppId, String pUserId,
+                                                              long pAmount, long pBalance, @TransactionType int pTranstype) {
         if (pTranstype == TransactionType.WITHDRAW) {
             return new WithDrawChannelLoader(pAppId, pUserId, pAmount, pBalance, pTranstype);
         } else {
@@ -66,18 +63,18 @@ public abstract class AbstractChannelLoader {
         }
     }
 
-    /***
-     * get min/max for each channel.
+    /*
+     * get min/max for each channel
      * use for alert if user input amount out of range support
-     *
-     * @return
      */
     public String getAlertAmount(long amount) {
         String strAlert = "";
-        if (hasMinValueChannel() && amount < getMinValueChannel()) {
+        if (hasMinValueChannel()
+                && amount < getMinValueChannel()) {
             strAlert = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_min_amount_mess),
                     CurrencyUtil.formatCurrency(getMinValueChannel()));
-        } else if (hasMaxValueChannel() && amount > getMaxValueChannel()) {
+        } else if (hasMaxValueChannel()
+                && amount > getMaxValueChannel()) {
             strAlert = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_max_amount_mess),
                     CurrencyUtil.formatCurrency(getMaxValueChannel()));
         }
@@ -95,12 +92,12 @@ public abstract class AbstractChannelLoader {
         send(linkChannel);
     }
 
-    /***
-     * get channel from pmc list
-     */
     void getChannelFromConfig() {
         for (String pmcKey : pmcConfigList) {
             try {
+                if (TextUtils.isEmpty(pmcKey)) {
+                    continue;
+                }
                 MiniPmcTransType activeChannel = mAppinfoInteractor.getPmcConfigByPmcKey(pmcKey);
                 if (activeChannel == null) {
                     continue;
@@ -129,10 +126,8 @@ public abstract class AbstractChannelLoader {
 
     /***
      * get map bank accounts from cache
-     *
-     * @throws Exception
      */
-    protected void getMapBankAccount() throws Exception {
+    void getMapBankAccount() throws Exception {
         try {
             List<BankAccount> bankAccounts = mLinkInteractor.getBankAccountList(mUserId);
             if (bankAccounts == null || bankAccounts.size() <= 0) {
@@ -140,31 +135,35 @@ public abstract class AbstractChannelLoader {
                 return;
             }
             for (BankAccount bankAccount : bankAccounts) {
-                MiniPmcTransType activeChannel = mAppinfoInteractor.getPmcConfig(mAppId, mTranstype, bankAccount.bankcode);
-                if (activeChannel != null) {
-                    //check this map card/map bankaccount is support or not
-                    allowPaymentChannel(activeChannel);
-                    resetPmc(activeChannel);
-                    if (isBankMaintenance(bankAccount.bankcode, BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN)) {
-                        activeChannel.setStatus(PaymentChannelStatus.MAINTENANCE);
-                    }
-                    PaymentChannel channel = new PaymentChannel(activeChannel);
-                    channel.f6no = bankAccount.firstaccountno;
-                    channel.l4no = bankAccount.lastaccountno;
-                    channel.bankcode = bankAccount.bankcode;
-                    channel.pmcname = GlobalData.getAppContext().getResources().getString(R.string.sdk_bankaccount_name);
-                    channel.isBankAccountMap = true;
-
-                    ChannelHelper.createChannelIcon(channel, bankAccount.bankcode);
-                    //calculate fee
-                    channel.calculateFee(mAmount);
-
-                    //check amount is support or not
-                    if (channel.isEnable()) {
-                        channel.checkPmcOrderAmount(mAmount);//check amount is support or not
-                    }
-                    send(channel);
+                if (bankAccount == null) {
+                    continue;
                 }
+                MiniPmcTransType activeChannel = mAppinfoInteractor.getPmcConfig(mAppId, mTranstype, bankAccount.bankcode);
+                if (activeChannel == null) {
+                    continue;
+                }
+                //check this map card/map bankaccount is support or not
+                allowPaymentChannel(activeChannel);
+                resetPmc(activeChannel);
+                if (isBankMaintenance(bankAccount.bankcode, BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN)) {
+                    activeChannel.setStatus(PaymentChannelStatus.MAINTENANCE);
+                }
+                PaymentChannel channel = new PaymentChannel(activeChannel);
+                channel.f6no = bankAccount.firstaccountno;
+                channel.l4no = bankAccount.lastaccountno;
+                channel.bankcode = bankAccount.bankcode;
+                channel.pmcname = GlobalData.getAppContext().getResources().getString(R.string.sdk_bankaccount_name);
+                channel.isBankAccountMap = true;
+
+                ChannelHelper.createChannelIcon(channel, bankAccount.bankcode);
+                //calculate fee
+                channel.calculateFee(mAmount);
+
+                //check amount is support or not
+                if (channel.isEnable()) {
+                    channel.checkPmcOrderAmount(mAmount);//check amount is support or not
+                }
+                send(channel);
             }
 
         } catch (Exception ex) {
@@ -172,7 +171,7 @@ public abstract class AbstractChannelLoader {
         }
     }
 
-    protected void resetPmc(MiniPmcTransType pChannel) {
+    private void resetPmc(MiniPmcTransType pChannel) {
         if (pChannel == null) {
             return;
         }
@@ -185,10 +184,8 @@ public abstract class AbstractChannelLoader {
         }
     }
 
-    /***
+    /*
      * get map card from cache
-     *
-     * @throws Exception
      */
     protected void getMapCard() throws Exception {
         try {
@@ -198,57 +195,62 @@ public abstract class AbstractChannelLoader {
                 return;
             }
             for (MapCard mapCard : mapCards) {
-                MiniPmcTransType activeChannel = mAppinfoInteractor.getPmcConfig(mAppId, mTranstype, mapCard.bankcode);
-                if (activeChannel != null) {
-                    //check this map card is support or not
-                    allowPaymentChannel(activeChannel);
-                    resetPmc(activeChannel);
-
-                    if (isBankMaintenance(mapCard.bankcode, BankFunctionCode.PAY_BY_CARD_TOKEN)) {
-                        activeChannel.setStatus(PaymentChannelStatus.MAINTENANCE);
-                    }
-                    PaymentChannel channel = new PaymentChannel(activeChannel);
-                    channel.l4no = mapCard.last4cardno;
-                    channel.f6no = mapCard.first6cardno;
-                    channel.bankcode = mapCard.bankcode;
-
-                    //calculate fee
-                    channel.calculateFee(mAmount);
-
-                    //check amount is support or not
-                    if (channel.isEnable()) {
-                        channel.checkPmcOrderAmount(mAmount);//check amount is support or not
-                    }
-
-                    if (BuildConfig.CC_CODE.equals(channel.bankcode)) {
-                        CreditCardDetector.getInstance().detectOnSync(channel.f6no);
-                        if (CreditCardDetector.getInstance().detected()) {
-                            //populate channel name
-                            channel.pmcname = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), CreditCardDetector.getInstance().getBankName()) + mapCard.last4cardno;
-                            String cardType = CreditCardDetector.getInstance().getCodeBankForVerifyCC();
-                            ChannelHelper.createChannelIcon(channel, cardType);
-                        }
-                    }
-                    //this is atm
-                    else {
-                        ChannelHelper.createChannelIcon(channel, mapCard.bankcode);
-                        BankDetector.getInstance().detectOnSync(channel.f6no);
-                        if (BankDetector.getInstance().detected()) {
-                            //populate channel name
-                            String bankName = BankDetector.getInstance().getShortBankName();
-                            if (TextUtils.isEmpty(bankName)) {
-                                bankName = GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_default_format);
-                            } else {
-                                bankName = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), bankName);
-                            }
-                            channel.pmcname = bankName + mapCard.last4cardno;
-                        }
-                    }
-                    if (!CreditCardDetector.getInstance().detected() && !BankDetector.getInstance().detected()) {
-                        channel.pmcname = GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_default_format) + mapCard.last4cardno;
-                    }
-                    send(channel);
+                if (mapCard == null) {
+                    continue;
                 }
+                MiniPmcTransType activeChannel = mAppinfoInteractor.getPmcConfig(mAppId, mTranstype, mapCard.bankcode);
+                if (activeChannel == null) {
+                    continue;
+                }
+                allowPaymentChannel(activeChannel);
+                resetPmc(activeChannel);
+
+                if (isBankMaintenance(mapCard.bankcode, BankFunctionCode.PAY_BY_CARD_TOKEN)) {
+                    activeChannel.setStatus(PaymentChannelStatus.MAINTENANCE);
+                }
+                PaymentChannel channel = new PaymentChannel(activeChannel);
+                channel.l4no = mapCard.last4cardno;
+                channel.f6no = mapCard.first6cardno;
+                channel.bankcode = mapCard.bankcode;
+
+                //calculate fee
+                channel.calculateFee(mAmount);
+
+                //check amount is support or not
+                if (channel.isEnable()) {
+                    channel.checkPmcOrderAmount(mAmount);//check amount is support or not
+                }
+
+                if (BuildConfig.CC_CODE.equals(channel.bankcode)) {
+                    CreditCardDetector.getInstance().detectOnSync(channel.f6no);
+                    if (CreditCardDetector.getInstance().detected()) {
+                        //populate channel name
+                        channel.pmcname = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format),
+                                CreditCardDetector.getInstance().getBankName()) + mapCard.last4cardno;
+                        String cardType = CreditCardDetector.getInstance().getCodeBankForVerifyCC();
+                        ChannelHelper.createChannelIcon(channel, cardType);
+                    }
+                }
+                //this is atm
+                else {
+                    ChannelHelper.createChannelIcon(channel, mapCard.bankcode);
+                    BankDetector.getInstance().detectOnSync(channel.f6no);
+                    if (BankDetector.getInstance().detected()) {
+                        //populate channel name
+                        String bankName = BankDetector.getInstance().getShortBankName();
+                        if (TextUtils.isEmpty(bankName)) {
+                            bankName = GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_default_format);
+                        } else {
+                            bankName = String.format(GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_format), bankName);
+                        }
+                        channel.pmcname = bankName + mapCard.last4cardno;
+                    }
+                }
+                if (!CreditCardDetector.getInstance().detected() && !BankDetector.getInstance().detected()) {
+                    channel.pmcname = GlobalData.getAppContext().getResources().getString(R.string.sdk_card_link_default_format) +
+                            mapCard.last4cardno;
+                }
+                send(channel);
             }
         } catch (Exception ex) {
             throw ex;
@@ -292,13 +294,10 @@ public abstract class AbstractChannelLoader {
         }
     }
 
-    /***
+    /*
      * bank or cc is maintenance
-     *
-     * @param pBankCode
-     * @return
      */
-    protected boolean isBankMaintenance(String pBankCode, @BankFunctionCode int pBankFunction) {
+    private boolean isBankMaintenance(String pBankCode, @BankFunctionCode int pBankFunction) {
         if (TextUtils.isEmpty(pBankCode)) {
             return false;
         }
@@ -309,12 +308,10 @@ public abstract class AbstractChannelLoader {
         return bankConfig != null && bankConfig.isBankMaintenence(pBankFunction);
     }
 
-    /***
+    /*
      * this is atm map card have in pmclist
-     * @param pChannel
-     * @return
      */
-    protected void allowPaymentChannel(MiniPmcTransType pChannel) {
+    private void allowPaymentChannel(MiniPmcTransType pChannel) {
         if (pChannel == null) {
             return;
         }
@@ -323,11 +320,10 @@ public abstract class AbstractChannelLoader {
         }
     }
 
-    /***
+    /*
      * detect min/max value
-     * @param activeChannel
      */
-    public void findValue(MiniPmcTransType activeChannel) {
+    private void findValue(MiniPmcTransType activeChannel) {
         if (activeChannel == null || !activeChannel.isEnable())
             return;
 
@@ -347,19 +343,19 @@ public abstract class AbstractChannelLoader {
         }
     }
 
-    public double getMinValueChannel() {
+    private double getMinValueChannel() {
         return mMinValue;
     }
 
-    public double getMaxValueChannel() {
+    private double getMaxValueChannel() {
         return mMaxValue;
     }
 
-    public boolean hasMinValueChannel() {
+    private boolean hasMinValueChannel() {
         return mMinValue != MIN_VALUE_CHANNEL;
     }
 
-    public boolean hasMaxValueChannel() {
+    private boolean hasMaxValueChannel() {
         return mMaxValue != MAX_VALUE_CHANNEL;
     }
 }

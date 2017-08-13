@@ -51,7 +51,7 @@ public class AuthenActor {
             try {
                 getProxy().resetResponse();
             } catch (Exception e) {
-                Timber.w(e);
+                Timber.d(e);
             }
         }
 
@@ -114,7 +114,10 @@ public class AuthenActor {
         if (!TextUtils.isEmpty(fpPassword) && !TextUtils.isEmpty(popupPassword) && !fpPassword.equals(popupPassword)) {
             try {
                 PaymentFingerPrint.shared().updatePassword(fpPassword, popupPassword);
-                return useFPPassword && !TextUtils.isEmpty(popupPassword) && shouldUseFPPassword() && PaymentFingerPrint.shared().putPassword(popupPassword);
+                return useFPPassword
+                        && !TextUtils.isEmpty(popupPassword)
+                        && shouldUseFPPassword()
+                        && PaymentFingerPrint.shared().putPassword(popupPassword);
             } catch (Exception e) {
                 Timber.d(e, "Exception update Password");
             }
@@ -223,7 +226,7 @@ public class AuthenActor {
                 mPassword = null;
             }
         } catch (Exception e) {
-            Timber.d(e, "AuthenActor closePassword");
+            Timber.d(e, "Authen Actor closePassword");
         }
     }
 

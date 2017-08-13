@@ -14,13 +14,9 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNameFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CreditCardFragment;
 
-/**
- * base adapter
- */
-
 public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
     //fragment list(card number,card name,card cvv...)
-    protected ArrayList<CreditCardFragment> cardFragments;
+    ArrayList<CreditCardFragment> cardFragments;
 
     public CardFragmentBaseAdapter(FragmentManager fm) {
         super(fm);
@@ -28,46 +24,35 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
         cardFragments = new ArrayList<>();
     }
 
-    /***
+    /*
      * next fragment has an error,user can not swipe to next
-     *
-     * @param pPos
-     * @return
      */
     public boolean canNavigateToNext(int pPos) {
         //prevent navigate if previous fragment have an error
         if (pPos > 0) {
             try {
                 CreditCardFragment previousFragment = getItemAtPosition(pPos - 1);
-
                 if (previousFragment != null && previousFragment.hasError()) {
                     return false;
                 }
-
             } catch (Exception e) {
                 Timber.d(e, "Exception NavigateToNext");
             }
         }
-
         return true;
     }
 
-    /***
+    /*
      * previous fragment has an error
-     *
-     * @param pPos
-     * @return
      */
     public boolean canNavigateToPrevious(int pPos) {
         //prevent navigate if previous fragment have an error
         if (pPos < getCount() - 1) {
             try {
                 CreditCardFragment nextFragment = getItemAtPosition(pPos + 1);
-
                 if (nextFragment != null && nextFragment.hasError()) {
                     return false;
                 }
-
             } catch (Exception e) {
                 Timber.d(e, "Exception canNavigateToPrevious");
             }
@@ -75,49 +60,46 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
         return true;
     }
 
-    /***
-     * get error fragment
-     *
-     * @return index of error fragment
-     */
     public int hasError() {
-        if (cardFragments == null || cardFragments.size() <= 0)
+        if (cardFragments == null || cardFragments.size() <= 0) {
             return -1;
-
+        }
         for (int i = 0; i < cardFragments.size(); i++) {
             CreditCardFragment fragment = cardFragments.get(i);
-
-            if (fragment.hasError())
+            if (fragment != null && fragment.hasError())
                 return i;
         }
-
         return -1;
     }
 
     public boolean hasFragment(String pTag) {
         for (CreditCardFragment cardFragment : cardFragments) {
-            if (cardFragment.tag.equalsIgnoreCase(pTag))
+            if (cardFragment != null
+                    && cardFragment.tag != null
+                    && cardFragment.tag.equalsIgnoreCase(pTag))
                 return true;
         }
-
         return false;
     }
 
     public int getIndexOfFragment(String pTag) {
         int pos = -1;
-
         for (int i = 0; i < cardFragments.size(); i++) {
-            if (cardFragments.get(i).tag.equalsIgnoreCase(pTag)) {
+            CreditCardFragment cardFragment = cardFragments.get(i);
+            if (cardFragment != null
+                    && cardFragment.tag != null
+                    && cardFragment.tag.equalsIgnoreCase(pTag)) {
                 pos = i;
                 break;
             }
         }
-
         return pos;
     }
 
     public CreditCardFragment getItemAtPosition(int pPos) throws Exception {
-        if (cardFragments != null && pPos >= 0 && pPos < cardFragments.size()) {
+        if (cardFragments != null
+                && pPos >= 0
+                && pPos < cardFragments.size()) {
             return cardFragments.get(pPos);
         }
         throw new Exception();
@@ -147,48 +129,37 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
         int pos = getIndexOfFragment(pTag);
         if (pos != -1) {
             cardFragments.remove(pos);
-            Timber.d("===removeFragment===pos=" + pos);
         }
     }
 
     public void addIssueDateFragment() {
         int pos = getIndexOfFragment(CardIssueFragment.class.getName());
-
         if (pos == -1) {
             CreditCardFragment mCardIssueFragment = new CardIssueFragment();
             mCardIssueFragment.tag = CardIssueFragment.class.getName();
-
             addFragment(mCardIssueFragment, 1);
-
-            Timber.d("===addIssueDateFragment===");
         }
     }
 
     public void addExpireDateFragment() {
         int pos = getIndexOfFragment(CardExpiryFragment.class.getName());
-
         if (pos == -1) {
-
-
             CreditCardFragment mCardExpiryFragment = new CardExpiryFragment();
             mCardExpiryFragment.tag = CardExpiryFragment.class.getName();
-
             addFragment(mCardExpiryFragment, 1);
-
-            Timber.d("===addExpireDateFragment===");
         }
     }
 
 
-    public void addFragment(CreditCardFragment pFragment, int position) {
+    private void addFragment(CreditCardFragment pFragment, int position) {
         cardFragments.add(position, pFragment);
     }
 
     @Override
     public Fragment getItem(int position) {
-        if (position >= cardFragments.size())
+        if (position >= cardFragments.size()) {
             return null;
-
+        }
         return cardFragments.get(position);
     }
 
@@ -196,10 +167,11 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getItemPosition(Object object) {
         int index = cardFragments.indexOf(object);
-        if (index == -1)
+        if (index == -1) {
             return POSITION_NONE;
-        else
+        } else {
             return index;
+        }
     }
 
     @Override

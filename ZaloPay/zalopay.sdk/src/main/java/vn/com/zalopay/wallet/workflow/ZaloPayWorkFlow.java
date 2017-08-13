@@ -17,7 +17,7 @@ public class ZaloPayWorkFlow extends AbstractWorkFlow {
         super(pContext, Constants.SCREEN_ZALOPAY, pPresenter, pMiniPmcTransType, paymentInfoHelper, statusResponse);
     }
 
-    protected int getDefaultChannelId() {
+    private int getDefaultChannelId() {
         return BuildConfig.channel_zalopay;
     }
 
@@ -33,7 +33,7 @@ public class ZaloPayWorkFlow extends AbstractWorkFlow {
             try {
                 getPresenter().setPaymentStatusAndCallback(PaymentStatus.ERROR_BALANCE);
             } catch (Exception e) {
-                Timber.w(e.getMessage());
+                Timber.w(e);
             }
         }
     }

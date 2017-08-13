@@ -8,12 +8,11 @@ import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
+import vn.com.zalopay.wallet.business.entity.base.BankNotification;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -86,7 +85,7 @@ public class CShareDataWrapper {
         userInfo.zalopay_userid = user.zaloPayId;
         userInfo.accesstoken = user.accesstoken;
 
-        CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message),
+        CShareData.getInstance().notifyLinkBankAccountFinish(new BankNotification(notificationType, message),
                 new IReloadMapInfoListener<BankAccount>() {
                     @Override
                     public void onComplete(List<BankAccount> pMapList) {

@@ -20,7 +20,6 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
@@ -169,7 +168,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                     continue;
                 }
 
-                String otp = PaymentUtils.clearOTP(getOtpInSMS(otpReceiverPattern, pSender, pOtp));
+                String otp = PaymentUtils.clearOTP(parseOtp(otpReceiverPattern, pSender, pOtp));
                 Timber.d("otp after split by space " + otp);
                 //check it whether length match length of otp in config
                 if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
@@ -289,6 +288,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
             }
             return;
         }
+        BankCardGuiProcessor guiProcessor = (BankCardGuiProcessor) getGuiProcessor();
         // Reset captcha imediately
         if (!TextUtils.isEmpty(response.otpimg)) {
             if (numberRetryCaptcha >= Constants.MAX_COUNT_RETRY_CAPTCHA) {
@@ -300,14 +300,14 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 return;
             }
             numberRetryCaptcha++;
-            ((BankCardGuiProcessor) getGuiProcessor()).setCaptchaImage(response.otpimg, response.otpimgsrc);
+            guiProcessor.setCaptchaImage(response.otpimg, response.otpimgsrc);
         }
         if (!TextUtils.isEmpty(pageName)) {
             mPageName = PAGE_COVER_BANK_AUTHEN;
             getView().renderByResource(mPageName);
             mPageName = pageName;
             getView().renderByResource(mPageName, response.staticView, response.dynamicView);
-            getGuiProcessor().checkEnableSubmitButton();
+            guiProcessor.checkEnableSubmitButton();
         }
         if (!response.isError()) {
             if (!TextUtils.isEmpty(response.info)) {
@@ -319,36 +319,35 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
             if (response.message.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_vcb_invalid_captcha))) {
                 response.message = GlobalData.getAppContext().getResources().getString(R.string.sdk_vcb_invalid_captcha_mess);
             }
-            showDialogWithCallBack(response.message,
-                    GlobalData.getAppContext().getResources().getString(R.string.dialog_close_button), () -> {
-                        try {
-                            if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing()) {
-                                //reset otp and show keyboard again
-                                ((BankCardGuiProcessor) getGuiProcessor()).resetCaptcha();
-                                getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
-                            } else if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
-                                //reset otp and show keyboard again
-                                ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
-                                getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
-                            }
-                        } catch (Exception e) {
-                            Timber.w(e.getMessage());
-                        }
-                    });
+            showDialogWithCallBack(response.message, () -> {
+                try {
+                    if (guiProcessor.isCaptchaProcessing()) {
+                        //reset otp and show keyboard again
+                        guiProcessor.resetCaptcha();
+                        guiProcessor.showKeyBoardOnEditTextAndScroll(guiProcessor.getCaptchaEditText());
+                    } else if (guiProcessor.isOtpWebProcessing()) {
+                        //reset otp and show keyboard again
+                        guiProcessor.resetOtpWeb();
+                        guiProcessor.showKeyBoardOnEditTextAndScroll(guiProcessor.getOtpWebEditText());
+                    }
+                } catch (Exception e) {
+                    Timber.w(e);
+                }
+            });
         }
         boolean visibleOrderInfo = !isChannelHasInputCard();
         getView().visibleOrderInfo(visibleOrderInfo);
         getView().setVisible(R.id.order_info_line_view, false);
         //set time process for otp and captcha to send log to server.
-        if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
+        if (guiProcessor.isOtpWebProcessing() && mOtpEndTime == 0) {
             mOtpEndTime = System.currentTimeMillis();
-            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
+            guiProcessor.showKeyBoardOnEditTextAndScroll(guiProcessor.getOtpWebEditText());
         }
-        if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing() && mCaptchaEndTime == 0) {
+        if (guiProcessor.isCaptchaProcessing() && mCaptchaEndTime == 0) {
             mCaptchaEndTime = System.currentTimeMillis();
             //request permission read/view sms on android 6.0+
             requestReadOtpPermission();
-            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
+            guiProcessor.showKeyBoardOnEditTextAndScroll(guiProcessor.getCaptchaEditText());
             if (GlobalData.analyticsTrackerWrapper != null) {
                 GlobalData.analyticsTrackerWrapper
                         .step(ZPPaymentSteps.OrderStep_WebInfoConfirm)
@@ -356,31 +355,13 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
             }
         }
 
-        if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
+        if (guiProcessor.isOtpWebProcessing()) {
             getView().setVisible(R.id.txtOtpInstruction, true);
             if (GlobalData.analyticsTrackerWrapper != null) {
                 GlobalData.analyticsTrackerWrapper
                         .step(ZPPaymentSteps.OrderStep_WebOtp)
                         .track();
             }
-            //testing broadcast otp viettinbak
-                    /*
-                    new Handler().postDelayed(new Runnable() {
-						@Override
-						public void run()
-						{
-							String sender = "VietinBank";
-							String body = "Giao dich truc tuyen Viettinbank.... Mat khau: 4556104679";
-							//send otp to channel activity
-							Intent messageIntent = new Intent();
-							messageIntent.setAction(Constants.FILTER_ACTION_BANK_SMS_RECEIVER);
-							messageIntent.putExtra(Constants.BANK_SMS_RECEIVER_SENDER, sender);
-							messageIntent.putExtra(Constants.BANK_SMS_RECEIVER_BODY,body);
-							LocalBroadcastManager.get(GlobalData.getAppContext()).sendBroadcast(messageIntent);
-						}
-					},5000);
-					*/
-
         }
         getView().renderKeyBoard(RS.layout.screen__card, getBankCode());
         getView().hideLoading();
@@ -399,7 +380,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 return ((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing();
             }
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e);
         }
         return super.isCaptchaStep();
     }
@@ -408,7 +389,8 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     public boolean isOtpStep() {
         try {
             if (getGuiProcessor() instanceof BankCardGuiProcessor) {
-                return ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() || ((BankCardGuiProcessor) getGuiProcessor()).isOtpAuthenPayerProcessing();
+                return ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()
+                        || ((BankCardGuiProcessor) getGuiProcessor()).isOtpAuthenPayerProcessing();
             }
         } catch (Exception e) {
             Timber.w(e.getMessage());
@@ -419,6 +401,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
     @Override
     public void onProcessPhrase() throws Exception {
         //authen payer atm
+        BankCardGuiProcessor guiProcessor = (BankCardGuiProcessor) getGuiProcessor();
         if (isAuthenPayerPharse()) {
             if (!checkAndOpenNetworkingSetting()) {
                 return;
@@ -426,21 +409,21 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
             if (mPaymentInfoHelper == null || mPaymentInfoHelper.getUserInfo() == null) {
                 return;
             }
-            showTimeoutProgressDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_otp_mess));
+            showTimeoutLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_authen_otp_mess));
             mOrderProcessing = true;
             SDKTransactionAdapter.shared().authenPayer(mPaymentInfoHelper.getUserInfo(), mTransactionID,
-                    ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
+                    guiProcessor.getAuthenType(), guiProcessor.getAuthenValue());
             if (mOtpEndTime == 0) {
                 mOtpBeginTime = System.currentTimeMillis();
             }
             return;
         }
         //web flow
-        if (((BankCardGuiProcessor) getGuiProcessor()).isCoverBankInProcess()) {
+        if (guiProcessor.isCoverBankInProcess()) {
             if (!checkAndOpenNetworkingSetting()) {
                 return;
             }
-            showTimeoutProgressDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_processing_bank_mess));
+            showTimeoutLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_processing_bank_mess));
             //the first time load captcha
             if (mCaptchaEndTime == 0) {
                 mCaptchaBeginTime = System.currentTimeMillis();
@@ -453,7 +436,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
             return;
         }
         if (!mPaymentInfoHelper.payByCardMap() && !mPaymentInfoHelper.payByBankAccountMap()) {
-            getGuiProcessor().populateCard();
+            guiProcessor.populateCard();
         }
         startSubmitTransaction();
     }
@@ -466,51 +449,16 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         }
     }
 
-    public boolean existBIDVinMapCardList(String pCardNumber) {
-        try {
-            if (mPaymentInfoHelper == null) {
-                return false;
-            }
-            if (TextUtils.isEmpty(pCardNumber) || pCardNumber.length() < 6) {
-                return false;
-            }
-            String cardKey = pCardNumber.substring(0, 6) + pCardNumber.substring(pCardNumber.length() - 4, pCardNumber.length());
-            MapCard mapCard = mLinkInteractor.getCard(mPaymentInfoHelper.getUserId(), cardKey);
-            return mapCard != null;
-        } catch (Exception e) {
-            Timber.w(e, "Exception check exist card number on map card list");
-        }
-        return false;
-    }
-
-    public boolean existBIDVinMapCardList() {
-        if (mPaymentInfoHelper == null) {
-            return false;
-        }
-        try {
-            List<MapCard> mapCards = mLinkInteractor.getMapCardList(mPaymentInfoHelper.getUserId());
-            if (mapCards == null || mapCards.size() <= 0) {
-                return false;
-            }
-            for (MapCard mappedCard : mapCards) {
-                if (CardType.PBIDV.equals(mappedCard.bankcode)) {
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            Timber.w(e, "Exception check exist BANKCARD in map card list");
-        }
-        return false;
-    }
-
     public boolean paymentBIDV() {
         BankDetector atmCardCheck = null;
         try {
             atmCardCheck = getGuiProcessor().getBankCardFinder();
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e);
         }
-        return atmCardCheck != null && atmCardCheck.detected() && CardType.PBIDV.equals(atmCardCheck.getDetectBankCode());
+        return atmCardCheck != null
+                && atmCardCheck.detected()
+                && CardType.PBIDV.equals(atmCardCheck.getDetectBankCode());
     }
 
     private boolean continueProcessForBidvBank(String pMessage) {

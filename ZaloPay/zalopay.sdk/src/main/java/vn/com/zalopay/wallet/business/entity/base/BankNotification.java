@@ -1,10 +1,10 @@
 package vn.com.zalopay.wallet.business.entity.base;
 
-public class ZPWNotification {
+public class BankNotification {
     private int type;
     private String msg;
 
-    public ZPWNotification(int pType, String pMsg) {
+    public BankNotification(int pType, String pMsg) {
         this.type = pType;
         this.msg = pMsg;
     }

@@ -14,7 +14,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.constants.Constants;
 
-/**
+/*
  * Created by lytm on 17/07/2017.
  */
 
@@ -72,9 +72,8 @@ public class BankSupportAdapter extends BaseCardSupportAdapter<String, BankSuppo
             imImageIcon = (ImageView) itemView.findViewById(R.id.imBankIcon);
         }
         void bindView(String card, int position) {
-            String bankCode =card;
-            if (!TextUtils.isEmpty(bankCode)) {
-                Bitmap bitmap = ResourceManager.getImage(String.format("bank_%s%s", bankCode, Constants.BITMAP_EXTENSION));
+            if (!TextUtils.isEmpty(card)) {
+                Bitmap bitmap = ResourceManager.getImage(String.format("bank_%s%s", card, Constants.BITMAP_EXTENSION));
                 if (bitmap != null) {
                     imImageIcon.setImageBitmap(bitmap);
                     imImageIcon.setBackgroundResource(R.drawable.bg_card);

@@ -262,12 +262,12 @@ public class SharedPreferencesManager {
         try {
             return getString(pKey + SharePrefConstants.sdk_conf_bankaccount_list);
         } catch (Exception e) {
-            Timber.w(e, "Exception getBankAccountKeyList");
+            Timber.d(e, "Exception getBankAccountKeyList");
         }
         return null;
     }
 
-    /***
+    /*
      * set map card list
      */
     public boolean setMapCardList(String pKey, String pMappedCardKeyList) {
@@ -278,10 +278,8 @@ public class SharedPreferencesManager {
         return getString(pKey + SharePrefConstants.sdk_conf_mapcard_list);
     }
 
-    /***
+    /*
      * get map card list by user id
-     * @param pUserID
-     * @return
      */
     public List<MapCard> getMapCardList(String pUserID) {
         List<MapCard> mappedCardList = new ArrayList<>();
@@ -294,14 +292,15 @@ public class SharedPreferencesManager {
             if (TextUtils.isEmpty(strMappedCard)) {
                 continue;
             }
-            MapCard mappedCard = GsonUtils.fromJsonString(strMappedCard, MapCard.class);
-            if (mappedCard != null) {
-                BankConfig bankConfig = GsonUtils.fromJsonString(getBankConfig(mappedCard.bankcode), BankConfig.class);
-                if (bankConfig != null) {
-                    mappedCard.displayorder = bankConfig.displayorder;
-                }
-                mappedCardList.add(mappedCard);
+            MapCard mapCard = GsonUtils.fromJsonString(strMappedCard, MapCard.class);
+            if (mapCard == null) {
+                continue;
             }
+            BankConfig bankConfig = GsonUtils.fromJsonString(getBankConfig(mapCard.bankcode), BankConfig.class);
+            if (bankConfig != null) {
+                mapCard.displayorder = bankConfig.displayorder;
+            }
+            mappedCardList.add(mapCard);
         }
         return mappedCardList;
     }
@@ -318,13 +317,14 @@ public class SharedPreferencesManager {
                 continue;
             }
             BankAccount bankAccount = GsonUtils.fromJsonString(sMap, BankAccount.class);
-            if (bankAccount != null) {
-                BankConfig bankConfig = GsonUtils.fromJsonString(getBankConfig(CardType.PVCB), BankConfig.class);
-                if (bankConfig != null) {
-                    bankAccount.displayorder = bankConfig.displayorder;
-                }
-                bankAccountList.add(bankAccount);
+            if (bankAccount == null) {
+                continue;
             }
+            BankConfig bankConfig = GsonUtils.fromJsonString(getBankConfig(CardType.PVCB), BankConfig.class);
+            if (bankConfig != null) {
+                bankAccount.displayorder = bankConfig.displayorder;
+            }
+            bankAccountList.add(bankAccount);
         }
         return bankAccountList;
     }
@@ -499,11 +499,11 @@ public class SharedPreferencesManager {
         return values;
     }
 
-    public String getVoucherMapList(String pUserId) {
+    private String getVoucherMapList(String pUserId) {
         return getString(getUserVoucherKey(pUserId));
     }
 
-    public boolean setVoucherMapList(String pUser, String pMapKeys) {
+    private boolean setVoucherMapList(String pUser, String pMapKeys) {
         return setString(getUserVoucherKey(pUser), pMapKeys);
     }
 

@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.workflow;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
@@ -99,12 +100,12 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     ILinkSourceInteractor mLinkInteractor;
     int numberOfRetryTimeout = 1;
     SDKTransactionAdapter mTransactionAdapter;
+    //check data in response get status api
+    boolean isCheckDataInStatus = false;
     private boolean isLoadWebTimeout = false;
     private int numberRetryOtp = 0;
     //count of retry check status if submit order fail
     private int mCountCheckStatus = 0;
-    //check data in response get status api
-    private boolean isCheckDataInStatus = false;
     //whether show dialog or not?
     private boolean showDialogOnChannelList = true;
     //need to switch to cc or atm
@@ -123,7 +124,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     private boolean mCanEditCardInfo = false;
     @BankFlow
     private int mECardFlowType;
-    private OnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new OnProgressDialogTimeoutListener() {
+    OnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new OnProgressDialogTimeoutListener() {
         @Override
         public void onProgressTimeout() {
             try {
@@ -136,7 +137,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                     return;
                 }
                 //retry load website cc
-                if (ConnectionUtil.isOnline(mContext) && isCCFlow() && isLoadWeb() && hasTransId()) {
+                if (ConnectionUtil.isOnline(mContext)
+                        && isCCFlow() && isLoadWeb() && hasTransId()) {
                     //max retry 3
                     if (numberOfRetryTimeout > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_retry_number_load_website))) {
                         getOneShotTransactionStatus();
@@ -165,9 +167,12 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                             });
                 }
                 //load web timeout, need to get oneshot to server to check status again
-                else if (ConnectionUtil.isOnline(mContext) && isParseWebFlow() && hasTransId()) {
+                else if (ConnectionUtil.isOnline(mContext)
+                        && isParseWebFlow() && hasTransId()) {
                     getOneShotTransactionStatus();
-                } else if (mPaymentInfoHelper.isBankAccountTrans() && AbstractWorkFlow.this instanceof AccountLinkWorkFlow && isFinalStep()) {
+                } else if (isFinalStep()
+                        && mPaymentInfoHelper.isBankAccountTrans()
+                        && AbstractWorkFlow.this instanceof AccountLinkWorkFlow) {
                     ((AccountLinkWorkFlow) AbstractWorkFlow.this).verifyServerAfterParseWebTimeout();
                     Timber.d("load website timeout, continue to verify server again to ask for new data list");
                 } else if (!isFinalScreen()) {
@@ -178,13 +183,14 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             } catch (Exception ex) {
                 showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
                 mSdkErrorReporter.sdkReportError(AbstractWorkFlow.this, SDKReportTask.GENERAL_EXCEPTION, ex.getMessage());
-                Timber.w(ex.getMessage());
+                Timber.w(ex);
             }
         }
     };
 
     public AbstractWorkFlow(Context pContext, String pPageName, ChannelPresenter pPresenter,
-                            MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) {
+                            MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper,
+                            StatusResponse statusResponse) {
         mContext = pContext;
         mPresenter = pPresenter;
         mMiniPmcTransType = pMiniPmcTransType;
@@ -219,11 +225,11 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    public void showTimeoutProgressDialog(String pTitle) {
+    public void showTimeoutLoading(String pTitle) {
         try {
             getView().showLoading(pTitle, mProgressDialogTimeoutListener);
         } catch (Exception e) {
-            Timber.w(e.getMessage());
+            Timber.w(e, "Exception show loading dialog");
         }
     }
 
@@ -232,6 +238,9 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     }
 
     public PaymentInfoHelper getPaymentInfoHelper() {
+        if (mPaymentInfoHelper == null) {
+            mPaymentInfoHelper = GlobalData.getPaymentInfoHelper();
+        }
         return mPaymentInfoHelper;
     }
 
@@ -325,6 +334,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         mCanEditCardInfo = pCanEditCardInfo;
     }
 
+    @NonNull
     public String getPageName() {
         return (mPageName != null) ? mPageName : "";
     }
@@ -523,31 +533,31 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 && !getPageName().equals(Constants.PAGE_FAIL_PROCESSING);
     }
 
-    protected void processWrongOtp() {
+    void processWrongOtp() {
         numberRetryOtp++;
         //over number of retry
         if (numberRetryOtp > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_number_retry_otp))) {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_error_retry_otp_mess));
             return;
         }
-        showDialogWithCallBack(mStatusResponse.returnmessage,
-                mContext.getResources().getString(R.string.dialog_close_button), () -> {
-                    //reset otp and show keyboard again
-                    if (isCardFlow()) {
-                        try {
-                            ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
-                            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpAuthenPayerEditText());
-                        } catch (Exception e) {
-                            Timber.w(e);
-                        }
-                    }
-                });
+        showDialogWithCallBack(mStatusResponse.returnmessage, () -> {
+            //reset otp and show keyboard again
+            if (isCardFlow()) {
+                try {
+                    BankCardGuiProcessor cardGuiProcessor = (BankCardGuiProcessor) getGuiProcessor();
+                    cardGuiProcessor.resetOtpWeb();
+                    cardGuiProcessor.showKeyBoardOnEditTextAndScroll(cardGuiProcessor.getOtpAuthenPayerEditText());
+                } catch (Exception e) {
+                    Timber.w(e);
+                }
+            }
+        });
     }
 
     public void autoFillOtp(String pSender, String pOtp) {
     }
 
-    public String getOtpInSMS(DOtpReceiverPattern otpPattern, String pSender, String pMessage) {
+    String parseOtp(DOtpReceiverPattern otpPattern, String pSender, String pMessage) {
         try {
             if (TextUtils.isEmpty(pSender) || TextUtils.isEmpty(pMessage)) {
                 return "";
@@ -566,8 +576,10 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         return "";
     }
 
-    protected boolean shouldCheckStatusAgain() {
-        return mStatusResponse == null && ConnectionUtil.isOnline(mContext) && hasTransId();
+    boolean shouldCheckStatusAgain() {
+        return mStatusResponse == null
+                && ConnectionUtil.isOnline(mContext)
+                && hasTransId();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -652,7 +664,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             return;
         }
 
-        if (isCCFlow() || (isATMFlow() && ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing())) {
+        if (isCCFlow() || (isATMFlow()
+                && ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing())) {
             isLoadWebTimeout = true;
             getTransactionStatus(mTransactionID, false, mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
         } else {
@@ -696,7 +709,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    protected void handleEventGetStatusComplete(StatusResponse statusResponse) throws Exception {
+    private void handleEventGetStatusComplete(StatusResponse statusResponse) throws Exception {
         mStatusResponse = statusResponse;
         getView().visibleCardViewNavigateButton(false);
         getView().visibleSubmitButton(true);
@@ -755,7 +768,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             Timber.d("start flow 3ds banconfig %s", GsonUtils.toJsonString(bankConfig));
             if (isCardFlow() && bankConfig.isParseWebsite()) {
                 setECardFlowType(BankFlow.PARSEWEB);
-                showTimeoutProgressDialog(mContext.getResources().getString(R.string.sdk_trans_processing_bank_mess));
+                showTimeoutLoading(mContext.getResources().getString(R.string.sdk_trans_processing_bank_mess));
                 startParseBankWebsite(dataResponse.redirecturl);
                 endingCountTimeLoadCaptchaOtp();
             }
@@ -864,7 +877,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    /***
+    /*
      * check networking is on/off
      * if off then open dialog networking for requesting open network again
      */
@@ -891,7 +904,8 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             if (!shouldSendLogToServer()) {
                 return;
             }
-            BaseTask sendLogTask = new SendLogTask(mPaymentInfoHelper.getUserInfo(), getChannelID(), mTransactionID, mCaptchaBeginTime, mCaptchaEndTime, mOtpBeginTime, mOtpEndTime);
+            BaseTask sendLogTask = new SendLogTask(mPaymentInfoHelper.getUserInfo(), getChannelID(),
+                    mTransactionID, mCaptchaBeginTime, mCaptchaEndTime, mOtpBeginTime, mOtpEndTime);
             sendLogTask.makeRequest();
         } catch (Exception e) {
             Timber.w(e, "Exception send log to loading time website (captcha - otp)");
@@ -945,11 +959,11 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         return false;
     }
 
-    /***
+    /*
      * after show network error dialog.
      * close sdk if user is submitted order
      */
-    public void whetherQuitPaymentOffline() {
+    private void whetherQuitPaymentOffline() {
         boolean isNeedCloseSDK = isOrderSubmit() || isLinkAccFlow();
         if (isNeedCloseSDK && !ConnectionUtil.isOnline(mContext)) {
             try {
@@ -963,25 +977,20 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     }
 
     public boolean exitWithoutConfirm() {
-        if (getPageName().equals(Constants.PAGE_SUCCESS) || getPageName().equals(Constants.PAGE_FAIL) ||
-                getPageName().equals(Constants.PAGE_FAIL_NETWORKING) || getPageName().equals(Constants.PAGE_FAIL_PROCESSING)) {
+        if (getPageName().equals(Constants.PAGE_SUCCESS)
+                || getPageName().equals(Constants.PAGE_FAIL)
+                || getPageName().equals(Constants.PAGE_FAIL_NETWORKING)
+                || getPageName().equals(Constants.PAGE_FAIL_PROCESSING)) {
             existTransWithoutConfirm = true;
         }
         return existTransWithoutConfirm;
     }
 
-    protected boolean hasTransId() {
+    private boolean hasTransId() {
         return !TextUtils.isEmpty(mTransactionID);
     }
 
-    /**
-     * Get transaction status
-     *
-     * @param pTransID   ZmpTransID
-     * @param pCheckData Checkdata true or false
-     * @param pMessage   message show on progressbar
-     */
-    protected void getTransactionStatus(String pTransID, boolean pCheckData, String pMessage) {
+    void getTransactionStatus(String pTransID, boolean pCheckData, String pMessage) {
         existTransWithoutConfirm = false;
         mOrderProcessing = true;
         isCheckDataInStatus = pCheckData;
@@ -990,16 +999,17 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
 
     private void getStatusStrategy(String pTransID, boolean pCheckData, String pMessage) {
         try {
-            getView().showLoading(TextUtils.isEmpty(pMessage) ?
-                    mContext.getResources().getString(R.string.sdk_trans_getstatus_mess) :
-                    pMessage);
+            getView()
+                    .showLoading(TextUtils.isEmpty(pMessage) ?
+                            mContext.getResources().getString(R.string.sdk_trans_getstatus_mess) :
+                            pMessage);
             mTransactionAdapter.getTransactionStatus(pTransID, pCheckData, pMessage);
         } catch (Exception e) {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess));
         }
     }
 
-    protected void checkTransactionStatus(StatusResponse pStatusResponse) {
+    private void checkTransactionStatus(StatusResponse pStatusResponse) {
         try {
             if (pStatusResponse != null && pStatusResponse.returncode < 0) {
                 mPaymentInfoHelper.updateTransactionResult(pStatusResponse.returncode);
@@ -1027,7 +1037,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    protected void showFailScreen(String pMessage) {
+    private void showFailScreen(String pMessage) {
         String message = pMessage;
         if (TextUtils.isEmpty(message)) {
             message = mContext.getResources().getString(R.string.sdk_payment_generic_error_networking_mess);
@@ -1040,24 +1050,26 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         try {
             String title = mPaymentInfoHelper.getFailTitleByTrans(mContext);
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
-            getView().renderFail(isLink, message, mTransactionID, mPaymentInfoHelper.getOrder(), appName, mStatusResponse, true, title);
+            getView().renderFail(isLink, message, mTransactionID, mPaymentInfoHelper.getOrder(),
+                    appName, mStatusResponse, true, title);
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.w(e, "Exception show fail screen");
         }
     }
 
-    /***
+    /*
      * networking occur an error on the way,
      * client haven't get response from server,need to check to server
      */
-    protected void checkOrderSubmitStatus(final String pAppTransID, String pMessage) {
+    private void checkOrderSubmitStatus(final String pAppTransID, String pMessage) {
         try {
             getView().showLoading(pMessage);
             if (mPaymentInfoHelper == null) {
                 showTransactionFailView(mContext.getResources().getString(R.string.sdk_invalid_payment_data));
                 return;
             }
-            BaseTask getStatusTask = new CheckOrderStatusFailSubmit(pAppTransID, mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getUserInfo());
+            BaseTask getStatusTask = new CheckOrderStatusFailSubmit(pAppTransID,
+                    mPaymentInfoHelper.getAppId(), mPaymentInfoHelper.getUserInfo());
             getStatusTask.makeRequest();
         } catch (Exception ex) {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
@@ -1065,9 +1077,10 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    protected void finishTransaction() {
+    private void finishTransaction() {
         try {
-            getPresenter().setPaymentStatusAndCallback(PaymentStatus.SUCCESS);
+            getPresenter()
+                    .setPaymentStatusAndCallback(PaymentStatus.SUCCESS);
         } catch (Exception e) {
             Timber.w(e, "Exception finish trans");
         }
@@ -1168,17 +1181,18 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             UserInfo receiverInfo = mPaymentInfoHelper.getMoneyTransferReceiverInfo();
             String title = mPaymentInfoHelper.getSuccessTitleByTrans(mContext);
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
-            getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(), appName, null, isLink, isTransfer, receiverInfo, title);
+            getView().renderSuccess(isLink, mTransactionID, userInfo, mPaymentInfoHelper.getOrder(),
+                    appName, null, isLink, isTransfer, receiverInfo, title);
         } catch (Exception e) {
             Timber.w(e, "Exception render success info");
         }
     }
 
-    public boolean isTransactionInProgress() {
+    private boolean isTransactionInProgress() {
         return mStatusResponse != null && mStatusResponse.isprocessing;
     }
 
-    public synchronized void showTransactionFailView(String pMessage) {
+    void showTransactionFailView(String pMessage) {
         showDialogOnChannelList = false;
         existTransWithoutConfirm = true;
         try {
@@ -1258,17 +1272,16 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             getActivity().finish();
         } catch (Exception e) {
             Timber.d(e, "Exception terminate");
-            ;
         }
         Timber.d("callback transaction");
     }
 
-    protected void showDialogWithCallBack(String pMessage, String pButtonText, ZPWOnEventDialogListener pCallBack) {
+    void showDialogWithCallBack(String pMessage, ZPWOnEventDialogListener pCallBack) {
         try {
             getView().hideLoading();
             getView().showInfoDialog(pMessage, pCallBack);
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.w(e, "Exception show showDialogWithCallBack");
         }
     }
 
@@ -1292,7 +1305,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    protected void askToRetryGetStatus(final String pZmpTransID) throws Exception {
+    private void askToRetryGetStatus(final String pZmpTransID) throws Exception {
         try {
             getView().hideLoading();
         } catch (Exception e) {
@@ -1374,9 +1387,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
 
     public boolean existMapCardOnCache() {
         try {
-            if (getGuiProcessor() == null) {
-                return false;
-            }
             String cardNumber = getGuiProcessor().getCardNumber();
             if (TextUtils.isEmpty(cardNumber) || cardNumber.length() <= 6) {
                 return false;

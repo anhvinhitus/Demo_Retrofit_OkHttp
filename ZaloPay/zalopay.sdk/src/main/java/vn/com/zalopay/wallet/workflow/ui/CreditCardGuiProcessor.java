@@ -39,11 +39,14 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected void flipCardView(int pPosition) {
+        if (mCardView == null) {
+            return;
+        }
         //flip card side
         if (pPosition == 2) {
-            getCardView().showBack();
+            mCardView.showBack();
         } else if ((pPosition == 1 && mLastPageSelected == 2) || (pPosition == 3 && mLastPageSelected != 0 && mLastPageSelected != 1)) {
-            getCardView().showFront();
+            mCardView.showFront();
         }
     }
 
@@ -65,10 +68,10 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
                         workFlow.setNeedToSwitchChannel(detected);
                         populateTextOnCardView();
                         if (detected) {
-                            setDetectedCard(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
+                            onDetectedBank(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
                             checkAutoMoveCardNumberFromBundle = true;
                         } else {
-                            setDetectedCard();
+                            onDetectedBank();
                         }
                     } catch (Exception e) {
                         Timber.w(e);

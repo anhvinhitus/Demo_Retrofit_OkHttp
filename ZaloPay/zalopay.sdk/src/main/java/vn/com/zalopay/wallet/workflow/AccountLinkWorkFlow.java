@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.TreeMap;
 
 import rx.Subscription;
-import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
@@ -36,8 +35,8 @@ import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.VcbUtils;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.business.entity.base.BankNotification;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
@@ -84,40 +83,36 @@ import static vn.com.zalopay.wallet.constants.Constants.VCB_REGISTER_PAGE;
 import static vn.com.zalopay.wallet.constants.Constants.VCB_UNREGISTER_COMPLETE_PAGE;
 import static vn.com.zalopay.wallet.constants.Constants.VCB_UNREGISTER_PAGE;
 
-/**
+/*
  * Created by SinhTT on 14/11/2016.
  */
 
 public class AccountLinkWorkFlow extends AbstractWorkFlow {
     private final Handler mHandler = new Handler();
     public String mUrlReload;
-    public boolean mIsLoadingCaptcha = false;
-    protected ZPWNotification mNotification;
     int COUNT_REFRESH_CAPTCHA_REGISTER = 1;
     int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
     LinkAccGuiProcessor linkAccGuiProcessor;
     LinkAccWebViewClient mWebViewProcessor = null;
     boolean isNativeFlow = true;
-    private final View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!isLoadingCaptcha()) {
-                Timber.d("refreshCaptcha()");
-                if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
-                    try {
-                        SdkUtils.hideSoftKeyboard(mContext, getActivity());
-                    } catch (Exception ignored) {
-                    }
-                    linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
-                    return;
+    private boolean mIsLoadingCaptcha = false;
+    private final View.OnClickListener refreshCaptchaLogin = v -> {
+        if (!isLoadingCaptcha()) {
+            if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
+                try {
+                    SdkUtils.hideSoftKeyboard(mContext, getActivity());
+                } catch (Exception ignored) {
                 }
-                mIsLoadingCaptcha = true;
-                mWebViewProcessor.reload();
-                COUNT_REFRESH_CAPTCHA_LOGIN++;
-                new Handler().postDelayed(() -> mIsLoadingCaptcha = false, 2000);
+                linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
+                return;
             }
+            mIsLoadingCaptcha = true;
+            mWebViewProcessor.reload();
+            COUNT_REFRESH_CAPTCHA_LOGIN++;
+            new Handler().postDelayed(() -> mIsLoadingCaptcha = false, 2000);
         }
     };
+    private BankNotification mNotification;
     private int COUNT_ERROR_PASS = 1;
     private int COUNT_ERROR_CAPTCHA = 1;
     private int COUNT_RETRY_GET_NUMBERPHONE = 1;
@@ -126,16 +121,46 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     private TreeMap<String, String> mHashMapPhoneNum;
     private TreeMap<String, String> mHashMapPhoneNumUnReg;
     private List<BankAccount> mBankAccountList = null;
-    private Action1<Boolean> loadBankAccountSubscriber = aBoolean -> {
-        Timber.d("load bank account finish");
-        hideLoadingDialog();
-        try {
-            loadBankAccountSuccess();
-        } catch (Exception e) {
-            Timber.d(e, "Exception loadBankAccountSuccess");
+    private final Runnable runnableWaitingNotifyLink = () -> {
+        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
+        if (userInfo == null) {
+            return;
+        }
+        String appVersion = SdkUtils.getAppVersion(mContext);
+        Subscription subscription = SDKApplication.getApplicationComponent()
+                .linkInteractor()
+                .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(this::OnLoadBankAccountSuccess, this::OnLoadBankAccountError);
+        if (mCompositeSubscription != null) {
+            mCompositeSubscription.add(subscription);
         }
     };
-    private Action1<Throwable> loadBankAccountException = throwable -> {
+
+    private int mNumAllowLoginWrong;
+    private final View.OnClickListener refreshCaptcha = v -> {
+        if (!isLoadingCaptcha()) {
+            if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
+                try {
+                    SdkUtils.hideSoftKeyboard(mContext, getActivity());
+                } catch (Exception ignored) {
+                }
+                linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
+                return;
+            }
+            mIsLoadingCaptcha = true;
+            mWebViewProcessor.refreshCaptcha();
+            COUNT_REFRESH_CAPTCHA_REGISTER++;
+            new Handler().postDelayed(() -> mIsLoadingCaptcha = false, 2000);
+        }
+    };
+
+    public AccountLinkWorkFlow(Context pContext, ChannelPresenter pPresenter,
+                               MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) {
+        super(pContext, SCREEN_LINK_ACC, pPresenter, pMiniPmcTransType, paymentInfoHelper, null);
+    }
+
+    private void OnLoadBankAccountError(Throwable throwable) {
         hideLoadingDialog();
         String message = TransactionHelper.getMessage(mContext, throwable);
         if (TextUtils.isEmpty(message)) {
@@ -147,49 +172,19 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             try {
                 unlinkAccFail(message, mTransactionID);
             } catch (Exception e) {
-                Timber.d(e, "Exception loadBankAccountException");
+                Timber.d(e, "Exception OnLoadBankAccountError");
             }
         }
-    };
-    private final Runnable runnableWaitingNotifyLink = () -> {
-        UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-        if (userInfo == null) {
-            return;
-        }
-        String appVersion = SdkUtils.getAppVersion(mContext);
-        Subscription subscription = SDKApplication.getApplicationComponent()
-                .linkInteractor()
-                .getBankAccounts(userInfo.zalopay_userid, userInfo.accesstoken, true, appVersion)
-                .compose(SchedulerHelper.applySchedulers())
-                .subscribe(loadBankAccountSubscriber, loadBankAccountException);
-        if (mCompositeSubscription != null) {
-            mCompositeSubscription.add(subscription);
-        }
-    };
-    private int mNumAllowLoginWrong;
-    private final View.OnClickListener refreshCaptcha = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!isLoadingCaptcha()) {
-                if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.sdk_vcb_number_retry_password))) {
-                    try {
-                        SdkUtils.hideSoftKeyboard(mContext, getActivity());
-                    } catch (Exception ignored) {
-                    }
-                    linkAccFail(mContext.getResources().getString(R.string.sdk_vcb_error_refresh_captcha_mess), null);
-                    return;
-                }
-                Timber.d("refreshCaptcha()");
-                mIsLoadingCaptcha = true;
-                mWebViewProcessor.refreshCaptcha();
-                COUNT_REFRESH_CAPTCHA_REGISTER++;
-                new Handler().postDelayed(() -> mIsLoadingCaptcha = false, 2000);
-            }
-        }
-    };
+    }
 
-    public AccountLinkWorkFlow(Context pContext, ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType, PaymentInfoHelper paymentInfoHelper) {
-        super(pContext, SCREEN_LINK_ACC, pPresenter, pMiniPmcTransType, paymentInfoHelper, null);
+    private void OnLoadBankAccountSuccess(boolean success) {
+        Timber.d("load bank account finish");
+        hideLoadingDialog();
+        try {
+            OnLoadBankAccountSuccess();
+        } catch (Exception e) {
+            Timber.d(e, "Exception OnLoadBankAccountSuccess");
+        }
     }
 
     private String getDescLinkAccount() {
@@ -204,7 +199,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         }
     }
 
-    void loadBankAccountSuccess() throws Exception {
+    void OnLoadBankAccountSuccess() throws Exception {
         if (BankHelper.hasBankAccountOnCache(mPaymentInfoHelper.getUserId(), mPaymentInfoHelper.getLinkAccBankCode())) {
             if (mPaymentInfoHelper.bankAccountLink()) {
                 linkAccSuccess();
@@ -221,10 +216,14 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     }
 
     public boolean exitWithoutConfirm() {
-        if (getPageName().equals(PAGE_SUCCESS) || getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_FAIL_NETWORKING)
+        if (getPageName().equals(PAGE_SUCCESS)
+                || getPageName().equals(PAGE_FAIL)
+                || getPageName().equals(PAGE_FAIL_NETWORKING)
                 || getPageName().equals(PAGE_FAIL_PROCESSING)
-                || getPageName().equals(PAGE_LINKACC_SUCCESS) || getPageName().equals(PAGE_LINKACC_SUCCESS)
-                || getPageName().equals(PAGE_UNLINKACC_SUCCESS) || getPageName().equals(PAGE_UNLINKACC_FAIL)) {
+                || getPageName().equals(PAGE_LINKACC_SUCCESS)
+                || getPageName().equals(PAGE_LINKACC_SUCCESS)
+                || getPageName().equals(PAGE_UNLINKACC_SUCCESS)
+                || getPageName().equals(PAGE_UNLINKACC_FAIL)) {
             existTransWithoutConfirm = true;
         }
 
@@ -234,26 +233,35 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     @Override
     public boolean isFinalStep() {
         boolean finalStep = super.isFinalStep();
-        return finalStep && !getPageName().equals(SCREEN_LINK_ACC) && !getPageName().equals(PAGE_VCB_LOGIN) && !getPageName().equals(PAGE_VCB_CONFIRM_LINK)
-                && !getPageName().equals(PAGE_LINKACC_SUCCESS) && !getPageName().equals(PAGE_LINKACC_FAIL)
-                && !getPageName().equals(PAGE_UNLINKACC_SUCCESS) && !getPageName().equals(PAGE_UNLINKACC_FAIL);
+        return finalStep && !getPageName().equals(SCREEN_LINK_ACC)
+                && !getPageName().equals(PAGE_VCB_LOGIN)
+                && !getPageName().equals(PAGE_VCB_CONFIRM_LINK)
+                && !getPageName().equals(PAGE_LINKACC_SUCCESS)
+                && !getPageName().equals(PAGE_LINKACC_FAIL)
+                && !getPageName().equals(PAGE_UNLINKACC_SUCCESS)
+                && !getPageName().equals(PAGE_UNLINKACC_FAIL);
     }
 
     @Override
     public boolean isTransactionFail() {
-        return super.isTransactionFail() || getPageName().equals(PAGE_LINKACC_FAIL)
+        return super.isTransactionFail()
+                || getPageName().equals(PAGE_LINKACC_FAIL)
                 || getPageName().equals(PAGE_UNLINKACC_FAIL);
     }
 
     @Override
     public boolean isLinkAccSuccess() {
-        return getPageName().equals(PAGE_LINKACC_SUCCESS) || getPageName().equals(PAGE_UNLINKACC_SUCCESS);
+        return getPageName().equals(PAGE_LINKACC_SUCCESS)
+                || getPageName().equals(PAGE_UNLINKACC_SUCCESS);
     }
 
     @Override
     public boolean isFinalScreen() {
-        return super.isFinalScreen() || getPageName().equals(PAGE_LINKACC_SUCCESS) || getPageName().equals(PAGE_LINKACC_FAIL)
-                || getPageName().equals(PAGE_UNLINKACC_SUCCESS) || getPageName().equals(PAGE_UNLINKACC_FAIL);
+        return super.isFinalScreen()
+                || getPageName().equals(PAGE_LINKACC_SUCCESS)
+                || getPageName().equals(PAGE_LINKACC_FAIL)
+                || getPageName().equals(PAGE_UNLINKACC_SUCCESS)
+                || getPageName().equals(PAGE_UNLINKACC_FAIL);
     }
 
     public void startFlow() throws Exception {
@@ -275,7 +283,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
     @Override
     public void init() throws Exception {
-        linkAccGuiProcessor = new LinkAccGuiProcessor(mContext, this, getPresenter().getViewOrThrow());
+        linkAccGuiProcessor = new LinkAccGuiProcessor(mContext,
+                this, getPresenter().getViewOrThrow());
         this.mGuiProcessor = linkAccGuiProcessor;
         this.isNativeFlow = PaymentPermission.allowVCBNativeFlow();
         // set button always above keyboard.
@@ -310,7 +319,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
     @Override
     public void onProcessPhrase() {
-        Timber.d("on process phase " + mPageName);
+        Timber.d("on process phase %s", mPageName);
         if (!ConnectionUtil.isOnline(mContext)) {
             try {
                 getView().showOpenSettingNetwokingDialog(networkingDialogCloseListener);
@@ -320,12 +329,11 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             Timber.d("networking is offline, stop processing click event");
             return;
         }
-        if (isLoginStep() || isConfirmStep() || isOtpStep()) {
+        if (isLoginStep()
+                || isConfirmStep()
+                || isOtpStep()) {
             mWebViewProcessor.hit();
-            Timber.d("hit " + mPageName);
         }
-
-
     }
 
     private int getDefaultChannelId() {
@@ -377,7 +385,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         submitMapAccount.makeRequest();
     }
 
-    public void verifyServerAfterParseWebTimeout() {
+    void verifyServerAfterParseWebTimeout() {
         checkBankAccount();
     }
 
@@ -397,7 +405,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             getView().renderByResource(mPageName);
             String descLink = getDescLinkAccount();
             UserInfo userInfo = mPaymentInfoHelper.getUserInfo();
-            getView().renderSuccess(true, mTransactionID, userInfo, null, getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, mContext.getResources().getString(R.string.sdk_link_acc_success_title));
+            getView().renderSuccess(true, mTransactionID, userInfo, null,
+                    getActivity().getString(R.string.sdk_link_account_service), descLink, true, false, null, mContext.getResources().getString(R.string.sdk_link_acc_success_title));
             getView().setVisible(R.id.sdk_trans_id_relativelayout, false);
             // enable web parse. disable webview
             if (isNativeFlow) {
@@ -416,10 +425,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         String accountInfo = getAccNumValue();
         String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
         if (!TextUtils.isEmpty(accountInfo) && !TextUtils.isEmpty(userId)) {
-            String first6No;
-            String last4No;
-            first6No = StringUtil.getFirstStringWithSize(accountInfo, 6);
-            last4No = StringUtil.getLastStringWithSize(accountInfo, 4);
+            String first6No = StringUtil.getFirstStringWithSize(accountInfo, 6);
+            String last4No = StringUtil.getLastStringWithSize(accountInfo, 4);
             if (!TextUtils.isEmpty(first6No) && !TextUtils.isEmpty(last4No)) {
                 SDKApplication.getApplicationComponent()
                         .bankListInteractor().setPaymentBank(userId, first6No + last4No);
@@ -445,7 +452,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         PaymentSnackBar.getInstance().dismiss();
     }
 
-    /***
+    /*
      * unlink Account Success
      */
     private void unlinkAccSuccess() throws Exception {
@@ -470,7 +477,9 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         try {
             mPageName = PAGE_UNLINKACC_FAIL;
             getView().renderByResource(mPageName);
-            getView().renderFail(true, pMessage, pTransID, null, getActivity().getString(R.string.sdk_unlink_account_service), mStatusResponse, false, mContext.getResources().getString(R.string.sdk_unlink_acc_fail_title));
+            getView().renderFail(true, pMessage, pTransID, null,
+                    mContext.getString(R.string.sdk_unlink_account_service), mStatusResponse,
+                    false, mContext.getResources().getString(R.string.sdk_unlink_acc_fail_title));
             if (isNativeFlow) {
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
@@ -495,7 +504,6 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             if (patternList == null || patternList.size() <= 0) {
                 return;
             }
-
             for (DOtpReceiverPattern otpReceiverPattern : patternList) {
 
                 Timber.d("checking pattern %s", GsonUtils.toJsonString(otpReceiverPattern));
@@ -504,7 +512,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                     continue;
                 }
 
-                String otp = getOtpInSMS(otpReceiverPattern, pSender, pOtp);
+                String otp = parseOtp(otpReceiverPattern, pSender, pOtp);
                 otp = PaymentUtils.clearOTP(otp);
                 if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                     continue;
@@ -516,7 +524,6 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                     linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
                 }
                 break;
-
             }
         } catch (Exception e) {
             Timber.d(e, "Exception autoFillOtp");
@@ -555,7 +562,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         return stringBuffer.toString();
     }
 
-    /***
+    /*
      * number phone register with zalopay
      * must same with numberphone registered on vcb
      * compare prefix and suffix (3 numbers) together
@@ -574,7 +581,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             stringBuffer.append(phoneZalopay.substring(3));
             phoneZalopay = stringBuffer.toString();
         }
-        Timber.d("phone in zalopay " + phoneZalopay);
+        Timber.d("phone in zalopay %s", phoneZalopay);
         for (String numberphone : pPhoneListVcb) {
             try {
                 int numberOfPrefix = Integer.parseInt(GlobalData.getStringResource(RS.string.prefix_numberphone_vcb));
@@ -598,7 +605,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
     void visibleLoadingDialog(String pMessage) {
         if (!DialogManager.showingLoadDialog()) {
-            showTimeoutProgressDialog(pMessage);
+            showTimeoutLoading(pMessage);
         }
     }
 
@@ -606,7 +613,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         try {
             getView().hideLoading();
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.d(e);
         }
     }
 
@@ -1089,7 +1096,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 Timber.d("stopping reload bank account from notification because user in success screen");
                 return pAdditionParams;
             }
-            mNotification = (ZPWNotification) pAdditionParams[0];
+            mNotification = (BankNotification) pAdditionParams[0];
             if (mNotification != null) {
                 if (mHandler != null) {
                     mHandler.removeCallbacks(runnableWaitingNotifyLink);
@@ -1107,7 +1114,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         try {
             getView().showMessageSnackBar(getView().findViewById(R.id.supperRootView), pTitle, pMessage, pDuration, null);
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.d(e);
         }
     }
 
@@ -1210,7 +1217,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
         return (result != null && !result.toString().isEmpty()) ? result.toString() : "null";
     }
 
-    public ZPWNotification getNotification() {
+    public BankNotification getNotification() {
         return mNotification;
     }
 

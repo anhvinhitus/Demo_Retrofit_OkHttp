@@ -93,7 +93,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
             }
             return true;
         }
-        getAdapter().showTimeoutProgressDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
+        getAdapter().showTimeoutLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
         view.loadUrl(url);
         mWebView = view;
         return true;
@@ -103,7 +103,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
     public void onLoadResource(WebView view, String url) {
         Timber.d("load resource %s", url);
         if (!isFirstLoad && url != null && url.contains(GlobalData.getStringResource(RS.string.sdk_website123pay_domain)) && getAdapter() != null) {
-            getAdapter().showTimeoutProgressDialog(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
+            getAdapter().showTimeoutLoading(GlobalData.getAppContext().getResources().getString(R.string.sdk_trans_load_website3ds_mess));
         }
         super.onLoadResource(view, url);
     }

@@ -91,7 +91,7 @@
     <string name="sdk_error_networking_removemapcard_mess">Xóa liên kết không thành công. Vui lòng thử lại sau ít phút!</string>
     <string name="sdk_error_networking_authenpayer_mess">Mạng không ổn định,không thể xác thực thông tin otp.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
     <string name="sdk_alert_networking_off_generic">Mạng đã tắt, không kiểm tra được trạng thái giao dịch, vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút!</string>
-    <string name="sdk_error_paymentinfo_empty">Dữ liệu giao dịch hết hạn. Vui lòng thử lại</string>
+    <string name="sdk_error_paymentinfo_empty">Dữ liệu giao dịch hết hạn. Vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút!</string>
     <string name="sdk_error_generic_submitorder">Không kiểm tra được trạng thái giao dịch, vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Giao Dịch sau ít phút!</string>
     <string name="sdk_error_not_submit_order">Hóa đơn chưa được gửi đi, vui lòng thực hiện lại giao dịch</string>
     <string name="sdk_error_networking_generic">Vui lòng kiểm tra kết nối mạng</string>

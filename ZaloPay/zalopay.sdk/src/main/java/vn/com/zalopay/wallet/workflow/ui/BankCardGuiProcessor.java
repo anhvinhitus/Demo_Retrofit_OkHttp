@@ -191,12 +191,12 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                         workFlow.setNeedToSwitchChannel(detected);
                         populateTextOnCardView();
                         if (detected) {
-                            setDetectedCard(getCreditCardFinder().getBankName(), getCreditCardFinder().getDetectBankCode());
+                            onDetectedBank(getCreditCardFinder().getBankName(), getCreditCardFinder().getDetectBankCode());
                             checkAutoMoveCardNumberFromBundle = false;
-                            getCardView().visibleCardDate();
+                            mCardView.visibleCardDate();
                             isInputBankMaintenance();
                         } else {
-                            setDetectedCard();
+                            onDetectedBank();
                         }
                     } catch (Exception e) {
                         Timber.d(e, "Exception continueDetectCardForLinkCard");
