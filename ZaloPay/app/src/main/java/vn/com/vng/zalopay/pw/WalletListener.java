@@ -76,7 +76,7 @@ class WalletListener implements ZPPaymentListener {
 
         PaymentWrapper.IResponseListener responseListener = mPaymentWrapper.getResponseListener();
         if (responseListener == null) {
-            Timber.d("payment listener is released - skip callback");
+            Timber.w("payment listener is released - skip callback");
             mPaymentWrapper.cleanup();
             return;
         }
