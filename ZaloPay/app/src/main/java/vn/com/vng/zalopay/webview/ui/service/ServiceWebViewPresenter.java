@@ -167,6 +167,9 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
     }
 
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
+        PaymentResponseListener() {
+        }
+
         @Override
         protected ILoadDataView getView() {
             return mView;
@@ -174,7 +177,10 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
 
         @Override
         public void onResponseSuccess(IBuilder builder) {
-            if (builder == null || mView == null || mAppGamePayInfo == null) {
+            if (builder == null
+                    || builder.getOrder() == null
+                    || mView == null
+                    || mAppGamePayInfo == null) {
                 return;
             }
 
