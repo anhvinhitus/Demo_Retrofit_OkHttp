@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.entity.FavoriteEntity;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.api.response.GetZaloPayEntityResponse;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.StringResGenericException;
@@ -439,8 +440,7 @@ private static final String MY_NUMBER = "Số của tôi";
     @Override
     public Observable<List<FavoriteData>> getFavorites(int limit) {
         return makeObservable(() -> mLocalStorage.getFavorites(limit))
-                .map(entities -> Lists.transform(entities, this::transform))
-                ;
+                .map(entities -> Lists.transform(entities, this::transform));
     }
 
     private ZaloUserEntity transformUserZalo(User user) {
