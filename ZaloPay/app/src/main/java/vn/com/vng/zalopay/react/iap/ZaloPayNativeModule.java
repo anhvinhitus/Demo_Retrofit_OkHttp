@@ -219,6 +219,12 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
+    public void trackEventbyID(Integer eventId) {
+        Timber.d("trackEvent eventId %s", eventId);
+        ZPAnalytics.trackEvent(eventId);
+    }
+
+    @ReactMethod
     public void shareMessageToOtherApp(String message, Promise promise) {
         if (getCurrentActivity() != null) {
             mPaymentService.shareMessageToOtherApp(getCurrentActivity(), message);
