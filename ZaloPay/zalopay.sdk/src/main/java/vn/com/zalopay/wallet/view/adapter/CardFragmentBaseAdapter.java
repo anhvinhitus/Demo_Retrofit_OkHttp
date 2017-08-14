@@ -97,12 +97,10 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
     }
 
     public CreditCardFragment getItemAtPosition(int pPos) throws Exception {
-        if (cardFragments != null
-                && pPos >= 0
-                && pPos < cardFragments.size()) {
-            return cardFragments.get(pPos);
+        if (cardFragments == null || pPos < 0 || pPos >= cardFragments.size()) {
+            return null;
         }
-        throw new Exception();
+        return cardFragments.get(pPos);
     }
 
     public CardNumberFragment getCardNumberFragment() throws Exception {
