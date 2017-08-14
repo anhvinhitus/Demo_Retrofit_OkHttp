@@ -90,8 +90,6 @@ public class AndroidApplication extends Application {
             Timber.plant(new CrashlyticsTree());
         }
 
-        FontLoader.initialize(this);
-
         initializeFresco();
 
         ResourceHelper.initialize(this, BuildConfig.DEBUG);
@@ -131,11 +129,13 @@ public class AndroidApplication extends Application {
         String fontPath = ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.font_name);
         String codePath = ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.json_font_info);
         boolean isLoadFontSuccess = FontLoader.loadFont(fontPath, codePath);
-
         if (isLoadFontSuccess) {
             return;
         }
-
+        boolean isLoadFontFromAsset = FontLoader.loadFontFromAsset(this);
+        if (isLoadFontFromAsset) {
+            return;
+        }
         Typeface typeface = FontLoader.getDefaultTypeface();
         ReactFontManager.getInstance()
                 .setTypeface(PaymentAppConfig.Constants.FONT_FAMILY_NAME_ZALOPAY,

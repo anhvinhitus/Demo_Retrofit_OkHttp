@@ -138,12 +138,12 @@ public class IconFontTextView extends FontIconTextView {
 
     public void setIcon(@Gravity int gravity, String iconName, String iconDefault, @ColorInt int color, float size) {
         FontIconDrawable drawable = getDrawable(gravity);
+        Timber.d("load font name=%s ", iconName);
         if (TextUtils.isEmpty(iconName)) {
             return;
         }
 
         String code = FontLoader.getCode(iconName, iconDefault);
-
         if (color != INVALID_COLOR) {
             drawable.setTextColor(color);
         }

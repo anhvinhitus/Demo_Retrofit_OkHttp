@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -28,7 +27,6 @@ public class FontLoader {
     private static final String FONT_CODE_DEFAULT_NAME = "zalopay.json";
     private static final String FONTS_ASSET_PATH = "fonts/";
     private static final String FILE_EXTENSIONS = ".ttf";
-
     private static boolean _initialize = false;
 
     private static final Map<String, Typeface> sFontMap;
@@ -45,45 +43,59 @@ public class FontLoader {
         if (_initialize) {
             return;
         }
-
         _initialize = true;
-
         try {
-            loadFont(context.getAssets(), FONT_DEFAULT_NAME, FONT_CODE_DEFAULT_NAME);
-            Timber.i("load font from asset success");
+            loadFontFromAsset(context.getAssets(), FONT_DEFAULT_NAME, FONT_CODE_DEFAULT_NAME);
         } catch (Exception e) {
             Timber.e("Load icon font from assets error: %s", e.toString());
         }
 
     }
 
-    private static void loadFont(AssetManager assetManager, String fontName, String codePath) throws Exception {
+    private static boolean loadFontFromAsset(AssetManager assetManager, String fontName, String codePath) throws Exception {
         Typeface typeface = Typeface.createFromAsset(assetManager, FONTS_ASSET_PATH + fontName);
         sFontMap.put(fontName, typeface);
         Type typeOfT = new TypeToken<HashMap<String, IconFontInfo>>() {
         }.getType();
         sFontCode = gson.fromJson(FileUtil.readAssetToString(assetManager, FONTS_ASSET_PATH + codePath), typeOfT);
+        Timber.i("load font from asset success");
+        return true;
     }
 
-    private static void loadFont(File fontFile, File codeFile) throws Exception {
+    private static boolean loadFont(File fontFile, File codeFile) throws Exception {
+        if (!(fontFile.exists() && codeFile.exists())) {
+            Timber.i("load font from app1 = %s", fontFile.exists());
+            return false;
+        }
         String fontName = fontFile.getName();
         Typeface typeface = Typeface.createFromFile(fontFile);
         sFontMap.put(fontName, typeface);
         Type typeOfT = new TypeToken<HashMap<String, IconFontInfo>>() {
         }.getType();
         sFontCode = gson.fromJson(FileUtil.readFileToString(codeFile.getAbsolutePath()), typeOfT);
+        Timber.i("load font from app1 success");
+        return true;
     }
 
     public static boolean loadFont(String fontPath, String codePath) {
         try {
-            loadFont(new File(fontPath), new File(codePath));
-            Timber.i("load font from [%s] success", fontPath);
-            return true;
+            Timber.i("load font from [%s]", fontPath);
+            return loadFont(new File(fontPath), new File(codePath));
         } catch (Exception e) {
             Timber.e("Load icon font from file error: [fontPath: %s Error: %s]", fontPath, e.toString());
         }
         return false;
     }
+
+    public static boolean loadFontFromAsset(Context context) {
+        try {
+            return loadFontFromAsset(context.getAssets(), FONT_DEFAULT_NAME, FONT_CODE_DEFAULT_NAME);
+        } catch (Exception e) {
+            Timber.e("Load icon font from assets error: %s", e.toString());
+        }
+        return false;
+    }
+
 
     public static String getCode(@NonNull String iconName) {
         return getCode(iconName, "");
