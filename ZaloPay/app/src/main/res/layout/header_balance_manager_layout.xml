@@ -37,11 +37,9 @@
             android:layout_height="wrap_content"
             android:drawablePadding="6dp"
             android:gravity="center"
-            android:hint="@string/zalopayid.not.update.format"
             android:textColor="@color/txt_item_sub"
             android:textColorHint="@color/blue.008fe5"
-            tools:text="Zalo Pay ID: hieuvm"
-            android:visibility="invisible"/>
+            android:visibility="gone"/>
 
 
     <com.facebook.drawee.view.SimpleDraweeView

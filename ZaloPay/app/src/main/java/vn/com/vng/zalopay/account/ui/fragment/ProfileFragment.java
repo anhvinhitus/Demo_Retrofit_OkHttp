@@ -164,7 +164,10 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         if (mAccountNameView == null) {
             return;
         }
-        mAccountNameView.setVisibility((ConfigLoader.isEnableRegisterZalopayID()) ? View.VISIBLE : View.INVISIBLE);
+
+        mAccountNameView.setVisibility((ConfigLoader.isEnableRegisterZalopayID())
+                ? View.VISIBLE : View.GONE);
+
         if (!TextUtils.isEmpty(zaloPayName)) {
             mAccountNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvPhoneAndZalopayidSuggest.setVisibility(View.GONE);

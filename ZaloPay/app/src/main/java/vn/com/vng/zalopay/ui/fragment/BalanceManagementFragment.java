@@ -129,7 +129,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
         if (mTvAccountName == null) {
             return;
         }
-        mTvAccountName.setVisibility((ConfigLoader.isEnableRegisterZalopayID()) ? View.VISIBLE : View.INVISIBLE);
+        mTvAccountName.setVisibility((ConfigLoader.isEnableRegisterZalopayID()) ? View.VISIBLE : View.GONE);
 
         String name = TextUtils.isEmpty(user.zalopayname) ? getString(R.string.not_update) : user.zalopayname;
 
