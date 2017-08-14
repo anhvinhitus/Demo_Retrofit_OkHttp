@@ -57,7 +57,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        if (mView != null) {
+        if (mView != null && mUser !=null && TextUtils.isEmpty(mUser.zalopayname)) {
             mView.showRegisterZalopayID(isEnableRegisterZalopayID);
         }
     }
