@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.data.zpc.ZPCConfig;
 import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
@@ -55,6 +56,9 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     private int mViewType = ZpcViewType.ZPC_All;
 
     private final PublishSubject<String> mDelaySubject;
+
+    @Inject
+    User mUser;
 
     @Inject
     ZaloPayContactListPresenter(Context context,
@@ -280,6 +284,18 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
             return;
         }
 
+        String userPhoneNo = PhoneUtil.formatPhoneNumber(mUser.phonenumber);
+        if (TextUtils.isEmpty(userPhoneNo)) {
+            Timber.d("can not get user phone number");
+            return;
+        }
+
+        if (userPhoneNo.equals(profile.phonenumber)) {
+            Timber.d("user transfer to him(her)self [user number: %s / transfer number: %s]", userPhoneNo, profile.phonenumber);
+            showDialogTransferToSelf();
+            return;
+        }
+
         TransferObject object = new TransferObject(profile);
         object.transferMode = Constants.TransferMode.TransferToZaloFriend;
         object.activateSource = Constants.ActivateSource.FromTransferActivity;
@@ -296,6 +312,16 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         String message = String.format(mContext.getString(R.string.account_not_use_zalopay), user, user);
         DialogHelper.showNotificationDialog((Activity) mView.getContext(),
                 message,
+                null);
+    }
+
+    void showDialogTransferToSelf() {
+        if (mView == null) {
+            return;
+        }
+
+        DialogHelper.showNotificationDialog((Activity) mView.getContext(),
+                mContext.getString(R.string.exception_transfer_for_self),
                 null);
     }
 
