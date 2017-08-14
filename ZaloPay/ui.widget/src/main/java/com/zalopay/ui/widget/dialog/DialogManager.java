@@ -43,7 +43,6 @@ public class DialogManager {
         closeShowDialog();
     }
 
-
     private synchronized static void showProcessDialog(Activity pActivity, final long pStartTime,
                                                        final OnProgressDialogTimeoutListener pCallback, long pTimeoutLoading) {
         try {
@@ -58,24 +57,10 @@ public class DialogManager {
             if (mLoadingDialog == null) {
                 mLoadingDialog = new SweetAlertDialog(pActivity, SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
             }
-            final WeakReference<Activity> weakActivity = new WeakReference<>(pActivity);
-            //delegate user back press to activity
-            mLoadingDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                @Override
-                public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
-                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        if (weakActivity.get() != null && !weakActivity.get().isFinishing()) {
-                            weakActivity.get().onBackPressed();
-                        }
-                        return true;
-                    }
-                    return false;
-                }
-            });
             //set timeout for show progress dialog.
             mLastShowProcessDialog = pStartTime;
-            final WeakReference<OnProgressDialogTimeoutListener> timeoutLoading = new WeakReference<>(pCallback);
             if (pCallback != null) {
+                final WeakReference<OnProgressDialogTimeoutListener> timeoutLoading = new WeakReference<>(pCallback);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -96,7 +81,8 @@ public class DialogManager {
         }
     }
 
-    public synchronized static void showProcessDialog(Activity pActivity, OnProgressDialogTimeoutListener pCallback, long pTimeoutLoading) {
+    public synchronized static void showProcessDialog(Activity pActivity,
+                                                      OnProgressDialogTimeoutListener pCallback, long pTimeoutLoading) {
         showProcessDialog(pActivity, System.currentTimeMillis(), pCallback, pTimeoutLoading);
     }
 
