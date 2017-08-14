@@ -371,6 +371,11 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     public void executeJs(String pJsFileName, String pJsInput) {
         if (TextUtils.isEmpty(pJsFileName)) {
+            Timber.d("file name empty on executeJs");
+            return;
+        }
+        if (mWebPaymentBridge == null) {
+            Timber.d("NULL on executeJs");
             return;
         }
         Timber.d("file name %s input %s", pJsFileName, pJsInput);
@@ -378,13 +383,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 .filter(s -> !TextUtils.isEmpty(s))
                 .flatMap(ResourceManager::getJavascriptContent)
                 .filter(s -> !TextUtils.isEmpty(s))
+                .map(jsContent -> String.format(jsContent, pJsInput))
                 .compose(SchedulerHelper.applySchedulers())
-                .subscribe(jsContent -> {
-                    String content = String.format(jsContent, pJsInput);
-                    if (mWebPaymentBridge != null) {
-                        mWebPaymentBridge.runScript(content);
-                    }
-                }, throwable -> Timber.w(throwable, "Exception load js file"));
+                .subscribe(jsContent -> mWebPaymentBridge.runScript(jsContent),
+                        throwable -> Timber.w(throwable, "Exception load js file"));
         CompositeSubscription compositeSubscription = getAdapter() != null ? getAdapter().mCompositeSubscription : null;
         if (compositeSubscription != null) {
             compositeSubscription.add(subscription);

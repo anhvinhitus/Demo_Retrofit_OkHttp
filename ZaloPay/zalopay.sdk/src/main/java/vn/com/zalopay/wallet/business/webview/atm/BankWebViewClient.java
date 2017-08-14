@@ -15,7 +15,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
@@ -175,19 +174,19 @@ public class BankWebViewClient extends PaymentWebViewClient {
         if (TextUtils.isEmpty(pJsFileName)) {
             return;
         }
+        if (mWebPaymentBridge == null) {
+            Timber.d("NULL on executeJs");
+            return;
+        }
         Timber.d("file name %s input %s", pJsFileName, pJsInput);
         Subscription subscription = Observable.from(pJsFileName.split(Constants.COMMA))
                 .filter(s -> !TextUtils.isEmpty(s))
                 .flatMap(ResourceManager::getJavascriptContent)
                 .filter(s -> !TextUtils.isEmpty(s))
+                .map(jsContent -> String.format(jsContent, pJsInput))
                 .compose(SchedulerHelper.applySchedulers())
-                .subscribe(jsContent -> {
-                    String content = String.format(jsContent, pJsInput);
-                    if (mWebPaymentBridge == null) {
-                        initWebViewBridge();
-                    }
-                    mWebPaymentBridge.runScript(content);
-                }, throwable -> Timber.w(throwable, "Exception load js file"));
+                .subscribe(jsContent -> mWebPaymentBridge.runScript(jsContent),
+                        throwable -> Timber.w(throwable, "Exception load js file"));
         CompositeSubscription compositeSubscription = getAdapter() != null ? getAdapter().mCompositeSubscription : null;
         if (compositeSubscription != null) {
             compositeSubscription.add(subscription);

@@ -11,7 +11,6 @@ import android.webkit.WebView;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
@@ -182,11 +181,10 @@ public class CCWebViewClient extends PaymentWebViewClient {
                 .filter(s -> !TextUtils.isEmpty(s))
                 .flatMap(ResourceManager::getJavascriptContent)
                 .filter(s -> !TextUtils.isEmpty(s))
+                .map(jsContent -> String.format(jsContent, pJsInput))
                 .compose(SchedulerHelper.applySchedulers())
-                .subscribe(jsContent -> {
-                    String content = String.format(jsContent, pJsInput);
-                    runScript(content, pView);
-                }, throwable -> Timber.w(throwable, "Exception load js file"));
+                .subscribe(jsContent -> runScript(jsContent, pView),
+                        throwable -> Timber.w(throwable, "Exception load js file"));
         CompositeSubscription compositeSubscription = getAdapter() != null ? getAdapter().mCompositeSubscription : null;
         if (compositeSubscription != null) {
             compositeSubscription.add(subscription);
