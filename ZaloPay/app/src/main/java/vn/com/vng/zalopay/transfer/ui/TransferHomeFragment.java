@@ -47,9 +47,6 @@ public class TransferHomeFragment extends BaseFragment implements
     @BindView(R.id.list)
     RecyclerView mList;
 
-    @BindView(R.id.viewSeparate)
-    View viewSeparate;
-
     @BindView(R.id.layoutIntroduction)
     View layoutIntroduction;
 
@@ -63,7 +60,7 @@ public class TransferHomeFragment extends BaseFragment implements
         navigator.startZaloContactActivity(this, bundle);
     }
 
-    @OnClick(R.id.layoutTransferContactList)
+    @OnClick(R.id.layoutTransferContacts)
     public void onClickTransferContactList() {
         Bundle bundle = new Bundle();
         bundle.putString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardABC);
@@ -172,13 +169,11 @@ public class TransferHomeFragment extends BaseFragment implements
         if (mAdapter.getItemCount() > 0) {
             mTvTileTransactionRecent.setVisibility(View.VISIBLE);
             mList.setVisibility(View.VISIBLE);
-            viewSeparate.setVisibility(View.VISIBLE);
             layoutIntroduction.setVisibility(View.GONE);
             imgIntroduction.clearAnimation();
         } else {
             mTvTileTransactionRecent.setVisibility(View.GONE);
             mList.setVisibility(View.GONE);
-            viewSeparate.setVisibility(View.GONE);
             layoutIntroduction.setVisibility(View.VISIBLE);
         }
     }

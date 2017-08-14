@@ -91,7 +91,7 @@
     <dimen name="margin_tab_pay_bottom">10dp</dimen>
     <dimen name="margin_tab_pay_top">8dp</dimen>
     <dimen name="height_tab_pay_with_margin">90dp</dimen>
-    <dimen name="transfer.avatar">34dp</dimen>
+    <dimen name="transfer.avatar">40dp</dimen>
 
     <dimen name="separate_stroke">0.5dp</dimen>
 
