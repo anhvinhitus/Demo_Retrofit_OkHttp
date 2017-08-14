@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/dot_grey"
     android:gravity="center"
-    android:textColor="@color/white"
+    android:textColor="@color/zpc_font_avatar_text"
     android:textSize="18dp"
     android:visibility="invisible"
     tools:ignore="SpUsage"

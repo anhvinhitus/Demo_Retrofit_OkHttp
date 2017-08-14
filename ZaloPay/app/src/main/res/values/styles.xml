@@ -206,6 +206,7 @@
     <style name="AvatarDraweeView" parent="NormalDraweeView">
         <item name="roundAsCircle">true</item>
         <item name="failureImage">@drawable/ic_avatar_default</item>
+        <item name="placeholderImage">@color/zpc_font_avatar_background</item>
     </style>
 
     <style name="AvatarDraweeView.Border">

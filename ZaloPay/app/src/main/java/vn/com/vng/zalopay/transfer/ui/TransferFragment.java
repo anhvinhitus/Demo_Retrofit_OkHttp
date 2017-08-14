@@ -94,6 +94,12 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     TransferObject mTransferObject;
 
+    public static TransferFragment newInstance(Bundle args) {
+        TransferFragment fragment = new TransferFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @OnTextChanged(value = R.id.edtTransferMsg, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void onMessageChanged(CharSequence text) {
         int maxLength = getResources().getInteger(R.integer.max_length_message);
@@ -106,12 +112,6 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
                 mEdtMessageView.setError(errorMessage);
             }
         }
-    }
-
-    public static TransferFragment newInstance(Bundle args) {
-        TransferFragment fragment = new TransferFragment();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -288,7 +288,9 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     @Override
     public void setUserInfo(Person object) {
-        setUserView(object.displayName, object.avatar, object.zalopayname);
+        // get display name, if exits is show, otherwise show display from api
+        String displayName = tvDisplayName.getText().toString();
+        setUserView(TextUtils.isEmpty(displayName) ? object.displayName : displayName, object.avatar, object.zalopayname);
     }
 
     private void setUserView(String displayName, String avatar, String zalopayName) {
