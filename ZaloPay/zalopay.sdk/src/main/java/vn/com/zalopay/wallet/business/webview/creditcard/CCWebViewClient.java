@@ -180,13 +180,8 @@ public class CCWebViewClient extends PaymentWebViewClient {
         Timber.d("file name %s input %s", pJsFileName, pJsInput);
         Subscription subscription = Observable.from(pJsFileName.split(Constants.COMMA))
                 .filter(s -> !TextUtils.isEmpty(s))
-                .flatMap(new Func1<String, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(String jsFile) {
-                        return ResourceManager.getJavascriptContent(jsFile)
-                                .filter(s -> !TextUtils.isEmpty(s));
-                    }
-                })
+                .flatMap(ResourceManager::getJavascriptContent)
+                .filter(s -> !TextUtils.isEmpty(s))
                 .compose(SchedulerHelper.applySchedulers())
                 .subscribe(jsContent -> {
                     String content = String.format(jsContent, pJsInput);
