@@ -17,6 +17,7 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -160,6 +161,10 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @Override
     public void setZaloPayName(String zaloPayName) {
+        if (mAccountNameView == null) {
+            return;
+        }
+        mAccountNameView.setVisibility((ConfigLoader.isEnableRegisterZalopayID()) ? View.VISIBLE : View.INVISIBLE);
         if (!TextUtils.isEmpty(zaloPayName)) {
             mAccountNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvPhoneAndZalopayidSuggest.setVisibility(View.GONE);

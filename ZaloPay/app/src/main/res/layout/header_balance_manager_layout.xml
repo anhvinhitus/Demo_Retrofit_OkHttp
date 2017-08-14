@@ -40,7 +40,8 @@
             android:hint="@string/zalopayid.not.update.format"
             android:textColor="@color/txt_item_sub"
             android:textColorHint="@color/blue.008fe5"
-            tools:text="Zalo Pay ID: hieuvm" />
+            tools:text="Zalo Pay ID: hieuvm"
+            android:visibility="invisible"/>
 
 
     <com.facebook.drawee.view.SimpleDraweeView

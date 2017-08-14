@@ -16,12 +16,13 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BalanceManagementPresenter;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.utility.CurrencyUtil;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -128,6 +129,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
         if (mTvAccountName == null) {
             return;
         }
+        mTvAccountName.setVisibility((ConfigLoader.isEnableRegisterZalopayID()) ? View.VISIBLE : View.INVISIBLE);
 
         String name = TextUtils.isEmpty(user.zalopayname) ? getString(R.string.not_update) : user.zalopayname;
 
