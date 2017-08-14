@@ -241,5 +241,16 @@ public final class Strings {
         return standardStr.replaceAll(NOT_SPECIAL_CHARACTERS_REGEX, "");
     }
 
+    /**
+     * Strip all while spaces within input string
+     */
+    public static String stripWhitespace(String value) {
+        if (TextUtils.isEmpty(value)) {
+            return "";
+        }
 
+        String result = value.trim();
+        result = result.replaceAll("[^+\\d]", "");
+        return result;
+    }
 }

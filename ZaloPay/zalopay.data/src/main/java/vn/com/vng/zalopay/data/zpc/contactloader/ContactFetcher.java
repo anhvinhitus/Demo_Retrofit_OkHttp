@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.data.util.Strings;
 
 public class ContactFetcher {
 
@@ -107,36 +108,47 @@ public class ContactFetcher {
                 Phone.CONTACT_ID,
         };
 
-        Cursor phone = context.getContentResolver().query(Phone.CONTENT_URI, numberProjection, null, null, null);
+        Cursor phoneCursor = context.getContentResolver().query(Phone.CONTENT_URI, numberProjection, null, null, null);
         try {
-            if (phone != null && phone.moveToFirst()) {
-                final int contactNumberColumnIndex = phone.getColumnIndex(Phone.NUMBER);
-                final int contactTypeColumnIndex = phone.getColumnIndex(Phone.TYPE);
-                final int contactIdColumnIndex = phone.getColumnIndex(Phone.CONTACT_ID);
+            if (phoneCursor == null) {
+                return;
+            }
 
-                while (!phone.isAfterLast()) {
-                    final String rawNumber = phone.getString(contactNumberColumnIndex);
+            if (!phoneCursor.moveToFirst()) {
+                return;
+            }
 
-                    String number = PhoneUtil.formatPhoneNumber(rawNumber);
+            final int phoneNumberColumnIndex = phoneCursor.getColumnIndex(Phone.NUMBER);
+            final int phoneTypeColumnIndex = phoneCursor.getColumnIndex(Phone.TYPE);
+            final int contactIdColumnIndex = phoneCursor.getColumnIndex(Phone.CONTACT_ID);
 
-                    final String contactId = phone.getString(contactIdColumnIndex);
-                    Contact contact = contactsMap.get(contactId);
-                    if (contact == null) {
-                        continue;
-                    }
-                    final int type = phone.getInt(contactTypeColumnIndex);
-                    String customLabel = "Custom";
-                    CharSequence phoneType = Phone.getTypeLabel(context.getResources(), type, customLabel);
-                    contact.addNumber(number, phoneType.toString());
-                   /* if (MAX_PHONE_NUMBER >= contact.numbers.size()) {
-                        break;
-                    }*/
-                    phone.moveToNext();
+            while (!phoneCursor.isAfterLast()) {
+                final String rawNumber = phoneCursor.getString(phoneNumberColumnIndex);
+
+                // remove all white spaces between numbers
+                String normalizedNumber = PhoneUtil.normalizeMobileNumber(rawNumber);
+                if (!PhoneUtil.isMobileNumber(normalizedNumber)) {
+                    // skip number that is not valid Vietnamese mobile number
+                    continue;
                 }
+
+                final String contactId = phoneCursor.getString(contactIdColumnIndex);
+                Contact contact = contactsMap.get(contactId);
+                if (contact == null) {
+                    continue;
+                }
+                final int type = phoneCursor.getInt(phoneTypeColumnIndex);
+                String customLabel = "Custom";
+                CharSequence phoneType = Phone.getTypeLabel(context.getResources(), type, customLabel);
+                contact.addNumber(normalizedNumber, phoneType.toString());
+           /* if (MAX_PHONE_NUMBER >= contact.numbers.size()) {
+                break;
+            }*/
+                phoneCursor.moveToNext();
             }
         } finally {
-            if (phone != null) {
-                phone.close();
+            if (phoneCursor != null) {
+                phoneCursor.close();
             }
         }
     }

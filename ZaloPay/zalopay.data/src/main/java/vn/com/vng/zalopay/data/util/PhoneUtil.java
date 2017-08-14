@@ -103,14 +103,15 @@ public class PhoneUtil {
     }
 
     public static boolean isMobileNumber(String input, boolean acceptSpacingBetweenNumbers) {
-        if (TextUtils.isEmpty(input)) return false;
-        else {
-            String refinedInput = input;
-            if (acceptSpacingBetweenNumbers) {
-                refinedInput = removeSpacingMobileNumber(input);
-            }
-            return validPhoneFormat(refinedInput);
+        if (TextUtils.isEmpty(input)) {
+            return false;
         }
+
+        String refinedInput = input;
+        if (acceptSpacingBetweenNumbers) {
+            refinedInput = Strings.stripWhitespace(input);
+        }
+        return validPhoneFormat(refinedInput);
     }
 
     private static boolean validPhoneFormat(String input) {
@@ -133,45 +134,25 @@ public class PhoneUtil {
     }
 
     public static boolean validPatterns(@NonNull String input) {
+        if (mPhoneFormat == null || mPhoneFormat.mPatterns == null) {
+            return false;
+        }
+
         try {
-            if (mPhoneFormat != null && mPhoneFormat.mPatterns != null) {
-                for (String pattern : mPhoneFormat.mPatterns) {
-                    if (input.matches(pattern)) {
-                        return true;
-                    }
+            for (String pattern : mPhoneFormat.mPatterns) {
+                if (input.matches(pattern)) {
+                    return true;
                 }
             }
         } catch (PatternSyntaxException e) {
-            Timber.e(e, "Valid phone format throw exception.");
+            Timber.w(e, "Valid phone format throw exception.");
         }
         return false;
     }
 
     public static String normalizeMobileNumber(String input) {
-        return normalizeMobileNumber(input, false);
-    }
-
-    public static String normalizeMobileNumber(String input, boolean removePlus84) {
-        String refinedInput = removeSpacingMobileNumber(input);
-        if (isMobileNumber(input, true)) {
-            return refinedInput.replaceAll("\\+84", "0");
-        } else {
-            return null;
-        }
-    }
-
-    public static String removeSpacingMobileNumber(String input) {
-        if (TextUtils.isEmpty(input)) return input;
-        else {
-            input = input.trim();
-            if (input.startsWith("+")) {
-                String inputWithOutPrefix = input.substring(1, input.length());
-                return "+" + inputWithOutPrefix.replaceAll("[^\\d]", "");
-            } else {
-                return input.replaceAll("[^\\d]", "");
-            }
-
-        }
+        String refinedInput = Strings.stripWhitespace(input);
+        return refinedInput.replaceAll("^\\+(840|84)", "0");
     }
 
     public static String formatPhoneNumberWithDot(long number) {

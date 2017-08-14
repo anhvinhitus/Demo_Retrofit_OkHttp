@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.util.Strings;
 
 /**
@@ -274,5 +275,51 @@ public class StringsTest {
         Assert.assertEquals("AbCd EFch", Strings.removeSpecialCharacters(text3));
         Assert.assertEquals("Cong hoa xa hoi chu nghia Viet Nam  Doc lap tu do hanh phuc", Strings.removeSpecialCharacters(text4));
         Assert.assertEquals("", Strings.removeSpecialCharacters(text5));
+    }
+
+    @Test
+    public void testStripWhitespace() {
+        String input = "+84 90 21672 33";
+        String expected = "+84902167233";
+        String actual = Strings.stripWhitespace(input);
+        Assert.assertEquals(expected, actual);
+
+        input = "+84 90 21672     33";
+        expected = "+84902167233";
+        actual = Strings.stripWhitespace(input);
+        Assert.assertEquals(expected, actual);
+
+        input = "  +84 90 21    \t672     33 ";
+        expected = "+84902167233";
+        actual = Strings.stripWhitespace(input);
+        Assert.assertEquals(expected, actual);
+
+        input = "  +84 90-21-672-33";
+        expected = "+84902167233";
+        actual = Strings.stripWhitespace(input);
+        Assert.assertEquals(expected, actual);
+
+        input = "  +84 90.21.672.33";
+        expected = "+84902167233";
+        actual = Strings.stripWhitespace(input);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testNormalizeVietnamMobileNumber() {
+        String input = "+84 90 21672 33";
+        String expected = "0902167233";
+        String actual = PhoneUtil.normalizeMobileNumber(input);
+        Assert.assertEquals(expected, actual);
+
+        input = "+84 090 21672 33";
+        expected = "0902167233";
+        actual = PhoneUtil.normalizeMobileNumber(input);
+        Assert.assertEquals(expected, actual);
+
+        input = "+84 123 510 5206";
+        expected = "01235105206";
+        actual = PhoneUtil.normalizeMobileNumber(input);
+        Assert.assertEquals(expected, actual);
     }
 }
