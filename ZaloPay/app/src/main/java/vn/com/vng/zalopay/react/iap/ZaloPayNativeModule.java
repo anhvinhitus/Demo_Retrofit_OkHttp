@@ -440,6 +440,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         // push data to bundle
         Bundle extras = new Bundle();
         extras.putString(BundleConstants.KEY_SEARCH, phoneNumber);
+        extras.putString(BundleConstants.PHONE_NUMBER, phoneNumber);
         extras.putString(BundleConstants.ZPC_VIEW_MODE, viewMode);
         extras.putString(BundleConstants.NAVIGATION_TITLE, navigationTitle);
         mNavigator.startZaloPayContactTopup(activity, extras, TOPUP_REQUEST_CODE);

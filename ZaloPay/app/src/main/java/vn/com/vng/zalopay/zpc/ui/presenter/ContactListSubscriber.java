@@ -43,8 +43,6 @@ class ContactListSubscriber extends DefaultSubscriber<Cursor> {
 
         if (!mIsSearch) {
             view.setSubTitle(String.format("(%s)", cursor.getCount()));
-        } else {
-            view.setSubTitle(null);
         }
     }
 

@@ -2,12 +2,13 @@ package vn.com.vng.zalopay.zpc.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import butterknife.BindView;
+import vn.com.vng.zalopay.BundleConstants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
@@ -30,6 +31,14 @@ public class ZaloPayContactActivity extends UserBaseToolBarActivity {
             return;
         }
         tvTitle.setText(R.string.title_activity_zalopay_contact);
+
+        // show/hide subTitle
+        if (getExtras().containsKey(BundleConstants.PHONE_NUMBER)
+                && PhoneUtil.isMobileNumber(getExtras().getString(BundleConstants.PHONE_NUMBER))) {
+            tvSubTitle.setVisibility(View.GONE);
+        } else {
+            tvSubTitle.setVisibility(View.VISIBLE);
+        }
     }
 
     @NonNull
@@ -60,15 +69,8 @@ public class ZaloPayContactActivity extends UserBaseToolBarActivity {
         if (tvSubTitle == null) {
             return;
         }
-        tvSubTitle.setText(subTitle);
 
-        // check subTitle & show/hide
-        if (TextUtils.isEmpty(subTitle)) {
-            tvSubTitle.setVisibility(View.GONE);
-        } else {
-            tvSubTitle.setVisibility(View.VISIBLE);
-            tvSubTitle.setText(subTitle);
-        }
+        tvSubTitle.setText(subTitle);
     }
 
     @Override
