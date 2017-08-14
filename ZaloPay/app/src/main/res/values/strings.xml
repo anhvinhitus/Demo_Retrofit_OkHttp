@@ -448,7 +448,7 @@
     <string name="bank.maintenance.message">Đang bảo trì</string>
     <string name="bank.upversion.message">Nâng cấp phiên bản để sử dụng</string>
     <string name="ip.desc.confirm.change.phone">Mã xác thực đang được gửi đến %s. Bạn có chắc chắn muốn quay lại?</string>
-    <string name="bank.link.cclink.limit.warning">Tổng số lượng thẻ Visa, Master được liên kết tối đa là %s. Vui lòng hủy liên kết cũ để thực hiện liên kết thêm thẻ mới</string>
+    <string name="bank.link.cclink.limit.warning">Bạn chỉ có thể liên kết tối đa %1$s thẻ Visa/Master. Vui lòng hủy liên kết cũ để thực hiện liên kết thêm thẻ mới</string>
 
     <!-- Balance Management -->
     <string name="balance_management_deposit_description">Từ ngân hàng đã liên kết vào TK Zalo Pay</string>
