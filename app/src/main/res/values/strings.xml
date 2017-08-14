@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Demo_Retrofit_OkHttp</string>
+    <string name="lable_nodata">No data to show</string>
+    <string name="btn_Reload">Reload Data</string>
+</resources>

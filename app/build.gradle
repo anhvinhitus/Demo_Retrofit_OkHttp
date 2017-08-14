@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
+
+
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
+    defaultConfig {
+        applicationId "com.example.anhvinh.demo_retrofit_okhttp"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            buildConfigField "String", "BASE_URL", "\"http://www.androidbegin.com/tutorial/\""
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField "String", "BASE_URL", "\"http://www.androidbegin.com/tutorial/\""
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+greendao{
+    schemaVersion 1
+    targetGenDir "src/main/java/"
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+    // RecyclerView:
+    compile 'com.android.support:recyclerview-v7:21.0.+'
+
+    // Cardview:
+    compile 'com.android.support:cardview-v7:22.0.0'
+
+    // Dagger:
+    compile 'com.google.dagger:dagger-compiler:2.2'
+    compile 'com.google.dagger:dagger:2.2'
+    provided 'javax.annotation:jsr250-api:1.0'
+
+    // Retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+
+    // GSON
+    compile 'com.google.code.gson:gson:2.7'
+
+    // OkHttp:
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.squareup.okio:okio:1.7.0'
+
+    // Picasso:
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    // GreenDAO:
+    compile 'org.greenrobot:greendao:3.2.0'
+    compile 'de.greenrobot:greendao-generator:2.1.0'
+}
