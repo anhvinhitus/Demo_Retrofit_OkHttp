@@ -75,9 +75,21 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
     }
 
     protected void initialize(long pAppId, String pAppTransId, int pTransType, int ordersource) {
-        mZPApptransidLog = new ZPApptransidLog(pAppTransId, pAppId, ZPPaymentSteps.OrderStep_GetAppInfo,
-                ZPPaymentSteps.OrderStepResult_None, -1, pTransType, -1, 0, 0, ordersource,
-                System.currentTimeMillis(), System.currentTimeMillis(), "", 0);
+        long currentTime = System.currentTimeMillis();
+        mZPApptransidLog = new ZPApptransidLog(pAppTransId,
+                pAppId,
+                ZPPaymentSteps.OrderStep_GetAppInfo,
+                ZPPaymentSteps.OrderStepResult_None,
+                -1,
+                pTransType,
+                -1,
+                0,
+                0,
+                ordersource,
+                currentTime,
+                currentTime,
+                "",
+                0);
     }
 
     private void trackApiTiming(int apiId, long startTime, long endTime, int returncode) {

@@ -111,7 +111,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         if (!((BaseFragment) activeFragment).onBackPressed()) {
             super.onBackPressed();
-            return;
         }
     }
 

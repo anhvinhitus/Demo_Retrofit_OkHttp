@@ -1171,7 +1171,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     .pmcId(pmcid)
                     .track();
         }
-        Timber.d("track channel id %s", pmcid);
     }
 
     public void showResultPayment(StatusResponse pResponse) throws Exception {
