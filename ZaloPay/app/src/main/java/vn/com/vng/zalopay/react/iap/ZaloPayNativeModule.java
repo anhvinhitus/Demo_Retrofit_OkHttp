@@ -219,7 +219,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void trackEventbyID(Integer eventId) {
+    public void trackEventByID(Integer eventId) {
         Timber.d("trackEvent eventId %s", eventId);
         ZPAnalytics.trackEvent(eventId);
     }
