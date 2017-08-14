@@ -257,6 +257,15 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     }
 
     @Override
+    public void showNotificationDialog(String pMessage, String pLeftButton, ZPWOnEventDialogListener zpwOnEventDialogListener) {
+        DialogManager.showSweetDialogCustom(getActivity(),
+                pMessage,
+                pLeftButton,
+                SweetAlertDialog.NORMAL_TYPE,
+                zpwOnEventDialogListener);
+    }
+
+    @Override
     public void showDialogManyOption(ZPWOnSweetDialogListener pListener) {
         DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE, -1,
                 getResources().getString(R.string.sdk_trans_confirm_quit_load_website3ds_mess), pListener,

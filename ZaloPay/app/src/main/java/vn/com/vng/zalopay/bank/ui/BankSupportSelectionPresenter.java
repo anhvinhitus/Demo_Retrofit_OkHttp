@@ -82,7 +82,7 @@ final class BankSupportSelectionPresenter extends AbstractPresenter<IBankSupport
         if (BankHelper.isInternationalBank(bank.bankCode)
                 && mCurrentCcLinkNumber >= max_cc_link) {
             String mess = String.format(applicationContext.getString(R.string.bank_link_cclink_limit_warning), max_cc_link);
-            mView.showWarningDialog(mess, applicationContext.getString(R.string.dialog_agree_button));
+            mView.showNotificationDialog(mess);
             return;
         }
 

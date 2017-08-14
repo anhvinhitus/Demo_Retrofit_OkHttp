@@ -212,6 +212,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         @Override
         public void afterTextChanged(Editable s) {
             try {
+                Timber.d("Input text %s", s);
                 //prevent user input if wrong card
                 String newValue = s.toString().trim();
                 if (mLastLengthCardNumber == newValue.length()) {
@@ -905,7 +906,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             if (BankHelper.isInternationalBank(bankCode)
                     && currentCcLinkNum >= max_cc_link) {
                 String mess = String.format(mContext.getString(R.string.sdk_bank_link_cc_limit_warning), String.valueOf(max_cc_link));
-                getView().showInfoDialog(mess, mContext.getResources().getString(R.string.dialog_agree_button), this::clearCardNumberAndShowKeyBoard);
+                getView().showNotificationDialog(mess, mContext.getResources().getString(R.string.dialog_agree_button), this::clearCardNumberAndShowKeyBoard);
                 return true;
             }
         } catch (Exception e) {

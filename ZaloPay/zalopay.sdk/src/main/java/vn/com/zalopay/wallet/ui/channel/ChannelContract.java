@@ -20,6 +20,8 @@ public interface ChannelContract extends IContract {
         void showDialogManyOption(ZPWOnSweetDialogListener pListener);
 
         void showQuitConfirm(String message, ZPWOnEventConfirmDialogListener pListener);
+        
+        void showNotificationDialog(String pMessage, String pLeftButton, ZPWOnEventDialogListener zpwOnEventDialogListener);
 
         void showConfirmDialog(String pMessage, final String pButtonLeftText, final String pButtonRightText, ZPWOnEventConfirmDialogListener pListener);
 

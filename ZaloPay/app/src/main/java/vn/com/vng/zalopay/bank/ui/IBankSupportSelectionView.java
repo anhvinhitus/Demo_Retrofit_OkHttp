@@ -39,4 +39,6 @@ interface IBankSupportSelectionView {
     void showWarningDialog(String message, String btnText);
 
     void showNetworkErrorDialog();
+
+    void showNotificationDialog( String mMessage);
 }
