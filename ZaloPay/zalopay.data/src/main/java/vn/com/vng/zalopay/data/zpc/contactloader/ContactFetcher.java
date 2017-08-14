@@ -129,12 +129,14 @@ public class ContactFetcher {
                 String normalizedNumber = PhoneUtil.normalizeMobileNumber(rawNumber);
                 if (!PhoneUtil.isMobileNumber(normalizedNumber)) {
                     // skip number that is not valid Vietnamese mobile number
+                    phoneCursor.moveToNext();
                     continue;
                 }
 
                 final String contactId = phoneCursor.getString(contactIdColumnIndex);
                 Contact contact = contactsMap.get(contactId);
                 if (contact == null) {
+                    phoneCursor.moveToNext();
                     continue;
                 }
                 final int type = phoneCursor.getInt(phoneTypeColumnIndex);
