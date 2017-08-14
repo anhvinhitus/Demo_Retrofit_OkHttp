@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
@@ -22,7 +23,6 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
     private Drawable drawableRightDelete;
     private OnClickListener mSelectedCardScanListener = null;
     private OnClickListener mOnClickListener = null;
-    private int mLastInputLength = 0;
 
     public VPaymentDrawableEditText(Context context) {
         super(context, null);
@@ -118,27 +118,45 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
     @Override
     public void formatText(boolean isTextFull) {
         super.formatText(isTextFull);
-        try {
-            Editable s = getEditableText();
-            Timber.d("onTextChanged %s", s.toString());
-            String text = s.toString();
-            int mlength = text.length();
-            if (mLastInputLength > mlength && text.endsWith(String.valueOf(VERTICAL_SEPERATOR))) {
 
-                setText(text.trim());
-                setSelection(getText().length());
-
+        Editable s = getEditableText();
+        if (mIsTextGroup) {
+            // Remove spacing char
+            if (s.length() > 0 && (s.length() % 5) == 0) {
+                final char c = s.charAt(s.length() - 1);
+                if (SPACE_SEPERATOR == c) {
+                    s.delete(s.length() - 1, s.length());
+                }
             }
-            if (text.endsWith(" ")) {
+            if (isTextFull) {
+                for (int i = 0; i < s.length(); i++) {
+                    if (i > 1 && (i % 5) == 0) {
+                        char c = s.charAt(i - 1);
+                        // Only if its a digit where there should be a space we
+                        // insert a space
+                        if (Character.isDigit(c) && TextUtils.split(s.toString(), String.valueOf(SPACE_SEPERATOR)).length <= 3) {
+                            InputFilter[] filters = s.getFilters(); // save filters
+                            s.setFilters(new InputFilter[]{}); // clear filters
+                            s.insert(i - 1, String.valueOf(SPACE_SEPERATOR));
+                            s.setFilters(filters); // restore filters
+                        }
+                    }
+                }
                 return;
             }
-            if (mlength > 0 && (mlength % 5) == 0) {
-                setText(new StringBuilder(text).insert(text.length() - 1, String.valueOf(VERTICAL_SEPERATOR)).toString());
-                setSelection(getText().length());
+            // Insert char where needed.
+            if (s.length() > 0 && (s.length() % 5) == 0 && s.length() <= 20) {
+                char c = s.charAt(s.length() - 1);
+                // Only if its a digit where there should be a space we
+                // insert a space
+                if (Character.isDigit(c) && TextUtils.split(s.toString(), String.valueOf(SPACE_SEPERATOR)).length <= 4) {
+                    InputFilter[] filters = s.getFilters(); // save filters
+                    s.setFilters(new InputFilter[]{}); // clear filters
+                    s.insert(s.length() - 1, String.valueOf(SPACE_SEPERATOR));
+                    s.setFilters(filters); // restore filters
+                }
             }
-            mLastInputLength = length();
-        } catch (Exception e) {
-            Timber.d("onTextChanged %s", e.getMessage());
+
         }
     }
 
