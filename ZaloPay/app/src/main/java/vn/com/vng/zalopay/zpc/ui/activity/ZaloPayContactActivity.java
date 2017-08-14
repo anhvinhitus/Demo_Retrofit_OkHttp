@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.zpc.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -14,13 +16,11 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 
 public class ZaloPayContactActivity extends UserBaseToolBarActivity {
+    private final ActivityTracker mActivityTracker = new ActivityTracker(ZPScreens.MONEYTRANSFER_ZFRIEND, -1, ZPEvents.MONEYTRANSFER_ZFRIEND_TOUCH_BACK);
     @BindView(R.id.title)
     TextView tvTitle;
-
     @BindView(R.id.title_sub)
     TextView tvSubTitle;
-
-    private final ActivityTracker mActivityTracker = new ActivityTracker(ZPScreens.MONEYTRANSFER_ZFRIEND, -1, ZPEvents.MONEYTRANSFER_ZFRIEND_TOUCH_BACK);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +61,22 @@ public class ZaloPayContactActivity extends UserBaseToolBarActivity {
             return;
         }
         tvSubTitle.setText(subTitle);
+
+        // check subTitle & show/hide
+        if (TextUtils.isEmpty(subTitle)) {
+            tvSubTitle.setVisibility(View.GONE);
+        } else {
+            tvSubTitle.setVisibility(View.VISIBLE);
+            tvSubTitle.setText(subTitle);
+        }
     }
 
     @Override
     public void setTitle(CharSequence title) {
-        if(tvTitle == null){
+        if (tvTitle == null) {
             return;
         }
+
         tvTitle.setText(title);
     }
 }

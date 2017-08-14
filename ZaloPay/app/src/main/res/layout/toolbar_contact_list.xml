@@ -27,13 +27,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-                android:textSize="@dimen/font_size_xxlarge" />
+                android:textSize="@dimen/font_size_xlarge" />
 
             <TextView
                 android:id="@+id/title_sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/personal_general_text_sub_l" />
+                android:textSize="@dimen/font_size_xnormal" />
 
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
