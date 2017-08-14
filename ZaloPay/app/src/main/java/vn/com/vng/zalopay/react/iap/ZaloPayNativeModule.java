@@ -208,8 +208,8 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void trackEvent(Integer eventId, Integer eventValue) {
-        Timber.d("trackEvent eventId %s", eventId);
+    public void trackEventWithIdAndValue(Integer eventId, Integer eventValue) {
+        Timber.d("trackEventWithIdAndValue eventId %s eventValue %s", eventId, eventValue);
         if (eventValue != null) {
             long value = eventValue;
             ZPAnalytics.trackEvent(eventId, value);
@@ -219,7 +219,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void trackEventByID(Integer eventId) {
+    public void trackEvent(Integer eventId) {
         Timber.d("trackEvent eventId %s", eventId);
         ZPAnalytics.trackEvent(eventId);
     }
