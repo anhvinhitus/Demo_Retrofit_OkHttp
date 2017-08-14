@@ -1,21 +1,19 @@
 package vn.com.vng.zalopay.data.zpc.contactloader;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 
 public class ContactFetcher {
@@ -62,7 +60,7 @@ public class ContactFetcher {
         }
 
         matchContactNumbers(contactsMap);
-        return listContacts;
+        return filterMobileNumber(listContacts);
     }
 
     private void setContactDetailInfo(String contactId, Contact contact) throws Exception {
@@ -141,5 +139,24 @@ public class ContactFetcher {
                 phone.close();
             }
         }
+    }
+
+    private ArrayList<Contact> filterMobileNumber(ArrayList<Contact> contacts) {
+        ArrayList<Contact> filteredContacts = new ArrayList<>();
+
+        for (Contact contact : contacts) {
+            if (Lists.isEmptyOrNull(contact.numbers)) {
+                continue;
+            }
+
+            for (ContactPhone number : contact.numbers) {
+                String phoneNumber = PhoneUtil.formatPhoneNumber(number.number);
+                if (PhoneUtil.isMobileNumber(phoneNumber)) {
+                    filteredContacts.add(contact);
+                }
+            }
+        }
+
+        return filteredContacts;
     }
 }

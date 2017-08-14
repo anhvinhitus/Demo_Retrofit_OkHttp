@@ -66,7 +66,7 @@ final class ZPCMapper {
 
         for (ContactPhone number : contact.numbers) {
             String phoneNumber = PhoneUtil.formatPhoneNumber(number.number);
-            if (TextUtils.isEmpty(phoneNumber) || !PhoneUtil.isMobileNumber(phoneNumber)) {
+            if (TextUtils.isEmpty(phoneNumber)) {
                 continue;
             }
 

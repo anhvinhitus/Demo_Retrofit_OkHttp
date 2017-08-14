@@ -142,22 +142,22 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
         Assert.assertTrue(cursor != null);
         System.out.println("result count 1: " + cursor.getCount());
 
-//        Assert.assertTrue(cursor.getCount() == zaloUser.size() + contacts.size());
+        Assert.assertTrue(cursor.getCount() == zaloUser.size() + contacts.size());
 
         cursor = mFriendLocalStorage.getZaloUserCursor(true, false);
         Assert.assertTrue(cursor != null);
         System.out.println("result count 2: " + cursor.getCount());
-//        Assert.assertTrue(cursor.getCount() == contactLength + zaloLength - zalopayLength);
+        Assert.assertTrue(cursor.getCount() == contactLength + zaloLength - zalopayLength);
 
         cursor = mFriendLocalStorage.getZaloUserCursor(false, true);
         Assert.assertTrue(cursor != null);
         System.out.println("result count 3: " + cursor.getCount());
-//        Assert.assertTrue(cursor.getCount() == zalopayLength + contactLength);
+        Assert.assertTrue(cursor.getCount() == zalopayLength + contactLength);
 
         cursor = mFriendLocalStorage.getZaloUserCursor(true, true);
         Assert.assertTrue(cursor != null);
         System.out.println("result count 4: " + cursor.getCount());
-//        Assert.assertTrue(cursor.getCount() == contactLength);
+        Assert.assertTrue(cursor.getCount() == contactLength);
 
     }
 
@@ -249,11 +249,11 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
 
         System.out.println("cursor : " + cursor.getCount());
         Assert.assertTrue(cursor.getCount() == 1);
-//        if (cursor.moveToNext()) {
-//            Assert.assertTrue(cursor.getString(cursor.getColumnIndex("ALIAS_DISPLAY_NAME")).equals(nameInContact));
-//        } else {
-//            Assert.fail("move to next fail");
-//        }
+        if (cursor.moveToNext()) {
+            Assert.assertTrue(cursor.getString(cursor.getColumnIndex("ALIAS_DISPLAY_NAME")).equals(nameInContact));
+        } else {
+            Assert.fail("move to next fail");
+        }
 
     }
 
