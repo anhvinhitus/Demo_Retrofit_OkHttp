@@ -27,7 +27,7 @@ public class TransferObject implements Parcelable {
     public long amount;
     public String message;
 
-    public Constants.TransferMode transferMode = Constants.TransferMode.TransferToZaloFriend;
+    public Constants.TransferMode transferMode = Constants.TransferMode.TransferToZaloPayContact;
     public Constants.ActivateSource activateSource = Constants.ActivateSource.FromTransferActivity;
 
     public boolean isEnoughZalopayInfo() {

@@ -26,7 +26,6 @@ import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
@@ -275,8 +274,21 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     @Override
     public void setTransferInfo(TransferObject object, boolean amountDynamic) {
+        if (object == null) {
+            return;
+        }
 
-        setUserView(object.displayName, object.avatar, object.zalopayName);
+        String zalopayName = String.format(getString(R.string.phone_format), object.phoneNumber);
+        if (object.transferMode == Constants.TransferMode.TransferToZaloPayID) {
+            zalopayName = String.format(getString(R.string.account_format), object.zalopayName);
+        }
+        if (TextUtils.isEmpty(zalopayName)) {
+            zalopayName = object.zalopayName;
+            String name = TextUtils.isEmpty(zalopayName) ? getString(R.string.not_update) : zalopayName;
+            zalopayName = String.format(getString(R.string.account_format), name);
+        }
+
+        setUserView(object.displayName, object.avatar, zalopayName);
 
         if (amountDynamic) {
             setInitialDynamicValue(object.amount, object.message);
@@ -286,14 +298,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     }
 
-    @Override
-    public void setUserInfo(Person object) {
-        // get display name, if exits is show, otherwise show display from api
-        String displayName = tvDisplayName.getText().toString();
-        setUserView(TextUtils.isEmpty(displayName) ? object.displayName : displayName, object.avatar, object.zalopayname);
-    }
-
-    private void setUserView(String displayName, String avatar, String zalopayName) {
+    private void setUserView(String displayName, String avatar, String zalopayName_or_numberPhone) {
         if (tvDisplayName != null) {
             tvDisplayName.setText(displayName);
         }
@@ -302,10 +307,8 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
             imgAvatar.setImageURI(avatar);
         }
 
-        String name = TextUtils.isEmpty(zalopayName) ? getString(R.string.not_update) : zalopayName;
-
         if (mTextViewZaloPayName != null) {
-            mTextViewZaloPayName.setText(String.format(getString(R.string.account_format), name));
+            mTextViewZaloPayName.setText(zalopayName_or_numberPhone);
         }
     }
 

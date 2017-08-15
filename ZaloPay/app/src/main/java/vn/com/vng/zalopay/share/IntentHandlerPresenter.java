@@ -308,7 +308,7 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         TransferObject object = new TransferObject();
         object.zaloId = receiver;
         object.activateSource = Constants.ActivateSource.FromZalo;
-        object.transferMode = Constants.TransferMode.TransferToZaloFriend;
+        object.transferMode = Constants.TransferMode.TransferToZaloPayContact;
 
         mNavigator.startTransferActivity(mView.getContext(), object);
     }

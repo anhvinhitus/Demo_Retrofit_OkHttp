@@ -31,6 +31,4 @@ public interface ITransferView extends ILoadDataView {
     void hideErrorTransferFixedMoney();
 
     void setTransferInfo(TransferObject object, boolean amountDynamic);
-
-    void setUserInfo(Person person);
 }

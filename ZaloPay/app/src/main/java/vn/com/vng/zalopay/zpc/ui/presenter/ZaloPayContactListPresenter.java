@@ -297,7 +297,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         }
 
         TransferObject object = new TransferObject(profile);
-        object.transferMode = Constants.TransferMode.TransferToZaloFriend;
+        object.transferMode = Constants.TransferMode.TransferToZaloPayContact;
         object.activateSource = Constants.ActivateSource.FromTransferActivity;
         mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
     }

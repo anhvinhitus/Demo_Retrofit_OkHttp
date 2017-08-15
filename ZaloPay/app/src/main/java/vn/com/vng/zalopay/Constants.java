@@ -116,7 +116,7 @@ public interface Constants {
 
     enum TransferMode {
         TransferToZaloPayID,
-        TransferToZaloFriend,
+        TransferToZaloPayContact,
         TransferToZaloPayUser
     }
 

@@ -116,6 +116,7 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
 
         Timber.d("Got profile for %s: %s", zaloPayName, person);
         TransferObject object = new TransferObject(person);
+        object.transferMode = Constants.TransferMode.TransferToZaloPayID;
         navigator.startTransferActivity(this, object, Constants.REQUEST_CODE_TRANSFER);
     }
 

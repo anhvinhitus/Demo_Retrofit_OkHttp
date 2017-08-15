@@ -63,17 +63,15 @@ import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
  */
 public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
-
-    private static String mPreviousTransferId = null;
     private final User mUser;
-    private final Context applicationContext;
+    final Context applicationContext;
     private final ZaloPayRepository mZaloPayRepository;
     private final ZPCStore.Repository mFriendRepository;
     private final TransferStore.Repository mTransferRepository;
     private final TransferNotificationHelper mTransferNotificationHelper;
     private final ZaloSdkApi mZaloSdkApi;
     private final AccountStore.Repository mAccountRepository;
-    private TransferObject mTransferObject;
+    TransferObject mTransferObject;
     private PaymentWrapper paymentWrapper;
 
     private long mMinAmount = 0;
@@ -158,11 +156,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             mView.setTransferInfo(object, !isTransferFixedMoney());
         }
 
-     /*   if (mPreviousTransferId != null && !mPreviousTransferId.equals(mTransferObject.zalopayId)) {
-            Timber.d("Change user receiver money");
-            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_CHANGERECEIVER);
-        }
-*/
         setActivateSource();
         getUserInfo(object);
         onViewCreated();
@@ -216,10 +209,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 return;
             }
 
-            if (mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
-                //ZPAnalytics.trackEvent(ZPEvents.ZALO_RECEIVER_NOT_FOUND);
-            }
-
             showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
         }
 
@@ -234,7 +223,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             }
 
             if (!TextUtils.isEmpty(person.avatar) || !TextUtils.isEmpty(person.displayName)) { //Vì sandbox có 1 vài user cũ không có zalopay info
-                mView.setUserInfo(person);
+                mView.setTransferInfo(mTransferObject, !isTransferFixedMoney());
             }
 
             hideLoading();
@@ -242,7 +231,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    private void updateTransferObject(Person person) {
+    void updateTransferObject(Person person) {
 
         mTransferObject.zalopayId = person.zaloPayId;
         mTransferObject.zalopayName = person.zalopayname;
@@ -257,7 +246,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mTransferObject.phoneNumber = PhoneUtil.formatPhoneNumber(person.phonenumber);
     }
 
-    private void updateTransferObject(IBuilder builder) {
+    void updateTransferObject(IBuilder builder) {
         long amount = 0;
         String message = null;
 
@@ -288,7 +277,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    private boolean isTransferFixedMoney() {
+    boolean isTransferFixedMoney() {
         return (mTransferObject.activateSource == Constants.ActivateSource.FromQRCodeType2
                 || mTransferObject.activateSource == Constants.ActivateSource.FromWebApp_QRType2);
     }
@@ -330,13 +319,21 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private void transferMoney(long amount) {
+        if(mTransferObject == null){
+            Timber.w("mTransferObject NULL - skip do transfer");
+            return;
+        }
         LocationProvider.updateLocation();
-        mPreviousTransferId = null;
         String item = buildItem().toJson();
+        String receiverId = mTransferObject.transferMode == Constants.TransferMode.TransferToZaloPayID ?
+                mTransferObject.zalopayId : mTransferObject.phoneNumber;
+        if(TextUtils.isEmpty(receiverId)){
+            receiverId = mTransferObject.zalopayId;
+        }
         Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
                 amount,
                 TransactionType.MONEY_TRANSFER,
-                "1;" + mTransferObject.zalopayId,
+                "1;" + receiverId,
                 mView.getMessage(),
                 mTransferObject.displayName,
                 item)
@@ -347,7 +344,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mSubscription.add(subscription);
     }
 
-    private void onCreateWalletOrderError(Throwable e) {
+    void onCreateWalletOrderError(Throwable e) {
         Timber.d(e, "Server responses with error");
 
         if (mView == null) {
@@ -371,7 +368,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    private void onCreateWalletOrderSuccess(Order order) {
+    void onCreateWalletOrderSuccess(Order order) {
         Timber.d("On create wallet order success : item [%s]", order.item);
         if (mView == null) {
             return;
@@ -405,7 +402,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         hideLoading();
     }
 
-    private void saveTransferRecent() {
+    void saveTransferRecent() {
         int transactionType;
 
         transactionType = TransactionType.MONEY_TRANSFER;
@@ -495,7 +492,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         return true;
     }
 
-    private void checkShowButtonTransfer() {
+    void checkShowButtonTransfer() {
         if (mView == null) {
             return;
         }
@@ -519,8 +516,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         if (mView == null) {
             return;
         }
-
-        mPreviousTransferId = mTransferObject.zalopayId;
 
         switch (mTransferObject.activateSource) {
             case FromZalo:
@@ -557,28 +552,28 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    private void showLoading() {
+    void showLoading() {
         if (mView == null) {
             return;
         }
         mView.showLoading();
     }
 
-    private void hideLoading() {
+    void hideLoading() {
         if (mView == null) {
             return;
         }
         mView.hideLoading();
     }
 
-    private void showDialogThenClose(String error, @StringRes int cancelText, int dialogType) {
+    void showDialogThenClose(String error, @StringRes int cancelText, int dialogType) {
         if (mView == null) {
             return;
         }
         mView.showDialogThenClose(error, mView.getContext().getString(cancelText), dialogType);
     }
 
-    private void sendNotificationMessage(String toZaloPayId, int stage, long amount, String transId) {
+    void sendNotificationMessage(String toZaloPayId, int stage, long amount, String transId) {
         mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
                 toZaloPayId, stage, amount, transId));
     }
@@ -593,7 +588,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    private void handleCompletedTransferWeb(Activity activity) {
+    void handleCompletedTransferWeb(Activity activity) {
         Intent data = new Intent();
         data.putExtra("code", 1);
         activity.setResult(Activity.RESULT_OK, data);
@@ -610,6 +605,9 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
+
+        CreateWalletOrderSubscriber() {
+        }
 
         @Override
         public void onStart() {
