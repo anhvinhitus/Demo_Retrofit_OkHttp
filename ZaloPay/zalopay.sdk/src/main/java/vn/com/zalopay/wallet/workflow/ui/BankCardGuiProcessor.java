@@ -9,6 +9,9 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
@@ -25,12 +28,12 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.entity.bank.BankConfig;
-import vn.com.zalopay.wallet.entity.bank.PaymentCard;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.constants.AuthenType;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.entity.bank.BankConfig;
+import vn.com.zalopay.wallet.entity.bank.PaymentCard;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
@@ -64,6 +67,33 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     public BankCardGuiProcessor(Context pContext, BankCardWorkFlow pAdapterLocalCard, ChannelFragment pChannelFragment) {
         super(pContext);
         init(pAdapterLocalCard, pChannelFragment);
+    }
+
+    @Override
+    protected void initWebView() throws Exception {
+        super.initWebView();
+        if (mWebView != null) {
+            mWebView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36");
+            mWebView.setWebChromeClient(new WebChromeClient() {
+                @Override
+                public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+                    result.confirm();
+                    return true;
+                }
+
+                @Override
+                public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+                    return true;
+                }
+
+                @Override
+                public boolean onJsPrompt(WebView view, String url, String message, String defaultValue,
+                                          JsPromptResult result) {
+                    return true;
+                }
+            });
+
+        }
     }
 
     @Override
@@ -608,8 +638,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mCaptchaWebview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
         try {
-            mCaptchaWebview.loadDataWithBaseURL(((BankCardWorkFlow) getAdapter()).getWebViewProcessor().getCurrentUrl(), sb.toString(),
-                    "text/html", null, null);
+            String currentUrl = mWebView != null ? mWebView.getUrl() : null;
+            mCaptchaWebview.loadDataWithBaseURL(currentUrl, sb.toString(), "text/html", null, null);
         } catch (Exception e) {
             Timber.w(e, "Exception set captcha");
         }

@@ -1,9 +1,10 @@
-package vn.com.zalopay.wallet.workflow.webview.atm;
+package vn.com.zalopay.wallet.workflow.webview;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
@@ -13,50 +14,34 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.entity.bank.AtmScriptInput;
-import vn.com.zalopay.wallet.entity.bank.AtmScriptOutput;
-import vn.com.zalopay.wallet.entity.response.BaseResponse;
-import vn.com.zalopay.wallet.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.entity.enumeration.EJavaScriptType;
-import vn.com.zalopay.wallet.entity.bank.BankScript;
-import vn.com.zalopay.wallet.workflow.webview.base.PaymentWebViewClient;
-import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.entity.bank.AtmScriptInput;
+import vn.com.zalopay.wallet.entity.bank.AtmScriptOutput;
+import vn.com.zalopay.wallet.entity.bank.BankScript;
+import vn.com.zalopay.wallet.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.entity.enumeration.EJavaScriptType;
+import vn.com.zalopay.wallet.entity.response.BaseResponse;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
-import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 
-public class BankWebViewClient extends PaymentWebViewClient {
-
-    public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
-    public static final long DELAY_TIME_TO_DETECT_AJAX = 8000;
-    public static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
-    // value is used for
-    // detect valid url
-    // in the case
-    // webview on
-    // Android 2.3
-
+public class BankWebViewClient extends AbstractWebViewClient {
+    private static final long DELAY_TIME_TO_DETECT_AJAX = 8000;
+    private static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
     private boolean mIsLoadingFinished = true;
     private boolean mIsRedirect = false;
-
-    private BankWebView mWebPaymentBridge = null;
 
     private List<BankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
     private String mCurrentUrlPattern = null;
@@ -72,35 +57,39 @@ public class BankWebViewClient extends PaymentWebViewClient {
     private boolean mIsFirst = true;
 
     public BankWebViewClient(AbstractWorkFlow pAdapter) {
-        super(pAdapter);
-        initWebViewBridge();
+        SdkWebView webView = new SdkWebView(GlobalData.getAppContext());
+        webView.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
+        initialize(pAdapter, webView);
     }
 
-    private void initWebViewBridge() {
-        mWebPaymentBridge = new BankWebView(GlobalData.getAppContext());
-        mWebPaymentBridge.setWebViewClient(this);
-        mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
-    }
-
+    @Override
     public void start(String pUrl) {
-        if (mWebPaymentBridge != null) {
-            mWebPaymentBridge.loadUrl(pUrl);
-            mIsFirst = true;
+        try {
+            WebView webView = getWebView();
+            if (webView != null) {
+                webView.loadUrl(pUrl);
+                mIsFirst = true;
+            }
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 
     @Override
     public void stop() {
-        if (mWebPaymentBridge != null) {
-            mWebPaymentBridge.stopLoading();
+        try {
+            WebView webView = getWebView();
+            if (webView != null) {
+                webView.stopLoading();
+            }
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 
+    @Override
     public void hit() {
         mCurrentUrlPattern = null;
-
-        // Check if ajax
-
         final long time = System.currentTimeMillis();
         mLastStartPageTime = time;
         mHandler.postDelayed(() -> onAjax(time), DELAY_TIME_TO_DETECT_AJAX);
@@ -108,43 +97,51 @@ public class BankWebViewClient extends PaymentWebViewClient {
         matchAndRunJs(mCurrentUrl, EJavaScriptType.HIT, false);
     }
 
-    public AtmScriptInput genJsInput() throws Exception {
+    @NonNull
+    private AtmScriptInput genJsInput() {
         AtmScriptInput input = new AtmScriptInput();
-
-        if (getAdapter() != null && getAdapter().getGuiProcessor() != null) {
-            input.cardHolderName = getAdapter().getGuiProcessor().getCardName();
-            input.cardNumber = getAdapter().getGuiProcessor().getCardNumber();
-            input.cardMonth = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getCardMonth();
-            input.cardYear = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getCardYear();
-            input.cardPass = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getCardPass();
-            input.otp = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getOtp();
-            input.captcha = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getCaptcha();
-            input.username = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getUsername();
-            input.password = ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).getPassword();
-
+        AbstractWorkFlow workFlow = null;
+        try {
+            workFlow = getWorkFlow();
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+        if (workFlow == null) {
             return input;
+        }
+        BankCardGuiProcessor guiProcessor = null;
+        try {
+            if (workFlow.getGuiProcessor() instanceof BankCardGuiProcessor) {
+                guiProcessor = (BankCardGuiProcessor) workFlow.getGuiProcessor();
+            }
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+        if (guiProcessor != null) {
+            input.cardHolderName = guiProcessor.getCardName();
+            input.cardNumber = guiProcessor.getCardNumber();
+            input.cardMonth = guiProcessor.getCardMonth();
+            input.cardYear = guiProcessor.getCardYear();
+            input.cardPass = guiProcessor.getCardPass();
+            input.otp = guiProcessor.getOtp();
+            input.captcha = guiProcessor.getCaptcha();
+            input.username = guiProcessor.getUsername();
+            input.password = guiProcessor.getPassword();
         }
         return input;
     }
 
-    public void matchAndRunJs(String url, EJavaScriptType pType, boolean pIsAjax) {
+    private void matchAndRunJs(String url, EJavaScriptType pType, boolean pIsAjax) {
         boolean isMatched = false;
         for (BankScript bankScript : mBankScripts) {
             if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url)) {
-                Timber.d("$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
+                Timber.d("matchAndRunJs: %s type %s", url, pType);
                 isMatched = true;
-
                 mCurrentUrl = url;
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;
 
-                AtmScriptInput input = null;
-                try {
-                    input = genJsInput();
-                } catch (Exception e) {
-                    Timber.w(e.getMessage());
-                    SDKApplication.getApplicationComponent().eventBus().postSticky(new SdkParseWebsiteErrorEvent());
-                }
+                AtmScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;
 
                 String inputScript = GsonUtils.toJsonString(input);
@@ -157,7 +154,6 @@ public class BankWebViewClient extends PaymentWebViewClient {
                     continue;
                 }
 
-                // Process this url
                 mCurrentUrlPattern = bankScript.url;
                 if (pType == EJavaScriptType.HIT) {
                     executeJs(bankScript.hitJs, inputScript);
@@ -166,34 +162,14 @@ public class BankWebViewClient extends PaymentWebViewClient {
         }
 
         if (!isMatched) {
-            SDKApplication.getApplicationComponent().eventBus().postSticky(new SdkParseWebsiteErrorEvent());
+            SDKApplication
+                    .getApplicationComponent()
+                    .eventBus()
+                    .postSticky(new SdkParseWebsiteErrorEvent());
         }
     }
 
-    public void executeJs(String pJsFileName, String pJsInput) {
-        if (TextUtils.isEmpty(pJsFileName)) {
-            return;
-        }
-        if (mWebPaymentBridge == null) {
-            Timber.d("NULL on executeJs");
-            return;
-        }
-        Timber.d("file name %s input %s", pJsFileName, pJsInput);
-        Subscription subscription = Observable.from(pJsFileName.split(Constants.COMMA))
-                .filter(s -> !TextUtils.isEmpty(s))
-                .flatMap(ResourceManager::getJavascriptContent)
-                .filter(s -> !TextUtils.isEmpty(s))
-                .map(jsContent -> String.format(jsContent, pJsInput))
-                .compose(SchedulerHelper.applySchedulers())
-                .subscribe(jsContent -> mWebPaymentBridge.runScript(jsContent),
-                        throwable -> Timber.w(throwable, "Exception load js file"));
-        CompositeSubscription compositeSubscription = getAdapter() != null ? getAdapter().mCompositeSubscription : null;
-        if (compositeSubscription != null) {
-            compositeSubscription.add(subscription);
-        }
-    }
-
-    public void onAjax(long pLastStartPageTime) {
+    private void onAjax(long pLastStartPageTime) {
         if (mIsLoadingFinished && mLastStartPageTime == pLastStartPageTime) {
             Timber.d("onAjax %s", mCurrentUrl);
             matchAndRunJs(mCurrentUrl, EJavaScriptType.AUTO, true);
@@ -205,8 +181,6 @@ public class BankWebViewClient extends PaymentWebViewClient {
         Timber.d("onPageStarted %s", url);
         mStartedtUrl = url;
         mIsLoadingFinished = false;
-
-        // Modify this variable to inform that it not run in ajax mode
         mLastStartPageTime++;
         //STOP WEBVIEW IF THIS IS THE FINAL STEP (REDIRECT SUCCESS FROM 123PAY)
         if (!TextUtils.isEmpty(mStartedtUrl) &&
@@ -217,27 +191,14 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Timber.d("///// shouldOverrideUrlLoading: " + url);
-
+        Timber.d("shouldOverrideUrlLoading: %s", url);
         if (!mIsLoadingFinished) {
             mIsRedirect = true;
         }
-        // Modify this variable to inform that it not run in ajax mode
         mLastStartPageTime++;
-
         mIsLoadingFinished = false;
         view.loadUrl(url);
-
         return true;
-    }
-
-    public void onLoadResource(WebView view, String url) {
-        // Log.d(this, "///// onLoadResource: " + url);
-    }
-
-    @JavascriptInterface
-    public void logDebug(String msg) {
-        Timber.d("****** Debug webview: " + msg);
     }
 
     @Override
@@ -247,21 +208,20 @@ public class BankWebViewClient extends PaymentWebViewClient {
         }
 
         if (mIsLoadingFinished && !mIsRedirect) {
-            Timber.d("onPageFinished" + url);
-
+            Timber.d("onPageFinished %s", url);
             onPageFinished(url);
         } else {
             mIsRedirect = false;
         }
     }
 
-    public void onPageFinished(String url) {
+    private void onPageFinished(String url) {
         matchAndRunJs(url, EJavaScriptType.AUTO, false);
     }
 
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        Timber.d("++++ Current error SSL on page: " + mStartedtUrl);
+        Timber.d("Current error SSL on page: %s", mStartedtUrl);
 
         for (BankScript bankScript : mBankScripts) {
             if (bankScript.eventID == IGNORE_EVENT_ID_FOR_HTTPS && mStartedtUrl.matches(bankScript.url)) {
@@ -277,10 +237,10 @@ public class BankWebViewClient extends PaymentWebViewClient {
         mLastStartPageTime++;
         final String result = pResult;
         try {
-            if (getAdapter() == null) {
+            if (getWorkFlow() == null) {
                 return;
             }
-            Activity activity = getAdapter().getActivity();
+            Activity activity = getWorkFlow().getActivity();
             if (activity == null || activity.isFinishing()) {
                 return;
             }
@@ -311,11 +271,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
         }
     }
 
-    public boolean isVerifyCardComplete() {
-        return mEventID == 1;
-    }
-
-    public EEventType convertPageIdToEvent(int pEventID) {
+    private EEventType convertPageIdToEvent(int pEventID) {
         switch (pEventID) {
             case -1:
                 return EEventType.ON_FAIL;
@@ -330,7 +286,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
         }
     }
 
-    public BaseResponse genResponse(EEventType pEventType, AtmScriptOutput pScriptOutput) {
+    private BaseResponse genResponse(EEventType pEventType, AtmScriptOutput pScriptOutput) {
         BaseResponse ret = new BaseResponse();
         switch (pEventType) {
 
@@ -352,41 +308,29 @@ public class BankWebViewClient extends PaymentWebViewClient {
         return ret;
     }
 
-    public void dispose() {
-        if (mWebPaymentBridge != null) {
-            mWebPaymentBridge.removeJavascriptInterface(JAVA_SCRIPT_INTERFACE_NAME);
-            mWebPaymentBridge.setWebViewClient(null);
-            mWebPaymentBridge.removeAllViews();
-            mWebPaymentBridge.clearHistory();
-            mWebPaymentBridge.freeMemory();
-            mWebPaymentBridge.destroy();
-            mWebPaymentBridge = null;
-        }
-    }
-
-    public String getCurrentUrl() {
-        return mWebPaymentBridge.getUrl();
-    }
-
     @JavascriptInterface
     public void getHtml(final String pHtml) {
         try {
-            //pHtml = PaymentHtmlParser.getContent(pHtml);
-            if (getAdapter() == null) {
+            AbstractWorkFlow workFlow = getWorkFlow();
+            if (workFlow == null) {
                 return;
             }
-            Activity activity = getAdapter().getActivity();
+            Activity activity = getWorkFlow().getActivity();
             if (activity == null || activity.isFinishing()) {
+                return;
+            }
+            SdkWebView webView;
+            webView = getWebView();
+            String currentUrl = webView != null ? webView.getUrl() : null;
+            if (TextUtils.isEmpty(currentUrl)) {
                 return;
             }
             activity.runOnUiThread(() -> {
                 try {
                     String paymentError = GlobalData.getAppContext().getResources().getString(R.string.sdk_report_error_format);
-                    if (!TextUtils.isEmpty(paymentError)) {
-                        paymentError = String.format(paymentError, null, getCurrentUrl(), pHtml);
-                    }
+                    paymentError = String.format(paymentError, null, currentUrl, pHtml);
                     SdkErrorReporter reporter = SDKApplication.sdkErrorReporter();
-                    reporter.sdkReportError(getAdapter(), ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
+                    reporter.sdkReportError(workFlow, ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
                 } catch (Exception ignored) {
                 }
             });

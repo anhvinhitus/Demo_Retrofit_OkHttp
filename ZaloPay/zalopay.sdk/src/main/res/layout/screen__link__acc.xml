@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <vn.com.zalopay.wallet.workflow.webview.base.PaymentWebView
+    <vn.com.zalopay.wallet.workflow.webview.SdkWebView
         android:id="@+id/zpw_threesecurity_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

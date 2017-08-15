@@ -47,7 +47,7 @@ import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
  * Created by SinhTT on 14/10/2016.
  */
 
-public class LinkAccGuiProcessor extends CardGuiProcessor {
+public class AccountLinkGuiProcessor extends CardGuiProcessor {
     int mPositionSpn;
     private ProgressBar pgbProgress;
     private TextView txtMessage;
@@ -135,7 +135,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     };
 
-    public LinkAccGuiProcessor(Context pContext, AbstractWorkFlow pAdapter, ChannelFragment pChannelFragment) {
+    public AccountLinkGuiProcessor(Context pContext, AbstractWorkFlow pAdapter, ChannelFragment pChannelFragment) {
         super(pContext);
         mAdapter = pAdapter;
         mView = pChannelFragment;

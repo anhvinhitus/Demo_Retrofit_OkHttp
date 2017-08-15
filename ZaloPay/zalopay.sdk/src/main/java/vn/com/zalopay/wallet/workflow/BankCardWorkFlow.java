@@ -22,7 +22,7 @@ import vn.com.zalopay.wallet.entity.response.BaseResponse;
 import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.entity.config.OtpRule;
-import vn.com.zalopay.wallet.workflow.webview.base.PaymentWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.AbstractWebViewClient;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
@@ -42,12 +42,13 @@ import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
+import vn.com.zalopay.wallet.workflow.webview.BankWebViewClient;
 
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_COVER_BANK_AUTHEN;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
 
 public class BankCardWorkFlow extends AbstractWorkFlow {
-    private PaymentWebViewClient mWebViewProcessor = null;
+    private AbstractWebViewClient mWebViewProcessor = null;
     private int numberRetryCaptcha = 0;
 
     public BankCardWorkFlow(Context pContext, ChannelPresenter pPresenter, MiniPmcTransType pMiniPmcTransType,
@@ -91,7 +92,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
 
     @Override
     public void startParseBankWebsite(String pUrl) {
-        mWebViewProcessor = PaymentWebViewClient.createPaymentWebViewClientByBank(this);
+        mWebViewProcessor = new BankWebViewClient(this);
         mWebViewProcessor.start(pUrl);
     }
 
@@ -129,7 +130,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         }
     }
 
-    public PaymentWebViewClient getWebViewProcessor() {
+    public AbstractWebViewClient getWebViewProcessor() {
         return mWebViewProcessor;
     }
 
@@ -176,10 +177,6 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 }
                 if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                     continue;
-                }
-                if (CardType.PBIDV.equals(otpReceiverPattern.bankcode)) {
-                    getGuiProcessor().bidvAutoFillOtp(otp);
-                    break;
                 }
                 ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);
                 getView().setVisible(R.id.txtOtpInstruction, false);
@@ -443,10 +440,10 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
 
     @Override
     public void onDetach() {
-        super.onDetach();
         if (mWebViewProcessor != null) {
             mWebViewProcessor.dispose();
         }
+        super.onDetach();
     }
 
     public boolean paymentBIDV() {

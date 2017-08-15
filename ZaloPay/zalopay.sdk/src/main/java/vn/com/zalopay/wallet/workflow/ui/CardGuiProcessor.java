@@ -40,12 +40,6 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.entity.bank.BankConfig;
-import vn.com.zalopay.wallet.entity.bank.PaymentCard;
-import vn.com.zalopay.wallet.entity.bank.BankAccount;
-import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.entity.config.CardRule;
-import vn.com.zalopay.wallet.workflow.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
@@ -55,6 +49,11 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.dialog.BankListDialogFragment;
 import vn.com.zalopay.wallet.dialog.CardSupportHelper;
+import vn.com.zalopay.wallet.entity.bank.BankAccount;
+import vn.com.zalopay.wallet.entity.bank.BankConfig;
+import vn.com.zalopay.wallet.entity.bank.PaymentCard;
+import vn.com.zalopay.wallet.entity.config.CardRule;
+import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
@@ -75,6 +74,7 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CreditCardFragment;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.workflow.BankCardWorkFlow;
+import vn.com.zalopay.wallet.workflow.webview.SdkWebView;
 
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
 
@@ -82,7 +82,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     protected Context mContext;
     protected AbstractWorkFlow mAdapter;
     protected ChannelFragment mView;
-    protected PaymentWebView mWebView;
+    protected SdkWebView mWebView;
     protected CreditCardView mCardView;
     View mRootView;
     ScrollView mScrollViewRoot;
@@ -493,11 +493,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         mRootView = getView().findViewById(R.id.supperRootView);
     }
 
-    private void initWebView() throws Exception {
-        mWebView = (PaymentWebView) getView().findViewById(R.id.zpw_threesecurity_webview);
-        if (mWebView != null) {
-            mWebView.setPaymentWebViewClient(getAdapter());
-        }
+    protected void initWebView() throws Exception {
+        mWebView = (SdkWebView) getView().findViewById(R.id.zpw_threesecurity_webview);
     }
 
     protected void flipCardView(int pPosition) {
@@ -1216,12 +1213,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     @CallSuper
     public void dispose() {
+        Timber.d("dispose gui processor");
         mCardAdapter = null;
         mBankSupportAdapter = null;
         mAdapter = null;
         mView = null;
         if (mWebView != null) {
-            mWebView.getCCWebViewClient().dispose();
             mWebView.release();
         }
     }
@@ -1246,28 +1243,17 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
     }
 
-    public void bidvAutoFillOtp(String pOtp) {
-        if (mWebView != null) {
-            mWebView.getCCWebViewClient().BIDVWebFlowFillOtp(pOtp);
-        }
-    }
-
     public void stopWebview() {
         if (mWebView != null) {
             mWebView.stopLoading();
         }
     }
 
-    public void reloadUrl() {
+    public void reloadUrl() throws Exception {
         if (mWebView == null) {
-            try {
-                initWebView();
-            } catch (Exception e) {
-                Timber.w(e);
-            }
-            return;
+            initWebView();
         }
-        mWebView.reloadPaymentUrl();
+        mWebView.reloadLastUrl();
     }
 
     public void loadUrl(String pUrl) throws Exception {
@@ -1275,7 +1261,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             initWebView();
         }
         useWebView(true);
-        mWebView.loadPaymentUrl(pUrl);
+        mWebView.startLoadUrl(pUrl);
     }
 
     public boolean preventNextIfLinkCardExisted() {

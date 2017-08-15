@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.workflow.webview.base;
+package vn.com.zalopay.wallet.workflow.webview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -8,24 +8,21 @@ import android.util.AttributeSet;
 import android.webkit.WebView;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.workflow.webview.creditcard.CCWebViewClient;
-import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
-public class PaymentWebView extends WebView {
+public class SdkWebView extends WebView {
     protected String mRecentLoadingUrl;
-    protected CCWebViewClient mCCWebViewClient;
 
-    public PaymentWebView(Context context) {
+    public SdkWebView(Context context) {
         super(context);
         init();
     }
 
-    public PaymentWebView(Context context, AttributeSet attrs) {
+    public SdkWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public PaymentWebView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SdkWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -41,7 +38,10 @@ public class PaymentWebView extends WebView {
         getSettings().setLoadsImagesAutomatically(true);
         getSettings().setSavePassword(false);
         getSettings().setSaveFormData(false);
-        // set user agent. mobile
+        setUserAgent();
+    }
+
+    private void setUserAgent() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             String UA_LOLLIPOP_AND_ABOVE = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";
             getSettings().setUserAgentString(UA_LOLLIPOP_AND_ABOVE);
@@ -54,22 +54,13 @@ public class PaymentWebView extends WebView {
         }
     }
 
-    public void setPaymentWebViewClient(AbstractWorkFlow pAdapter) {
-        mCCWebViewClient = new CCWebViewClient(pAdapter);
-        setWebViewClient(mCCWebViewClient);
-    }
-
-    public CCWebViewClient getCCWebViewClient() {
-        return mCCWebViewClient;
-    }
-
-    public void reloadPaymentUrl() {
+    public void reloadLastUrl() {
         if (!TextUtils.isEmpty(mRecentLoadingUrl)) {
-            loadPaymentUrl(mRecentLoadingUrl);
+            startLoadUrl(mRecentLoadingUrl);
         }
     }
 
-    public void loadPaymentUrl(String pUrl) {
+    public void startLoadUrl(String pUrl) {
         Timber.d("load url %s", pUrl);
         mRecentLoadingUrl = pUrl;
         loadUrl(pUrl);
@@ -77,7 +68,7 @@ public class PaymentWebView extends WebView {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void runScript(String scriptContent) {
-        Timber.d("runScript: %s", scriptContent);
+        Timber.d("start runScript: %s", scriptContent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript(scriptContent, null);
         } else {

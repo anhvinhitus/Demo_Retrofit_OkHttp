@@ -9,9 +9,9 @@ import rx.Subscription;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
-import vn.com.zalopay.wallet.entity.bank.PaymentCard;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.entity.bank.PaymentCard;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
@@ -25,17 +25,36 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNameFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.workflow.CreditCardWorkFlow;
+import vn.com.zalopay.wallet.workflow.webview.CCWebViewClient;
 
 public class CreditCardGuiProcessor extends CardGuiProcessor {
+    private CCWebViewClient mWebViewClient;
+
     public CreditCardGuiProcessor(Context pContext, CreditCardWorkFlow pAdapterCreditCard, ChannelFragment pChannelFragment) {
         super(pContext);
         init(pAdapterCreditCard, pChannelFragment);
     }
 
     @Override
+    public void dispose() {
+        if (mWebViewClient != null) {
+            mWebViewClient.dispose();
+        }
+        super.dispose();
+    }
+
+    @Override
     protected void init(AbstractWorkFlow pAdapter, ChannelFragment pChannelFragment) {
         super.init(pAdapter, pChannelFragment);
         checkValidCardNumberFromBundle = false;
+    }
+
+    @Override
+    protected void initWebView() throws Exception {
+        super.initWebView();
+        if (mWebView != null) {
+            mWebViewClient = new CCWebViewClient(getAdapter(), mWebView);
+        }
     }
 
     @Override

@@ -43,8 +43,8 @@ import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.entity.linkacc.LinkAccScriptOutput;
 import vn.com.zalopay.wallet.entity.config.OtpRule;
 import vn.com.zalopay.wallet.entity.UserInfo;
-import vn.com.zalopay.wallet.workflow.webview.base.PaymentWebView;
-import vn.com.zalopay.wallet.workflow.webview.linkacc.LinkAccWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.SdkWebView;
+import vn.com.zalopay.wallet.workflow.webview.AccountLinkWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.BankHelper;
@@ -56,7 +56,7 @@ import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
-import vn.com.zalopay.wallet.workflow.ui.LinkAccGuiProcessor;
+import vn.com.zalopay.wallet.workflow.ui.AccountLinkGuiProcessor;
 
 import static vn.com.zalopay.wallet.constants.BankAccountError.ACCOUNT_LOCKED;
 import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_CAPCHA;
@@ -92,8 +92,8 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
     public String mUrlReload;
     int COUNT_REFRESH_CAPTCHA_REGISTER = 1;
     int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
-    LinkAccGuiProcessor linkAccGuiProcessor;
-    LinkAccWebViewClient mWebViewProcessor = null;
+    AccountLinkGuiProcessor linkAccGuiProcessor;
+    AccountLinkWebViewClient mWebViewProcessor = null;
     boolean isNativeFlow = true;
     private boolean mIsLoadingCaptcha = false;
     private final View.OnClickListener refreshCaptchaLogin = v -> {
@@ -283,7 +283,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
     @Override
     public void init() throws Exception {
-        linkAccGuiProcessor = new LinkAccGuiProcessor(mContext,
+        linkAccGuiProcessor = new AccountLinkGuiProcessor(mContext,
                 this, getPresenter().getViewOrThrow());
         this.mGuiProcessor = linkAccGuiProcessor;
         this.isNativeFlow = PaymentPermission.allowVCBNativeFlow();
@@ -496,7 +496,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             if (TextUtils.isEmpty(pSender) || TextUtils.isEmpty(pOtp) || mPaymentInfoHelper == null) {
                 return;
             }
-            if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !isNativeFlow) {
+            if (!((AccountLinkGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !isNativeFlow) {
                 Timber.d("user is not in otp phase, skip auto fill otp");
                 return;
             }
@@ -1128,15 +1128,15 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             if (isNativeFlow) {
                 // show webview && hide web parse
                 try {
-                    mWebViewProcessor = new LinkAccWebViewClient(this,
-                            (PaymentWebView) getView().findViewById(R.id.zpw_threesecurity_webview));
+                    mWebViewProcessor = new AccountLinkWebViewClient(this,
+                            (SdkWebView) getView().findViewById(R.id.zpw_threesecurity_webview));
                 } catch (Exception e) {
                     Timber.d(e);
                 }
             } else {
                 // hide webview && show web parse
                 visibleLoadingDialog(mContext.getResources().getString(R.string.sdk_parsewebsite_loading_mess));//show loading view
-                mWebViewProcessor = new LinkAccWebViewClient(this);
+                mWebViewProcessor = new AccountLinkWebViewClient(this);
             }
             try {
                 getView().setVisible(R.id.zpw_threesecurity_webview, isNativeFlow);
