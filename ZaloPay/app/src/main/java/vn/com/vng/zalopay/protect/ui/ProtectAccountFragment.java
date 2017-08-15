@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.protect.ui;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
@@ -13,7 +14,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -22,7 +23,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Created by hieuvm on 12/24/16.
  */
 
-public class ProtectAccountFragment extends BaseFragment implements IProtectAccountView {
+public class ProtectAccountFragment extends RuntimePermissionFragment implements IProtectAccountView {
     public static ProtectAccountFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -93,9 +94,10 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
     @OnClick(R.id.vgChangePass)
     public void onClickChangePassword(View v) {
-//        navigator.startChangePin(getActivity());
-        mPresenter.processChangePassword();
-        ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_TOUCH_CHANGEPASSWORD);
+        if (isPermissionGrantedAndRequest(Manifest.permission.READ_SMS, PERMISSION_CODE.READ_SMS)) {
+            mPresenter.processChangePassword();
+            ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_TOUCH_CHANGEPASSWORD);
+        }
     }
 
     @OnClick(R.id.protect_account_rl_logout)
@@ -156,4 +158,17 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
         return false;
     }
 
+    @Override
+    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
+        if (!isGranted) {
+            return;
+        }
+
+        switch (permissionRequestCode) {
+            case PERMISSION_CODE.READ_SMS:
+                mPresenter.processChangePassword();
+                ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_TOUCH_CHANGEPASSWORD);
+                break;
+        }
+    }
 }
