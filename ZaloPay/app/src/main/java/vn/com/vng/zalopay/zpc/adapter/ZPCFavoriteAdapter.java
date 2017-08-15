@@ -21,7 +21,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.zpc.ZPCConfig;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
-import vn.com.vng.zalopay.transfer.widget.FavoriteView;
+import vn.com.vng.zalopay.zpc.ui.view.FavoriteView;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
 
