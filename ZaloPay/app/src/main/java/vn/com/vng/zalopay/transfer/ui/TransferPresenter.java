@@ -63,8 +63,8 @@ import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
  */
 public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
-    private final User mUser;
     final Context applicationContext;
+    private final User mUser;
     private final ZaloPayRepository mZaloPayRepository;
     private final ZPCStore.Repository mFriendRepository;
     private final TransferStore.Repository mTransferRepository;
@@ -167,70 +167,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         ensureHaveProfile();
     }
 
-    private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
-
-        private String toZalopayName;
-
-        ZaloPayUserSubscriber(String toZalopayName) {
-            this.toZalopayName = toZalopayName;
-        }
-
-        @Override
-        public void onStart() {
-            showLoading();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.d(e, "Error!!! Get zalopay info");
-
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                return;
-            }
-
-            if (mView == null) {
-                return;
-            }
-
-            hideLoading();
-            String message = ErrorMessageFactory.create(applicationContext, e);
-
-            if (e instanceof NetworkConnectionException) {
-                showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
-                return;
-            } else if (e instanceof BodyException
-                    && ((BodyException) e).errorCode == ServerErrorMessage.ZALOPAYNAME_NOT_EXIST
-                    && isTransferFixedMoney()
-                    && !TextUtils.isEmpty(toZalopayName)) {
-                showDialogThenClose(
-                        String.format(mView.getContext().getString(R.string.receiver_invalid), toZalopayName),
-                        R.string.txt_close,
-                        SweetAlertDialog.ERROR_TYPE);
-                return;
-            }
-
-            showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
-        }
-
-        @Override
-        public void onNext(Person person) {
-            Timber.d("Get zalopay info success : displayName [%s] avatar [%s] zalopayId [%s]", person.displayName, person.avatar, person.zaloPayId);
-
-            updateTransferObject(person);
-
-            if (mView == null) {
-                return;
-            }
-
-            if (!TextUtils.isEmpty(person.avatar) || !TextUtils.isEmpty(person.displayName)) { //Vì sandbox có 1 vài user cũ không có zalopay info
-                mView.setTransferInfo(mTransferObject, !isTransferFixedMoney());
-            }
-
-            hideLoading();
-            checkShowButtonTransfer();
-        }
-    }
-
     void updateTransferObject(Person person) {
 
         mTransferObject.zalopayId = person.zaloPayId;
@@ -312,28 +248,29 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private Item buildItem() {
-        String receiverName = !TextUtils.isEmpty(mTransferObject.zalopayName) ? mTransferObject.zalopayName :
+        String zaloPayName = !TextUtils.isEmpty(mTransferObject.zalopayName) ? mTransferObject.zalopayName :
                 mTransferObject.displayName;
+
+        String receiverName = mTransferObject.transferMode == Constants.TransferMode.TransferToZaloPayID ?
+                zaloPayName : mTransferObject.phoneNumber;
+        if (TextUtils.isEmpty(receiverName)) {
+            receiverName = zaloPayName;
+        }
         String ext = String.format(Item.tranferExtFormat(), receiverName);
         return new Item(TransactionType.MONEY_TRANSFER, ext);
     }
 
     private void transferMoney(long amount) {
-        if(mTransferObject == null){
+        if (mTransferObject == null) {
             Timber.w("mTransferObject NULL - skip do transfer");
             return;
         }
         LocationProvider.updateLocation();
         String item = buildItem().toJson();
-        String receiverId = mTransferObject.transferMode == Constants.TransferMode.TransferToZaloPayID ?
-                mTransferObject.zalopayId : mTransferObject.phoneNumber;
-        if(TextUtils.isEmpty(receiverId)){
-            receiverId = mTransferObject.zalopayId;
-        }
         Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
                 amount,
                 TransactionType.MONEY_TRANSFER,
-                "1;" + receiverId,
+                "1;" + mTransferObject.zalopayId,
                 mView.getMessage(),
                 mTransferObject.displayName,
                 item)
@@ -602,6 +539,70 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         data.putExtra("param", param);
         activity.setResult(Activity.RESULT_OK, data);
         activity.finish();
+    }
+
+    private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
+
+        private String toZalopayName;
+
+        ZaloPayUserSubscriber(String toZalopayName) {
+            this.toZalopayName = toZalopayName;
+        }
+
+        @Override
+        public void onStart() {
+            showLoading();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d(e, "Error!!! Get zalopay info");
+
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
+            if (mView == null) {
+                return;
+            }
+
+            hideLoading();
+            String message = ErrorMessageFactory.create(applicationContext, e);
+
+            if (e instanceof NetworkConnectionException) {
+                showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
+                return;
+            } else if (e instanceof BodyException
+                    && ((BodyException) e).errorCode == ServerErrorMessage.ZALOPAYNAME_NOT_EXIST
+                    && isTransferFixedMoney()
+                    && !TextUtils.isEmpty(toZalopayName)) {
+                showDialogThenClose(
+                        String.format(mView.getContext().getString(R.string.receiver_invalid), toZalopayName),
+                        R.string.txt_close,
+                        SweetAlertDialog.ERROR_TYPE);
+                return;
+            }
+
+            showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
+        }
+
+        @Override
+        public void onNext(Person person) {
+            Timber.d("Get zalopay info success : displayName [%s] avatar [%s] zalopayId [%s]", person.displayName, person.avatar, person.zaloPayId);
+
+            updateTransferObject(person);
+
+            if (mView == null) {
+                return;
+            }
+
+            if (!TextUtils.isEmpty(person.avatar) || !TextUtils.isEmpty(person.displayName)) { //Vì sandbox có 1 vài user cũ không có zalopay info
+                mView.setTransferInfo(mTransferObject, !isTransferFixedMoney());
+            }
+
+            hideLoading();
+            checkShowButtonTransfer();
+        }
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
