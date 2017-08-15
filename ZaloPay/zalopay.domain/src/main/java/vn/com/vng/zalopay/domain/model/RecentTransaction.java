@@ -17,6 +17,7 @@ public class RecentTransaction implements Parcelable {
     public String phoneNumber;
     public long amount;
     public String message;
+    public MoneyTransferModeEnum transferMode;
 
     // Temporary data, don't need to store
     public String transactionId;
@@ -40,6 +41,7 @@ public class RecentTransaction implements Parcelable {
         dest.writeLong(this.amount);
         dest.writeString(this.message);
         dest.writeString(this.transactionId);
+        dest.writeInt(this.transferMode.getValue());
     }
 
     protected RecentTransaction(Parcel in) {
@@ -52,6 +54,7 @@ public class RecentTransaction implements Parcelable {
         this.amount = in.readLong();
         this.message = in.readString();
         this.transactionId = in.readString();
+        this.transferMode = MoneyTransferModeEnum.fromInt(in.readInt());
     }
 
     public static final Parcelable.Creator<RecentTransaction> CREATOR = new Parcelable.Creator<RecentTransaction>() {

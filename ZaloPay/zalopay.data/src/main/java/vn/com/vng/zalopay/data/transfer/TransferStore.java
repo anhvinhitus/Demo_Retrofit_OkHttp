@@ -28,6 +28,6 @@ public interface TransferStore {
     interface Repository {
         Observable<List<RecentTransaction>> getRecent();
 
-        Observable<Boolean> append(RecentTransaction item, int transactionType);
+        Observable<Boolean> append(RecentTransaction item);
     }
 }

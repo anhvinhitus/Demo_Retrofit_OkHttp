@@ -42,6 +42,7 @@ import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.MoneyTransferModeEnum;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
@@ -51,8 +52,6 @@ import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPaymentPresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 
@@ -366,7 +365,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
         // Start money transfer process
         startMoneyTransfer(zaloPayId, "", amount, message,
-                Constants.TransferMode.TransferToZaloPayUser, Constants.ActivateSource.FromQRCodeType1);
+                MoneyTransferModeEnum.TransferToZaloPayUser, Constants.ActivateSource.FromQRCodeType1);
 
         hideLoadingView();
         return true;
@@ -404,14 +403,14 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
         // Start money transfer process
         startMoneyTransfer(null, zaloPayName, amount, message,
-                Constants.TransferMode.TransferToZaloPayID, Constants.ActivateSource.FromQRCodeType2);
+                MoneyTransferModeEnum.TransferToZaloPayID, Constants.ActivateSource.FromQRCodeType2);
 
         hideLoadingView();
         return true;
     }
 
     private void startMoneyTransfer(Long zaloPayId, String zaloPayName, long amount, String message,
-                                    Constants.TransferMode mode, Constants.ActivateSource activateSource) {
+                                    MoneyTransferModeEnum mode, Constants.ActivateSource activateSource) {
         TransferObject object = new TransferObject();
         if (zaloPayId != null) {
             object.zalopayId = String.valueOf(zaloPayId);

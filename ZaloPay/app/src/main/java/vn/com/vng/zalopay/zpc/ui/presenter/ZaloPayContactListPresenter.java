@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.data.zpc.ZPCConfig;
 import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
+import vn.com.vng.zalopay.domain.model.MoneyTransferModeEnum;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -297,7 +298,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
         }
 
         TransferObject object = new TransferObject(profile);
-        object.transferMode = Constants.TransferMode.TransferToZaloPayContact;
+        object.transferMode = MoneyTransferModeEnum.TransferToZaloPayContact;
         object.activateSource = Constants.ActivateSource.FromTransferActivity;
         mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
     }

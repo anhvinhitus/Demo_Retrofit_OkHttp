@@ -115,12 +115,6 @@ public interface Constants {
         int LINK_ACCOUNT = 2;
     }
 
-    enum TransferMode {
-        TransferToZaloPayID,
-        TransferToZaloPayContact,
-        TransferToZaloPayUser
-    }
-
     enum ActivateSource {
         FromTransferActivity,
         FromQRCodeType1,

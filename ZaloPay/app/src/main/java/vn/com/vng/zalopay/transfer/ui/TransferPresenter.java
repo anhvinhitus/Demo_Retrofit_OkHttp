@@ -338,17 +338,13 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     void saveTransferRecent() {
-        int transactionType;
-
-        transactionType = TransactionType.MONEY_TRANSFER;
-
         RecentTransaction recent = transform(mTransferObject);
 
         if (recent == null) {
             return;
         }
 
-        Subscription subscription = mTransferRepository.append(recent, transactionType)
+        Subscription subscription = mTransferRepository.append(recent)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
@@ -369,6 +365,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         recent.zaloPayId = object.zalopayId;
         recent.zaloPayName = object.zalopayName;
         recent.phoneNumber = object.phoneNumber;
+        recent.transferMode = object.transferMode;
         return recent;
     }
 

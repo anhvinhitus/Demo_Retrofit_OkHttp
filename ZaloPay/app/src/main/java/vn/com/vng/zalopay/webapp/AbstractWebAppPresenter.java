@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Person;
+import vn.com.vng.zalopay.domain.model.MoneyTransferModeEnum;
 import vn.com.vng.zalopay.domain.model.ZPTransfer;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -267,7 +268,7 @@ abstract class AbstractWebAppPresenter<View extends IWebAppView> extends Abstrac
         object.amount = mZPTransfer.amount;
         object.message = mZPTransfer.message;
         object.activateSource = Constants.ActivateSource.FromWebApp_QRType2;
-        object.transferMode = Constants.TransferMode.TransferToZaloPayID;
+        object.transferMode = MoneyTransferModeEnum.TransferToZaloPayID;
 
         mNavigator.startTransferActivity(getFragment(), object, TRANSFER_MONEY_WEB_APP_REQUEST_CODE);
     }

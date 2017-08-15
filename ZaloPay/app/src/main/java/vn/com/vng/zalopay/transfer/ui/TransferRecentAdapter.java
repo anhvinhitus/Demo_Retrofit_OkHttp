@@ -98,18 +98,27 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
             String phone = PhoneUtil.formatPhoneNumber(item.phoneNumber);
             String zaloPayName = item.zaloPayName;
 
-            if (!TextUtils.isEmpty(zaloPayName)) {
-                mTvPhone.setText(String.format(context.getString(R.string.account_format), zaloPayName));
-                mImgTransferType.setIcon(R.string.sendmoney_zalopayid);
-                mImgTransferType.setIconColor(R.color.transfer_font_zalopay_id);
-            } else if (!TextUtils.isEmpty(phone)) {
-                mTvPhone.setText(String.format(context.getString(R.string.phone_format), phone));
-                mImgTransferType.setIcon(R.string.sendmoney_phonenumber);
-                mImgTransferType.setIconColor(R.color.transfer_font_phone_number);
-            } else {
-                mTvPhone.setText(R.string.not_update_zalopay_id);
-                mImgTransferType.setIcon(R.string.sendmoney_friend);
-                mImgTransferType.setIconColor(R.color.menu_font_ic_blue);
+            switch (item.transferMode) {
+                case TransferToZaloPayContact:
+                    mTvPhone.setText(String.format(context.getString(R.string.phone_format), phone));
+                    mImgTransferType.setIcon(R.string.sendmoney_contacts);
+                    mImgTransferType.setIconColor(R.color.transfer_font_contacts);
+                    break;
+                case TransferToZaloPayID:
+                    mTvPhone.setText(String.format(context.getString(R.string.account_format), zaloPayName));
+                    mImgTransferType.setIcon(R.string.sendmoney_zalopayid);
+                    mImgTransferType.setIconColor(R.color.transfer_font_zalopay_id);
+                    break;
+                case TransferToZaloPayUser:
+                    mTvPhone.setText(String.format(context.getString(R.string.phone_format), phone));
+                    mImgTransferType.setIcon(R.string.sendmoney_phonenumber);
+                    mImgTransferType.setIconColor(R.color.transfer_font_phone_number);
+                    break;
+                case TransferInvalid:
+                    mTvPhone.setText(String.format(context.getString(R.string.phone_format), phone));
+                    mImgTransferType.setIcon(R.string.sendmoney_phonenumber);
+                    mImgTransferType.setIconColor(R.color.transfer_font_phone_number);
+                    break;
             }
         }
 

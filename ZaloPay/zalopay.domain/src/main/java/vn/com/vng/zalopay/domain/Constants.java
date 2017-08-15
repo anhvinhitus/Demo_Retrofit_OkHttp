@@ -1,5 +1,8 @@
 package vn.com.vng.zalopay.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by longlv on 17/05/2016.
  * *

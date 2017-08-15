@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.domain.model.MoneyTransferModeEnum;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -308,7 +309,7 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         TransferObject object = new TransferObject();
         object.zaloId = receiver;
         object.activateSource = Constants.ActivateSource.FromZalo;
-        object.transferMode = Constants.TransferMode.TransferToZaloPayContact;
+        object.transferMode = MoneyTransferModeEnum.TransferToZaloPayContact;
 
         mNavigator.startTransferActivity(mView.getContext(), object);
     }

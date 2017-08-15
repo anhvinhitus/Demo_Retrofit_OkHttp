@@ -8,6 +8,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.domain.model.MoneyTransferModeEnum;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
 
 /**
@@ -27,7 +28,7 @@ public class TransferObject implements Parcelable {
     public long amount;
     public String message;
 
-    public Constants.TransferMode transferMode = Constants.TransferMode.TransferToZaloPayContact;
+    public MoneyTransferModeEnum transferMode = MoneyTransferModeEnum.TransferToZaloPayContact;
     public Constants.ActivateSource activateSource = Constants.ActivateSource.FromTransferActivity;
 
     public boolean isEnoughZalopayInfo() {
@@ -49,7 +50,7 @@ public class TransferObject implements Parcelable {
         dest.writeString(this.phoneNumber);
         dest.writeLong(this.amount);
         dest.writeString(this.message);
-        dest.writeInt(this.transferMode == null ? -1 : this.transferMode.ordinal());
+        dest.writeInt(this.transferMode.getValue());
         dest.writeInt(this.activateSource == null ? -1 : this.activateSource.ordinal());
     }
 
@@ -96,7 +97,7 @@ public class TransferObject implements Parcelable {
         this.amount = in.readLong();
         this.message = in.readString();
         int tmpTransferMode = in.readInt();
-        this.transferMode = tmpTransferMode == -1 ? null : Constants.TransferMode.values()[tmpTransferMode];
+        this.transferMode = MoneyTransferModeEnum.fromInt(tmpTransferMode);
         int tmpActivateSource = in.readInt();
         this.activateSource = tmpActivateSource == -1 ? null : Constants.ActivateSource.values()[tmpActivateSource];
     }

@@ -10,6 +10,7 @@ import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.domain.model.MoneyTransferModeEnum;
 
 /**
  * Created by AnhHieu on 8/15/16.
@@ -29,7 +30,7 @@ public class TransferRepository implements TransferStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> append(RecentTransaction item, int transactionType) {
+    public Observable<Boolean> append(RecentTransaction item) {
         return ObservableHelper.makeObservable(() -> {
             TransferRecent transferRecent = new TransferRecent();
             transferRecent.zaloPayId = item.zaloPayId;
@@ -37,7 +38,7 @@ public class TransferRepository implements TransferStore.Repository {
             transferRecent.displayName = item.displayName;
             transferRecent.avatar = item.avatar;
             transferRecent.phoneNumber = item.phoneNumber;
-            transferRecent.transferType = (long)transactionType;
+            transferRecent.transferType = (long)item.transferMode.getValue();
             transferRecent.amount = item.amount;
             transferRecent.message = item.message;
             transferRecent.timeCreate = System.currentTimeMillis();
@@ -58,6 +59,7 @@ public class TransferRepository implements TransferStore.Repository {
             transaction.phoneNumber = item.phoneNumber;
             transaction.amount = ConvertHelper.unboxValue(item.amount, 0L);
             transaction.message = item.message;
+            transaction.transferMode = MoneyTransferModeEnum.fromInt((int)ConvertHelper.unboxValue(item.transferType, 0L));
             return transaction;
         }
         return null;
