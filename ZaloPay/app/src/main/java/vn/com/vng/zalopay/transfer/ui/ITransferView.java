@@ -24,8 +24,6 @@ public interface ITransferView extends ILoadDataView {
 
     long getAmount();
 
-    String getMessage();
-
     void showErrorTransferFixedMoney(String error);
 
     void hideErrorTransferFixedMoney();

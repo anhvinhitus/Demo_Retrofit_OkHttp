@@ -186,30 +186,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mTransferObject.phoneNumber = PhoneUtil.formatPhoneNumber(person.phonenumber);
     }
 
-    void updateTransferObject(IBuilder builder) {
-        long amount = 0;
-        String message = null;
-
-        if (builder != null) {
-            amount = builder.getOrder().amount;
-            message = builder.getOrder().description;
-        }
-
-        Timber.d("Complete transfer zalo : amount [%s] message [%s]", amount, message);
-
-        if (amount == 0) {
-            amount = mView.getAmount();
-        }
-
-        if (message == null) {
-            message = mView.getMessage();
-        }
-
-        mTransferObject.amount = amount;
-        mTransferObject.message = message;
-
-    }
-
     void shouldFinishTransfer() {
         if (mTransferObject.activateSource == Constants.ActivateSource.FromWebApp_QRType2) {
             handleFailedTransferWeb(mView.getActivity(),
@@ -222,9 +198,9 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 || mTransferObject.activateSource == Constants.ActivateSource.FromWebApp_QRType2);
     }
 
-    void doClickTransfer(long amount) {
+    void doClickTransfer(long amount, String message) {
         Timber.d("Handle do transfer : amount [%s]", amount);
-        doTransfer(amount);
+        doTransfer(amount, message);
         if (amount > 0) {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_INPUT_AMOUNT);
         }
@@ -232,7 +208,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_CONTINUE);
     }
 
-    private void doTransfer(long amount) {
+    // request start transfer flow
+    private void doTransfer(long amount, String message) {
         if (mView == null) {
             Timber.d("mView is null");
             return;
@@ -248,37 +225,53 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             return;
         }
 
-        transferMoney(amount);
+        transferMoney(amount, message);
     }
 
     @NonNull
-    private Item buildItem() {
-        String zaloPayName = !TextUtils.isEmpty(mTransferObject.zalopayName) ? mTransferObject.zalopayName :
+    private Item buildOrderItemExtForMoneyTransfer() {
+        String zaloPayName = !TextUtils.isEmpty(mTransferObject.zalopayName) ?
+                mTransferObject.zalopayName :
                 mTransferObject.displayName;
 
-        String receiverName = mTransferObject.transferMode == Constants.TransferMode.TransferToZaloPayID ?
-                zaloPayName : mTransferObject.phoneNumber;
-        if (TextUtils.isEmpty(receiverName)) {
-            receiverName = zaloPayName;
+        String receiverName;
+        switch (mTransferObject.transferMode) {
+            case TransferToZaloPayID:
+                receiverName = mTransferObject.zalopayName;
+                break;
+            case TransferToZaloPayContact:
+                receiverName = mTransferObject.phoneNumber;
+                break;
+            case TransferToZaloPayUser:
+                receiverName = mTransferObject.phoneNumber;
+                break;
+            default:
+                receiverName = zaloPayName;
         }
+
         String ext = String.format(Item.tranferExtFormat(), receiverName);
         return new Item(TransactionType.MONEY_TRANSFER, ext);
     }
 
-    private void transferMoney(long amount) {
+    // Create wallet order
+    // then pass to SDK for payment
+    private void transferMoney(long amount, String message) {
         if (mTransferObject == null) {
             Timber.w("mTransferObject NULL - skip do transfer");
             return;
         }
+        mTransferObject.message = message;
+        mTransferObject.amount = amount;
+
         LocationProvider.updateLocation();
-        String item = buildItem().toJson();
+        String item = buildOrderItemExtForMoneyTransfer().toJson();
         Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
-                amount,
-                TransactionType.MONEY_TRANSFER,
-                "1;" + mTransferObject.zalopayId,
-                mView.getMessage(),
-                mTransferObject.displayName,
-                item)
+                    mTransferObject.amount,
+                    TransactionType.MONEY_TRANSFER,
+                    "1;" + mTransferObject.zalopayId,
+                    mTransferObject.message,
+                    mTransferObject.displayName,
+                    item)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
@@ -664,7 +657,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 return;
             }
             if (paymentError.value() == PaymentError.ERR_CODE_NON_STATE.value()) {
-                closeTranfer();
+                closeTransfer();
             }
         }
 
@@ -674,13 +667,12 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             if (mView == null || mView.getActivity() == null) {
                 return;
             }
-            updateTransferObject(builder);
             if (mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
                 handleCompletedTransferZalo(mView.getActivity());
             } else if (mTransferObject.activateSource == Constants.ActivateSource.FromWebApp_QRType2) {
                 handleCompletedTransferWeb(mView.getActivity());
             } else {
-                closeTranfer();
+                closeTransfer();
             }
             saveTransferRecent();
         }
@@ -690,18 +682,20 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             Timber.d("Transaction is completed : success [%s] transId [%s]", isSuccessful, transId);
             super.onPreComplete(isSuccessful, transId, pAppTransId);
             transactionId = transId;
-            if (mTransferObject.activateSource == Constants.ActivateSource.FromQRCodeType1) {
-                if (isSuccessful) {
-                    sendNotificationMessage(mTransferObject.zalopayId,
-                            Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransferObject.amount, transId);
-                } else {
-                    sendNotificationMessage(mTransferObject.zalopayId,
-                            Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0, null);
-                }
+            if (mTransferObject.activateSource != Constants.ActivateSource.FromQRCodeType1) {
+                return;
+            }
+
+            if (isSuccessful) {
+                sendNotificationMessage(mTransferObject.zalopayId,
+                        Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransferObject.amount, transId);
+            } else {
+                sendNotificationMessage(mTransferObject.zalopayId,
+                        Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0, null);
             }
         }
 
-        private void closeTranfer() {
+        private void closeTransfer() {
             if (mView == null || mView.getActivity() == null) {
                 return;
             }

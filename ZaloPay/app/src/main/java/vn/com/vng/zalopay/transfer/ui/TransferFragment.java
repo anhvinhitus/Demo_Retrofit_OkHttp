@@ -210,7 +210,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
         if (mAmountView.validate()) {
-            mPresenter.doClickTransfer(getAmount());
+            mPresenter.doClickTransfer(getAmount(), getMessage());
         }
     }
 
@@ -264,8 +264,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         return 0;
     }
 
-    @Override
-    public String getMessage() {
+    private String getMessage() {
         if (mEdtMessageView != null) {
             return mEdtMessageView.getText().toString();
         }
