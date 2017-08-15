@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.view;
+package vn.com.vng.zalopay.zpc.ui;
 
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
@@ -7,7 +7,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  * *
  */
 
-public interface ISyncContactView extends ILoadDataView {
+public interface SyncContactView extends ILoadDataView {
 
     void hideContactBookCount();
 

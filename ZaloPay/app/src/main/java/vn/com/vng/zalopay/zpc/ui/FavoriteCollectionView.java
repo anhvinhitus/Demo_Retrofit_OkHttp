@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.view;
+package vn.com.vng.zalopay.zpc.ui;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,13 +22,10 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
  * *
  */
 
-public class FavoriteView extends LinearLayout implements FavoriteAdapter.OnClickFavoriteListener {
+public class FavoriteCollectionView extends LinearLayout implements FavoriteAdapter.OnClickFavoriteListener {
 
     public interface OnEditFavoriteListener {
         void onRemoveFavorite(FavoriteData favorite);
-
-        void onAddFavorite(FavoriteData favorite);
-
         void onFavoriteItemClick(FavoriteData favorite);
     }
 
@@ -46,7 +43,7 @@ public class FavoriteView extends LinearLayout implements FavoriteAdapter.OnClic
     private FavoriteAdapter mAdapter;
     private int mMaximum = 10;
 
-    public FavoriteView(Context context) {
+    public FavoriteCollectionView(Context context) {
         super(context);
         if (!isInEditMode()) {
             init(context);

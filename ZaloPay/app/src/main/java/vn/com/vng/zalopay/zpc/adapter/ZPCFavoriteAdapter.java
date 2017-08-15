@@ -21,7 +21,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.zpc.ZPCConfig;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
-import vn.com.vng.zalopay.zpc.ui.view.FavoriteView;
+import vn.com.vng.zalopay.zpc.ui.FavoriteCollectionView;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
 
@@ -33,7 +33,7 @@ import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
 public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.SwipeHolder> {
     private static final int VIEW_TYPE_COUNT = 3;
     private final int mHeaderViewType = 2;
-    private final FavoriteView mFavoriteView;
+    private final FavoriteCollectionView mFavoriteView;
     private final Space mEmptyView;
     protected OnFavoriteListener mListener;
     private SwipeLayout.SwipeListener mSwipeItemListener;
@@ -42,8 +42,8 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
         super(context, R.layout.row_swipe_contact_layout);
         mListener = listener;
         mEmptyView = new Space(context);
-        mFavoriteView = new FavoriteView(context);
-        mFavoriteView.setOnEditFavoriteListener(new FavoriteView.OnEditFavoriteListener() {
+        mFavoriteView = new FavoriteCollectionView(context);
+        mFavoriteView.setOnEditFavoriteListener(new FavoriteCollectionView.OnEditFavoriteListener() {
             @Override
             public void onRemoveFavorite(FavoriteData favorite) {
                 if (mListener != null) {
@@ -51,11 +51,6 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
                     notifyDataSetChanged();
                 }
                 ToastUtil.showCustomToast(mContext, mContext.getString(R.string.friend_favorite_removed), false);
-            }
-
-            @Override
-            public void onAddFavorite(FavoriteData favorite) {
-
             }
 
             @Override
@@ -109,7 +104,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
             return getHeaderView();
         } else {
             View view = super.getView(position - 1, convertView, parent);
-            if (view instanceof FavoriteView) {
+            if (view instanceof FavoriteCollectionView) {
                 Timber.d("Loi view type [position %s viewType %s]", position, viewType);
                 if (convertView != null) {
                     Timber.d("convertView [%s]", convertView.getClass());
@@ -145,7 +140,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
     static class SwipeHolder extends ViewHolder {
         private final OnFavoriteListener mListener;
         private final FavoriteData mFavoriteData;
-        private final FavoriteView mFavoriteView;
+        private final FavoriteCollectionView mFavoriteView;
         private final int mColorYellow;
         @BindView(R.id.swipe)
         SwipeLayout mSwipeLayout;
@@ -159,7 +154,7 @@ public final class ZPCFavoriteAdapter extends ZPCAdapter<ZPCFavoriteAdapter.Swip
         View mForeground;
         private Context mContext;
 
-        SwipeHolder(View view, FavoriteView favoriteView, OnFavoriteListener listener, SwipeLayout.SwipeListener swipeListener) {
+        SwipeHolder(View view, FavoriteCollectionView favoriteView, OnFavoriteListener listener, SwipeLayout.SwipeListener swipeListener) {
             super(view);
             mContext = view.getContext();
             mListener = listener;

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.fragment;
+package vn.com.vng.zalopay.zpc.ui;
 
 import android.Manifest;
 import android.app.Activity;
@@ -54,15 +54,13 @@ import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.zpc.adapter.ZPCFavoriteAdapter;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
-import vn.com.vng.zalopay.zpc.ui.presenter.ZaloPayContactListPresenter;
-import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 
 /**
  * Created by AnhHieu on 10/10/16.
  * *
  */
 
-public class ZaloPayContactListFragment extends RuntimePermissionFragment implements IZaloFriendListView,
+public class ContactListFragment extends RuntimePermissionFragment implements ContactListView,
         SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.listview)
@@ -73,7 +71,7 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
     View mLoadingView;
     ZPCFavoriteAdapter mAdapter;
     @Inject
-    ZaloPayContactListPresenter mPresenter;
+    ContactListPresenter mPresenter;
     @BindView(R.id.tv_empty)
     TextView mTvEmptyView;
     @BindView(R.id.ll_empty)
@@ -119,8 +117,8 @@ public class ZaloPayContactListFragment extends RuntimePermissionFragment implem
         }
     };
 
-    public static ZaloPayContactListFragment newInstance(Bundle args) {
-        ZaloPayContactListFragment fragment = new ZaloPayContactListFragment();
+    public static ContactListFragment newInstance(Bundle args) {
+        ContactListFragment fragment = new ContactListFragment();
         fragment.setArguments(args);
         return fragment;
     }

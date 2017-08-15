@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.activity;
+package vn.com.vng.zalopay.zpc.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,11 +12,10 @@ import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
-import vn.com.vng.zalopay.zpc.ui.fragment.ZaloPayContactListFragment;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPScreens;
 
-public class ZaloPayContactActivity extends UserBaseToolBarActivity {
+public class ContactListActivity extends UserBaseToolBarActivity {
     private final ActivityTracker mActivityTracker = new ActivityTracker(ZPScreens.MONEYTRANSFER_ZFRIEND, -1, ZPEvents.MONEYTRANSFER_ZFRIEND_TOUCH_BACK);
     @BindView(R.id.title)
     TextView tvTitle;
@@ -49,7 +48,7 @@ public class ZaloPayContactActivity extends UserBaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return ZaloPayContactListFragment.newInstance(getExtras());
+        return ContactListFragment.newInstance(getExtras());
     }
 
     private Bundle getExtras() {

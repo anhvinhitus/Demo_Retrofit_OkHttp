@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.view;
+package vn.com.vng.zalopay.zpc.ui;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  * *
  */
 
-public interface IZaloFriendListView extends ILoadDataView {
+public interface ContactListView extends ILoadDataView {
     void swapCursor(Cursor cursor);
 
     void setRefreshing(boolean var);

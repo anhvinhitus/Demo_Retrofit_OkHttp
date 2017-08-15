@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.presenter;
+package vn.com.vng.zalopay.zpc.ui;
 
 import android.database.Cursor;
 
@@ -8,7 +8,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 
 /**
  * Contact list subscriber
@@ -16,9 +15,9 @@ import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
  */
 class ContactListSubscriber extends DefaultSubscriber<Cursor> {
     private final boolean mIsSearch;
-    private final WeakReference<IZaloFriendListView> mViewReference;
+    private final WeakReference<ContactListView> mViewReference;
 
-    ContactListSubscriber(boolean isSearch, IZaloFriendListView view) {
+    ContactListSubscriber(boolean isSearch, ContactListView view) {
         mIsSearch = isSearch;
         mViewReference = new WeakReference<>(view);
     }
@@ -31,7 +30,7 @@ class ContactListSubscriber extends DefaultSubscriber<Cursor> {
         }
 
 
-        IZaloFriendListView view = mViewReference.get();
+        ContactListView view = mViewReference.get();
         if (view == null) {
             return;
         }
@@ -53,7 +52,7 @@ class ContactListSubscriber extends DefaultSubscriber<Cursor> {
             return;
         }
 
-        IZaloFriendListView view = mViewReference.get();
+        ContactListView view = mViewReference.get();
         if (view == null) {
             return;
         }

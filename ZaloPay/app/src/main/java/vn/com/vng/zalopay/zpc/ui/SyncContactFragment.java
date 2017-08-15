@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.fragment;
+package vn.com.vng.zalopay.zpc.ui;
 
 import android.Manifest;
 import android.os.Bundle;
@@ -16,15 +16,13 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
-import vn.com.vng.zalopay.zpc.ui.presenter.SyncContactPresenter;
-import vn.com.vng.zalopay.zpc.ui.view.ISyncContactView;
 
 /**
  * Created by hieuvm on 7/21/17.
  * *
  */
 
-public class SyncContactFragment extends RuntimePermissionFragment implements ISyncContactView {
+public class SyncContactFragment extends RuntimePermissionFragment implements SyncContactView {
 
     @BindView(R.id.countUcb)
     TextView mCountUcbView;
@@ -150,15 +148,8 @@ public class SyncContactFragment extends RuntimePermissionFragment implements IS
         ToastUtil.showCustomToast(getContext(), getString(R.string.already_update));
     }
 
-    @OnClick(R.id.btnUpdate)
+    @OnClick({R.id.btnUpdate, R.id.layoutContact})
     public void onViewClicked() {
-        if (isPermissionGrantedAndRequest(Manifest.permission.READ_CONTACTS, PERMISSION_CODE.READ_CONTACTS)) {
-            mPresenter.syncContact();
-        }
-    }
-
-    @OnClick(R.id.layoutContact)
-    public void onClickLayoutContact(){
         if (isPermissionGrantedAndRequest(Manifest.permission.READ_CONTACTS, PERMISSION_CODE.READ_CONTACTS)) {
             mPresenter.syncContact();
         }

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.view;
+package vn.com.vng.zalopay.zpc.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

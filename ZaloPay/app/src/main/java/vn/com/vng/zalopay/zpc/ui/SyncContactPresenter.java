@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.presenter;
+package vn.com.vng.zalopay.zpc.ui;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -18,14 +18,13 @@ import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.vng.zalopay.zpc.ui.view.ISyncContactView;
 
 /**
  * Created by hieuvm on 7/21/17.
  * *
  */
 
-public final class SyncContactPresenter extends AbstractPresenter<ISyncContactView> {
+public final class SyncContactPresenter extends AbstractPresenter<SyncContactView> {
 
     protected final Context mContext;
     private final ZPCStore.Repository mFriendRepository;

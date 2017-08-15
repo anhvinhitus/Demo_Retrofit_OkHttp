@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.presenter;
+package vn.com.vng.zalopay.zpc.ui;
 
 import android.support.annotation.NonNull;
 
@@ -6,7 +6,6 @@ import java.lang.ref.WeakReference;
 
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
-import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 
 /**
  * Created by hieuvm on 8/13/17.
@@ -15,15 +14,15 @@ import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 
 final class GetUserInfoByPhoneSubscriber extends DefaultSubscriber<ZPProfile> {
 
-    private final WeakReference<IZaloFriendListView> mWeakReferenceView;
+    private final WeakReference<ContactListView> mWeakReferenceView;
 
-    GetUserInfoByPhoneSubscriber(@NonNull IZaloFriendListView view) {
+    GetUserInfoByPhoneSubscriber(@NonNull ContactListView view) {
         mWeakReferenceView = new WeakReference<>(view);
     }
 
     @Override
     public void onStart() {
-        IZaloFriendListView mView = mWeakReferenceView.get();
+        ContactListView mView = mWeakReferenceView.get();
 
         if (mView != null) {
             mView.showLoading();
@@ -32,7 +31,7 @@ final class GetUserInfoByPhoneSubscriber extends DefaultSubscriber<ZPProfile> {
 
     @Override
     public void onNext(ZPProfile profile) {
-        IZaloFriendListView mView = mWeakReferenceView.get();
+        ContactListView mView = mWeakReferenceView.get();
 
         if (mView == null) {
             return;

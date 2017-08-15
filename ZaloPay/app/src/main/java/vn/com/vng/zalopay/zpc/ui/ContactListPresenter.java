@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.zpc.ui.presenter;
+package vn.com.vng.zalopay.zpc.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,14 +37,13 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
-import vn.com.vng.zalopay.zpc.ui.view.IZaloFriendListView;
 
 /**
  * Created by AnhHieu on 10/10/16.
  * *
  */
 
-public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFriendListView> implements OnFavoriteListener {
+public final class ContactListPresenter extends AbstractPresenter<ContactListView> implements OnFavoriteListener {
 
     private static final int MAX_FAVORITE = 10;
     private static final int TIME_DELAY_SEARCH = 300;
@@ -62,9 +61,9 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     User mUser;
 
     @Inject
-    ZaloPayContactListPresenter(Context context,
-                                Navigator navigator,
-                                ZPCStore.Repository zpcRepository) {
+    ContactListPresenter(Context context,
+                         Navigator navigator,
+                         ZPCStore.Repository zpcRepository) {
         this.mZPCRepository = zpcRepository;
         this.mContext = context;
         this.mNavigator = navigator;
@@ -72,7 +71,7 @@ public final class ZaloPayContactListPresenter extends AbstractPresenter<IZaloFr
     }
 
     @Override
-    public void attachView(IZaloFriendListView view) {
+    public void attachView(ContactListView view) {
         super.attachView(view);
         initSearchPhoneContact();
     }

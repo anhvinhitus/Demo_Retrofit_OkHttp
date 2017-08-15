@@ -83,8 +83,8 @@ import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
-import vn.com.vng.zalopay.zpc.ui.activity.SyncContactActivity;
-import vn.com.vng.zalopay.zpc.ui.activity.ZaloPayContactActivity;
+import vn.com.vng.zalopay.zpc.ui.ContactListActivity;
+import vn.com.vng.zalopay.zpc.ui.SyncContactActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
@@ -474,7 +474,7 @@ public class Navigator {
 
 
     private Intent getIntentZaloPayContactList(Context context, @ZpcViewType int viewType) {
-        Intent intent = new Intent(context, ZaloPayContactActivity.class);
+        Intent intent = new Intent(context, ContactListActivity.class);
         intent.putExtra(BundleConstants.ZPC_VIEW_TYPE, viewType);
         return intent;
     }
