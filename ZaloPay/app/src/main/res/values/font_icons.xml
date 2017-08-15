@@ -46,6 +46,7 @@
     <string name="profile_lock">profile_lock</string>
     <string name="profile_camera">profile_camera</string>
     <string name="profile_library">profile_library</string>
+    <string name="profile_avatar_default">profile_avatadefault</string>
 
     <string name="app_1_transfers">app_1_transfers</string>
     <string name="app_1_receivemoney">app_1_receivemoney</string>

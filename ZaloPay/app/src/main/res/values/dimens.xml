@@ -22,6 +22,7 @@
     <dimen name="font_size_tab_icon">30dp</dimen>
     <dimen name="font_size_tab_sub_icon">18dp</dimen>
     <dimen name="font_size_toolbar_icon">20dp</dimen>
+    <dimen name="font_size_avatar_default_icon">40dp</dimen>
 
     <dimen name="font_size_delete">18dp</dimen>
 

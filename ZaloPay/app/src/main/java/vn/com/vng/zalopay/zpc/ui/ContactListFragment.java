@@ -100,6 +100,9 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
     @BindView(R.id.not_save_yet_iv_avatar)
     SimpleDraweeView mAvatar;
 
+    @BindView(R.id.not_save_yet_icf_avatar)
+    IconFont mAvatarDefault;
+
     ZPCFavoriteAdapter mAdapter;
     @ZpcViewType
     private int mViewType = ZpcViewType.ZPC_All;
@@ -451,6 +454,8 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
             String phoneNumber = mEdtSearchView.getText().toString();
             if (PhoneUtil.isMobileNumber(phoneNumber)) {
                 mPresenter.getUserInfoNotInZPC(phoneNumber);
+                mAvatarDefault.setVisibility(View.VISIBLE);
+                mAvatar.setVisibility(View.GONE);
             } else {
                 mTvEmptyView.setText(R.string.no_result_your_search);
                 mItemNumberNotSaveYet.setVisibility(View.GONE);
@@ -530,7 +535,13 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
 
         if (!TextUtils.isEmpty(profile.avatar)) {
             mAvatar.setImageURI(profile.avatar);
+            mAvatarDefault.setVisibility(View.GONE);
+            mAvatar.setVisibility(View.VISIBLE);
+        } else {
+            mAvatarDefault.setVisibility(View.VISIBLE);
+            mAvatar.setVisibility(View.GONE);
         }
+
         mLlEmptyView.setVisibility(View.GONE);
     }
 
@@ -546,10 +557,13 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
             mItemNumberNotSaveYet.setVisibility(View.VISIBLE);
             mTvDisplayNameNotSave.setText(profile.phonenumber);
             mTvNumberNotSave.setText(getString(R.string.not_number_save_yet));
-            mAvatar.setImageResource(R.drawable.ic_avatar_default);
+            mAvatarDefault.setVisibility(View.VISIBLE);
+            mAvatar.setVisibility(View.GONE);
             mLlEmptyView.setVisibility(View.GONE);
         } else {
             mItemNumberNotSaveYet.setVisibility(View.GONE);
+            mAvatarDefault.setVisibility(View.GONE);
+            mAvatar.setVisibility(View.VISIBLE);
             mTvEmptyView.setText(R.string.no_result_your_search);
             mLlEmptyView.setVisibility(View.VISIBLE);
         }

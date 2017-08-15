@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:fresco="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/itemNumberNotSaveYet"
-              android:layout_width="match_parent"
-              android:layout_height="64dp"
-              android:background="@drawable/contact_selector"
-              android:baselineAligned="false"
-              android:gravity="center_vertical"
-              android:orientation="horizontal">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemNumberNotSaveYet"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:background="@drawable/contact_selector"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/not_save_yet_iv_avatar"
-        style="@style/AvatarDraweeView"
+    <FrameLayout
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="@dimen/padding_large"
-        android:layout_marginLeft="@dimen/padding_large"
-        android:layout_marginRight="@dimen/padding_large"
-        android:layout_marginStart="@dimen/padding_large"
-        fresco:placeholderImage="@drawable/ic_avatar_default"/>
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/spacing.medium"
+        android:layout_marginLeft="@dimen/spacing.medium.s"
+        android:layout_marginRight="@dimen/spacing.medium.s"
+        android:layout_marginTop="@dimen/spacing.medium">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/not_save_yet_iv_avatar"
+            style="@style/AvatarDraweeView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.zalopay.ui.widget.IconFont
+            android:id="@+id/not_save_yet_icf_avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/profile_avatar_default"
+            app:iconName="@string/profile_avatar_default"
+            app:iconSize="@dimen/font_size_avatar_default_icon" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_color_primary"
-            tools:text="0966 888 888"/>
+            tools:text="0966 888 888" />
 
         <TextView
             android:id="@+id/not_save_yet_tv_phone_number"
@@ -40,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text="@string/not.number.save.yet"
-            android:textSize="@dimen/textsize.text.sub"/>
+            android:textSize="@dimen/textsize.text.sub" />
 
     </LinearLayout>
 

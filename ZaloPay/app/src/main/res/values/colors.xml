@@ -126,6 +126,7 @@
     <color name="menu_font_ic_gray">#53718b</color>
     <color name="transfer_font_green">#008fe5</color>
     <color name="profile_font_gray">#848d99</color>
+    <color name="profile_avatar_default">#c9d4e5</color>
 
 
     <color name="transfer_font_phone_number">#129d5a</color>
