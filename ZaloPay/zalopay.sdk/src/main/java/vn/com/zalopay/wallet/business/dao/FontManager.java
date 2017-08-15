@@ -12,14 +12,14 @@ import timber.log.Timber;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 
-/***
+/*
  * class for caching font.
  */
-public class CFontManager extends SingletonBase {
-    private static CFontManager _object;
+public class FontManager extends SingletonBase {
+    private static FontManager _object;
     private Map<String, Typeface> fontMap;
 
-    public CFontManager() {
+    public FontManager() {
         super();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             fontMap = new ArrayMap<>();
@@ -28,11 +28,11 @@ public class CFontManager extends SingletonBase {
         }
     }
 
-    public static CFontManager getInstance() {
-        if (CFontManager._object == null) {
-            CFontManager._object = new CFontManager();
+    public static FontManager getInstance() {
+        if (FontManager._object == null) {
+            FontManager._object = new FontManager();
         }
-        return CFontManager._object;
+        return FontManager._object;
     }
 
     public Typeface loadFont(String pFontName) {

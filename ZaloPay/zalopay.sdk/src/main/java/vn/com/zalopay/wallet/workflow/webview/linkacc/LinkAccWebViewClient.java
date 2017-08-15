@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.webview.linkacc;
+package vn.com.zalopay.wallet.workflow.webview.linkacc;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
@@ -32,8 +32,8 @@ import vn.com.zalopay.wallet.entity.enumeration.EJavaScriptType;
 import vn.com.zalopay.wallet.entity.bank.BankScript;
 import vn.com.zalopay.wallet.entity.linkacc.LinkAccScriptInput;
 import vn.com.zalopay.wallet.entity.linkacc.LinkAccScriptOutput;
-import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
-import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.base.PaymentWebView;
+import vn.com.zalopay.wallet.workflow.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;

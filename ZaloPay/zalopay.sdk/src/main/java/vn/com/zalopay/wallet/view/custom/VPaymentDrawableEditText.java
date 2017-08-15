@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDrawableEdittext;
+import vn.com.zalopay.wallet.view.interfaces.IDoActionDrawableEdittext;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;

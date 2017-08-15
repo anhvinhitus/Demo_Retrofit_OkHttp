@@ -4,14 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CalculateFee;
-import vn.com.zalopay.wallet.business.behavior.view.paymentfee.PayFeeImpl;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.FeeType;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
@@ -75,14 +71,14 @@ public class MiniPmcTransType implements Parcelable {
 
     @SerializedName("isBankAccountMap")
     public boolean isBankAccountMap = false;
-    /***
+    /*
      * Bank version support feature
      * user input card number or select bank channel which not support on older version
      * then need to show dialog into to user know about newer version
      */
     @SerializedName("minappversion")
-    public String minappversion;
-    /***
+    private String minappversion;
+    /*
      * rule - still show channel not allow in channel list (status = 0) , each channel have 2 policy to allow or not
      * 1. user level - depend on user table map
      * 2. transaction amount not in range supported by channel
@@ -171,29 +167,38 @@ public class MiniPmcTransType implements Parcelable {
         return false;
     }
 
-    /***
+    /*
      * require otp depend on transaction amount
      */
     public boolean isNeedToCheckTransactionAmount() {
         return amountrequireotp > 0;
     }
 
-    /***
-     * calculate fee
-     */
     public void calculateFee(long amount) {
-        this.totalfee = CalculateFee.newInstance().setCalculator(new PayFeeImpl(this)).calculate(amount);
+        this.totalfee = countFee(amount);
+    }
+
+    private double countFee(long amount) {
+        double orderFee = 0;
+        if (feerate > 0) {
+            orderFee = feerate * amount;
+        }
+        if (minfee <= 0) {
+            return orderFee;
+        }
+        switch (feecaltype) {
+            case FeeType.MAX:
+                orderFee = (orderFee > minfee) ? orderFee : minfee;
+                break;
+            case FeeType.SUM:
+                orderFee += minfee;
+                break;
+        }
+        return orderFee;
     }
 
     public boolean hasFee() {
         return totalfee > 0;
-    }
-
-    public MiniPmcTransType fromJsonString(String pJson) {
-        if (pJson == null)
-            return new MiniPmcTransType();
-
-        return (new Gson()).fromJson(pJson, this.getClass());
     }
 
     public boolean isEnable() {
@@ -212,10 +217,10 @@ public class MiniPmcTransType implements Parcelable {
         status = pStatus;
     }
 
-    /***
+    /*
      * whether transaction amount in range of this channel support
      */
-    public boolean isAmountSupport(long pAmount) {
+    private boolean isAmountSupport(long pAmount) {
         if (pAmount <= 0) {
             return false;
         }
@@ -235,7 +240,7 @@ public class MiniPmcTransType implements Parcelable {
         return false;
     }
 
-    public boolean compareToChannel(int pChannelId) {
+    private boolean compareToChannel(int pChannelId) {
         return this.pmcid == pChannelId;
     }
 
@@ -251,10 +256,6 @@ public class MiniPmcTransType implements Parcelable {
         return compareToChannel(Constants.DEFAULT_LINK_ID);
     }
 
-    public boolean isCreditCardChannel() {
-        return compareToChannel(BuildConfig.channel_credit_card);
-    }
-
     public boolean isBankAccount() {
         return compareToChannel(BuildConfig.channel_bankaccount);
     }
@@ -267,7 +268,7 @@ public class MiniPmcTransType implements Parcelable {
         return allowPmcQuota;
     }
 
-    public void setAllowPmcQuota(boolean allowPmcQuota) {
+    private void setAllowPmcQuota(boolean allowPmcQuota) {
         this.allowPmcQuota = allowPmcQuota;
     }
 
@@ -287,7 +288,7 @@ public class MiniPmcTransType implements Parcelable {
         return isBankAccountMap;
     }
 
-    protected int getMinAppVersionSupport() {
+    private int getMinAppVersionSupport() {
         if (!TextUtils.isEmpty(minappversion)) {
             String clearMinAppVersion = minappversion.replace(".", "");
             return Integer.parseInt(clearMinAppVersion);
@@ -296,7 +297,6 @@ public class MiniPmcTransType implements Parcelable {
     }
 
     public boolean isVersionSupport(String pAppVersion) {
-        Timber.d("start check support channel version");
         if (TextUtils.isEmpty(pAppVersion)) {
             return true;
         }

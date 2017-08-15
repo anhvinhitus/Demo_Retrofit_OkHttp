@@ -92,7 +92,7 @@
         android:layout_gravity="bottom"
         android:orientation="vertical" />
 
-    <vn.com.zalopay.wallet.business.webview.base.PaymentWebView
+    <vn.com.zalopay.wallet.workflow.webview.base.PaymentWebView
         android:id="@+id/zpw_threesecurity_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

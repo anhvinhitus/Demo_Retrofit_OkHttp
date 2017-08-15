@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.behavior.view.interfaces;
+package vn.com.zalopay.wallet.view.interfaces;
 
 public interface IDoActionDrawableEdittext extends IBaseDoActionEdittext {
 }

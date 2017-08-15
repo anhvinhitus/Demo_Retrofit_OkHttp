@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.webview.base;
+package vn.com.zalopay.wallet.workflow.webview.base;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.webkit.WebView;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.webview.creditcard.CCWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.creditcard.CCWebViewClient;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public class PaymentWebView extends WebView {

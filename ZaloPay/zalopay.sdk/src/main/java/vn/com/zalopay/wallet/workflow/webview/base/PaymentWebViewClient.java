@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.webview.base;
+package vn.com.zalopay.wallet.workflow.webview.base;
 
 import android.webkit.WebViewClient;
 
@@ -7,9 +7,9 @@ import java.lang.ref.WeakReference;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.workflow.BankCardWorkFlow;
-import vn.com.zalopay.wallet.business.webview.atm.BankWebView;
-import vn.com.zalopay.wallet.business.webview.atm.BankWebViewClient;
-import vn.com.zalopay.wallet.business.webview.atm.BidvWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.atm.BankWebView;
+import vn.com.zalopay.wallet.workflow.webview.atm.BankWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.atm.BidvWebViewClient;
 
 public abstract class PaymentWebViewClient extends WebViewClient {
     public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";

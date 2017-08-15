@@ -47,7 +47,7 @@ import vn.com.zalopay.wallet.entity.bank.MapCard;
 import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.entity.config.OtpRule;
 import vn.com.zalopay.wallet.entity.UserInfo;
-import vn.com.zalopay.wallet.business.error.ErrorManager;
+import vn.com.zalopay.wallet.helper.ErrorCodeHelper;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -1291,7 +1291,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.w(e);
         }
-        if (ErrorManager.needToTerminateTransaction(mPaymentInfoHelper.getStatus())) {
+        if (ErrorCodeHelper.needToTerminateTransaction(mPaymentInfoHelper.getStatus())) {
             terminate(pMessage, true);
             return;
         }

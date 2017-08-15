@@ -45,7 +45,7 @@ import vn.com.zalopay.wallet.entity.bank.PaymentCard;
 import vn.com.zalopay.wallet.entity.bank.BankAccount;
 import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.entity.config.CardRule;
-import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
+import vn.com.zalopay.wallet.workflow.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;

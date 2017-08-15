@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.webview.creditcard;
+package vn.com.zalopay.wallet.workflow.webview.creditcard;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
@@ -20,7 +20,7 @@ import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
-import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;

@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.webview.base;
+package vn.com.zalopay.wallet.workflow.webview.base;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

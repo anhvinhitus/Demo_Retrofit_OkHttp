@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.dao.CFontManager;
+import vn.com.zalopay.wallet.business.dao.FontManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
@@ -26,7 +26,7 @@ public class FontHelper {
     }
 
     public static void applyFont(View pView, String pFontName) {
-        Typeface tf = CFontManager.getInstance().loadFont(pFontName);
+        Typeface tf = FontManager.getInstance().loadFont(pFontName);
         if (tf == null) {
             return;
         }
@@ -47,7 +47,7 @@ public class FontHelper {
                 }
             } else if (pView.getId() != R.id.front_card_number &&
                     ((pView instanceof TextView) || pView instanceof VPaymentDrawableEditText || pView instanceof VPaymentValidDateEditText)) {
-                Typeface typeFace = CFontManager.getInstance().loadFont(pFontName);
+                Typeface typeFace = FontManager.getInstance().loadFont(pFontName);
                 if (typeFace == null) {
                     return;
                 }

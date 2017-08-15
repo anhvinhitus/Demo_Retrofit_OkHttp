@@ -26,9 +26,9 @@ import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 
-import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorAccountArray;
-import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorArray;
-import static vn.com.zalopay.wallet.business.error.ErrorManager.mErrorLoginArray;
+import static vn.com.zalopay.wallet.helper.ErrorCodeHelper.mErrorAccountArray;
+import static vn.com.zalopay.wallet.helper.ErrorCodeHelper.mErrorArray;
+import static vn.com.zalopay.wallet.helper.ErrorCodeHelper.mErrorLoginArray;
 
 /*
  * Created by chucvv on 6/7/17.

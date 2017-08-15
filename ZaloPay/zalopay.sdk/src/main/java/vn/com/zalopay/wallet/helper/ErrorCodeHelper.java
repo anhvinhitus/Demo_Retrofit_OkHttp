@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.error;
+package vn.com.zalopay.wallet.helper;
 
 import android.util.SparseArray;
 
@@ -7,7 +7,7 @@ import vn.com.zalopay.wallet.constants.PaymentStatus;
 /***
  * error code map table
  */
-public class ErrorManager {
+public class ErrorCodeHelper {
     public static final SparseArray<String> mErrorArray = new SparseArray<>();
     public static final SparseArray<String> mErrorLoginArray = new SparseArray<>();
     public static final SparseArray<String> mErrorAccountArray = new SparseArray<>();

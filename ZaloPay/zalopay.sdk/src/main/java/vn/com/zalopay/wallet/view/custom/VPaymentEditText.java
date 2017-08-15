@@ -17,7 +17,7 @@ import android.view.ViewParent;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.view.interfaces.IBaseDoActionEdittext;
+import vn.com.zalopay.wallet.view.interfaces.IBaseDoActionEdittext;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.entity.config.DynamicEditText;

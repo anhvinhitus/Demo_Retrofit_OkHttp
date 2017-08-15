@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.webview.atm;
+package vn.com.zalopay.wallet.workflow.webview.atm;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -26,7 +26,7 @@ import vn.com.zalopay.wallet.entity.bank.AtmScriptOutput;
 import vn.com.zalopay.wallet.entity.response.BaseResponse;
 import vn.com.zalopay.wallet.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.entity.bank.BankScript;
-import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.controller.SDKApplication;

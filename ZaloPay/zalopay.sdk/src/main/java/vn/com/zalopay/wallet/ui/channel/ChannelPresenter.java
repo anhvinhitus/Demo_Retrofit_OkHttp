@@ -29,7 +29,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.entity.Feedback;
 import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.business.error.ErrorManager;
+import vn.com.zalopay.wallet.helper.ErrorCodeHelper;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -269,7 +269,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
         Timber.d("payment info on error %s", message.mError.getMessage());
         String error = TransactionHelper.getMessage(mContext, message.mError);
-        boolean showDialog = mPaymentInfoHelper != null && ErrorManager.shouldShowDialog(mPaymentInfoHelper.getStatus());
+        boolean showDialog = mPaymentInfoHelper != null && ErrorCodeHelper.shouldShowDialog(mPaymentInfoHelper.getStatus());
         onExit(error, showDialog);
     }
 

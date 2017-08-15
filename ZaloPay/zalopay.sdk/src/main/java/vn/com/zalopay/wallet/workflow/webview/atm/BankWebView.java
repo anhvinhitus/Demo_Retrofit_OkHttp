@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.webview.atm;
+package vn.com.zalopay.wallet.workflow.webview.atm;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
+import vn.com.zalopay.wallet.workflow.webview.base.PaymentWebView;
 
 public class BankWebView extends PaymentWebView {
 
