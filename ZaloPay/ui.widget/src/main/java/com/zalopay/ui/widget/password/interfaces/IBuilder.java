@@ -8,10 +8,6 @@ public interface IBuilder {
 
     IBuilder setNeedHashPass(boolean needHash);
 
-    IBuilder setMaxNumberOfTimesWrongPass(int pNumber);
-
-    int getMaxNumberOfTimesWrongPass();
-
     boolean needHashPass();
 
     IBuilder setPasswordCallBack(IPasswordCallBack pinListener);

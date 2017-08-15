@@ -105,4 +105,6 @@
     <string name="exception.receiver.not.existed">Người nhận chưa đăng ký sử dụng Zalo Pay.</string>
 
     <string name="exception.no.connection.try.again">Vui lòng kiểm tra kết nối mạng và thử lại.</string>
+
+    <string name="exception.incorrect.pin.limit">Sai mật khẩu quá số lần quy định</string>
 </resources>

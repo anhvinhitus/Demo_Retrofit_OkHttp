@@ -432,6 +432,9 @@ public class ServerErrorMessage {
             case ZALOPAYNAME_NOT_EXIST:
                 stringResourceId = R.string.exception_zpw_account_not_exist;
                 break;
+            case INCORRECT_PIN_LIMIT:
+                stringResourceId = R.string.exception_incorrect_pin_limit;
+                break;
             default:
                 return null;
         }

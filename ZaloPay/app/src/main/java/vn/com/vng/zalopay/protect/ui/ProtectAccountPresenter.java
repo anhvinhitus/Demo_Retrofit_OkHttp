@@ -23,7 +23,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
@@ -349,7 +348,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                     .showFPSuggestCheckBox(false)
                     .showSupportInfo(true)
                     .setNeedHashPass(true)
-                    .setMaxNumberOfTimesWrongPass(Constants.MAX_NUMBER_OF_TIMES_WRONG_PASS)
                     .setPasswordCallBack(changePasswordCallBack)
                     .setOnCallSupportListener(() -> {
                         if (mContext == null) {
@@ -526,29 +524,33 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             String message = ErrorMessageFactory.create(getActivity(), e);
             setError(message, false);
             setViewStatus(STATUS_OLD_PASS_INVALID);
-            if (e instanceof BodyException) {
-                int errorCode = ((BodyException) e).errorCode;
-                if (errorCode == ServerErrorMessage.INCORRECT_PIN_LIMIT) {
-                    DialogHelper.showConfirmDialog(getActivity(),
-                            getActivity().getString(R.string.password_wrong_many_times_specified),
-                            getActivity().getString(R.string.dialog_turn_off),
-                            null, new ZPWOnEventConfirmDialogListener() {
-                                @Override
-                                public void onCancelEvent() {
 
-                                }
-
-                                @Override
-                                public void onOKEvent() {
-                                    try {
-                                        mPassword.close();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-                }
+            // check throwable errorCode
+            // return if not have errorCode || errorCode != INCORRECT_PIN_LIMIT (-161)
+            if (!(e instanceof BodyException) || ((BodyException) e).errorCode != ServerErrorMessage.INCORRECT_PIN_LIMIT) {
+                return;
             }
+
+            // show dialog if errorCode == INCORRECT_PIN_LIMIT
+            DialogHelper.showConfirmDialog(getActivity(),
+                    ServerErrorMessage.getMessage(getActivity(), ServerErrorMessage.INCORRECT_PIN_LIMIT),
+                    getActivity().getString(R.string.dialog_turn_off),
+                    null, new ZPWOnEventConfirmDialogListener() {
+                        @Override
+                        public void onCancelEvent() {
+
+                        }
+
+                        @Override
+                        public void onOKEvent() {
+                            try {
+                                mPassword.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
 
         }
 
