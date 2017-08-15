@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rx.Observable;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.entity.response.BaseResponse;
 
 /**
  * Created by chucvv on 6/17/17.

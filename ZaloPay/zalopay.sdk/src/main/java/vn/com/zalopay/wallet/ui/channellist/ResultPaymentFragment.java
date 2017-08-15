@@ -13,7 +13,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;

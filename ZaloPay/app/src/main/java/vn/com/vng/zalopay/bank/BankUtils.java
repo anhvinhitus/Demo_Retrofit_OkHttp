@@ -8,18 +8,14 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.bank.list.BankData;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
-import vn.com.zalopay.wallet.constants.CardType;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.entity.bank.BankConfig;
+import vn.com.zalopay.wallet.entity.bank.BankAccount;
+import vn.com.zalopay.wallet.entity.bank.BaseMap;
+import vn.com.zalopay.wallet.entity.bank.MapCard;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 

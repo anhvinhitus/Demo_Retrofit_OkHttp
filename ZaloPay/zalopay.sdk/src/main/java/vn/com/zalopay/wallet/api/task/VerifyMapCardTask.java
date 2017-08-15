@@ -5,9 +5,9 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.VerifyMapCardImpl;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.base.PaymentCard;
-import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.entity.bank.PaymentCard;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
+import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
 
 public class VerifyMapCardTask extends BaseTask<StatusResponse> {

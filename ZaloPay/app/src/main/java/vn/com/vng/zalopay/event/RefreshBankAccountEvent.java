@@ -2,7 +2,7 @@ package vn.com.vng.zalopay.event;
 
 import java.util.List;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
+import vn.com.zalopay.wallet.entity.bank.BankAccount;
 
 /**
  * Created by longlv on 4/13/17.

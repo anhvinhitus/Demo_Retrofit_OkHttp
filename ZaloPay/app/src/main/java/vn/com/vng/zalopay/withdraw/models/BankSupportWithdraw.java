@@ -1,6 +1,6 @@
 package vn.com.vng.zalopay.withdraw.models;
 
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.entity.bank.BankConfig;
 
 /**
  * Created by longlv on 12/2/16.

@@ -11,7 +11,7 @@ import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.api.interfaces.IRequest;
 import vn.com.zalopay.wallet.api.task.BaseTask;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.entity.response.BaseResponse;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.controller.SDKApplication;

@@ -2,14 +2,12 @@ package vn.com.vng.zalopay.bank.list;
 
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
+import vn.com.zalopay.wallet.entity.bank.BankAccount;
+import vn.com.zalopay.wallet.entity.bank.BaseMap;
+import vn.com.zalopay.wallet.entity.bank.MapCard;
 import vn.com.zalopay.wallet.constants.CardType;
 
 /**

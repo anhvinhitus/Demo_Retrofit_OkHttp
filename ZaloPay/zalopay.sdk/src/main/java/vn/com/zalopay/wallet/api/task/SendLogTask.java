@@ -3,8 +3,8 @@ package vn.com.zalopay.wallet.api.task;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.SendLogImpl;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.entity.response.BaseResponse;
+import vn.com.zalopay.wallet.entity.UserInfo;
 
 public class SendLogTask extends BaseTask<BaseResponse> {
     protected UserInfo mUserInfo;

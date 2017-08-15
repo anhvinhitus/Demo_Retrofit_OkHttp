@@ -15,8 +15,8 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
-import vn.com.zalopay.wallet.business.entity.error.SdkError;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
+import vn.com.zalopay.wallet.entity.SdkError;
+import vn.com.zalopay.wallet.entity.bank.BaseMap;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
 import static vn.com.zalopay.wallet.constants.PaymentError.COMPONENT_NULL;

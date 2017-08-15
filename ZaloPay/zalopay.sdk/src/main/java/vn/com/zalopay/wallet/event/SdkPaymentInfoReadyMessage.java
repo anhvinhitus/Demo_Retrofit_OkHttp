@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.event;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
+import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 
 /**

@@ -7,7 +7,7 @@ import java.util.List;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.entity.staticconfig.CardRule;
+import vn.com.zalopay.wallet.entity.config.CardRule;
 
 /**
  * class for detect working with

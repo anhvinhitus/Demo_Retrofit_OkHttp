@@ -4,7 +4,7 @@ import java.util.Map;
 
 import rx.Observable;
 import vn.com.zalopay.wallet.constants.ConstantParams;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.entity.response.BaseResponse;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.api.interfaces.IRequest;
 

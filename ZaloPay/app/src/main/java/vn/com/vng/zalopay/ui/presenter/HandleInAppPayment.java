@@ -33,8 +33,8 @@ import vn.com.vng.zalopay.pw.PaymentWrapper;
 import vn.com.vng.zalopay.pw.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
+import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 
 import static android.app.Activity.RESULT_OK;

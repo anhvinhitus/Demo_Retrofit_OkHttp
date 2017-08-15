@@ -7,7 +7,7 @@ import com.zalopay.ui.widget.mutilview.recyclerview.EnumListBindAdapter;
 
 import java.util.List;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.ui.channellist.item.AbstractItem;
 import vn.com.zalopay.wallet.ui.channellist.item.InputItem;

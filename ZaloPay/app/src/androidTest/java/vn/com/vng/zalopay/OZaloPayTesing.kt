@@ -27,7 +27,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
 import vn.com.vng.zalopay.ui.activity.SplashScreenActivity
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType
+import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType
 import java.lang.reflect.InvocationTargetException
 
 

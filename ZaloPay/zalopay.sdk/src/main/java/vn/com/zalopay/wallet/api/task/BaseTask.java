@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import vn.com.zalopay.wallet.api.ServiceManager;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 

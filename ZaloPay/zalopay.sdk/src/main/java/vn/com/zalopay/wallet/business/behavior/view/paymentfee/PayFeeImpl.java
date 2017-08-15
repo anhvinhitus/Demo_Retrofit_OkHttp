@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.business.behavior.view.paymentfee;
 
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.FeeType;
 
 /***

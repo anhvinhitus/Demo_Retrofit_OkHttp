@@ -3,9 +3,9 @@ package vn.com.zalopay.wallet.interactor;
 import java.util.List;
 
 import rx.Observable;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
+import vn.com.zalopay.wallet.entity.response.BaseResponse;
+import vn.com.zalopay.wallet.entity.bank.BankAccount;
+import vn.com.zalopay.wallet.entity.bank.MapCard;
 
 /**
  * Created by chucvv on 6/10/17.

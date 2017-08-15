@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.listener;
 
-import vn.com.zalopay.wallet.business.entity.error.SdkError;
+import vn.com.zalopay.wallet.entity.SdkError;
 
 public interface ZPPaymentListener {
 

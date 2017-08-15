@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.event;
 
-import vn.com.zalopay.wallet.business.entity.atm.AtmScriptOutput;
+import vn.com.zalopay.wallet.entity.bank.AtmScriptOutput;
 
 /*
  * Created by chucvv on 7/20/17.

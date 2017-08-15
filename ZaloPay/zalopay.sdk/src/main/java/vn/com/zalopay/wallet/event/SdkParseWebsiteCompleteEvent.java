@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.event;
 
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.entity.response.BaseResponse;
 
 /**
  * Created by chucvv on 7/20/17.

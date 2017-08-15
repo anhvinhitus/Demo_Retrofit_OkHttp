@@ -4,8 +4,8 @@ import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.CheckOrderStatusFailSubmitImpl;
-import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
+import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.event.SdkCheckSubmitOrderEvent;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 

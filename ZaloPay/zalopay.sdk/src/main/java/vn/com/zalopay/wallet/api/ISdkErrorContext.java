@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.api;
 
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.entity.UserInfo;
 
 /**
  * Created by huuhoa on 7/19/17.

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -64,7 +63,7 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.interactor.PlatformInfoCallback;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
@@ -74,9 +73,7 @@ import vn.zalopay.promotion.IInteractPromotion;
 import vn.zalopay.promotion.IResourceLoader;
 import vn.zalopay.promotion.PromotionType;
 import vn.zalopay.promotion.VoucherRender;
-import vn.zalopay.promotion.model.CashBackEvent;
 import vn.zalopay.promotion.model.PromotionEvent;
-import vn.zalopay.promotion.model.VoucherEvent;
 
 /**
  * Created by longlv on 3/21/17.

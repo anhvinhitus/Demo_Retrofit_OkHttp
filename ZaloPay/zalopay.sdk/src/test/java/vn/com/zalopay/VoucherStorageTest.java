@@ -12,7 +12,7 @@ import org.robolectric.annotation.Config;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
+import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
 
 /*

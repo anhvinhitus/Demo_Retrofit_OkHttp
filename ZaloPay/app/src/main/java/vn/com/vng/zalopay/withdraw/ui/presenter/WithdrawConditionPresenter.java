@@ -12,7 +12,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.entity.bank.BankConfig;
 
 /**
  * Created by longlv on 11/08/2016.

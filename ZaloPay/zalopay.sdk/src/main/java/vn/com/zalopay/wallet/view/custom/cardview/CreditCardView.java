@@ -25,7 +25,7 @@ import vn.com.zalopay.utility.ViewUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.base.CardColorText;
+import vn.com.zalopay.wallet.entity.CardColorText;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.view.effects.FlipAnimator;
 import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
