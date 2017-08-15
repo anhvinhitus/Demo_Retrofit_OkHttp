@@ -168,11 +168,15 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     void updateTransferObject(Person person) {
-
+        if (mTransferObject == null) {
+            mTransferObject = new TransferObject(person);
+            return;
+        }
         mTransferObject.zalopayId = person.zaloPayId;
         mTransferObject.zalopayName = person.zalopayname;
 
-        if (!TextUtils.isEmpty(person.displayName)) {
+        if (!TextUtils.isEmpty(person.displayName)
+                && TextUtils.isEmpty(mTransferObject.displayName)) {
             mTransferObject.displayName = person.displayName;
         }
         if (!TextUtils.isEmpty(person.avatar)) {
@@ -247,6 +251,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         transferMoney(amount);
     }
 
+    @NonNull
     private Item buildItem() {
         String zaloPayName = !TextUtils.isEmpty(mTransferObject.zalopayName) ? mTransferObject.zalopayName :
                 mTransferObject.displayName;
@@ -532,7 +537,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         activity.finish();
     }
 
-    private void handleFailedTransferWeb(Activity activity, int code, String param) {
+    void handleFailedTransferWeb(Activity activity, int code, String param) {
         Timber.d("Handle failed transfer web : code [%s] param [%s]", code, param);
         Intent data = new Intent();
         data.putExtra("code", code);
@@ -596,7 +601,10 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 return;
             }
 
-            if (!TextUtils.isEmpty(person.avatar) || !TextUtils.isEmpty(person.displayName)) { //Vì sandbox có 1 vài user cũ không có zalopay info
+            if (mTransferObject == null) {
+                return;
+            }
+            if (!TextUtils.isEmpty(mTransferObject.avatar)) {
                 mView.setTransferInfo(mTransferObject, !isTransferFixedMoney());
             }
 
