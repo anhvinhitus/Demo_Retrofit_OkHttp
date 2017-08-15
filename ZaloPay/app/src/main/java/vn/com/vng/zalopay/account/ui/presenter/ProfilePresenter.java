@@ -57,7 +57,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        if (mView != null && mUser !=null && TextUtils.isEmpty(mUser.zalopayname)) {
+        if (mView != null && mUser != null && TextUtils.isEmpty(mUser.zalopayname)) {
             mView.showRegisterZalopayID(isEnableRegisterZalopayID);
         }
     }
@@ -148,17 +148,6 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
         ZPAnalytics.trackEvent(ZPEvents.ME_PROFILE_ZPID_LAUNCH);
     }
 
-    private class ProfileSubscriber extends DefaultSubscriber<Boolean> {
-
-        ProfileSubscriber() {
-        }
-
-        @Override
-        public void onCompleted() {
-            ProfilePresenter.this.getProfileSuccess();
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
         if (mView != null) {
@@ -180,5 +169,16 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
 
     public boolean isWaitingApproveProfileLevel3() {
         return mUserConfig.isWaitingApproveProfileLevel3();
+    }
+
+    private class ProfileSubscriber extends DefaultSubscriber<Boolean> {
+
+        ProfileSubscriber() {
+        }
+
+        @Override
+        public void onCompleted() {
+            ProfilePresenter.this.getProfileSuccess();
+        }
     }
 }
