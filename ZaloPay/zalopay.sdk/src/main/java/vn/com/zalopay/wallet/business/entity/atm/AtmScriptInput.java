@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.business.entity.atm;
 
-public class DAtmScriptInput {
+public class AtmScriptInput {
     public boolean isAjax = false;
 
     public String cardHolderName;

@@ -17,7 +17,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
+import vn.com.zalopay.wallet.business.entity.atm.BankResponse;
 import vn.com.zalopay.wallet.business.entity.atm.BankFunction;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
@@ -160,7 +160,7 @@ public class BankInteractor implements BankStore.Interactor {
         }
     }
 
-    private Observable<BankConfigResponse> fetchCloud(String platform, String checksum, String appversion) {
+    private Observable<BankResponse> fetchCloud(String platform, String checksum, String appversion) {
         long startTime = System.currentTimeMillis();
         int apiId = ZPEvents.API_V001_TPE_GETBANKLIST;
         return mBankListService.fetch(platform, checksum, appversion)
@@ -221,33 +221,33 @@ public class BankInteractor implements BankStore.Interactor {
     }
 
     @Override
-    public Observable<BankConfigResponse> getBankList(String appVersion, long currentTime) {
+    public Observable<BankResponse> getBankList(String appVersion, long currentTime) {
         String checksum = mLocalStorage.getCheckSum();
         String platform = BuildConfig.PAYMENT_PLATFORM;
 
-        Observable<BankConfigResponse> memoryCache = mMemoryCache.getObservable(key_on_mem)
+        Observable<BankResponse> memoryCache = mMemoryCache.getObservable(key_on_mem)
                 .map(object -> {
                     if (object.equals(MemoryCache.EmptyObject)) {
                         return null;
-                    } else if (object instanceof BankConfigResponse) {
-                        return (BankConfigResponse) object;
+                    } else if (object instanceof BankResponse) {
+                        return (BankResponse) object;
                     } else {
                         return null;
                     }
                 });
-        Observable<BankConfigResponse> bankListCache = mLocalStorage
+        Observable<BankResponse> bankListCache = mLocalStorage
                 .get()
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(null)
                 .doOnNext(this::cacheBankResponseOnMemory);
-        Observable<BankConfigResponse> bankListCloud = fetchCloud(platform, checksum, appVersion)
+        Observable<BankResponse> bankListCloud = fetchCloud(platform, checksum, appVersion)
                 .flatMap(this::convertToBankConfigResponseObservable)
                 .doOnNext(this::cacheBankResponseOnMemory);
         return Observable.concat(memoryCache, bankListCache, bankListCloud)
                 .first(bankConfigResponse -> bankConfigResponse != null && (bankConfigResponse.expiredtime > currentTime));
     }
 
-    private void cacheBankResponseOnMemory(BankConfigResponse response) {
+    private void cacheBankResponseOnMemory(BankResponse response) {
         mMemoryCache.put(key_on_mem, response);
     }
 
@@ -265,7 +265,7 @@ public class BankInteractor implements BankStore.Interactor {
     }
 
     @NonNull
-    private Observable<BankConfigResponse> convertToBankConfigResponseObservable(BankConfigResponse bankConfigResponse) {
+    private Observable<BankResponse> convertToBankConfigResponseObservable(BankResponse bankConfigResponse) {
         if (bankConfigResponse == null) {
             return Observable.error(new RequestException(RequestException.NULL,
                     GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_generic_error_networking_mess)));
@@ -281,7 +281,7 @@ public class BankInteractor implements BankStore.Interactor {
     }
 
     @NonNull
-    private Observable<List<BankConfig>> convertToListBankConfigObservable(BankConfigResponse bankConfigResponse) {
+    private Observable<List<BankConfig>> convertToListBankConfigObservable(BankResponse bankConfigResponse) {
         Timber.d("start load withdraw banks");
         try {
             List<BankConfig> withDrawBanks = new ArrayList<>();

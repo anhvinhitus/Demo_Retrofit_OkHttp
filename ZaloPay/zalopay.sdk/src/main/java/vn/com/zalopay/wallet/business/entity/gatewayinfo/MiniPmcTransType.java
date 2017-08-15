@@ -5,6 +5,8 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
@@ -28,29 +30,57 @@ public class MiniPmcTransType implements Parcelable {
             return new MiniPmcTransType[size];
         }
     };
+    @SerializedName("bankcode")
     public String bankcode;
+
+    @SerializedName("pmcid")
     public int pmcid = 0;
+
+    @SerializedName("pmcname")
     public String pmcname = null;
+
+    @SerializedName("status")
     @PaymentChannelStatus
     public int status = PaymentChannelStatus.DISABLE;
+
+    @SerializedName("minvalue")
     public long minvalue = -1;
+
+    @SerializedName("maxvalue")
     public long maxvalue = -1;
+
+    @SerializedName("feerate")
     public double feerate = -1;
+
+    @SerializedName("minfee")
     public double minfee = -1;
+
+    @SerializedName("feecaltype")
     @FeeType
     public String feecaltype = FeeType.SUM;
+
+    @SerializedName("totalfee")
     public double totalfee = 0;
+
+    @SerializedName("amountrequireotp")
     public long amountrequireotp = 0;
+
+    @SerializedName("inamounttype")
     @TransAuthenType
     public int inamounttype;
+
+    @SerializedName("overamounttype")
     @TransAuthenType
     public int overamounttype;
+
+    @SerializedName("isBankAccountMap")
     public boolean isBankAccountMap = false;
     /***
      * Bank version support feature
      * user input card number or select bank channel which not support on older version
      * then need to show dialog into to user know about newer version
      */
+    @SerializedName("minappversion")
     public String minappversion;
     /***
      * rule - still show channel not allow in channel list (status = 0) , each channel have 2 policy to allow or not
@@ -58,18 +88,18 @@ public class MiniPmcTransType implements Parcelable {
      * 2. transaction amount not in range supported by channel
      * 3. withdraw need to check fee + amount <= balance
      */
+    @Expose
     private boolean allowPmcQuota = true;
+    @Expose
     private boolean allowLevel = true;
+    @Expose
     private boolean allowOrderAmount = true;
+    @Expose
     private boolean allowBankVersion = true;
 
     public MiniPmcTransType() {
     }
 
-    /***
-     * copy constructor
-     * @param channel
-     */
     public MiniPmcTransType(MiniPmcTransType channel) {
         this.bankcode = channel.bankcode;
         this.pmcid = channel.pmcid;
@@ -143,10 +173,9 @@ public class MiniPmcTransType implements Parcelable {
 
     /***
      * require otp depend on transaction amount
-     * @return
      */
     public boolean isNeedToCheckTransactionAmount() {
-        return amountrequireotp > 0 ? true : false;
+        return amountrequireotp > 0;
     }
 
     /***
@@ -185,9 +214,6 @@ public class MiniPmcTransType implements Parcelable {
 
     /***
      * whether transaction amount in range of this channel support
-     *
-     * @param pAmount
-     * @return
      */
     public boolean isAmountSupport(long pAmount) {
         if (pAmount <= 0) {
@@ -237,10 +263,6 @@ public class MiniPmcTransType implements Parcelable {
         setAllowPmcQuota(isAmountSupport((long) (pOrderAmount + totalfee)));
     }
 
-    /***
-     * status must be 0
-     * @return
-     */
     public boolean isAllowPmcQuota() {
         return allowPmcQuota;
     }

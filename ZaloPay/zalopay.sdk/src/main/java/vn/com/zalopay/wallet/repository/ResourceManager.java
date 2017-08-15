@@ -24,17 +24,18 @@ import rx.Observable;
 import rx.functions.Func0;
 import rx.functions.Func1;
 import timber.log.Timber;
+import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankScript;
 import vn.com.zalopay.wallet.business.entity.staticconfig.CardRule;
-import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
+import vn.com.zalopay.wallet.business.entity.staticconfig.ConfigBundle;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DKeyBoardConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DPage;
-import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
+import vn.com.zalopay.wallet.business.entity.staticconfig.atm.OtpRule;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.DynamicViewGroup;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.StaticViewGroup;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.exception.SdkResourceException;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
@@ -50,7 +51,7 @@ public class ResourceManager extends SingletonBase {
     private static final String PREFIX_IMG = "/img/";
     private static final String PREFIX_FONT = "/fonts/";
     private static final String HIDE_IMG_NAME = "0.png";
-    static DConfigFromServer mConfigFromServer = null;
+    static ConfigBundle mConfigFromServer = null;
     private static ResourceManager mCommonResourceManager = null;
     private static Map<String, ResourceManager> mResourceManagerMap = null;
     DPage mPageConfig = null;
@@ -152,7 +153,7 @@ public class ResourceManager extends SingletonBase {
                             return Observable.error(new SdkResourceException(GlobalData.getAppContext().getString(R.string.sdk_error_load_resource)));
                         }
                         try {
-                            mConfigFromServer = (new DConfigFromServer()).fromJsonString(jsonConfig);
+                            mConfigFromServer = GsonUtils.fromJsonString(jsonConfig, ConfigBundle.class);
                             ResourceManager commonResourceManager = getInstance(null);
                             if (mConfigFromServer.stringMap != null) {
                                 commonResourceManager.setString(mConfigFromServer.stringMap);
@@ -308,20 +309,20 @@ public class ResourceManager extends SingletonBase {
         return mConfigFromServer != null ? mConfigFromServer.BankIdentifier : null;
     }
 
-    public List<DBankScript> getBankScripts() {
+    public List<BankScript> getBankScripts() {
         return mConfigFromServer != null ? mConfigFromServer.bankScripts : null;
     }
 
     //get otp pattern for each of bank.
-    public ArrayList<DOtpReceiverPattern> getOtpReceiverPattern(String pBankCode) {
+    public ArrayList<OtpRule> getOtpReceiverPattern(String pBankCode) {
         if (mConfigFromServer == null || mConfigFromServer.otpReceiverPattern == null) {
             return null;
         }
         if (TextUtils.isEmpty(pBankCode)) {
             return null;
         }
-        ArrayList<DOtpReceiverPattern> otpReceiverPattern = new ArrayList<>();
-        for (DOtpReceiverPattern pattern : mConfigFromServer.otpReceiverPattern) {
+        ArrayList<OtpRule> otpReceiverPattern = new ArrayList<>();
+        for (OtpRule pattern : mConfigFromServer.otpReceiverPattern) {
             if (!pBankCode.equals(pattern.bankcode)) {
                 continue;
             }
@@ -353,11 +354,11 @@ public class ResourceManager extends SingletonBase {
         return mConfigFromServer != null ? mConfigFromServer.keyboard : null;
     }
 
-    public DStaticViewGroup getStaticView() {
+    public StaticViewGroup getStaticView() {
         return this.mPageConfig != null ? this.mPageConfig.staticView : null;
     }
 
-    public DDynamicViewGroup getDynamicView() {
+    public DynamicViewGroup getDynamicView() {
         return this.mPageConfig != null ? this.mPageConfig.dynamicView : null;
     }
 

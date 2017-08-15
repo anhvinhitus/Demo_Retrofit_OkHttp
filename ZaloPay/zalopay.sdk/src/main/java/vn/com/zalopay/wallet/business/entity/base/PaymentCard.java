@@ -2,7 +2,7 @@ package vn.com.zalopay.wallet.business.entity.base;
 
 import android.text.TextUtils;
 
-public class DPaymentCard {
+public class PaymentCard {
     protected String cardnumber;
     protected String cardholdername;
     protected String cardvalidfrom;

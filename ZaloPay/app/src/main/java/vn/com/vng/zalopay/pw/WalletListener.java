@@ -15,7 +15,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
-import vn.com.zalopay.wallet.business.entity.error.CError;
+import vn.com.zalopay.wallet.business.entity.error.SdkError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
@@ -170,7 +170,7 @@ class WalletListener implements ZPPaymentListener {
     }
 
     @Override
-    public void onError(CError cError) {
+    public void onError(SdkError cError) {
         Timber.d("pay onError code [%s] msg [%s]", cError.payError, cError.messError);
 
         PaymentWrapper.IResponseListener responseListener = mPaymentWrapper.getResponseListener();

@@ -5,15 +5,15 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.VerifyMapCardImpl;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
+import vn.com.zalopay.wallet.business.entity.base.PaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.event.SdkSubmitOrderEvent;
 
 public class VerifyMapCardTask extends BaseTask<StatusResponse> {
-    private DPaymentCard mCard;
+    private PaymentCard mCard;
 
-    public VerifyMapCardTask(UserInfo pUserInfo, DPaymentCard pCard) {
+    public VerifyMapCardTask(UserInfo pUserInfo, PaymentCard pCard) {
         super(pUserInfo);
         this.mCard = pCard;
     }

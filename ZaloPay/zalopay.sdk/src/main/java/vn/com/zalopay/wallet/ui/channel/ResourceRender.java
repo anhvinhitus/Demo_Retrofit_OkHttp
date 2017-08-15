@@ -12,13 +12,12 @@ import java.util.Map.Entry;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DKeyBoardConfig;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticView;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.DynamicEditText;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.DynamicViewGroup;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.StaticView;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.StaticViewGroup;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
@@ -76,7 +75,7 @@ public class ResourceRender {
         }
     }
 
-    public void render(DStaticViewGroup pStaticViewGroup, DDynamicViewGroup pDynamicViewGroup) {
+    public void render(StaticViewGroup pStaticViewGroup, DynamicViewGroup pDynamicViewGroup) {
         if (pStaticViewGroup == null && pDynamicViewGroup == null) {
             return;
         }
@@ -87,18 +86,18 @@ public class ResourceRender {
         }
     }
 
-    private void renderStaticView(DStaticViewGroup pStaticViewGroup) {
+    private void renderStaticView(StaticViewGroup pStaticViewGroup) {
         if (pStaticViewGroup != null) {
             renderImageView(mView, pStaticViewGroup.ImageView);
             renderTextView(mView, pStaticViewGroup.TextView);
         }
     }
 
-    private void renderDynamicView(DDynamicViewGroup pDynamicViewGroup) {
+    private void renderDynamicView(DynamicViewGroup pDynamicViewGroup) {
         if (pDynamicViewGroup != null) {
             //set rule for edittext from bundle.
             if (pDynamicViewGroup.EditText != null && pDynamicViewGroup.EditText.size() > 0) {
-                for (DDynamicEditText editText : pDynamicViewGroup.EditText) {
+                for (DynamicEditText editText : pDynamicViewGroup.EditText) {
                     View view = mView.findViewById(editText.id);
                     //Log.d("renderDynamicView",editText.id + " is "+ ((view != null) ? view.toString(): "null"));
                     if (view instanceof VPaymentDrawableEditText || view instanceof VPaymentValidDateEditText) {
@@ -138,20 +137,20 @@ public class ResourceRender {
         }
     }
 
-    private void renderImageView(RenderFragment renderFragment, List<DStaticView> pImgViewList) {
+    private void renderImageView(RenderFragment renderFragment, List<StaticView> pImgViewList) {
         if (pImgViewList == null) {
             return;
         }
-        for (DStaticView imgView : pImgViewList) {
+        for (StaticView imgView : pImgViewList) {
             renderFragment.setImage(imgView.id, imgView.value);
         }
     }
 
-    private void renderTextView(RenderFragment renderFragment, List<DStaticView> pTxtViewList) {
+    private void renderTextView(RenderFragment renderFragment, List<StaticView> pTxtViewList) {
         if (pTxtViewList == null) {
             return;
         }
-        for (DStaticView txtView : pTxtViewList) {
+        for (StaticView txtView : pTxtViewList) {
             renderFragment.setText(txtView.id, txtView.value);
         }
     }

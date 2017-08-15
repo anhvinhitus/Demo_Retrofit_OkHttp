@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.business.entity.voucher;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import vn.com.zalopay.utility.GsonUtils;
@@ -20,7 +21,7 @@ public class VoucherInfo {
     @SerializedName("vouchersig")
     public String vouchersig;
 
-    @SerializedName("retry")
+    @Expose
     public int retry = 0;
 
     @Override

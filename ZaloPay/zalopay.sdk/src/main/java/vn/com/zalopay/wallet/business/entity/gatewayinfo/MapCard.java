@@ -2,13 +2,25 @@ package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
 import android.text.TextUtils;
 
-import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
+import com.google.gson.annotations.SerializedName;
+
+import vn.com.zalopay.wallet.business.entity.base.PaymentCard;
 
 public class MapCard extends BaseMap {
+
+    @SerializedName("cardname")
     public String cardname;
+
+    @SerializedName("first6cardno")
     public String first6cardno;
+
+    @SerializedName("last4cardno")
     public String last4cardno;
+
+    @SerializedName("cardhash")
     public String cardhash;
+
+    @SerializedName("expiretime")
     public long expiretime;
 
     public MapCard() {
@@ -16,9 +28,9 @@ public class MapCard extends BaseMap {
     }
 
     /***
-     * convert DPaymentCard to MapCard
+     * convert PaymentCard to MapCard
      */
-    public MapCard(DPaymentCard pCard) {
+    public MapCard(PaymentCard pCard) {
         this.expiretime = 0;
         this.bankcode = pCard.getBankcode();
         this.cardname = pCard.getCardholdername();

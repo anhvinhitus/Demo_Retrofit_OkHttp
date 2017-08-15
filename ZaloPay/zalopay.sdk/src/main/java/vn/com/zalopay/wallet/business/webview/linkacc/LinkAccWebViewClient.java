@@ -26,12 +26,12 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
+import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EJavaScriptType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
-import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptInput;
-import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankScript;
+import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccScriptInput;
+import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -65,7 +65,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     private boolean isRedirected = false;
     private PaymentWebView mWebPaymentBridge = null;
 
-    private List<DBankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
+    private List<BankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
     private String mCurrentUrl = null;
 
     private int mEventID = 0;
@@ -152,7 +152,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         if (!isRedirected) {
             Timber.d("load page finish on the first %s", url);
             if (PaymentPermission.allowVCBNativeFlow() && url.matches(GlobalData.getStringResource(RS.string.sdk_vcb_bankscript_auto_select_service))) {
-                DLinkAccScriptInput input = genJsInput();
+                LinkAccScriptInput input = genJsInput();
                 String inputScript = GsonUtils.toJsonString(input);
                 executeJs(Constants.AUTO_SELECT_SERVICE_JS, inputScript); // auto select service #a href tag
             } else {
@@ -281,8 +281,8 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         matchAndRunJs(mCurrentUrl, EJavaScriptType.HIT, false);
     }
 
-    public DLinkAccScriptInput genJsInput() {
-        DLinkAccScriptInput input = new DLinkAccScriptInput();
+    public LinkAccScriptInput genJsInput() {
+        LinkAccScriptInput input = new LinkAccScriptInput();
 
         if (getAdapter() != null) {
             input.username = mAdapter.getUserNameValue();
@@ -307,7 +307,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     public void matchAndRunJs(String url, EJavaScriptType pType, boolean pIsAjax) {
 
         boolean isMatched = false;
-        for (DBankScript bankScript : mBankScripts) {
+        for (BankScript bankScript : mBankScripts) {
             if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url) && !mIsRefreshCaptcha) {
                 mCurrentUrl = url;
                 Timber.d("url: " + url + " ,type: " + pType);
@@ -326,7 +326,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                     return;
                 }
 
-                DLinkAccScriptInput input = genJsInput();
+                LinkAccScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;
                 String inputScript = GsonUtils.toJsonString(input);
 
@@ -344,7 +344,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 break;
             } else if (mIsRefreshCaptcha && bankScript.pageCode.equals(VCB_REFRESH_CAPTCHA)) {
                 Timber.d("url: " + url + " ,type: " + pType);
-                DLinkAccScriptInput input = genJsInput();
+                LinkAccScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;
                 String inputScript = GsonUtils.toJsonString(input);
                 if (pType == EJavaScriptType.HIT) {
@@ -363,7 +363,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     }
 
     public void fillOtpOnWebFlow(String pOtp) {
-        DLinkAccScriptInput input = genJsInput();
+        LinkAccScriptInput input = genJsInput();
         input.otp = pOtp;
         String inputScript = GsonUtils.toJsonString(input);
         executeJs(Constants.AUTOFILL_OTP_WEBFLOW_JS, inputScript);
@@ -430,7 +430,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         final String result = pResult;
         try {
             getAdapter().getActivity().runOnUiThread(() -> {
-                DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
+                LinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, LinkAccScriptOutput.class);
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 StatusResponse response = getResponse(eventType, scriptOutput);
                 if (mEventID == 0 && mIsFirst && scriptOutput != null && !scriptOutput.isError()) {
@@ -466,7 +466,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         return mEventID == 1;
     }
 
-    public StatusResponse getResponse(EEventType pEventType, DLinkAccScriptOutput pScriptOutput) {
+    public StatusResponse getResponse(EEventType pEventType, LinkAccScriptOutput pScriptOutput) {
         StatusResponse ret = new StatusResponse();
         ret.returnmessage = pScriptOutput.message;
 

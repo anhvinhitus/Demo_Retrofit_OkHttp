@@ -40,8 +40,8 @@ import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
-import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
+import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccScriptOutput;
+import vn.com.zalopay.wallet.business.entity.staticconfig.atm.OtpRule;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
@@ -500,11 +500,11 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 Timber.d("user is not in otp phase, skip auto fill otp");
                 return;
             }
-            List<DOtpReceiverPattern> patternList = ResourceManager.getInstance(null).getOtpReceiverPattern(mPaymentInfoHelper.getLinkAccBankCode());
+            List<OtpRule> patternList = ResourceManager.getInstance(null).getOtpReceiverPattern(mPaymentInfoHelper.getLinkAccBankCode());
             if (patternList == null || patternList.size() <= 0) {
                 return;
             }
-            for (DOtpReceiverPattern otpReceiverPattern : patternList) {
+            for (OtpRule otpReceiverPattern : patternList) {
 
                 Timber.d("checking pattern %s", GsonUtils.toJsonString(otpReceiverPattern));
 
@@ -667,7 +667,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 Timber.d("event login page");
                 hideLoadingDialog(); // close process dialog
                 mPageName = PAGE_VCB_LOGIN;
-                DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
+                LinkAccScriptOutput response = (LinkAccScriptOutput) pAdditionParams[0];
                 if (isNativeFlow) {
                     Timber.d("user following web flow, skip event login vcb");
                     return pAdditionParams;
@@ -749,7 +749,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 hideLoadingDialog();
                 mPageName = PAGE_VCB_CONFIRM_LINK;
                 existTransWithoutConfirm = false;//mark that will show dialog confirm exit sdk
-                DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
+                LinkAccScriptOutput response = (LinkAccScriptOutput) pAdditionParams[0];
 
                 if (isNativeFlow) {
                     Timber.d("user following web flow, skip event login vcb");
@@ -911,7 +911,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 hideLoadingDialog();
                 mPageName = PAGE_VCB_CONFIRM_UNLINK;
                 existTransWithoutConfirm = false;//mark that will show dialog confirm exit sdk
-                DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
+                LinkAccScriptOutput response = (LinkAccScriptOutput) pAdditionParams[0];
 
                 if (COUNT_UNREGISTER > 0) {
                     String Message = (TextUtils.isEmpty(response.message)) ?
@@ -987,7 +987,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             // Register complete page
             if (page.equals(VCB_REGISTER_COMPLETE_PAGE)) {
                 Timber.d("event on register page complete");
-                DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
+                LinkAccScriptOutput response = (LinkAccScriptOutput) pAdditionParams[0];
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
                     // SUCCESS. Success register
@@ -1055,7 +1055,7 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
 
             // Unregister Complete page
             if (page.equals(VCB_UNREGISTER_COMPLETE_PAGE)) {
-                DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
+                LinkAccScriptOutput response = (LinkAccScriptOutput) pAdditionParams[0];
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
                     // SUCCESS. Success register

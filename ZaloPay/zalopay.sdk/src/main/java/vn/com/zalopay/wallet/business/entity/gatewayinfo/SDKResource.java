@@ -1,7 +1,12 @@
 package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
+import com.google.gson.annotations.SerializedName;
+
 public class SDKResource {
-    public String appversion = null;
-    public String rsurl = null;
-    public String rsversion = null;
+    @SerializedName("appversion")
+    public String appversion;
+    @SerializedName("rsurl")
+    public String rsurl;
+    @SerializedName("rsversion")
+    public String rsversion;
 }

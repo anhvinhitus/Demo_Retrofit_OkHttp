@@ -41,7 +41,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
+import vn.com.zalopay.wallet.business.entity.base.PaymentCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.CardRule;
@@ -519,7 +519,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public void populateCard() throws Exception {
-        DPaymentCard card = getAdapter().getCard();
+        PaymentCard card = getAdapter().getCard();
         card.setCardholdername(mCardHolderName);
         card.setCardnumber(mCardNumber);
         card.setCvv(mCVV);
@@ -677,9 +677,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     private boolean isValidCardCVV() {
         try {
-            return TextUtils.isEmpty(getCardCVVView().getText().toString())
-                    || getCardCVVView().isValidPattern()
-                    && (getCardCVVView().getText().toString().length() == 3);
+            VPaymentEditText cardCVV = getCardCVVView();
+            if (cardCVV == null) {
+                return true;
+            }
+            return TextUtils.isEmpty(cardCVV.getText().toString())
+                    || cardCVV.isValidPattern()
+                    && (cardCVV.getText().toString().length() == 3);
         } catch (Exception e) {
             Timber.d(e);
         }
@@ -693,7 +697,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 if (mViewPager != null) {
                     mViewPager.setCurrentItem(mLastPageSelected);
                 }
-                String errMes = getCardCVVView().getPatternErrorMessage();
+                String errMes = getCardCVVView() != null ? getCardCVVView().getPatternErrorMessage() : null;
                 showHintError(getCardCVVView(), errMes);
             }
             return isValidCardCVV;
@@ -1300,25 +1304,37 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public VPaymentDrawableEditText getCardNumberView() throws Exception {
-        if (mCardAdapter == null) {
+        if (mCardAdapter == null || mCardAdapter.getCardNumberFragment() == null) {
             return null;
         }
         return (VPaymentDrawableEditText) mCardAdapter.getCardNumberFragment().getEditText();
     }
 
     VPaymentDrawableEditText getCardNameView() throws Exception {
+        if (mCardAdapter == null || mCardAdapter.getCardNameFragment() == null) {
+            return null;
+        }
         return (VPaymentDrawableEditText) mCardAdapter.getCardNameFragment().getEditText();
     }
 
     private VPaymentDrawableEditText getCardCVVView() throws Exception {
+        if (mCardAdapter == null || mCardAdapter.getCardCVVFragment() == null) {
+            return null;
+        }
         return (VPaymentDrawableEditText) mCardAdapter.getCardCVVFragment().getEditText();
     }
 
     VPaymentValidDateEditText getCardIssueView() throws Exception {
+        if (mCardAdapter == null || mCardAdapter.getCardIssueryFragment() == null) {
+            return null;
+        }
         return (VPaymentValidDateEditText) mCardAdapter.getCardIssueryFragment().getEditText();
     }
 
     VPaymentValidDateEditText getCardExpiryView() throws Exception {
+        if (mCardAdapter == null || mCardAdapter.getCardExpiryFragment() == null) {
+            return null;
+        }
         return (VPaymentValidDateEditText) mCardAdapter.getCardExpiryFragment().getEditText();
     }
 

@@ -17,11 +17,11 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
+import vn.com.zalopay.wallet.business.entity.atm.AtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
+import vn.com.zalopay.wallet.business.entity.staticconfig.atm.OtpRule;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
@@ -159,11 +159,11 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 return;
             }
 
-            List<DOtpReceiverPattern> patternList = ((BankDetector) getGuiProcessor().getCardFinder()).getFoundOtpRules();
+            List<OtpRule> patternList = ((BankDetector) getGuiProcessor().getCardFinder()).getFoundOtpRules();
             if (patternList == null || patternList.size() <= 0) {
                 return;
             }
-            for (DOtpReceiverPattern otpReceiverPattern : patternList) {
+            for (OtpRule otpReceiverPattern : patternList) {
                 if (TextUtils.isEmpty(otpReceiverPattern.sender) || !otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
                     continue;
                 }
@@ -277,7 +277,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         }
     }
 
-    private void handlerParseWebsiteRender(DAtmScriptOutput response, String pageName) throws Exception {
+    private void handlerParseWebsiteRender(AtmScriptOutput response, String pageName) throws Exception {
         if (isFinalScreen()) {
             Timber.d("callback render from parse website but in final screen now");
             return;

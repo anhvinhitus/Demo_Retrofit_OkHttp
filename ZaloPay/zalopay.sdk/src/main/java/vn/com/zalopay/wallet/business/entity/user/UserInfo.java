@@ -16,7 +16,7 @@ public class UserInfo {
     public int level;
     public long balance;
 
-    /**
+    /*
      * user level,map table
      * list contain policy for allowing pay which channel by which level.
      */
@@ -27,11 +27,9 @@ public class UserInfo {
         return !TextUtils.isEmpty(zalopay_userid) && !TextUtils.isEmpty(accesstoken);
     }
 
-    /***
+    /*
      * check soft token
      * if has new accesstoken, must notify to app to update new token to cache again
-     * @param pResponse
-     * @return
      */
     public boolean checkForUpdateAccessTokenToApp(BaseResponse pResponse) {
         if (pResponse == null || TextUtils.isEmpty(pResponse.accesstoken)) {

@@ -35,7 +35,7 @@ import vn.com.vng.zalopay.zpsdk.PaymentFeedBackCollector;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
-import vn.com.zalopay.wallet.business.entity.error.CError;
+import vn.com.zalopay.wallet.business.entity.error.SdkError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -375,7 +375,7 @@ public class PaymentWrapper {
         }
 
         if (userInfo.level < 0 || TextUtils.isEmpty(userInfo.profile)) {
-            mWalletListener.onError(new CError(DATA_INVALID, owner.getString(R.string.please_update_profile)));
+            mWalletListener.onError(new SdkError(DATA_INVALID, owner.getString(R.string.please_update_profile)));
             mActivity = null;
             return;
         }

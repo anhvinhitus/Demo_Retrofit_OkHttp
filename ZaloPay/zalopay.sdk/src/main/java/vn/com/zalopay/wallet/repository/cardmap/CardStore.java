@@ -9,7 +9,7 @@ import rx.Observable;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
+import vn.com.zalopay.wallet.business.entity.base.CardInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -21,7 +21,7 @@ import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 public class CardStore {
     public interface LocalStorage extends AbstractLocalStorage.LocalStorage {
-        void saveResponse(String pUserId, CardInfoListResponse cardInfoListResponse);
+        void saveResponse(String pUserId, CardInfoResponse cardInfoListResponse);
 
         void put(String pUserId, String checkSum, List<MapCard> cardList);
 
@@ -45,8 +45,8 @@ public class CardStore {
     public interface CardMapService {
         @GET(Constants.URL_LISTCARDINFO)
         @API_NAME(https = ZPEvents.API_UM_LISTCARDINFOFORCLIENT, connector = ZPEvents.CONNECTOR_UM_LISTCARDINFOFORCLIENT)
-        Observable<CardInfoListResponse> fetch(@Query("userid") String userid, @Query("accesstoken") String accesstoken,
-                                               @Query("cardinfochecksum") String cardinfochecksum, @Query("appversion") String appversion);
+        Observable<CardInfoResponse> fetch(@Query("userid") String userid, @Query("accesstoken") String accesstoken,
+                                           @Query("cardinfochecksum") String cardinfochecksum, @Query("appversion") String appversion);
 
         @POST(Constants.URL_REMOVE_MAPCARD)
         @API_NAME(https = ZPEvents.API_V001_TPE_REMOVEMAPCARD, connector = ZPEvents.CONNECTOR_V001_TPE_REMOVEMAPCARD)

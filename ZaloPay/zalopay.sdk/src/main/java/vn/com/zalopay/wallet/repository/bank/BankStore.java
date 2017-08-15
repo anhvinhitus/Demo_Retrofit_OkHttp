@@ -9,7 +9,7 @@ import rx.Observable;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
+import vn.com.zalopay.wallet.business.entity.atm.BankResponse;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.merchant.entities.ZPBank;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
@@ -20,13 +20,13 @@ import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 
 public class BankStore {
     public interface LocalStorage extends AbstractLocalStorage.LocalStorage {
-        void put(BankConfigResponse bankConfigResponse);
+        void put(BankResponse bankConfigResponse);
 
         long getExpireTime();
 
         void setExpireTime(long expireTime);
 
-        Observable<BankConfigResponse> get();
+        Observable<BankResponse> get();
 
         String getCheckSum();
 
@@ -54,7 +54,7 @@ public class BankStore {
 
         Observable<List<ZPBank>> getSupportBanks(String appVersion, long currentTime);
 
-        Observable<BankConfigResponse> getBankList(String appversion, long currentTime);
+        Observable<BankResponse> getBankList(String appversion, long currentTime);
 
         String getBankCodeList();
     }
@@ -62,6 +62,6 @@ public class BankStore {
     public interface BankListService {
         @GET(Constants.URL_GET_BANKLIST)
         @API_NAME(https = ZPEvents.API_V001_TPE_GETBANKLIST, connector = ZPEvents.CONNECTOR_V001_TPE_GETBANKLIST)
-        Observable<BankConfigResponse> fetch(@Query("platform") String platform, @Query("checksum") String checksum, @Query("appversion") String appversion);
+        Observable<BankResponse> fetch(@Query("platform") String platform, @Query("checksum") String checksum, @Query("appversion") String appversion);
     }
 }

@@ -9,7 +9,7 @@ import rx.Subscription;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
-import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
+import vn.com.zalopay.wallet.business.entity.base.PaymentCard;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -184,7 +184,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected void populateBankCode() {
         try {
-            DPaymentCard paymentCard = getAdapter().getCard();
+            PaymentCard paymentCard = getAdapter().getCard();
             if (paymentCard != null) {
                 paymentCard.setBankcode(BuildConfig.CC_CODE);
             }

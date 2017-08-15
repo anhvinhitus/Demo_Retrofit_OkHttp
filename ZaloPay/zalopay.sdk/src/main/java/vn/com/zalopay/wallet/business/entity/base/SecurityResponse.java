@@ -1,8 +1,12 @@
 package vn.com.zalopay.wallet.business.entity.base;
 
-public class SecurityResponse extends BaseEntity<SecurityResponse> {
+import com.google.gson.annotations.SerializedName;
+
+public class SecurityResponse {
+
+    @SerializedName("redirecturl")
     public String redirecturl;
 
-    //AUTHEN ATM.
+    @SerializedName("actiontype")
     public int actiontype;
 }

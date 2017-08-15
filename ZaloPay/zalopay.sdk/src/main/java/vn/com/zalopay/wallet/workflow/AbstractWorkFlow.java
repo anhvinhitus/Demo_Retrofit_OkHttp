@@ -38,14 +38,14 @@ import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
+import vn.com.zalopay.wallet.business.entity.base.PaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
+import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
+import vn.com.zalopay.wallet.business.entity.staticconfig.atm.OtpRule;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.constants.BankFlow;
@@ -80,7 +80,7 @@ import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
 public abstract class AbstractWorkFlow implements ISdkErrorContext {
     final SdkErrorReporter mSdkErrorReporter;
-    private final DPaymentCard mCard;
+    private final PaymentCard mCard;
     public boolean mOrderProcessing = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     public CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     public int mCurrentCcLinkNumber = 0;
@@ -194,7 +194,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         mContext = pContext;
         mPresenter = pPresenter;
         mMiniPmcTransType = pMiniPmcTransType;
-        mCard = new DPaymentCard();
+        mCard = new PaymentCard();
         mPaymentInfoHelper = paymentInfoHelper;
         mTransactionAdapter = SDKTransactionAdapter.shared().setAdapter(this);
         mStatusResponse = statusResponse;
@@ -557,7 +557,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     public void autoFillOtp(String pSender, String pOtp) {
     }
 
-    String parseOtp(DOtpReceiverPattern otpPattern, String pSender, String pMessage) {
+    String parseOtp(OtpRule otpPattern, String pSender, String pMessage) {
         try {
             if (TextUtils.isEmpty(pSender) || TextUtils.isEmpty(pMessage)) {
                 return "";
@@ -933,7 +933,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         }
     }
 
-    public DPaymentCard getCard() {
+    public PaymentCard getCard() {
         return mCard;
     }
 

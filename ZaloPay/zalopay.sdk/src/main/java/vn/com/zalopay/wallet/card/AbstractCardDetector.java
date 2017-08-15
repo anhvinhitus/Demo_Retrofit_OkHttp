@@ -2,7 +2,6 @@ package vn.com.zalopay.wallet.card;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -10,9 +9,7 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.CardRule;
-import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 

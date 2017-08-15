@@ -1,15 +1,25 @@
 package vn.com.zalopay.wallet.business.entity.atm;
 
+import com.google.gson.annotations.SerializedName;
+
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.BankStatus;
 
 public class BankFunction {
+    @SerializedName("bankcode")
     public String bankcode;
+
+    @SerializedName("status")
     @BankStatus
     public int status;
+
+    @SerializedName("maintenancemsg")
     public String maintenancemsg;
-    public Long maintenancefrom;
+
+    @SerializedName("maintenanceto")
     public Long maintenanceto;
+
+    @SerializedName("bankfunction")
     @BankFunctionCode
     public int bankfunction;
 

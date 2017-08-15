@@ -1,12 +1,17 @@
 package vn.com.zalopay.wallet.business.entity.staticconfig;
 
-import vn.com.zalopay.wallet.business.entity.base.BaseEntity;
+import com.google.gson.annotations.SerializedName;
 
-public class CardRule extends BaseEntity<CardRule> {
+public class CardRule {
+    @SerializedName("code")
     public String code;
+    @SerializedName("name")
     public String name;
+    @SerializedName("startPin")
     public String startPin;
+    @SerializedName("min_length")
     public int min_length;
+    @SerializedName("max_length")
     public int max_length;
 
     public boolean isMatchMaxLengthCard(int pLength) {

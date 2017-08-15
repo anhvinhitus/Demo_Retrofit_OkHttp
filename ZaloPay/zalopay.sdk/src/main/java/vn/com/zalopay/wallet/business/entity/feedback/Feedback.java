@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
 
 import vn.com.zalopay.utility.SdkUtils;
 
-/**
+/*
  * Created by lytm on 06/01/2017.
  */
 public class Feedback implements Parcelable {

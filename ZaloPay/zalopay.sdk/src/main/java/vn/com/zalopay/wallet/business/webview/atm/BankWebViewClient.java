@@ -22,12 +22,12 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptInput;
-import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
+import vn.com.zalopay.wallet.business.entity.atm.AtmScriptInput;
+import vn.com.zalopay.wallet.business.entity.atm.AtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EJavaScriptType;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankScript;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
@@ -58,7 +58,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     private BankWebView mWebPaymentBridge = null;
 
-    private List<DBankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
+    private List<BankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
     private String mCurrentUrlPattern = null;
     private String mStartedtUrl = null;
     private String mCurrentUrl = null;
@@ -108,8 +108,8 @@ public class BankWebViewClient extends PaymentWebViewClient {
         matchAndRunJs(mCurrentUrl, EJavaScriptType.HIT, false);
     }
 
-    public DAtmScriptInput genJsInput() throws Exception {
-        DAtmScriptInput input = new DAtmScriptInput();
+    public AtmScriptInput genJsInput() throws Exception {
+        AtmScriptInput input = new AtmScriptInput();
 
         if (getAdapter() != null && getAdapter().getGuiProcessor() != null) {
             input.cardHolderName = getAdapter().getGuiProcessor().getCardName();
@@ -129,7 +129,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
     public void matchAndRunJs(String url, EJavaScriptType pType, boolean pIsAjax) {
         boolean isMatched = false;
-        for (DBankScript bankScript : mBankScripts) {
+        for (BankScript bankScript : mBankScripts) {
             if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url)) {
                 Timber.d("$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
                 isMatched = true;
@@ -138,7 +138,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;
 
-                DAtmScriptInput input = null;
+                AtmScriptInput input = null;
                 try {
                     input = genJsInput();
                 } catch (Exception e) {
@@ -263,7 +263,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
         Timber.d("++++ Current error SSL on page: " + mStartedtUrl);
 
-        for (DBankScript bankScript : mBankScripts) {
+        for (BankScript bankScript : mBankScripts) {
             if (bankScript.eventID == IGNORE_EVENT_ID_FOR_HTTPS && mStartedtUrl.matches(bankScript.url)) {
                 handler.proceed(); // Ignore SSL certificate errors
                 return;
@@ -285,7 +285,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
                 return;
             }
             activity.runOnUiThread(() -> {
-                DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
+                AtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, AtmScriptOutput.class);
                 Timber.d("onJsPaymentResult: %s", GsonUtils.toJsonString(scriptOutput));
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 BaseResponse response = genResponse(eventType, scriptOutput);
@@ -330,7 +330,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
         }
     }
 
-    public BaseResponse genResponse(EEventType pEventType, DAtmScriptOutput pScriptOutput) {
+    public BaseResponse genResponse(EEventType pEventType, AtmScriptOutput pScriptOutput) {
         BaseResponse ret = new BaseResponse();
         switch (pEventType) {
 

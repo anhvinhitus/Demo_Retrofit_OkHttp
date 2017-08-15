@@ -20,7 +20,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.view.interfaces.IBaseDoActionEdittext;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.DynamicEditText;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
@@ -28,7 +28,7 @@ import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public class VPaymentEditText extends TextInputEditText {
     public static final int OFFSET = (int) GlobalData.getAppContext().getResources().getDimension(R.dimen.zpw_offset_drawable_right);
-    protected DDynamicEditText mEditTextConfig = null;
+    protected DynamicEditText mEditTextConfig = null;
     protected char SPACE_SEPERATOR;
     protected boolean mIsTextGroup = true;
     protected boolean mIsPattern = false;
@@ -103,7 +103,7 @@ public class VPaymentEditText extends TextInputEditText {
         return true;
     }
 
-    public void init(DDynamicEditText pEditText) {
+    public void init(DynamicEditText pEditText) {
         mIsPattern = pEditText.pattern;
         mEditTextConfig = pEditText;
         this.addTextChangedListener(mTextFormater);

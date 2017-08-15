@@ -1,12 +1,12 @@
 package vn.com.zalopay.wallet.listener;
 
-import vn.com.zalopay.wallet.business.entity.error.CError;
+import vn.com.zalopay.wallet.business.entity.error.SdkError;
 
 public interface ZPPaymentListener {
 
     void onComplete();
 
-    void onError(CError pError);
+    void onError(SdkError pError);
 
     void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage);
 

@@ -3,9 +3,15 @@ package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
 import android.text.TextUtils;
 
+import com.google.gson.annotations.SerializedName;
+
 public class BankAccount extends BaseMap {
-    public String firstaccountno = null;
-    public String lastaccountno = null;
+
+    @SerializedName("firstaccountno")
+    public String firstaccountno;
+
+    @SerializedName("lastaccountno")
+    public String lastaccountno;
 
     @Override
     public String getFirstNumber() {

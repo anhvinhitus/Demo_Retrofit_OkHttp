@@ -26,7 +26,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
+import vn.com.zalopay.wallet.business.entity.base.PaymentCard;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.constants.AuthenType;
@@ -350,7 +350,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             if (bankConfig == null) {
                 return;
             }
-            DPaymentCard paymentCard = getAdapter().getCard();
+            PaymentCard paymentCard = getAdapter().getCard();
             if (paymentCard != null) {
                 paymentCard.setBankcode(bankConfig.code);
             }

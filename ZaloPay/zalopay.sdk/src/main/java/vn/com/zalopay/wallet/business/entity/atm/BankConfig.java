@@ -2,6 +2,8 @@ package vn.com.zalopay.wallet.business.entity.atm;
 
 import android.text.TextUtils;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import timber.log.Timber;
@@ -10,23 +12,53 @@ import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.BankStatus;
 
 public class BankConfig {
+    @SerializedName("code")
     public String code;
+
+    @SerializedName("name")
     public String name;
+
+    @SerializedName("fullname")
     public String fullname;
+
+    @SerializedName("banktype")
     public int banktype;
+
+    @SerializedName("otptype")
     public String otptype;
+
+    @SerializedName("type")
     public String type;
+
+    @SerializedName("interfacetype")
     public int interfacetype;
+
+    @SerializedName("allowwithdraw")
     public int allowwithdraw = 0;
-    public long maintenancefrom = 0;
+
+    @SerializedName("maintenanceto")
     public long maintenanceto = 0;
-    public String maintenancemsg = null;
+
+    @SerializedName("maintenancemsg")
+    public String maintenancemsg;
+
+    @SerializedName("supporttype")
     public int supporttype = 1;
+
+    @SerializedName("loginbankurl")
     public String loginbankurl;
-    public List<BankFunction> functions = null;
+
+    @SerializedName("functions")
+    public List<BankFunction> functions;
+
+    @SerializedName("bankLogo")
     public String bankLogo;
+
+    @SerializedName("status")
     @BankStatus
     public int status;
+
+    @SerializedName("displayorder")
     public int displayorder = 0;// order sort in UI
 
     public String getDisplayName() {
@@ -60,24 +92,21 @@ public class BankConfig {
      * bank maintenance all functions
      * @return
      */
-    public boolean isMaintenanceAllFunctions() {
+    private boolean isMaintenanceAllFunctions() {
         return status == BankStatus.MAINTENANCE;
     }
 
-    /***
+    /*
      * check this bank is active for payment
-     * @return
      */
     public boolean isActive() {
         return status == BankStatus.ACTIVE;
     }
 
-    /***
-     * bank maintenance by function: withdraw, link card...
-     * @param pBankFunction
-     * @return
+    /*
+     * bank maintenance by function: withdraw, link card
      */
-    public boolean isBankFunctionMaintenance(@BankFunctionCode int pBankFunction) {
+    private boolean isBankFunctionMaintenance(@BankFunctionCode int pBankFunction) {
         if (functions == null) {
             return false;
         }
@@ -118,9 +147,8 @@ public class BankConfig {
         return supporttype == 2;
     }
 
-    /***
+    /*
      * get detail maintenance message from bankconfig
-     * @return
      */
     public String getMaintenanceMessage(@BankFunctionCode int bankFunctionCode) {
         String message = "Ngân hàng đang bảo trì.Vui lòng quay lại sau ít phút.";

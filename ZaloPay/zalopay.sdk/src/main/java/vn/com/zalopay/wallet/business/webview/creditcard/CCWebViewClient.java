@@ -19,7 +19,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.SdkErrorReporter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.base.WebViewHelper;
+import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -30,7 +30,7 @@ import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
-import static vn.com.zalopay.wallet.business.entity.base.WebViewHelper.SSL_ERROR;
+import static vn.com.zalopay.wallet.helper.WebViewHelper.SSL_ERROR;
 
 public class CCWebViewClient extends PaymentWebViewClient {
     protected boolean isFirstLoad = true;

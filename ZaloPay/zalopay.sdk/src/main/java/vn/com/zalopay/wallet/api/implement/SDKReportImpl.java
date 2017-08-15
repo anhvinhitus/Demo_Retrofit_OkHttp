@@ -3,14 +3,14 @@ package vn.com.zalopay.wallet.api.implement;
 import java.util.Map;
 
 import rx.Observable;
-import vn.com.zalopay.wallet.constants.ConstantParams;
-import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.api.interfaces.IRequest;
+import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.constants.ConstantParams;
 
-public class SDKReportImpl implements IRequest<SaveCardResponse> {
+public class SDKReportImpl implements IRequest<BaseResponse> {
     @Override
-    public Observable<SaveCardResponse> getRequest(ITransService pIData, Map<String, String> pParams) {
+    public Observable<BaseResponse> getRequest(ITransService pIData, Map<String, String> pParams) {
         return pIData.sdkReport(pParams.get(ConstantParams.USER_ID),
                 pParams.get(ConstantParams.ACCESS_TOKEN),
                 pParams.get(ConstantParams.TRANSID),

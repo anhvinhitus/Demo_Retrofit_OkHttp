@@ -4,7 +4,7 @@ package vn.com.zalopay.wallet.business.entity.linkacc;
  * Created by SinhTT on 21/11/2016.
  */
 
-public class DLinkAccScriptInput {
+public class LinkAccScriptInput {
     public boolean isAjax = false;
 
     public String username;

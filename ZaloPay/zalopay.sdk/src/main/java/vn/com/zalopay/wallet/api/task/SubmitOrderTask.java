@@ -6,7 +6,7 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.SubmitOrderImpl;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
+import vn.com.zalopay.wallet.business.entity.base.PaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -20,10 +20,10 @@ import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 public class SubmitOrderTask extends BaseTask<StatusResponse> {
     PaymentInfoHelper mPaymentHelper;
     int mChannelId;
-    DPaymentCard mCard;
+    PaymentCard mCard;
     private long startTime = 0;
 
-    public SubmitOrderTask(int pChannelId, DPaymentCard pCard, PaymentInfoHelper paymentInfoHelper) {
+    public SubmitOrderTask(int pChannelId, PaymentCard pCard, PaymentInfoHelper paymentInfoHelper) {
         super(paymentInfoHelper.getUserInfo());
         mPaymentHelper = paymentInfoHelper;
         mChannelId = pChannelId;

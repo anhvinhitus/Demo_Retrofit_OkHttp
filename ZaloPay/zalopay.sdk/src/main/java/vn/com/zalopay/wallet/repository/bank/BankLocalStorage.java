@@ -13,7 +13,7 @@ import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
+import vn.com.zalopay.wallet.business.entity.atm.BankResponse;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
 import vn.com.zalopay.wallet.repository.SharedPreferencesManager;
@@ -80,7 +80,7 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
     }
 
     @Override
-    public void put(BankConfigResponse pResponse) {
+    public void put(BankResponse pResponse) {
         if (pResponse == null || pResponse.returncode != 1) {
             Timber.d("request not success, stopping saving bank list to cache");
             return;
@@ -118,10 +118,10 @@ public class BankLocalStorage extends AbstractLocalStorage implements BankStore.
     }
 
     @Override
-    public Observable<BankConfigResponse> get() {
+    public Observable<BankResponse> get() {
         return Observable.defer(() -> {
             try {
-                BankConfigResponse bankConfigResponse = new BankConfigResponse();
+                BankResponse bankConfigResponse = new BankResponse();
                 bankConfigResponse.bankcardprefixmap = getBankPrefix();
                 bankConfigResponse.expiredtime = getExpireTime();
                 Timber.d("load bank list from cache %s", GsonUtils.toJsonString(bankConfigResponse));

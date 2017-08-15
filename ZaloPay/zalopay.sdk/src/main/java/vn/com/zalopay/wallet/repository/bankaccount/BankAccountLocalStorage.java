@@ -6,7 +6,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
+import vn.com.zalopay.wallet.business.entity.base.BankAccountResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BaseMap;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -67,7 +67,7 @@ public class BankAccountLocalStorage extends AbstractLocalStorage implements Ban
     }
 
     @Override
-    public void saveResponse(String pUserId, BankAccountListResponse pResponse) {
+    public void saveResponse(String pUserId, BankAccountResponse pResponse) {
         if (pResponse == null || pResponse.returncode != 1) {
             Timber.d("stop save bank account cache because result fail");
             return;

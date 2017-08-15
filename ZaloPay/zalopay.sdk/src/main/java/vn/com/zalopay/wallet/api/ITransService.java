@@ -11,7 +11,6 @@ import rx.Observable;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.constants.ConstantParams;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -59,7 +58,7 @@ public interface ITransService {
 
     @POST(Constants.URL_REPORT_ERROR)
     @API_NAME(https = ZPEvents.API_V001_TPE_SDKERRORREPORT, connector = ZPEvents.CONNECTOR_V001_TPE_SDKERRORREPORT)
-    Observable<SaveCardResponse> sdkReport(@Query(ConstantParams.USER_ID) String userID,
+    Observable<BaseResponse> sdkReport(@Query(ConstantParams.USER_ID) String userID,
                                            @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                            @Query(ConstantParams.TRANSID) String transid,
                                            @Query(ConstantParams.BANK_CODE) String bankCode,

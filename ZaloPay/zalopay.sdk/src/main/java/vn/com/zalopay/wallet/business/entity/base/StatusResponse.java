@@ -3,7 +3,9 @@ package vn.com.zalopay.wallet.business.entity.base;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
+import com.google.gson.annotations.SerializedName;
+
+import vn.com.zalopay.wallet.business.entity.atm.AtmScriptOutput;
 
 public class StatusResponse extends BaseResponse implements Parcelable {
     public static final Parcelable.Creator<StatusResponse> CREATOR = new Parcelable.Creator<StatusResponse>() {
@@ -17,11 +19,21 @@ public class StatusResponse extends BaseResponse implements Parcelable {
             return new StatusResponse[size];
         }
     };
+
+    @SerializedName("isprocessing")
     public boolean isprocessing = false;
-    public String data = null;
+
+    @SerializedName("data")
+    public String data;
+
+    @SerializedName("zptransid")
     public String zptransid;
-    public String suggestmessage = null;
-    public int[] suggestaction = null;
+
+    @SerializedName("suggestmessage")
+    public String suggestmessage;
+
+    @SerializedName("suggestaction")
+    public int[] suggestaction;
 
     public StatusResponse() {
         data = null;
@@ -32,7 +44,7 @@ public class StatusResponse extends BaseResponse implements Parcelable {
         suggestaction = null;
     }
 
-    public StatusResponse(DAtmScriptOutput pScriptOutput) {
+    public StatusResponse(AtmScriptOutput pScriptOutput) {
         this.data = null;
         this.returncode = pScriptOutput.eventID;
         this.returnmessage = pScriptOutput.message;

@@ -1,11 +1,15 @@
 package vn.com.zalopay.wallet.business.entity.staticconfig;
 
-import vn.com.zalopay.wallet.business.entity.base.BaseEntity;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
+import com.google.gson.annotations.SerializedName;
 
-public class DPage extends BaseEntity<DPage> {
-    public String pageName = null;
-    public DStaticViewGroup staticView;
-    public DDynamicViewGroup dynamicView;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.DynamicViewGroup;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.StaticViewGroup;
+
+public class DPage {
+    @SerializedName("pageName")
+    public String pageName;
+    @SerializedName("staticView")
+    public StaticViewGroup staticView;
+    @SerializedName("dynamicView")
+    public DynamicViewGroup dynamicView;
 }

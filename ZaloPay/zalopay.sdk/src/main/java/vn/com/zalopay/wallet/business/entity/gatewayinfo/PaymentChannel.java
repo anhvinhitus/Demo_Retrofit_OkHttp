@@ -2,13 +2,22 @@ package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
 import android.text.TextUtils;
 
+import com.google.gson.annotations.SerializedName;
+
 public class PaymentChannel extends MiniPmcTransType {
+    @SerializedName("channel_icon")
     public String channel_icon;
+    @SerializedName("channel_next_icon")
     public String channel_next_icon;
+    @SerializedName("l4no")
     public String l4no;
+    @SerializedName("f6no")
     public String f6no;
+    @SerializedName("select")
     public boolean select = false;//status select on list view
+    @SerializedName("position")
     public int position = -1;
+    @SerializedName("fullLine")
     public boolean fullLine = false;
 
     public PaymentChannel() {

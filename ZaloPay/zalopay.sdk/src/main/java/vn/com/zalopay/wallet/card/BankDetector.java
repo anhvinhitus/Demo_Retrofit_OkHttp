@@ -9,14 +9,14 @@ import java.util.Map;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
+import vn.com.zalopay.wallet.business.entity.staticconfig.atm.OtpRule;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.repository.bank.BankStore;
 
 public class BankDetector extends AbstractCardDetector {
     private static BankDetector _object;
     BankConfig mFoundBank;
-    List<DOtpReceiverPattern> mFoundOtpRules;
+    List<OtpRule> mFoundOtpRules;
     private Map<String, String> nBankPrefix;
     private BankStore.Interactor mBankInteractor;
 
@@ -44,7 +44,7 @@ public class BankDetector extends AbstractCardDetector {
         return mFoundBank != null && mFoundBank.isBankAccount();
     }
 
-    public List<DOtpReceiverPattern> getFoundOtpRules() {
+    public List<OtpRule> getFoundOtpRules() {
         return mFoundOtpRules;
     }
 

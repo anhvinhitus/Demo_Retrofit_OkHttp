@@ -19,7 +19,7 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.CardRule;
-import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
+import vn.com.zalopay.wallet.business.entity.staticconfig.ConfigBundle;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.constants.CardType;
@@ -68,10 +68,10 @@ public class CShareData extends SingletonBase {
     private void loadCardRule() {
         ResourceManager.loadJsonConfig()
                 .filter(s -> !TextUtils.isEmpty(s))
-                .flatMap(new Func1<String, Observable<DConfigFromServer>>() {
+                .flatMap(new Func1<String, Observable<ConfigBundle>>() {
                     @Override
-                    public Observable<DConfigFromServer> call(String jsonConfig) {
-                        return Observable.just(GsonUtils.fromJsonString(jsonConfig, DConfigFromServer.class));
+                    public Observable<ConfigBundle> call(String jsonConfig) {
+                        return Observable.just(GsonUtils.fromJsonString(jsonConfig, ConfigBundle.class));
                     }
                 })
                 .filter(config -> config != null)

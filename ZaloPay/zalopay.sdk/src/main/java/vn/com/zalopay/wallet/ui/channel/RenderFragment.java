@@ -13,8 +13,8 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
-import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.DynamicViewGroup;
+import vn.com.zalopay.wallet.business.entity.staticconfig.page.StaticViewGroup;
 import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.GenericFragment;
@@ -37,8 +37,8 @@ public abstract class RenderFragment<T extends IPresenter> extends GenericFragme
         }
     }
 
-    public void renderByResource(String screenName, DStaticViewGroup pAdditionStaticViewGroup,
-                                 DDynamicViewGroup pAdditionDynamicViewGroup) throws Exception {
+    public void renderByResource(String screenName, StaticViewGroup pAdditionStaticViewGroup,
+                                 DynamicViewGroup pAdditionDynamicViewGroup) throws Exception {
         Timber.d("start render screen name %s", screenName);
         long time = System.currentTimeMillis();
         initResourceRender(screenName);

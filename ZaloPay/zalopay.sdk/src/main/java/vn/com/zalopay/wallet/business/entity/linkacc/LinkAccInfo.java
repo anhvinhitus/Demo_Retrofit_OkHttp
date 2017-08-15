@@ -2,8 +2,8 @@ package vn.com.zalopay.wallet.business.entity.linkacc;
 
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 
-/**
- * Created by cpu11843-local on 1/19/17.
+/*
+ * Created by SinhTT on 1/19/17.
  */
 
 public class LinkAccInfo {

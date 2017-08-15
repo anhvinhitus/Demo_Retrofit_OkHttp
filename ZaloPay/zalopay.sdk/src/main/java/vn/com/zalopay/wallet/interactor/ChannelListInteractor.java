@@ -18,7 +18,7 @@ import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
+import vn.com.zalopay.wallet.business.entity.atm.BankResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
@@ -109,7 +109,7 @@ public class ChannelListInteractor {
                 .subscribeOn(Schedulers.io());
 
         currentTime = System.currentTimeMillis();
-        Observable<BankConfigResponse> bankObservable = mBankInteractor.getBankList(appVersion, currentTime)
+        Observable<BankResponse> bankObservable = mBankInteractor.getBankList(appVersion, currentTime)
                 .doOnSubscribe(() -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_START))
                 .doOnNext(bankConfigResponse -> mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_LOAD_BANKLIST_END))
                 .subscribeOn(Schedulers.io());
@@ -147,7 +147,7 @@ public class ChannelListInteractor {
     }
 
     private SdkPaymentInfoReadyMessage zipData(AppInfo appInfo,
-                                               BankConfigResponse bankConfigResponse,
+                                               BankResponse bankConfigResponse,
                                                PlatformInfoCallback platformInfoCallback) {
         SdkPaymentInfoReadyMessage message = new SdkPaymentInfoReadyMessage();
         message.mAppInfo = appInfo;

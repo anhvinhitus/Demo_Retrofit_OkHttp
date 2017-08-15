@@ -13,7 +13,7 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.error.CError;
+import vn.com.zalopay.wallet.business.entity.error.SdkError;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentError;
@@ -117,7 +117,7 @@ public class SDKPayment {
         if (pMerchantActivity == null || pPaymentInfo == null) {
             if (pPaymentListener != null) {
                 Timber.w("Component (activity,payment info) is null");
-                pPaymentListener.onError(new CError(PaymentError.COMPONENT_NULL, "Dữ liệu không hợp lệ"));
+                pPaymentListener.onError(new SdkError(PaymentError.COMPONENT_NULL, "Dữ liệu không hợp lệ"));
             }
             return;
         }
@@ -125,7 +125,7 @@ public class SDKPayment {
         //check internet connection
         if (!ConnectionUtil.isOnline(pMerchantActivity)) {
             if (GlobalData.getPaymentListener() != null) {
-                GlobalData.getPaymentListener().onError(new CError(PaymentError.NETWORKING_ERROR,
+                GlobalData.getPaymentListener().onError(new SdkError(PaymentError.NETWORKING_ERROR,
                         GlobalData.getAppContext().getResources().getString(R.string.sdk_payment_no_internet_mess)));
             }
             SingletonLifeCircleManager.disposeAll();
@@ -211,7 +211,7 @@ public class SDKPayment {
     private static void terminateSession(final String pMessage, @PaymentError int pPayError) {
         DialogManager.closeLoadDialog();
         if (GlobalData.getPaymentListener() != null) {
-            GlobalData.getPaymentListener().onError(new CError(pPayError, pMessage));
+            GlobalData.getPaymentListener().onError(new SdkError(pPayError, pMessage));
         }
         SingletonLifeCircleManager.disposeAll();
         SDKApplication.getApplicationComponent().channelListInteractor().cleanup();

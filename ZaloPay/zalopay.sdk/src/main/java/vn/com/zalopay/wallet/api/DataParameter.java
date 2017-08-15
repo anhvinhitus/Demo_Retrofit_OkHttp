@@ -13,7 +13,7 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
+import vn.com.zalopay.wallet.business.entity.base.PaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.entity.voucher.VoucherInfo;
@@ -115,7 +115,7 @@ public class DataParameter {
         params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
     }
 
-    public static void prepareVerifyMapCardParams(UserInfo pUserInfo, DPaymentCard pCard, Map<String, String> params) throws Exception {
+    public static void prepareVerifyMapCardParams(UserInfo pUserInfo, PaymentCard pCard, Map<String, String> params) throws Exception {
         params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accesstoken);
         params.put(ConstantParams.USER_ID, pUserInfo.zalopay_userid);
         params.put(ConstantParams.ZALO_ID, pUserInfo.zalo_userid);

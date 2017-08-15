@@ -9,7 +9,7 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
+import vn.com.zalopay.wallet.business.entity.base.PaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.creditcard.CardSubmit;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
@@ -380,7 +380,7 @@ public class PaymentInfoHelper extends SingletonBase {
         return true;
     }
 
-    public String getChargeInfo(DPaymentCard paymentCard) {
+    public String getChargeInfo(PaymentCard paymentCard) {
         BaseMap mapBank = getMapBank();
         if (mapBank != null && mapBank.isValid() && mapBank instanceof MapCard) {
             CardSubmit mapCard = new CardSubmit((MapCard) mapBank);

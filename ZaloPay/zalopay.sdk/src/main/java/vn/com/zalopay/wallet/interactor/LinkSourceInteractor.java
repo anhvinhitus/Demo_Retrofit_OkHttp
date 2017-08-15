@@ -11,9 +11,9 @@ import rx.functions.Func1;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
+import vn.com.zalopay.wallet.business.entity.base.BankAccountResponse;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
+import vn.com.zalopay.wallet.business.entity.base.CardInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.BankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.MapCard;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -116,9 +116,9 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
                 .doOnError(throwable -> ZPAnalyticsTrackerWrapper.trackApiError(apiId, startTime, throwable))
                 .doOnNext(cardInfoListResponse -> mCardMapLocalStorage.saveResponse(userid, cardInfoListResponse))
                 .doOnNext(cardInfoListResponse -> ZPAnalyticsTrackerWrapper.trackApiCall(apiId, startTime, cardInfoListResponse))
-                .flatMap(new Func1<CardInfoListResponse, Observable<Boolean>>() {
+                .flatMap(new Func1<CardInfoResponse, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(CardInfoListResponse cardInfoListResponse) {
+                    public Observable<Boolean> call(CardInfoResponse cardInfoListResponse) {
                         return Observable.just(true);
                     }
                 });
@@ -138,9 +138,9 @@ public class LinkSourceInteractor implements ILinkSourceInteractor {
                 .doOnError(throwable -> ZPAnalyticsTrackerWrapper.trackApiError(apiId, startTime, throwable))
                 .doOnNext(bankAccountListResponse -> mBankAccountLocalStorage.saveResponse(userid, bankAccountListResponse))
                 .doOnNext(bankAccountListResponse -> ZPAnalyticsTrackerWrapper.trackApiCall(apiId, startTime, bankAccountListResponse))
-                .flatMap(new Func1<BankAccountListResponse, Observable<Boolean>>() {
+                .flatMap(new Func1<BankAccountResponse, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(BankAccountListResponse bankAccountListResponse) {
+                    public Observable<Boolean> call(BankAccountResponse bankAccountListResponse) {
                         return Observable.just(true);
                     }
                 });
