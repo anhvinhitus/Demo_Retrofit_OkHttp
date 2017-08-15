@@ -1,4 +1,44 @@
 {
+    "sendmoney_contacts": {
+        "rawcode": 59892,
+        "colors": [
+            {
+                "fill": "rgb(0, 143, 229)"
+            }
+        ],
+        "code": "\ue9f4",
+        "codes": [
+            59892,
+            59893,
+            59894,
+            59895,
+            59896,
+            59902,
+            59903,
+            59909,
+            59910,
+            59911,
+            59912
+        ]
+    },
+    "sendmoney_phonenumber": {
+        "rawcode": 59913,
+        "colors": [
+            {
+                "fill": "rgb(18, 157, 90)"
+            }
+        ],
+        "code": "\uea09"
+    },
+    "sendmoney_zalopayid": {
+        "rawcode": 59774,
+        "colors": [
+            {
+                "fill": "rgb(246, 181, 1)"
+            }
+        ],
+        "code": "\ue97e"
+    },
     "general_timevoucher": {
         "rawcode": 59908,
         "colors": [
@@ -1379,15 +1419,6 @@
         ],
         "code": "\ue97d"
     },
-    "sendmoney_zalopayid": {
-        "rawcode": 59774,
-        "colors": [
-            {
-                "fill": "rgb(19, 155, 91)"
-            }
-        ],
-        "code": "\ue97e"
-    },
     "profile_camera": {
         "rawcode": 59775,
         "colors": [
@@ -1429,12 +1460,6 @@
         "colors": [
             {
                 "fill": "rgb(0, 145, 232)"
-            },
-            {
-                "fill": "rgb(0, 143, 229)"
-            },
-            {
-                "fill": "rgb(0, 143, 229)"
             }
         ],
         "code": "\ue983",
@@ -1464,12 +1489,6 @@
     "dialoge_warning": {
         "rawcode": 59781,
         "colors": [
-            {
-                "fill": "rgb(0, 143, 229)"
-            },
-            {
-                "fill": "rgb(0, 143, 229)"
-            },
             {
                 "fill": "rgb(0, 143, 229)"
             }
@@ -2026,7 +2045,7 @@
         "rawcode": 59728,
         "colors": [
             {
-                "fill": "rgb(199, 199, 204)"
+                "fill": "rgb(201, 212, 229)"
             }
         ],
         "code": "\ue950"
