@@ -29,8 +29,10 @@ import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
 import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
@@ -524,6 +526,30 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             String message = ErrorMessageFactory.create(getActivity(), e);
             setError(message, false);
             setViewStatus(STATUS_OLD_PASS_INVALID);
+            if (e instanceof BodyException) {
+                int errorCode = ((BodyException) e).errorCode;
+                if (errorCode == ServerErrorMessage.INCORRECT_PIN_LIMIT) {
+                    DialogHelper.showConfirmDialog(getActivity(),
+                            getActivity().getString(R.string.password_wrong_many_times_specified),
+                            getActivity().getString(R.string.dialog_turn_off),
+                            null, new ZPWOnEventConfirmDialogListener() {
+                                @Override
+                                public void onCancelEvent() {
+
+                                }
+
+                                @Override
+                                public void onOKEvent() {
+                                    try {
+                                        mPassword.close();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                }
+            }
+
         }
 
         @Override

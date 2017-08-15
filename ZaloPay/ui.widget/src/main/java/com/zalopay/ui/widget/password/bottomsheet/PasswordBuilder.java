@@ -24,7 +24,7 @@ public abstract class PasswordBuilder implements IBuilder {
     protected String mTitle;
     protected boolean mNeedHashPass = true;
     protected boolean isConfirmClose = false;
-    protected int mNumberOfTimesWrongPass = 3;
+    protected int mNumberOfTimesWrongPass = 6;
 
     public UIBottomSheetDialog.IRender build() {
         return new PasswordViewRender(this);
