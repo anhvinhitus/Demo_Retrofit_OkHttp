@@ -23,8 +23,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:gravity="center"
-            android:textColor="@color/blue.008fe5"
-            app:iconName="@string/ct_list_danhba"
+            android:textColor="@color/transfer_font_contacts"
+            app:iconName="@string/sendmoney_contacts"
             app:iconSize="32dp" />
 
         <LinearLayout
