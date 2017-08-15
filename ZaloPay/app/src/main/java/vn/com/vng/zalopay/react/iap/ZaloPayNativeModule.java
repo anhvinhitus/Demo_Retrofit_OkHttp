@@ -48,6 +48,7 @@ import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.FileDownloader;
+import vn.com.vng.zalopay.zpc.model.ZPCPickupMode;
 import vn.com.zalopay.analytics.ZPAnalytics;
 
 /**
@@ -443,6 +444,12 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         extras.putString(BundleConstants.PHONE_NUMBER, phoneNumber);
         extras.putString(BundleConstants.ZPC_VIEW_MODE, viewMode);
         extras.putString(BundleConstants.NAVIGATION_TITLE, navigationTitle);
+        extras.putInt(BundleConstants.ZPC_PICKUP_MODE,
+                        ZPCPickupMode.DEFAULT |
+                        ZPCPickupMode.ALLOW_NON_CONTACT_ITEM |
+                        ZPCPickupMode.ALLOW_OWN_NUMBER |
+                        ZPCPickupMode.ALLOW_NON_ZALOPAY_USER
+        );
         mNavigator.startZaloPayContactTopup(activity, extras, TOPUP_REQUEST_CODE);
     }
 

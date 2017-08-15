@@ -26,10 +26,9 @@ public class ContactListActivity extends UserBaseToolBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (tvTitle == null) {
-            return;
+        if (tvTitle != null) {
+            tvTitle.setText(R.string.title_activity_zalopay_contact);
         }
-        tvTitle.setText(R.string.title_activity_zalopay_contact);
 
         // show/hide subTitle
         if (getExtras().containsKey(BundleConstants.PHONE_NUMBER)

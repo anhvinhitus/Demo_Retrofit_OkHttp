@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.zpc.listener.OnFavoriteListener;
+import vn.com.vng.zalopay.zpc.model.ZPCPickupMode;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
 
 /**
@@ -54,6 +55,7 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
 
     @ZpcViewType
     private int mViewType = ZpcViewType.ZPC_All;
+    private int mPickupMode = ZPCPickupMode.DEFAULT;
 
     private final PublishSubject<String> mDelaySubject;
 
@@ -174,8 +176,9 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
         return ZPCConfig.sEnableSyncContact;
     }
 
-    public void initialize(@Nullable String keySearch, @ZpcViewType int viewType) {
+    public void initialize(@Nullable String keySearch, @ZpcViewType int viewType, int pickupMode) {
         mViewType = viewType;
+        mPickupMode = pickupMode;
         if (!TextUtils.isEmpty(keySearch)) {
             doSearch(keySearch);
         } else {
@@ -241,12 +244,43 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
         onSelectContactItem(fragment, profile);
     }
 
-    public void onSelectContactItem(Fragment fragment, ZPProfile profile) {
-        if (isPhoneBook()) {
-            backTopup(fragment, profile);
-        } else {
-            startTransfer(fragment, profile);
+    void onSelectContactItem(Fragment fragment, ZPProfile profile) {
+        if ((mPickupMode & ZPCPickupMode.ALLOW_NON_ZALOPAY_USER) == 0) {
+            // disable non zalo pay user
+            if (profile.status != 1) {
+                Timber.d("user profile [status %s]", profile.status);
+                showDialogNotUsingApp(profile);
+                return;
+            }
         }
+
+        if ((mPickupMode & ZPCPickupMode.ALLOW_OWN_NUMBER) == 0) {
+            // disable own number
+            String userPhoneNo = PhoneUtil.formatPhoneNumber(mUser.phonenumber);
+            if (TextUtils.isEmpty(userPhoneNo)) {
+                Timber.d("can not get user phone number");
+                return;
+            }
+
+            if (userPhoneNo.equals(profile.phonenumber)) {
+                Timber.d("user transfer to him(her)self [user number: %s / transfer number: %s]", userPhoneNo, profile.phonenumber);
+                showDialogTransferToSelf();
+                return;
+            }
+        }
+
+        Activity activity = fragment.getActivity();
+        Intent data = new Intent();
+        data.putExtra("profile", profile);
+        activity.setResult(Activity.RESULT_OK, data);
+        AndroidUtils.hideKeyboard(activity);
+        activity.finish();
+//
+//        if (isPhoneBook()) {
+//            backTopup(fragment, profile);
+//        } else {
+//            startTransfer(fragment, profile);
+//        }
     }
 
     private void onSelectContactItem(Fragment fragment, FavoriteData favoriteData) {
@@ -296,10 +330,17 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
             return;
         }
 
-        TransferObject object = new TransferObject(profile);
-        object.transferMode = MoneyTransferModeEnum.TransferToZaloPayContact;
-        object.activateSource = Constants.ActivateSource.FromTransferActivity;
-        mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
+//        TransferObject object = new TransferObject(profile);
+//        object.transferMode = MoneyTransferModeEnum.TransferToZaloPayContact;
+//        object.activateSource = Constants.ActivateSource.FromTransferActivity;
+//        mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
+
+        Activity activity = fragment.getActivity();
+        Intent data = new Intent();
+        data.putExtra("profile", profile);
+        activity.setResult(Activity.RESULT_OK, data);
+        AndroidUtils.hideKeyboard(activity);
+        activity.finish();
     }
 
     void showDialogNotUsingApp(ZPProfile zaloProfile) {

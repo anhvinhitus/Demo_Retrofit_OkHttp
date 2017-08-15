@@ -53,6 +53,7 @@ import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.zpc.adapter.ZPCFavoriteAdapter;
+import vn.com.vng.zalopay.zpc.model.ZPCPickupMode;
 import vn.com.vng.zalopay.zpc.model.ZpcViewType;
 
 /**
@@ -63,38 +64,51 @@ import vn.com.vng.zalopay.zpc.model.ZpcViewType;
 public class ContactListFragment extends RuntimePermissionFragment implements ContactListView,
         SwipeRefreshLayout.OnRefreshListener {
 
-    @BindView(R.id.listview)
-    ListView mListView;
-    @BindView(R.id.swipeRefresh)
-    MultiSwipeRefreshLayout mSwipeRefreshView;
-    @BindView(R.id.progressContainer)
-    View mLoadingView;
-    ZPCFavoriteAdapter mAdapter;
     @Inject
     ContactListPresenter mPresenter;
+
+    @BindView(R.id.listview)
+    ListView mListView;
+
+    @BindView(R.id.swipeRefresh)
+    MultiSwipeRefreshLayout mSwipeRefreshView;
+
+    @BindView(R.id.progressContainer)
+    View mLoadingView;
+
     @BindView(R.id.tv_empty)
     TextView mTvEmptyView;
+
     @BindView(R.id.ll_empty)
     LinearLayout mLlEmptyView;
+
     @BindView(R.id.edtSearch)
     ZPEditText mEdtSearchView;
+
     @BindView(R.id.switchKeyboard)
     IconFont mSwitchKeyboardView;
+
     @BindView(R.id.itemNumberNotSaveYet)
     LinearLayout mItemNumberNotSaveYet;
+
     @BindView(R.id.not_save_yet_tv_phone_number)
     TextView mTvNumberNotSave;
+
     @BindView(R.id.not_save_yet_tv_display_name)
     TextView mTvDisplayNameNotSave;
+
     @BindView(R.id.not_save_yet_iv_avatar)
     SimpleDraweeView mAvatar;
 
+    ZPCFavoriteAdapter mAdapter;
     @ZpcViewType
     private int mViewType = ZpcViewType.ZPC_All;
     private String mKeySearch = null;
     private String mNavigatorTitle = null;
     private String mViewMode = ZPCViewMode.keyboardABC;
     private String mPhoneNumber = null;
+    private int mPickupMode = ZPCPickupMode.DEFAULT;
+
     private AbsListView.OnScrollListener mOnScrollListener = new AbsListView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -180,7 +194,7 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mPresenter.initialize(mEdtSearchView.getText().toString(), mViewType);
+        mPresenter.initialize(mEdtSearchView.getText().toString(), mViewType, mPickupMode);
     }
 
     @SuppressWarnings("ResourceType")
@@ -190,6 +204,7 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
         mNavigatorTitle = bundle.getString(BundleConstants.NAVIGATION_TITLE, "");
         mViewMode = bundle.getString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardABC);
         mPhoneNumber = bundle.getString(BundleConstants.PHONE_NUMBER, "");
+        mPickupMode = bundle.getInt(BundleConstants.ZPC_PICKUP_MODE, ZPCPickupMode.DEFAULT);
     }
 
     @Override

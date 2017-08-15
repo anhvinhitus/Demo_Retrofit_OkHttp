@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,10 +21,13 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.BundleConstants;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.model.MoneyTransferModeEnum;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.domain.model.ZPProfile;
 import vn.com.vng.zalopay.react.model.ZPCViewMode;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.zpc.model.ZPCPickupMode;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -57,6 +61,7 @@ public class TransferHomeFragment extends BaseFragment implements
     public void onClickTransferViaPhoneNumber() {
         Bundle bundle = new Bundle();
         bundle.putString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardPhone);
+        bundle.putInt(BundleConstants.ZPC_PICKUP_MODE, ZPCPickupMode.DEFAULT | ZPCPickupMode.ALLOW_NON_CONTACT_ITEM);
         navigator.startZaloContactActivity(this, bundle);
     }
 
@@ -64,6 +69,7 @@ public class TransferHomeFragment extends BaseFragment implements
     public void onClickTransferContactList() {
         Bundle bundle = new Bundle();
         bundle.putString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardABC);
+        bundle.putInt(BundleConstants.ZPC_PICKUP_MODE, ZPCPickupMode.DEFAULT | ZPCPickupMode.ALLOW_NON_CONTACT_ITEM);
         navigator.startZaloContactActivity(this, bundle);
     }
 
@@ -213,6 +219,13 @@ public class TransferHomeFragment extends BaseFragment implements
             getActivity().finish();
         } else if (requestCode == Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID) {
             getActivity().finish();
+        } else if (requestCode == Constants.REQUEST_CODE_PICK_CONTACT) {
+            ZPProfile profile = data.getParcelableExtra("profile");
+            TransferObject object = new TransferObject(profile);
+            object.transferMode = MoneyTransferModeEnum.TransferToZaloPayContact;
+            object.activateSource = Constants.ActivateSource.FromTransferActivity;
+            navigator.startTransferActivity(this, object, Constants.REQUEST_CODE_TRANSFER);
         }
+
     }
 }
