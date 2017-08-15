@@ -24,6 +24,7 @@ public abstract class PasswordBuilder implements IBuilder {
     protected String mTitle;
     protected boolean mNeedHashPass = true;
     protected boolean isConfirmClose = false;
+    protected int mNumberOfTimesWrongPass = 3;
 
     public UIBottomSheetDialog.IRender build() {
         return new PasswordViewRender(this);
@@ -236,5 +237,16 @@ public abstract class PasswordBuilder implements IBuilder {
             mISetDataToView.resetOTPContent();
         }
         return this;
+    }
+
+    @Override
+    public IBuilder setMaxNumberOfTimesWrongPass(int pNumber) {
+        mNumberOfTimesWrongPass = pNumber;
+        return this;
+    }
+
+    @Override
+    public int getMaxNumberOfTimesWrongPass() {
+        return mNumberOfTimesWrongPass;
     }
 }

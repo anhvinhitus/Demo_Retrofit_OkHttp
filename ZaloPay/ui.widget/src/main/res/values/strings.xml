@@ -142,4 +142,6 @@
     <string name="change_pin_support_number">1900 54 54 36</string>
     <string name="transfer_message_max_length">Lời nhắn không được vượt quá %s kí tự</string>
 
+    <string name="password_wrong_many_times_specified">Sai mật khẩu quá số lần quy định</string>
+
 </resources>

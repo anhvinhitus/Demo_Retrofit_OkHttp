@@ -2,12 +2,9 @@ package com.zalopay.ui.widget.password.managers;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -19,8 +16,6 @@ import com.zalopay.ui.widget.password.interfaces.IControl;
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by lytm on 23/05/2017.
@@ -154,6 +149,20 @@ public class PasswordManager {
             @Override
             public void run() {
                 mIBuilder.setTitle(pTitle);
+            }
+        });
+    }
+
+    @UiThread
+    public void setMaxNumberOfTimesWrongPass(final int pNumber) throws Exception{
+        if (mIBuilder == null) {
+            Timber.d("mIBuilder is null");
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mIBuilder.setMaxNumberOfTimesWrongPass(pNumber);
             }
         });
     }

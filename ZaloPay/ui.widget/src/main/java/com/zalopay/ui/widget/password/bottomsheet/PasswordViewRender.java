@@ -1,10 +1,10 @@
 package com.zalopay.ui.widget.password.bottomsheet;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
@@ -27,6 +27,8 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.R;
 import com.zalopay.ui.widget.UIBottomSheetDialog;
+import com.zalopay.ui.widget.dialog.DialogManager;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.password.encryption.Encryptor;
 import com.zalopay.ui.widget.password.enums.KeyboardButtonEnum;
 import com.zalopay.ui.widget.password.indicator.LoadingIndicatorView;
@@ -66,6 +68,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     private CheckBox mCheckBox;
     private LinearLayout mLayoutCheckBox;
     private LinearLayout mLayoutSupportInfo;
+    private int mCountWrongPass = 0;
 
     ISetDataToView mISetDataToView = new ISetDataToView() {
         @Override
@@ -74,9 +77,30 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
             if (mLoadingIndicatorView != null && mTextMessage != null) {
                 mLoadingIndicatorView.setVisibility(View.INVISIBLE);
                 mTextMessage.setVisibility(View.VISIBLE);
+                mCountWrongPass++;
             }
-            onPinCodeError();
-            setErrorMessageToView(pError);
+
+            // check times wrong pass
+            if (mCountWrongPass < mBuilder.getMaxNumberOfTimesWrongPass()) {
+                onPinCodeError();
+                setErrorMessageToView(pError);
+            } else {
+                Timber.d("Wrong pass > %s times", mBuilder.getMaxNumberOfTimesWrongPass());
+                DialogManager.showConfirmDialog((Activity) mContext.get(),
+                        mContext.get().getString(R.string.password_wrong_many_times_specified),
+                        mContext.get().getString(R.string.dialog_turn_off),
+                        null, new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+
+                            }
+
+                            @Override
+                            public void onOKEvent() {
+                                dismissPasswordView();
+                            }
+                        });
+            }
         }
 
         @Override
@@ -294,11 +318,15 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.cancel_action) {
-            if (mBuilder.isConfirmClose()) {
-                mBuilder.getIFPinCallBack().onClose();
-            } else{
-                close();
-            }
+            dismissPasswordView();
+        }
+    }
+
+    private void dismissPasswordView() {
+        if (mBuilder.isConfirmClose()) {
+            mBuilder.getIFPinCallBack().onClose();
+        } else {
+            close();
         }
     }
 
@@ -334,6 +362,7 @@ public class PasswordViewRender extends PasswordRender implements KeyboardButton
         mPinCode = DEFAULT_EMPTY;
         mPinCodeRoundView.refresh(mPinCode.length());
         isSuccess = false;
+        mCountWrongPass = 0;
         if (mBuilder != null && mBuilder.getIFControl() != null) {
             mBuilder.getIFControl().onClose();
         }

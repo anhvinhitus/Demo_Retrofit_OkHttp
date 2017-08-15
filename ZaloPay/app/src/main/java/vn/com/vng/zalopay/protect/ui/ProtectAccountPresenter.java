@@ -23,6 +23,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
@@ -37,9 +38,7 @@ import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.vng.zalopay.user.UserBaseActivity;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.vng.zalopay.utils.PasswordUtil;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -55,34 +54,95 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     private final int STATUS_NEW_PASS = 1;
     private final int STATUS_OTP = 2;
     private final int STATUS_CONFIRM_NEW_PASS = 3;
+    private final FingerprintManagerCompat mFingerprintManagerCompat;
     @Inject
     public Context mContext;
-
     @Inject
     Navigator navigator;
-
     KeyTools mKeyTools;
-
     @Inject
     UserConfig mUserConfig;
-
     private EventBus mEventBus;
     private PassportRepository mPassportRepository;
     private AccountStore.Repository mAccountRepository;
-    private final FingerprintManagerCompat mFingerprintManagerCompat;
     private PasswordManager mPassword;
     private String mOldPassword;
     private String mNewPassword;
-
-    int getViewStatus() {
-        return viewStatus;
-    }
-
-    void setViewStatus(int viewStatus) {
-        this.viewStatus = viewStatus;
-    }
-
     private int viewStatus;
+    // Callback from keyboard input
+    private IPasswordCallBack changePasswordCallBack = new IPasswordCallBack() {
+        @Override
+        public void onError(String pError) {
+            Timber.d(pError);
+        }
+
+        @Override
+        public void onCheckedFingerPrint(boolean pChecked) {
+
+        }
+
+        @Override
+        public void onClose() {
+            ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_BACK);
+            if (mPassword.getBuilder().isConfirmClose()) {
+                DialogHelper.showConfirmDialog(getActivity(),
+                        getActivity().getString(R.string.protect_account_confirm_close_dialog),
+                        getActivity().getString(R.string.txt_later),
+                        getActivity().getString(R.string.txt_continue),
+                        new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+
+                            }
+
+                            @Override
+                            public void onOKEvent() {
+                                setViewStatus(0);
+                                try {
+                                    mPassword.close();
+                                } catch (Exception e) {
+                                    Timber.d("Confirm close dialog error [%s]", e.getMessage());
+                                }
+
+                            }
+                        });
+            }
+        }
+
+        @Override
+        public void onComplete(String pHashPin) {
+            switch (getViewStatus()) {
+                case STATUS_OLD_PASS_INVALID:
+                    verifyPassword(pHashPin);
+                    ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_INPUT);
+                    break;
+                case STATUS_NEW_PASS:
+                    setChangePasswordViewStatus(STATUS_CONFIRM_NEW_PASS);
+                    mNewPassword = pHashPin;
+                    ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_INPUT);
+                    break;
+                case STATUS_CONFIRM_NEW_PASS:
+                case STATUS_CONFIRM_PASS_INVALID:
+                    if (pHashPin.equals(mNewPassword)) {
+                        changePin(mOldPassword, mNewPassword);
+                    } else {
+                        setChangePasswordViewStatus(STATUS_CONFIRM_PASS_INVALID);
+                    }
+                    ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_CONTINUE);
+                    break;
+                case STATUS_OTP:
+                case STATUS_OTP_INVALID:
+                    if (!TextUtils.isEmpty(pHashPin)) {
+                        verifyOTP(pHashPin);
+                    }
+                    break;
+
+                default:
+                    verifyPassword(pHashPin);
+
+            }
+        }
+    };
 
     @Inject
     ProtectAccountPresenter(PassportRepository passportRepository,
@@ -93,6 +153,14 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         mPassportRepository = passportRepository;
         mAccountRepository = accountRepository;
         mEventBus = eventBus;
+    }
+
+    int getViewStatus() {
+        return viewStatus;
+    }
+
+    void setViewStatus(int viewStatus) {
+        this.viewStatus = viewStatus;
     }
 
     @Override
@@ -279,6 +347,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                     .showFPSuggestCheckBox(false)
                     .showSupportInfo(true)
                     .setNeedHashPass(true)
+                    .setMaxNumberOfTimesWrongPass(Constants.MAX_NUMBER_OF_TIMES_WRONG_PASS)
                     .setPasswordCallBack(changePasswordCallBack)
                     .setOnCallSupportListener(() -> {
                         if (mContext == null) {
@@ -295,81 +364,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             Timber.d("AuthenticationPassword show password [%s]", e.getMessage());
         }
     }
-
-    // Callback from keyboard input
-    private IPasswordCallBack changePasswordCallBack = new IPasswordCallBack() {
-        @Override
-        public void onError(String pError) {
-            Timber.d(pError);
-        }
-
-        @Override
-        public void onCheckedFingerPrint(boolean pChecked) {
-
-        }
-
-        @Override
-        public void onClose() {
-            ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_BACK);
-            if (mPassword.getBuilder().isConfirmClose()) {
-                DialogHelper.showConfirmDialog(getActivity(),
-                        getActivity().getString(R.string.protect_account_confirm_close_dialog),
-                        getActivity().getString(R.string.txt_later),
-                        getActivity().getString(R.string.txt_continue),
-                        new ZPWOnEventConfirmDialogListener() {
-                            @Override
-                            public void onCancelEvent() {
-
-                            }
-
-                            @Override
-                            public void onOKEvent() {
-                                setViewStatus(0);
-                                try {
-                                    mPassword.close();
-                                } catch (Exception e) {
-                                    Timber.d("Confirm close dialog error [%s]", e.getMessage());
-                                }
-
-                            }
-                        });
-            }
-        }
-
-        @Override
-        public void onComplete(String pHashPin) {
-            switch (getViewStatus()) {
-                case STATUS_OLD_PASS_INVALID:
-                    verifyPassword(pHashPin);
-                    ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_INPUT);
-                    break;
-                case STATUS_NEW_PASS:
-                    setChangePasswordViewStatus(STATUS_CONFIRM_NEW_PASS);
-                    mNewPassword = pHashPin;
-                    ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_INPUT);
-                    break;
-                case STATUS_CONFIRM_NEW_PASS:
-                case STATUS_CONFIRM_PASS_INVALID:
-                    if (pHashPin.equals(mNewPassword)) {
-                        changePin(mOldPassword, mNewPassword);
-                    } else {
-                        setChangePasswordViewStatus(STATUS_CONFIRM_PASS_INVALID);
-                    }
-                    ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_CONTINUE);
-                    break;
-                case STATUS_OTP:
-                case STATUS_OTP_INVALID:
-                    if (!TextUtils.isEmpty(pHashPin)) {
-                        verifyOTP(pHashPin);
-                    }
-                    break;
-
-                default:
-                    verifyPassword(pHashPin);
-
-            }
-        }
-    };
 
     /*
     * Functions about handle view status
@@ -495,6 +489,30 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         mSubscription.add(subscription);
     }
 
+    /*
+    * Event bus
+    * */
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onReceiveSmsMessages(ReceiveSmsEvent event) {
+        if (getViewStatus() != STATUS_OTP && getViewStatus() != STATUS_OTP_INVALID) {
+            return;
+        }
+
+        String pattern = "(.*)(\\d{6})(.*)";
+        // Create a Pattern object
+        Pattern r = Pattern.compile(pattern);
+
+        for (ReceiveSmsEvent.SmsMessage message : event.messages) {
+            Timber.d("Receive SMS: [%s: %s]", message.from, message.body);
+            Matcher m = r.matcher(message.body);
+            if (m.find()) {
+                Timber.d("Found OTP: %s", m.group(2));
+                mPassword.getBuilder().setOTPValue(m.group(2));
+            }
+        }
+
+        mEventBus.removeStickyEvent(ReceiveSmsEvent.class);
+    }
 
     /*
     * Subscriber
@@ -592,30 +610,5 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 Timber.d("VerifySubscriberOTP onError exception [%s]", exception.getMessage());
             }
         }
-    }
-
-    /*
-    * Event bus
-    * */
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onReceiveSmsMessages(ReceiveSmsEvent event) {
-        if (getViewStatus() != STATUS_OTP && getViewStatus() != STATUS_OTP_INVALID) {
-            return;
-        }
-
-        String pattern = "(.*)(\\d{6})(.*)";
-        // Create a Pattern object
-        Pattern r = Pattern.compile(pattern);
-
-        for (ReceiveSmsEvent.SmsMessage message : event.messages) {
-            Timber.d("Receive SMS: [%s: %s]", message.from, message.body);
-            Matcher m = r.matcher(message.body);
-            if (m.find()) {
-                Timber.d("Found OTP: %s", m.group(2));
-                mPassword.getBuilder().setOTPValue(m.group(2));
-            }
-        }
-
-        mEventBus.removeStickyEvent(ReceiveSmsEvent.class);
     }
 }
