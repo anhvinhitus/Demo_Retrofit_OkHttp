@@ -34,7 +34,7 @@ public class VNPhoneValidate {
         mValidates.add(new ZPEditTextValidate(phoneFormat.mGeneralMessage) {
             @Override
             public boolean isValid(@NonNull CharSequence s) {
-                return PhoneUtil.validPatterns(s.toString());
+                return PhoneUtil.validateMobileNumberPattern(s.toString());
             }
         });
     }

@@ -26,4 +26,8 @@ public class PhoneFormat {
     @SerializedName("general_message")
     public String mGeneralMessage;
 
+    /**
+     * This field is computed again the mPatterns. So it does not need a serialized name
+     */
+    public String normalizedRegex;
 }

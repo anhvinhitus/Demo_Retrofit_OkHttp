@@ -321,5 +321,11 @@ public class StringsTest {
         expected = "01235105206";
         actual = PhoneUtil.normalizeMobileNumber(input);
         Assert.assertEquals(expected, actual);
+
+        input = "84966668376";
+        expected = "0966668376";
+        actual = PhoneUtil.normalizeMobileNumber(input);
+        Assert.assertEquals(expected, actual);
+
     }
 }

@@ -97,6 +97,23 @@ public class ConfigLoader {
     }
 
     private static boolean loadConfigPhoneFormat(@NonNull Config config) {
+        if (config.mGeneral == null || config.mGeneral.mPhoneFormat == null) {
+            return true;
+        }
+
+        if (mConfig.mGeneral.mPhoneFormat.mPatterns == null) {
+            return true;
+        }
+
+        List<String> patterns = mConfig.mGeneral.mPhoneFormat.mPatterns;
+        ArrayList<String> newPattern = new ArrayList<>();
+        for (String regex : patterns) {
+            newPattern.add(String.format("(^%s$)", regex));
+        }
+
+        mConfig.mGeneral.mPhoneFormat.normalizedRegex = Strings.joinWithDelimiter("|", newPattern);
+
+        Timber.d("Final regex for validating mobile number: %s", mConfig.mGeneral.mPhoneFormat.normalizedRegex);
         return PhoneUtil.setPhoneFormat(config.mGeneral.mPhoneFormat);
     }
 

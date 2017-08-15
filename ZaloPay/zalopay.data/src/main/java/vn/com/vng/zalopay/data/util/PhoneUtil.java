@@ -99,26 +99,14 @@ public class PhoneUtil {
     }
 
     public static boolean isMobileNumber(String input) {
-        return isMobileNumber(input, false);
-    }
-
-    public static boolean isMobileNumber(String input, boolean acceptSpacingBetweenNumbers) {
-        if (TextUtils.isEmpty(input)) {
-            return false;
-        }
-
-        String refinedInput = input;
-        if (acceptSpacingBetweenNumbers) {
-            refinedInput = Strings.stripWhitespace(input);
-        }
-        return validPhoneFormat(refinedInput);
+        return validPhoneFormat(input);
     }
 
     private static boolean validPhoneFormat(String input) {
         return (!TextUtils.isEmpty(input)
                 && validMinLength(input)
                 && validMaxLength(input)
-                && validPatterns(input));
+                && validateMobileNumberPattern(input));
     }
 
     public static boolean validLength(@NonNull String input) {
@@ -133,26 +121,47 @@ public class PhoneUtil {
         return mPhoneFormat != null && input.length() <= mPhoneFormat.mMaxLength;
     }
 
-    public static boolean validPatterns(@NonNull String input) {
-        if (mPhoneFormat == null || mPhoneFormat.mPatterns == null) {
+    public static boolean validateMobileNumberPattern(@NonNull String input) {
+        if (mPhoneFormat == null || TextUtils.isEmpty(mPhoneFormat.normalizedRegex)) {
             return false;
         }
 
         try {
-            for (String pattern : mPhoneFormat.mPatterns) {
-                if (input.matches(pattern)) {
-                    return true;
-                }
-            }
+            return input.matches(mPhoneFormat.normalizedRegex);
         } catch (PatternSyntaxException e) {
             Timber.w(e, "Valid phone format throw exception.");
         }
         return false;
     }
 
+//    public static boolean validateMobileNumberPattern(String  input) {
+//        ArrayList<String> patterns = new ArrayList<>();
+//        patterns.add("012\\d{8}");
+//        patterns.add("016[2-9]\\d{7}");
+//        patterns.add("018(6|8)\\d{7}");
+//        patterns.add("0199\\d{7}");
+//        patterns.add("086(8|9)\\d{6}");
+//        patterns.add("08(8|9)\\d{7}");
+//        patterns.add("09\\d{8}");
+//
+//        ArrayList<String> newPattern = new ArrayList<>();
+//        for (String regex : patterns) {
+//            newPattern.add(String.format("(^%s$)", regex));
+//        }
+//
+//        String finalRegex = Strings.joinWithDelimiter("|", newPattern);
+//        if (input.matches(finalRegex)) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
+
     public static String normalizeMobileNumber(String input) {
         String refinedInput = Strings.stripWhitespace(input);
-        return refinedInput.replaceAll("^\\+(840|84)", "0");
+        refinedInput = refinedInput.replaceAll("^\\+(840|84)", "0");
+        refinedInput = refinedInput.replaceAll("^(840|84)", "0");
+        return refinedInput;
     }
 
     public static String formatPhoneNumberWithDot(long number) {
