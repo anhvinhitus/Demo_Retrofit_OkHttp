@@ -412,7 +412,7 @@
     <string name="sdk_voucher_revert_title">Xóa mã khuyến mãi</string>
     <string name="sdk_voucher_revert_error_mess">Xóa mã khuyến mãi thất bại. Vui lòng thử lại!</string>
 
-    <string name="sdk_default_link_channel_name">Thêm liên kết mới</string>
+    <string name="sdk_default_link_channel_name">Thêm liên kết</string>
 
     <string name="sdk_bank_link_cc_limit_warning">Bạn chỉ có thể liên kết tối đa %1$s thẻ Visa/Master. Vui lòng hủy liên kết cũ để thực hiện liên kết thêm thẻ mới</string>
     <string name="sdk_load_bankconfig_error_mess">Không tải được thông tin ngân hàng. Vui lòng thử lại !</string>
