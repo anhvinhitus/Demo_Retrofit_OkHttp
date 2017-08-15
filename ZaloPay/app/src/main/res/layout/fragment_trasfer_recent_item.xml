@@ -39,7 +39,6 @@
                 style="@style/TextView.Item.Main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/textsize.normal.s"
                 tools:text="A.Hoanh" />
 
             <TextView
@@ -48,7 +47,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing.tiny"
-                android:textSize="@dimen/textsize.small.s"
                 tools:text="0988888888" />
         </LinearLayout>
 
