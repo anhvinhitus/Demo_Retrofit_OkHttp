@@ -160,10 +160,6 @@ public class ProtectAccountFragment extends RuntimePermissionFragment implements
 
     @Override
     protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
-        if (!isGranted) {
-            return;
-        }
-
         switch (permissionRequestCode) {
             case PERMISSION_CODE.READ_SMS:
                 mPresenter.processChangePassword();
