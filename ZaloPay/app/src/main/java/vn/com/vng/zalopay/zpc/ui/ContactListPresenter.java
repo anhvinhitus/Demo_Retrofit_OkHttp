@@ -19,7 +19,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
@@ -27,11 +26,8 @@ import vn.com.vng.zalopay.data.zpc.ZPCConfig;
 import vn.com.vng.zalopay.data.zpc.ZPCStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
-import vn.com.vng.zalopay.domain.model.MoneyTransferModeEnum;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
-import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -51,7 +47,6 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
 
     private final ZPCStore.Repository mZPCRepository;
     protected final Context mContext;
-    protected final Navigator mNavigator;
 
     @ZpcViewType
     private int mViewType = ZpcViewType.ZPC_All;
@@ -64,11 +59,9 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
 
     @Inject
     ContactListPresenter(Context context,
-                         Navigator navigator,
                          ZPCStore.Repository zpcRepository) {
         this.mZPCRepository = zpcRepository;
         this.mContext = context;
-        this.mNavigator = navigator;
         mDelaySubject = PublishSubject.create();
     }
 
@@ -162,7 +155,7 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
         return mViewType == ZpcViewType.ZPC_PhoneBook;
     }
 
-    public void refreshFriendList() {
+    void refreshFriendList() {
         Subscription subscription = mZPCRepository.fetchZaloFriendFullInfo()
                 .flatMap(aBoolean -> mZPCRepository.getZaloFriendsCursor(isPhoneBook()))
                 .subscribeOn(Schedulers.io())
@@ -218,14 +211,14 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
                 ;
     }
 
-    public void syncContact() {
+    void syncContact() {
         Subscription subscription = mZPCRepository.syncContact()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
 
-    public void doSearch(String s) {
+    void doSearch(String s) {
         Subscription subscription = mZPCRepository.findFriends(s, isPhoneBook())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -234,7 +227,7 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
         mSubscription.add(subscription);
     }
 
-    public void onSelectContactItem(Fragment fragment, Cursor cursor) {
+    void onSelectContactItem(Fragment fragment, Cursor cursor) {
         ZPProfile profile = mZPCRepository.transform(cursor);
         if (profile == null) {
             Timber.d("click contact profile is null");
@@ -244,7 +237,30 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
         onSelectContactItem(fragment, profile);
     }
 
-    void onSelectContactItem(Fragment fragment, ZPProfile profile) {
+    void onSelectNonContactItem(Fragment fragment, ZPProfile profile) {
+        if ((mPickupMode & ZPCPickupMode.ALLOW_NON_CONTACT_ITEM) == 0) {
+            return;
+        }
+
+        onSelectContactItem(fragment, profile);
+    }
+
+    private void onSelectContactItem(Fragment fragment, FavoriteData favoriteData) {
+        if (favoriteData == null) {
+            Timber.d("click contact updateFavouriteData data is null");
+            return;
+        }
+
+        ZPProfile profile = new ZPProfile();
+        profile.avatar = favoriteData.avatar;
+        profile.displayName = favoriteData.displayName;
+        profile.phonenumber = favoriteData.phoneNumber;
+        profile.status = favoriteData.status;
+
+        onSelectContactItem(fragment, profile);
+    }
+
+    private void onSelectContactItem(Fragment fragment, ZPProfile profile) {
         if ((mPickupMode & ZPCPickupMode.ALLOW_NON_ZALOPAY_USER) == 0) {
             // disable non zalo pay user
             if (profile.status != 1) {
@@ -268,72 +284,6 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
                 return;
             }
         }
-
-        Activity activity = fragment.getActivity();
-        Intent data = new Intent();
-        data.putExtra("profile", profile);
-        activity.setResult(Activity.RESULT_OK, data);
-        AndroidUtils.hideKeyboard(activity);
-        activity.finish();
-//
-//        if (isPhoneBook()) {
-//            backTopup(fragment, profile);
-//        } else {
-//            startTransfer(fragment, profile);
-//        }
-    }
-
-    private void onSelectContactItem(Fragment fragment, FavoriteData favoriteData) {
-        if (favoriteData == null) {
-            Timber.d("click contact updateFavouriteData data is null");
-            return;
-        }
-
-        ZPProfile profile = new ZPProfile();
-        profile.avatar = favoriteData.avatar;
-        profile.displayName = favoriteData.displayName;
-        profile.phonenumber = favoriteData.phoneNumber;
-        profile.status = favoriteData.status;
-
-        if (isPhoneBook()) {
-            backTopup(fragment, profile);
-        } else {
-            startTransfer(fragment, profile);
-        }
-    }
-
-    private void backTopup(Fragment fragment, ZPProfile profile) {
-        Activity activity = fragment.getActivity();
-        Intent data = new Intent();
-        data.putExtra("profile", profile);
-        activity.setResult(Activity.RESULT_OK, data);
-        AndroidUtils.hideKeyboard(activity);
-        activity.finish();
-    }
-
-    public void startTransfer(Fragment fragment, ZPProfile profile) {
-        if (profile.status != 1) {
-            Timber.d("user profile [status %s]", profile.status);
-            showDialogNotUsingApp(profile);
-            return;
-        }
-
-        String userPhoneNo = PhoneUtil.formatPhoneNumber(mUser.phonenumber);
-        if (TextUtils.isEmpty(userPhoneNo)) {
-            Timber.d("can not get user phone number");
-            return;
-        }
-
-        if (userPhoneNo.equals(profile.phonenumber)) {
-            Timber.d("user transfer to him(her)self [user number: %s / transfer number: %s]", userPhoneNo, profile.phonenumber);
-            showDialogTransferToSelf();
-            return;
-        }
-
-//        TransferObject object = new TransferObject(profile);
-//        object.transferMode = MoneyTransferModeEnum.TransferToZaloPayContact;
-//        object.activateSource = Constants.ActivateSource.FromTransferActivity;
-//        mNavigator.startTransferActivity(fragment, object, Constants.REQUEST_CODE_TRANSFER);
 
         Activity activity = fragment.getActivity();
         Intent data = new Intent();
@@ -383,7 +333,7 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
         mSubscription.add(subscription);
     }
 
-    public void getUserInfoNotInZPC(String phone) {
+    void getUserInfoNotInZPC(String phone) {
         mDelaySubject.onNext(phone);
     }
 }

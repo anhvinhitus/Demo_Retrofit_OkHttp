@@ -326,7 +326,7 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
     public void onClickItemNumberNotSaveYet(View view) {
         Object tag = view.getTag();
         if (tag instanceof ZPProfile) {
-            mPresenter.onSelectContactItem(this, (ZPProfile) tag);
+            mPresenter.onSelectNonContactItem(this, (ZPProfile) tag);
         }
     }
 

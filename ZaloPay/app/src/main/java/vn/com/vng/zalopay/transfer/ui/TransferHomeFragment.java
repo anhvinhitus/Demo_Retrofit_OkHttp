@@ -62,7 +62,7 @@ public class TransferHomeFragment extends BaseFragment implements
         Bundle bundle = new Bundle();
         bundle.putString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardPhone);
         bundle.putInt(BundleConstants.ZPC_PICKUP_MODE, ZPCPickupMode.DEFAULT | ZPCPickupMode.ALLOW_NON_CONTACT_ITEM);
-        navigator.startZaloContactActivity(this, bundle);
+        navigator.startZaloContactActivity(this, bundle, Constants.REQUEST_CODE_PICK_PHONE_NUMBER);
     }
 
     @OnClick(R.id.layoutTransferContacts)
@@ -70,7 +70,7 @@ public class TransferHomeFragment extends BaseFragment implements
         Bundle bundle = new Bundle();
         bundle.putString(BundleConstants.ZPC_VIEW_MODE, ZPCViewMode.keyboardABC);
         bundle.putInt(BundleConstants.ZPC_PICKUP_MODE, ZPCPickupMode.DEFAULT | ZPCPickupMode.ALLOW_NON_CONTACT_ITEM);
-        navigator.startZaloContactActivity(this, bundle);
+        navigator.startZaloContactActivity(this, bundle, Constants.REQUEST_CODE_PICK_CONTACT);
     }
 
     @OnClick(R.id.layoutTransferViaAccount)
@@ -219,13 +219,17 @@ public class TransferHomeFragment extends BaseFragment implements
             getActivity().finish();
         } else if (requestCode == Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID) {
             getActivity().finish();
-        } else if (requestCode == Constants.REQUEST_CODE_PICK_CONTACT) {
+        } else if ((requestCode == Constants.REQUEST_CODE_PICK_CONTACT) ||
+                (requestCode == Constants.REQUEST_CODE_PICK_PHONE_NUMBER)) {
             ZPProfile profile = data.getParcelableExtra("profile");
             TransferObject object = new TransferObject(profile);
-            object.transferMode = MoneyTransferModeEnum.TransferToZaloPayContact;
+            if (requestCode == Constants.REQUEST_CODE_PICK_CONTACT) {
+                object.transferMode = MoneyTransferModeEnum.TransferToZaloPayContact;
+            } else {
+                object.transferMode = MoneyTransferModeEnum.TransferToZaloPayUser;
+            }
             object.activateSource = Constants.ActivateSource.FromTransferActivity;
             navigator.startTransferActivity(this, object, Constants.REQUEST_CODE_TRANSFER);
         }
-
     }
 }

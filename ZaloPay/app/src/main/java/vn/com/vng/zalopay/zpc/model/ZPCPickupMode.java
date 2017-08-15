@@ -9,4 +9,5 @@ public interface ZPCPickupMode {
     int ALLOW_NON_CONTACT_ITEM = 2;
     int ALLOW_OWN_NUMBER = 4;
     int ALLOW_NON_ZALOPAY_USER = 8;
+    int ALL = 0xFFFF;
 }

@@ -444,12 +444,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         extras.putString(BundleConstants.PHONE_NUMBER, phoneNumber);
         extras.putString(BundleConstants.ZPC_VIEW_MODE, viewMode);
         extras.putString(BundleConstants.NAVIGATION_TITLE, navigationTitle);
-        extras.putInt(BundleConstants.ZPC_PICKUP_MODE,
-                        ZPCPickupMode.DEFAULT |
-                        ZPCPickupMode.ALLOW_NON_CONTACT_ITEM |
-                        ZPCPickupMode.ALLOW_OWN_NUMBER |
-                        ZPCPickupMode.ALLOW_NON_ZALOPAY_USER
-        );
+        extras.putInt(BundleConstants.ZPC_PICKUP_MODE, ZPCPickupMode.ALL);
         mNavigator.startZaloPayContactTopup(activity, extras, TOPUP_REQUEST_CODE);
     }
 

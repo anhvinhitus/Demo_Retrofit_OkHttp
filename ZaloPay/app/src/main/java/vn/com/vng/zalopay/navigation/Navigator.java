@@ -465,10 +465,10 @@ public class Navigator {
         activity.startActivity(intent);
     }
 
-    public void startZaloContactActivity(Fragment fragment, Bundle extras) {
+    public void startZaloContactActivity(Fragment fragment, Bundle extras, int requestCode) {
         Intent intent = getIntentZaloPayContactList(fragment.getContext(), ZpcViewType.ZPC_All);
         intent.putExtras(extras);
-        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_PICK_CONTACT);
+        fragment.startActivityForResult(intent, requestCode);
         ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TOUCH_ZFRIEND);
     }
 
