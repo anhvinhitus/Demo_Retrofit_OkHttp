@@ -310,7 +310,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
         @Override
         public void onClose() {
-            setViewStatus(0);
             ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_BACK);
             if (mPassword.getBuilder().isConfirmClose()) {
                 DialogHelper.showConfirmDialog(getActivity(),
@@ -325,6 +324,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
                             @Override
                             public void onOKEvent() {
+                                setViewStatus(0);
                                 try {
                                     mPassword.close();
                                 } catch (Exception e) {
