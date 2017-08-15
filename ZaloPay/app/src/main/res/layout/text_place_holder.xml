@@ -4,7 +4,7 @@
     android:id="@+id/placeHolder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dot_grey"
+    android:background="@drawable/dot_blue"
     android:gravity="center"
     android:textColor="@color/zpc_font_avatar_text"
     android:textSize="18dp"

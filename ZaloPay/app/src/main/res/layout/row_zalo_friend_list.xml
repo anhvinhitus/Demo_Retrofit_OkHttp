@@ -28,8 +28,8 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/logo"
-            android:layout_width="13dp"
-            android:layout_height="13dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="bottom|right"
             app:actualImageResource="@drawable/dot_zp"
             tools:background="@drawable/dot_zp"

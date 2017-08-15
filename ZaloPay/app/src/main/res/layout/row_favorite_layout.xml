@@ -23,8 +23,8 @@
 
         <com.zalopay.ui.widget.IconFont
             android:id="@+id/edit"
-            android:layout_width="13dp"
-            android:layout_height="13dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="bottom|right"
             android:background="@drawable/dot_white"
             android:gravity="center"
