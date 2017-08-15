@@ -175,15 +175,11 @@ public class ResourceManager extends SingletonBase {
     }
 
     public static Observable<String> getJavascriptContent(String pJsName) {
-        return Observable.defer(new Func0<Observable<String>>() {
-            @Override
-            public Observable<String> call() {
-                try {
-                    Observable.just(loadFile(PREFIX_JS, pJsName));
-                } catch (Exception e) {
-                    Observable.error(e);
-                }
-                return Observable.just(null);
+        return Observable.defer(() -> {
+            try {
+                return Observable.just(loadFile(PREFIX_JS, pJsName));
+            } catch (Exception e) {
+                return Observable.error(e);
             }
         });
     }
