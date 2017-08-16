@@ -154,47 +154,6 @@ public class PasswordManager {
     }
 
     @UiThread
-    public void setNeedHashPassword(final boolean pNeedHashPass) throws Exception {
-        if (mIBuilder == null) {
-            Timber.d("mIBuilder is null");
-            return;
-        }
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mIBuilder.setNeedHashPass(pNeedHashPass);
-            }
-        });
-    }
-
-    @UiThread void resetPasswordInput() throws Exception {
-        if (mIBuilder == null) {
-            Timber.d("mIBuilder is null");
-            return;
-        }
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mIBuilder.resetPasswordInput();
-            }
-        });
-    }
-
-    @UiThread
-    public void showOTPInputView() throws Exception {
-        if (mIBuilder == null) {
-            Timber.d("mIBuilder is null");
-            return;
-        }
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mIBuilder.showOTPInputView();
-            }
-        });
-    }
-
-    @UiThread
     public void setOTP(final String otp) throws Exception {
         if (mIBuilder == null) {
             Timber.d("mIBuilder is null");
