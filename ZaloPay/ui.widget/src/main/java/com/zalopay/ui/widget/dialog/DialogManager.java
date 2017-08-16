@@ -1,10 +1,8 @@
 package com.zalopay.ui.widget.dialog;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 
 import com.zalopay.ui.widget.R;
 import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
@@ -24,9 +22,6 @@ import timber.log.Timber;
  */
 public class DialogManager {
     public static final int NORMAL_TYPE = 0;
-    private static final int ERROR_TYPE = 1;
-    private static final int SUCCESS_TYPE = 2;
-    private static final int WARNING_TYPE = 3;
     private static final int UPDATE_TYPE = 4;
     private static final int PROGRESS_DIALOG_TIMEOUT = 35000;//ms
 
@@ -103,7 +98,7 @@ public class DialogManager {
                 Timber.d("close loading dialog");
             }
         } catch (Exception e) {
-            Timber.w(e, "Exception close loading dialog");
+            Timber.d(e, "Exception close loading dialog");
         }
     }
 
@@ -114,7 +109,7 @@ public class DialogManager {
                 mDialog = null;
             }
         } catch (Exception e) {
-            Timber.w(e, "Exception close dialog");
+            Timber.d(e, "Exception close dialog");
         }
     }
 

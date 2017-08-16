@@ -141,7 +141,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         }
 
         if (entity.mtaid <= 0 && entity.mtuid <= 0) {
-            Timber.e("Notification is invalid transactionId [%s] userid [%s] destuserid [%s]", entity.transid, entity.userid, entity.destuserid);
+            Timber.w("Notification is invalid transactionId [%s] userid [%s] destuserid [%s]", entity.transid, entity.userid, entity.destuserid);
             return null;
         }
 

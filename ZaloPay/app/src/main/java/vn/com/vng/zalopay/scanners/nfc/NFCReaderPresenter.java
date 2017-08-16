@@ -145,7 +145,7 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
 
     private void onReceivePaymentRecord(PaymentRecord record) {
         if (record == null) {
-            Timber.e("No payment record");
+            Timber.w("No payment record");
             return;
         }
 

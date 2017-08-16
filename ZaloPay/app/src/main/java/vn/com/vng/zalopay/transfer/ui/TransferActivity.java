@@ -31,7 +31,7 @@ public class TransferActivity extends UserBaseToolBarActivity {
     @Override
     public BaseFragment getFragmentToHost() {
         if (getIntent() == null) {
-            Timber.e("Intent transfer activity is null");
+            Timber.w("Intent transfer activity is null");
             return null;
         }
 

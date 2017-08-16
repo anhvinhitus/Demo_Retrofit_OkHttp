@@ -47,7 +47,7 @@ public class FontLoader {
         try {
             loadFontFromAsset(context.getAssets(), FONT_DEFAULT_NAME, FONT_CODE_DEFAULT_NAME);
         } catch (Exception e) {
-            Timber.e("Load icon font from assets error: %s", e.toString());
+            Timber.w("Load icon font from assets error: %s", e.toString());
         }
 
     }
@@ -82,7 +82,7 @@ public class FontLoader {
             Timber.i("load font from [%s]", fontPath);
             return loadFont(new File(fontPath), new File(codePath));
         } catch (Exception e) {
-            Timber.e("Load icon font from file error: [fontPath: %s Error: %s]", fontPath, e.toString());
+            Timber.w("Load icon font from file error: [fontPath: %s Error: %s]", fontPath, e.toString());
         }
         return false;
     }
@@ -91,7 +91,7 @@ public class FontLoader {
         try {
             return loadFontFromAsset(context.getAssets(), FONT_DEFAULT_NAME, FONT_CODE_DEFAULT_NAME);
         } catch (Exception e) {
-            Timber.e("Load icon font from assets error: %s", e.toString());
+            Timber.w("Load icon font from assets error: %s", e.toString());
         }
         return false;
     }
@@ -110,14 +110,14 @@ public class FontLoader {
             return sFontCode.get(defaultCode).code;
         }
 
-        Timber.e("icon font not found [name:%s - sFontCode:%s]", iconName, sFontCode.size());
+        Timber.w("icon font not found [name:%s - sFontCode:%s]", iconName, sFontCode.size());
         return "";
     }
 
     public static Typeface getDefaultTypeface() {
         Typeface typeface = sFontMap.get(FONT_DEFAULT_NAME);
         if (typeface == null) {
-            Timber.e("Default Typeface is null [sFontMap: %s]", sFontMap.size());
+            Timber.w("Default Typeface is null [sFontMap: %s]", sFontMap.size());
         }
         return typeface;
     }

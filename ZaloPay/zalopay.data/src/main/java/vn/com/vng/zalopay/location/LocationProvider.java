@@ -49,7 +49,7 @@ public class LocationProvider extends Service {
                         updateCoordinates();
                         Timber.d("Get location by network with lat: %s, long: %s", latitude, longitude);
                     } catch (SecurityException e) {
-                        Timber.e("Get location by network failed with: %s", e.getMessage());
+                        Timber.w("Get location by network failed with: %s", e.getMessage());
                     }
                 }
 
@@ -59,14 +59,14 @@ public class LocationProvider extends Service {
                         updateCoordinates();
                         Timber.d("Get location by gps with lat: %s, long: %s", latitude, longitude);
                     } catch (SecurityException e) {
-                        Timber.e("Get location by gps failed with: %s", e.getMessage());
+                        Timber.w("Get location by gps failed with: %s", e.getMessage());
                     }
                 }
 
                 saveLocation();
             }
         } catch (Exception e) {
-            Timber.e("Get location failed with: %s", e.getMessage());
+            Timber.w("Get location failed with: %s", e.getMessage());
         }
 
         return canGetLocation;

@@ -48,7 +48,7 @@ public class OnboardingActivity extends BaseToolBarActivity {
 
     public BaseFragment getFragmentToHost() {
         if (getIntent() == null) {
-            Timber.e("Intent onboarding activity is null");
+            Timber.w("Intent onboarding activity is null");
             return null;
         }
 

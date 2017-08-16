@@ -9,7 +9,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
@@ -38,7 +37,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
     public DialogFragment getDialogFingerprintAuthentication(Activity activity, final IFPCallback callback) throws Exception {
 
         if (callback == null) {
-            Timber.e("PaymentCallback is null");
+            Timber.w("PaymentCallback is null");
             return null;
         }
 

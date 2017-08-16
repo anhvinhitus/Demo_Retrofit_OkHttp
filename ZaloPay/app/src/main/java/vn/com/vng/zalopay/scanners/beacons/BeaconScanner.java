@@ -209,7 +209,7 @@ class BeaconScanner {
 
         @Override
         public void onScanFailed(int errorCode) {
-            Timber.e("Scan Failed with Error Code: %d", errorCode);
+            Timber.w("Scan Failed with Error Code: %d", errorCode);
         }
     }
 
