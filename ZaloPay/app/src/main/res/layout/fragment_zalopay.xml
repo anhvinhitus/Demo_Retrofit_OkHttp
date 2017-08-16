@@ -65,7 +65,8 @@
         <FrameLayout
             android:id="@+id/home_fl_list_app_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/white" />
 
     </LinearLayout>
 
