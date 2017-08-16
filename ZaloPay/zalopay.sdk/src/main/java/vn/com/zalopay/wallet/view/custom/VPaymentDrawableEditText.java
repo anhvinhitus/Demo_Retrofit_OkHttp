@@ -9,12 +9,13 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.view.interfaces.IDoActionDrawableEdittext;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.validation.CardValidation;
+import vn.com.zalopay.wallet.view.custom.cardview.CreditCardUtils;
+import vn.com.zalopay.wallet.view.interfaces.IDoActionDrawableEdittext;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public class VPaymentDrawableEditText extends VPaymentEditText implements IDoActionDrawableEdittext {
@@ -122,14 +123,17 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
             if (!mIsTextGroup) {
                 return;
             }
+
             Editable s = getEditableText();
             Timber.d("onTextChanged %s", s.toString());
             String text = s.toString();
             int mlength = text.length();
-            if (mLastInputLength > mlength && text.endsWith(String.valueOf(VERTICAL_SEPERATOR))) {
-
-                setText(text.trim());
-                setSelection(getText().length());
+            if (mLastInputLength > mlength) {
+                text.replace(String.valueOf(SPACE_SEPERATOR), "").trim();
+                String newString = CreditCardUtils.handleCardNumber(text, CreditCardUtils.SPACE_SEPERATOR);
+                mLastInputLength = newString.length();
+                setText(newString);
+                return;
 
             }
             if (text.endsWith(" ")) {
@@ -137,9 +141,9 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
             }
             if (mlength > 0 && (mlength % 5) == 0) {
                 setText(new StringBuilder(text).insert(text.length() - 1, String.valueOf(VERTICAL_SEPERATOR)).toString());
-                setSelection(getText().length());
             }
-            mLastInputLength = length();
+            setSelection(getLength());
+            mLastInputLength = getLength();
         } catch (Exception e) {
             Timber.d("onTextChanged %s", e.getMessage());
         }

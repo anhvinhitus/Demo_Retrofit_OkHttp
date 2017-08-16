@@ -191,7 +191,6 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
             String title = mPaymentInfoHelper.getSuccessTitleByTrans(mContext);
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
             String transId = mStatusResponse.zptransid;
-
             AbstractOrder order = mPaymentInfoHelper.getOrder();
             if (mPaymentInfoHelper.isMobileCardApp()) {
                 order.description = GlobalData.getStringResource(RS.string.app_mobilecard_desc);
