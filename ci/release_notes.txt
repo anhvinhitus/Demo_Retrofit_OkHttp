@@ -1,2 +1,2 @@
-Zalo Pay (Staging v2.17.0 - build 411) - Released on 2017-08-16 09:14
+Zalo Pay (Production v2.17.0 - build 412) - Released on 2017-08-16 09:14
 
