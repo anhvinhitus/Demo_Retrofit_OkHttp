@@ -18,10 +18,6 @@ public class Item {
         this.mExt = ext;
     }
 
-    public static String tranferExtFormat() {
-        return "Người nhận:%s";
-    }
-
     public String toJson() {
         Gson gson = new Gson();
         return gson.toJson(this);

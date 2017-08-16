@@ -37,7 +37,7 @@ public class RenderHelper {
         }
     }
 
-        public static List<View> genDynamicItemDetail(Context context, List<NameValuePair> nameValuePairList) {
+    public static List<View> genDynamicItemDetail(Context context, List<NameValuePair> nameValuePairList) {
         if (nameValuePairList == null) {
             return null;
         }
