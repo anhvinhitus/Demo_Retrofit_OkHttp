@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.workflow;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.BuildConfig;
@@ -10,6 +11,8 @@ import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 
 public class WorkFlowFactoryCreator {
+
+    @Nullable
     public static AbstractWorkFlow create(Context pContext, ChannelPresenter presenter, MiniPmcTransType pPmcTransType,
                                           PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) {
         AbstractWorkFlow adapter = null;
@@ -21,8 +24,9 @@ public class WorkFlowFactoryCreator {
         return adapter;
     }
 
-    public static AbstractWorkFlow createByPmc(Context pContext, ChannelPresenter presenter, MiniPmcTransType pPmcTransType,
-                                               PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
+    @Nullable
+    private static AbstractWorkFlow createByPmc(Context pContext, ChannelPresenter presenter, MiniPmcTransType pPmcTransType,
+                                                PaymentInfoHelper paymentInfoHelper, StatusResponse statusResponse) throws Exception {
         AbstractWorkFlow adapter = null;
         switch (pPmcTransType.pmcid) {
             case BuildConfig.channel_zalopay:

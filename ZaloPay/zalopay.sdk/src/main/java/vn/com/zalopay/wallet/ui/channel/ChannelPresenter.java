@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
@@ -26,15 +27,14 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.entity.Feedback;
-import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.helper.ErrorCodeHelper;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.entity.Feedback;
+import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.event.SdkInvalidPaymentInfo;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
@@ -42,6 +42,7 @@ import vn.com.zalopay.wallet.event.SdkSmsMessage;
 import vn.com.zalopay.wallet.event.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.helper.BankHelper;
+import vn.com.zalopay.wallet.helper.ErrorCodeHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
@@ -213,7 +214,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return false;
     }
 
-    public void pushArgument(Bundle bundle) {
+    void pushArgument(Bundle bundle) {
         if (bundle == null) {
             return;
         }
@@ -221,7 +222,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         mStatusResponse = bundle.getParcelable(STATUS_RESPONSE);
     }
 
-    public void startPayment() {
+    void startPayment() {
         try {
             if (!validPaymentInfo()) {
                 return;
@@ -282,6 +283,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         return appInfoInteractor.getPmcTranstype(BuildConfig.ZALOPAY_APPID, TransactionType.LINK, bankLink, internationalBank, null);
     }
 
+    @Nullable
     private AbstractWorkFlow createWorkFlow(MiniPmcTransType pmcTransType) {
         if (pmcTransType == null) {
             return null;
@@ -365,6 +367,10 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
                 mAbstractWorkFlow = null;
             }
             mAbstractWorkFlow = createWorkFlow(miniPmcTransType);
+            if (mAbstractWorkFlow == null) {
+                onExit(mContext.getResources().getString(R.string.sdk_invalid_payment_data), true);
+                return false;
+            }
             initWorkFlow();
             mMiniPmcTransType = miniPmcTransType;
         } catch (Exception e) {
@@ -521,7 +527,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    public void onSubmitClick() {
+    void onSubmitClick() {
         if (mAbstractWorkFlow == null) {
             callback();
             return;
@@ -529,7 +535,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         mAbstractWorkFlow.onClickSubmission();
     }
 
-    public void showInstructRegiterBIDV() {
+    void showInstructRegiterBIDV() {
         try {
             SdkUtils.openWebPage(getViewOrThrow().getActivity(), GlobalData.getStringResource(RS.string.sdk_website_instruct_register_bidv_url));
         } catch (Exception e) {
@@ -537,7 +543,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
         }
     }
 
-    public void showFeedbackDialog() throws Exception {
+    void showFeedbackDialog() throws Exception {
         if (!validPaymentInfo()) {
             return;
         }
