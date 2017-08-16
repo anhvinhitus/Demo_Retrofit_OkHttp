@@ -14,6 +14,8 @@ import vn.com.vng.zalopay.data.zpc.ZPCLocalStorage;
 import vn.com.vng.zalopay.data.zpc.contactloader.ContactFetcher;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTimingDefault;
 
 /**
  * Created by huuhoa on 7/4/16.
@@ -45,9 +47,9 @@ public class UserFriendModule {
     ZPCStore.Repository provideFriendRepository(User user, ZPCStore.ZaloRequestService zaloRequestService,
                                                 ZPCStore.LocalStorage localStorage,
                                                 ZPCStore.RequestService requestService,
-                                                ContactFetcher contactFetcher
+                                                ContactFetcher contactFetcher, ZPMonitorEventTiming eventTiming
     ) {
-        return new ZPCRepository(user, zaloRequestService, requestService, localStorage, contactFetcher);
+        return new ZPCRepository(user, zaloRequestService, requestService, localStorage, contactFetcher, eventTiming);
     }
 
 

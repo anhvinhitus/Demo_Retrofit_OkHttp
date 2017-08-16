@@ -5,9 +5,11 @@ import android.database.Cursor;
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 
 /**
  * Contact list subscriber
@@ -29,7 +31,6 @@ class ContactListSubscriber extends DefaultSubscriber<Cursor> {
             return;
         }
 
-
         ContactListView view = mViewReference.get();
         if (view == null) {
             return;
@@ -43,6 +44,7 @@ class ContactListSubscriber extends DefaultSubscriber<Cursor> {
         if (!mIsSearch) {
             view.setSubTitle(String.format("(%s)", cursor.getCount()));
         }
+        AndroidApplication.instance().getAppComponent().monitorTimingZPC().recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_END);
     }
 
     @Override

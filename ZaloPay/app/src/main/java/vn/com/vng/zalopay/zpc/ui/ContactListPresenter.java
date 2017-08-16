@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -193,7 +194,6 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
     }
 
     private void getFriendList() {
-//        SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_START);
         Subscription subscription = mZPCRepository.getZaloFriendsCursor(isPhoneBook())
                 .concatWith(retrieveZaloFriendsAsNeeded(isPhoneBook()))
                 .subscribeOn(Schedulers.io())

@@ -14,6 +14,8 @@ import javax.inject.Singleton;
 import dagger.Component;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTimingDefault;
 import vn.com.vng.zalopay.passport.OnboardingFragment;
 import vn.com.vng.zalopay.passport.LoginZaloActivity;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
@@ -90,6 +92,8 @@ public interface ApplicationComponent {
     PassportRepository passportRepository();
 
     IMonitorTiming monitorTiming();
+
+    ZPMonitorEventTiming monitorTimingZPC();
 
     GlobalEventHandlingService globalEventService();
 

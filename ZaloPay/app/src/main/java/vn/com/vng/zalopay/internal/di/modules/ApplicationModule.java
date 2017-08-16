@@ -29,6 +29,8 @@ import vn.com.vng.zalopay.data.util.GlobalDBOpenHelper;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTimingDefault;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.ApplicationSessionImpl;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -143,5 +145,11 @@ public class ApplicationModule {
     @Singleton
     GoogleReporter providesGoogleReporter(Context context) {
         return new GoogleReporter(context, BuildConfig.GA_Tracker);
+    }
+
+    @Provides
+    @Singleton
+    ZPMonitorEventTiming provideMonitorEventTiming(){
+        return new ZPMonitorEventTimingDefault();
     }
 }

@@ -34,6 +34,8 @@ import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
+import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
@@ -54,18 +56,20 @@ public class ZPCRepository implements ZPCStore.Repository {
     private final ZPCStore.LocalStorage mLocalStorage;
     private final User mUser;
     private final ContactFetcher mContactFetcher;
+    private ZPMonitorEventTiming mEventTiming;
 
     private final SelfExpiringHashMap<String, Long> mExpiringPhoneMap;
 
     public ZPCRepository(User user, ZPCStore.ZaloRequestService zaloRequestService,
                          ZPCStore.RequestService requestService,
-                         ZPCStore.LocalStorage localStorage, ContactFetcher contactFetcher) {
+                         ZPCStore.LocalStorage localStorage, ContactFetcher contactFetcher, ZPMonitorEventTiming eventTiming) {
         mRequestService = requestService;
         mLocalStorage = localStorage;
         mZaloRequestService = zaloRequestService;
         mUser = user;
         mContactFetcher = contactFetcher;
         mExpiringPhoneMap = new SelfExpiringHashMap<>(MAX_LIFE_TIME_MILLIS);
+        mEventTiming = eventTiming;
     }
 
     /**
@@ -75,6 +79,7 @@ public class ZPCRepository implements ZPCStore.Repository {
     @Override
     public Observable<Boolean> fetchZaloFriends() {
         Timber.d("Fetch zalo friend");
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_ZALO_FRIEND_START);
         return mZaloRequestService.fetchFriendList()
                 .map(entities -> {
                     ZaloUserEntity entity = transformUserZalo(mUser);
@@ -89,7 +94,10 @@ public class ZPCRepository implements ZPCStore.Repository {
                 .last()
                 .timeout(TIMEOUT_REQUEST_FRIEND, TimeUnit.SECONDS)
                 .map(entities -> Boolean.TRUE)
-                .doOnCompleted(this::updateTimeStamp)
+                .doOnCompleted(() -> {
+                    mEventTiming.recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_ZALO_FRIEND_END);
+                    updateTimeStamp();
+                })
                 ;
     }
 
@@ -146,6 +154,7 @@ public class ZPCRepository implements ZPCStore.Repository {
 
     @Override
     public Observable<Cursor> getZaloFriendsCursor(boolean isWithPhone) {
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_START);
         Observable<Cursor> observableFriendLocal = getZaloFriendsCursorLocal(isWithPhone)
                 .filter(cursor -> cursor != null && !cursor.isClosed() && cursor.getCount() > 0);
 
@@ -342,15 +351,18 @@ public class ZPCRepository implements ZPCStore.Repository {
 
     @Override
     public Observable<Boolean> syncImmediateContact() {
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_UCB_START);
         return makeObservable(mContactFetcher::fetchAll)
                 .doOnNext(mLocalStorage::putContacts)
                 .map(contacts -> Boolean.TRUE)
-                .doOnCompleted(() -> mLocalStorage.setLastTimeSyncContact(System.currentTimeMillis() / 1000));
+                .doOnCompleted(() -> {
+                    mEventTiming.recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_UCB_END);
+                    mLocalStorage.setLastTimeSyncContact(System.currentTimeMillis() / 1000);
+                });
     }
 
     @Override
     public Observable<Boolean> fetchZaloFriendFullInfo() {
-
         Observable<Boolean> fetchZaloProfile = fetchZaloFriends();
         Observable<Boolean> fetchZaloPayInfo = checkListZaloIdForClient()
                 .onErrorResumeNext(throwable -> Observable.just(Boolean.TRUE));
