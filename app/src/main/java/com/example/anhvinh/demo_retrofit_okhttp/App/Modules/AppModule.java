@@ -4,8 +4,10 @@ package com.example.anhvinh.demo_retrofit_okhttp.App.Modules;
  * Created by AnhVinh on 09/08/2017.
  */
 
+import android.app.Application;
 import android.content.Context;
 
+import com.example.anhvinh.demo_retrofit_okhttp.Database.Worldpopulation_Repo;
 import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.DaoMaster;
 import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.DaoSession;
 import com.example.anhvinh.demo_retrofit_okhttp.Presenter.List_Country_Interator;
@@ -29,6 +31,18 @@ import static com.example.anhvinh.demo_retrofit_okhttp.BuildConfig.BASE_URL;
  */
 @Module
 public class AppModule {
+    private Application application;
+
+    public AppModule(Application application) {
+        this.application = application;
+    }
+
+    @Singleton
+    @Provides
+    Context provide_Context() {
+        return application.getApplicationContext();
+    }
+
     @Singleton
     @Provides
     Gson provide_Gson() {
@@ -41,6 +55,12 @@ public class AppModule {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "worldpopulation-db");
         Database db = helper.getWritableDb();
         return new DaoMaster(db).newSession();
+    }
+
+    @Singleton
+    @Provides
+    Worldpopulation_Repo provide_DaoSession_Repo(DaoSession daoSession){
+        return new Worldpopulation_Repo(daoSession);
     }
 
     @Singleton
@@ -60,7 +80,7 @@ public class AppModule {
 
     @Singleton
     @Provides
-    List_Country_Interator provide_Interator(Retrofit retrofit) {
-        return new List_Country_Interator(retrofit);
+    List_Country_Interator provide_Interator(Retrofit retrofit, Worldpopulation_Repo worldpopulation_repo) {
+        return new List_Country_Interator(retrofit, worldpopulation_repo);
     }
 }

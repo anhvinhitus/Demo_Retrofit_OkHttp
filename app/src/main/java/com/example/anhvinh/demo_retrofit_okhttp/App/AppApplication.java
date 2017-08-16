@@ -8,21 +8,24 @@ import com.example.anhvinh.demo_retrofit_okhttp.App.Modules.AppModule;
  * Created by AnhVinh on 09/08/2017.
  */
 
-public class AppApplication extends Application{
+public class AppApplication extends Application {
     // Declare Variable:
     public static AppComponent appComponent;
-    public static Application application;
+    public static AppApplication application;
+    public static AppApplication getInstance() {
+        return application;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .build();
         application = this;
     }
 
     public static AppComponent getAppComponent() {
-        appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule())
-                .build();
         return appComponent;
     }
 }

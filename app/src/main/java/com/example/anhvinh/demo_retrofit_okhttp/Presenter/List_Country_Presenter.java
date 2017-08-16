@@ -27,14 +27,14 @@ public class List_Country_Presenter implements List_Country_Listener {
         this.view = view;
     }
 
-    public void getData(boolean useCache) {
+    public void getData(boolean useCache, boolean isInternet) {
         view.reLoad();
-        model.getListCountry(useCache);
+        model.getListCountry(useCache, isInternet);
     }
 
 
-    public void reLoad() {
-        getData(false);
+    public void reLoad(boolean isInternet) {
+        getData(false, isInternet);
     }
 
     @Override

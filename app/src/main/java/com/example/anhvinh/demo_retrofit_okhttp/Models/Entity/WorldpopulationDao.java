@@ -13,7 +13,7 @@ import org.greenrobot.greendao.database.DatabaseStatement;
 /** 
  * DAO for table "WORLDPOPULATION".
 */
-public class WorldpopulationDao extends AbstractDao<Worldpopulation, Void> {
+public class WorldpopulationDao extends AbstractDao<Worldpopulation, Long> {
 
     public static final String TABLENAME = "WORLDPOPULATION";
 
@@ -22,7 +22,7 @@ public class WorldpopulationDao extends AbstractDao<Worldpopulation, Void> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Rank = new Property(0, Integer.class, "rank", false, "RANK");
+        public final static Property Rank = new Property(0, Long.class, "rank", true, "_id");
         public final static Property Country = new Property(1, String.class, "country", false, "COUNTRY");
         public final static Property Population = new Property(2, String.class, "population", false, "POPULATION");
         public final static Property Flag = new Property(3, String.class, "flag", false, "FLAG");
@@ -41,7 +41,7 @@ public class WorldpopulationDao extends AbstractDao<Worldpopulation, Void> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"WORLDPOPULATION\" (" + //
-                "\"RANK\" INTEGER," + // 0: rank
+                "\"_id\" INTEGER PRIMARY KEY ," + // 0: rank
                 "\"COUNTRY\" TEXT," + // 1: country
                 "\"POPULATION\" TEXT," + // 2: population
                 "\"FLAG\" TEXT);"); // 3: flag
@@ -57,7 +57,7 @@ public class WorldpopulationDao extends AbstractDao<Worldpopulation, Void> {
     protected final void bindValues(DatabaseStatement stmt, Worldpopulation entity) {
         stmt.clearBindings();
  
-        Integer rank = entity.getRank();
+        Long rank = entity.getRank();
         if (rank != null) {
             stmt.bindLong(1, rank);
         }
@@ -82,7 +82,7 @@ public class WorldpopulationDao extends AbstractDao<Worldpopulation, Void> {
     protected final void bindValues(SQLiteStatement stmt, Worldpopulation entity) {
         stmt.clearBindings();
  
-        Integer rank = entity.getRank();
+        Long rank = entity.getRank();
         if (rank != null) {
             stmt.bindLong(1, rank);
         }
@@ -104,14 +104,14 @@ public class WorldpopulationDao extends AbstractDao<Worldpopulation, Void> {
     }
 
     @Override
-    public Void readKey(Cursor cursor, int offset) {
-        return null;
+    public Long readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     @Override
     public Worldpopulation readEntity(Cursor cursor, int offset) {
         Worldpopulation entity = new Worldpopulation( //
-            cursor.isNull(offset + 0) ? null : cursor.getInt(offset + 0), // rank
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // rank
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // country
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // population
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // flag
@@ -121,27 +121,30 @@ public class WorldpopulationDao extends AbstractDao<Worldpopulation, Void> {
      
     @Override
     public void readEntity(Cursor cursor, Worldpopulation entity, int offset) {
-        entity.setRank(cursor.isNull(offset + 0) ? null : cursor.getInt(offset + 0));
+        entity.setRank(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setCountry(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setPopulation(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setFlag(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     @Override
-    protected final Void updateKeyAfterInsert(Worldpopulation entity, long rowId) {
-        // Unsupported or missing PK type
-        return null;
+    protected final Long updateKeyAfterInsert(Worldpopulation entity, long rowId) {
+        entity.setRank(rowId);
+        return rowId;
     }
     
     @Override
-    public Void getKey(Worldpopulation entity) {
-        return null;
+    public Long getKey(Worldpopulation entity) {
+        if(entity != null) {
+            return entity.getRank();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public boolean hasKey(Worldpopulation entity) {
-        // TODO
-        return false;
+        return entity.getRank() != null;
     }
 
     @Override

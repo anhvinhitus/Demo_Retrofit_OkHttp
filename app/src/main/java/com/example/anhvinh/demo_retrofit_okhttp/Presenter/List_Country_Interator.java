@@ -3,6 +3,7 @@ package com.example.anhvinh.demo_retrofit_okhttp.Presenter;
 import android.util.Log;
 
 import com.example.anhvinh.demo_retrofit_okhttp.Api.RequestApi;
+import com.example.anhvinh.demo_retrofit_okhttp.Database.Worldpopulation_Repo;
 import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.Worldpopulation;
 import com.example.anhvinh.demo_retrofit_okhttp.Models.JSONObjectWorld;
 import com.example.anhvinh.demo_retrofit_okhttp.Models.List_Country_Listener;
@@ -25,11 +26,13 @@ public class List_Country_Interator {
     private List_Country_Listener listener;
     private Retrofit retrofit;
     private List<Worldpopulation> listCountry;
+    private Worldpopulation_Repo worldpopulation_repo;
 
     // Contructor:
     @Inject
-    public List_Country_Interator(Retrofit retrofit) {
+    public List_Country_Interator(Retrofit retrofit, Worldpopulation_Repo worldpopulation_repo) {
         this.retrofit = retrofit;
+        this.worldpopulation_repo = worldpopulation_repo;
     }
 
     public void setListCountry(List<Worldpopulation> listCountry) {
@@ -40,10 +43,18 @@ public class List_Country_Interator {
         this.listener = listener;
     }
 
-    public void getListCountry(boolean userCache) {
+    public void getListCountry(boolean userCache, boolean isInternet) {
         if (listCountry == null || !userCache) {
             Log.d("Interator", "Load data");
-            loadDatafromJSON();
+            if (isInternet) {
+                loadDatafromJSON();
+            } else {
+                listCountry = worldpopulation_repo.loadAll();
+                if (listCountry != null) {
+                    listener.LoadListCountrySuccess(listCountry);
+                } else
+                    listener.LoadListCountryError();
+            }
         } else {
             Log.d("Interator", "Exist Data");
             listener.LoadListCountrySuccess(listCountry);
@@ -57,6 +68,7 @@ public class List_Country_Interator {
             @Override
             public void onResponse(Call<JSONObjectWorld> call, Response<JSONObjectWorld> response) {
                 listCountry = response.body().getWorldpopulation();
+                worldpopulation_repo.saveAll(listCountry);
                 if (listener != null) {
                     if (listCountry != null) {
                         listener.LoadListCountrySuccess(listCountry);

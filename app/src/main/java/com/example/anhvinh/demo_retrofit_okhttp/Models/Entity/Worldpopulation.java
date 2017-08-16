@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -14,9 +15,10 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class Worldpopulation implements Parcelable {
+    @Id
     @SerializedName("rank")
     @Expose
-    private Integer rank;
+    private Long rank;
     @SerializedName("country")
     @Expose
     private String country;
@@ -28,14 +30,14 @@ public class Worldpopulation implements Parcelable {
     private String flag;
 
     protected Worldpopulation(Parcel in) {
-        rank = in.readInt();
+        rank = in.readLong();
         country = in.readString();
         population = in.readString();
         flag = in.readString();
     }
 
-    @Generated(hash = 2042845359)
-    public Worldpopulation(Integer rank, String country, String population, String flag) {
+    @Generated(hash = 364851307)
+    public Worldpopulation(Long rank, String country, String population, String flag) {
         this.rank = rank;
         this.country = country;
         this.population = population;
@@ -45,6 +47,7 @@ public class Worldpopulation implements Parcelable {
     @Generated(hash = 293430001)
     public Worldpopulation() {
     }
+    
 
     /*
     Parcel:
@@ -64,11 +67,11 @@ public class Worldpopulation implements Parcelable {
     /*
         Getter - Setter
      */
-    public Integer getRank() {
+    public Long getRank() {
         return rank;
     }
 
-    public void setRank(Integer rank) {
+    public void setRank(Long rank) {
         this.rank = rank;
     }
 
@@ -104,7 +107,7 @@ public class Worldpopulation implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(rank);
+        parcel.writeLong(rank);
         parcel.writeString(country);
         parcel.writeString(population);
         parcel.writeString(flag);

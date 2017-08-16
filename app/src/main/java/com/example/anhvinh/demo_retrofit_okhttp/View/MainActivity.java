@@ -15,15 +15,11 @@ import android.widget.Toast;
 
 import com.example.anhvinh.demo_retrofit_okhttp.Adapter.WorldAdapter;
 import com.example.anhvinh.demo_retrofit_okhttp.App.AppApplication;
-import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.DaoMaster;
-import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.DaoSession;
 import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.Worldpopulation;
 import com.example.anhvinh.demo_retrofit_okhttp.Presenter.List_Country_Interator;
 import com.example.anhvinh.demo_retrofit_okhttp.Presenter.List_Country_Presenter;
 import com.example.anhvinh.demo_retrofit_okhttp.R;
 import com.example.anhvinh.demo_retrofit_okhttp.View.Base.List_Country_View;
-
-import org.greenrobot.greendao.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +28,14 @@ import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity implements List_Country_View, View.OnClickListener {
     public final String EXTRA_LIST_COUNTRY = "extrac_list_country";
+    public Boolean isInternet = false;
     // Declare View on Main activity:
     private List<Worldpopulation> listCountry;
     private RecyclerView recyclerView;
     private WorldAdapter adapter;
     private Button btn_reload;
     private TextView tv_error;
-    private DaoSession daoSession;
+
     // Inject:
     @Inject List_Country_Presenter presenter;
     @Inject List_Country_Interator view;
@@ -48,12 +45,8 @@ public class MainActivity extends AppCompatActivity implements List_Country_View
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppApplication.getAppComponent().inject(this);
-        checkInternetConnection();
+        isInternet = checkInternetConnection();
         init();
-
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "worldpopulation-db");
-        Database db = helper.getWritableDb();
-        daoSession = new DaoMaster(db).newSession();
 
         // Save Instance:
         if (savedInstanceState != null) {
@@ -65,13 +58,9 @@ public class MainActivity extends AppCompatActivity implements List_Country_View
         }
         // Get data"
         presenter.setView(this);
-        presenter.getData(false);
+        presenter.getData(false, isInternet);
         btn_reload.setOnClickListener(this);
 
-    }
-
-    public DaoSession getDaoSession() {
-        return daoSession;
     }
 
     @Override
@@ -87,22 +76,9 @@ public class MainActivity extends AppCompatActivity implements List_Country_View
         tv_error.setVisibility(View.GONE);
         btn_reload.setVisibility(View.GONE);
         this.listCountry = (ArrayList<Worldpopulation>) listCountry;
-        daoSession.getWorldpopulationDao().deleteAll();
-        daoSession.getWorldpopulationDao().insertOrReplaceInTx(listCountry);
-        List<Worldpopulation> test = daoSession.getWorldpopulationDao().loadAll();
-        adapter = new WorldAdapter(test);
+        adapter = new WorldAdapter(listCountry);
         recyclerView.setAdapter(adapter);
         recyclerView.setVisibility(View.VISIBLE);
-
-
-        Worldpopulation worldpopulation = new Worldpopulation();
-        worldpopulation.setCountry("Viet Nam");
-        worldpopulation.setPopulation("8000000000");
-        worldpopulation.setRank(11);
-        worldpopulation.setFlag("http://baovelamhoang.com/files/images/lamhoang/gioi-thieu/quockyvietcong.jpg");
-        daoSession.getWorldpopulationDao().insertOrReplace(worldpopulation);
-        test = daoSession.getWorldpopulationDao().loadAll();
-        adapter.bindData(test);
     }
 
     @Override
@@ -146,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements List_Country_View
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_reload:
-                presenter.reLoad();
+                presenter.reLoad(isInternet);
                 break;
         }
     }
