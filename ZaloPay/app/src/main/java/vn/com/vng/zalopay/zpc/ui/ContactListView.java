@@ -46,4 +46,6 @@ public interface ContactListView extends ILoadDataView {
     void setProfileNotInZPC(@NonNull ZPProfile profile);
 
     void showDefaultProfileNotInZPC(@NonNull ZPProfile profile);
+
+    void monitorTimingLoadZPCEnd();
 }

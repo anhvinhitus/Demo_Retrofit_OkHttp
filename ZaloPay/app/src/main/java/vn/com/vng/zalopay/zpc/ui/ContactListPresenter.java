@@ -29,6 +29,8 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.FavoriteData;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZPProfile;
+import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
+import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -54,16 +56,19 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
     private int mPickupMode = ZPCPickupMode.DEFAULT;
 
     private final PublishSubject<String> mDelaySubject;
+    private ZPMonitorEventTiming mEventTiming;
 
     @Inject
     User mUser;
 
     @Inject
     ContactListPresenter(Context context,
-                         ZPCStore.Repository zpcRepository) {
+                         ZPCStore.Repository zpcRepository,
+                         ZPMonitorEventTiming eventTiming) {
         this.mZPCRepository = zpcRepository;
         this.mContext = context;
         mDelaySubject = PublishSubject.create();
+        this.mEventTiming = eventTiming;
     }
 
     @Override
@@ -335,5 +340,13 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
 
     void getUserInfoNotInZPC(String phone) {
         mDelaySubject.onNext(phone);
+    }
+
+    void monitorTimingZPCEnd() {
+        if (mEventTiming == null) {
+            return;
+        }
+
+        mEventTiming.recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_END);
     }
 }

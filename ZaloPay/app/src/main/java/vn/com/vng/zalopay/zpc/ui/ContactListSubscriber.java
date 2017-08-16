@@ -44,7 +44,7 @@ class ContactListSubscriber extends DefaultSubscriber<Cursor> {
         if (!mIsSearch) {
             view.setSubTitle(String.format("(%s)", cursor.getCount()));
         }
-        AndroidApplication.instance().getAppComponent().monitorTimingZPC().recordEvent(ZPMonitorEvent.TIMING_ZPC_LOAD_END);
+        view.monitorTimingLoadZPCEnd();
     }
 
     @Override

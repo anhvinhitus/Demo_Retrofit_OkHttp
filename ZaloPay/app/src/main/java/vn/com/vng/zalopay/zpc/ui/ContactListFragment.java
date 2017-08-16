@@ -569,4 +569,9 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
         }
 
     }
+
+    @Override
+    public void monitorTimingLoadZPCEnd() {
+        mPresenter.monitorTimingZPCEnd();
+    }
 }
