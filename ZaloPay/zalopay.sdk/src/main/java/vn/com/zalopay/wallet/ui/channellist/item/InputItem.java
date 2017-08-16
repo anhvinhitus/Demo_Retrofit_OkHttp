@@ -40,7 +40,6 @@ public class InputItem extends AbstractItem<InputItem.ViewHolder> {
         ResourceManager.loadLocalSDKImage(holder.next_img, RS.drawable.ic_next);
         PaymentChannel channel = mDataSet.get(position);
         boolean hasSubText = channel != null && channel.hasOneChannel;
-        Timber.e("test %s", hasSubText);
         if (hasSubText) {
             holder.fee_textview.setText(getSubText());
         }
