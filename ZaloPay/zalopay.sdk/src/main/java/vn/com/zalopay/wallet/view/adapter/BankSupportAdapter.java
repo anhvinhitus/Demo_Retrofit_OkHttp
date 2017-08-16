@@ -5,14 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.constants.Constants;
-import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 
 /*
@@ -66,11 +65,11 @@ public class BankSupportAdapter extends BaseCardSupportAdapter<String, BankSuppo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView imImageIcon;
+        SimpleDraweeView imImageIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imImageIcon = (ImageView) itemView.findViewById(R.id.imBankIcon);
+            imImageIcon = (SimpleDraweeView) itemView.findViewById(R.id.imBankIcon);
         }
 
         void bindView(String card, int position) {
@@ -81,14 +80,9 @@ public class BankSupportAdapter extends BaseCardSupportAdapter<String, BankSuppo
             if (TextUtils.isEmpty(bankLogoName)) {
                 return;
             }
-            ResourceManager.getImage(bankLogoName)
-                    .compose(SchedulerHelper.applySchedulers())
-                    .filter(bitmap -> bitmap != null)
-                    .subscribe(bitmap -> {
-                                imImageIcon.setImageBitmap(bitmap);
-                                imImageIcon.setBackgroundResource(R.drawable.bg_card);
-                            },
-                            throwable -> Timber.d(throwable, "Exception load bitmap from sdk %s", bankLogoName));
+
+            // load resource to SimpleDraweeView
+            ResourceManager.loadLocalSDKImage(imImageIcon, bankLogoName);
         }
 
     }
