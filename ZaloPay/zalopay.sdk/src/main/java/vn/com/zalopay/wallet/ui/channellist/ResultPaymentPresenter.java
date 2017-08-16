@@ -10,16 +10,18 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.ISdkErrorContext;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.entity.Feedback;
-import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
-import vn.com.zalopay.wallet.entity.bank.BaseMap;
-import vn.com.zalopay.wallet.entity.UserInfo;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.entity.Feedback;
+import vn.com.zalopay.wallet.entity.UserInfo;
+import vn.com.zalopay.wallet.entity.bank.BaseMap;
+import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.ui.AbstractPresenter;
 
@@ -189,7 +191,12 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
             String title = mPaymentInfoHelper.getSuccessTitleByTrans(mContext);
             boolean isLink = mPaymentInfoHelper.isLinkTrans();
             String transId = mStatusResponse.zptransid;
-            mView.renderSuccess(isLink, transId, userInfo, mPaymentInfoHelper.getOrder(), appName, null, isLink, isTransfer, receiverInfo, title);
+
+            AbstractOrder order = mPaymentInfoHelper.getOrder();
+            if (mPaymentInfoHelper.isMobileCardApp()) {
+                order.description = GlobalData.getStringResource(RS.string.app_mobilecard_desc);
+            }
+            mView.renderSuccess(isLink, transId, userInfo, order, appName, null, isLink, isTransfer, receiverInfo, title);
         } catch (Exception e) {
             Timber.w(e, "Exception render success info");
         }

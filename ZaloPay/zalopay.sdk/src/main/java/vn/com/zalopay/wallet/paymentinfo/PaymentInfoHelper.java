@@ -9,18 +9,20 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.entity.bank.PaymentCard;
-import vn.com.zalopay.wallet.entity.PaymentLocation;
-import vn.com.zalopay.wallet.entity.bank.CardSubmit;
-import vn.com.zalopay.wallet.entity.bank.BankAccount;
-import vn.com.zalopay.wallet.entity.bank.BaseMap;
-import vn.com.zalopay.wallet.entity.bank.MapCard;
-import vn.com.zalopay.wallet.entity.linkacc.LinkAccInfo;
-import vn.com.zalopay.wallet.entity.UserInfo;
-import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
+import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.entity.PaymentLocation;
+import vn.com.zalopay.wallet.entity.UserInfo;
+import vn.com.zalopay.wallet.entity.bank.BankAccount;
+import vn.com.zalopay.wallet.entity.bank.BaseMap;
+import vn.com.zalopay.wallet.entity.bank.CardSubmit;
+import vn.com.zalopay.wallet.entity.bank.MapCard;
+import vn.com.zalopay.wallet.entity.bank.PaymentCard;
+import vn.com.zalopay.wallet.entity.linkacc.LinkAccInfo;
+import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
@@ -441,6 +443,16 @@ public class PaymentInfoHelper extends SingletonBase {
 
     public boolean isRedPacket() {
         return getAppId() == BuildConfig.REDPACKET_APPID;
+    }
+
+    public boolean isMobileCardApp() {
+        int mobileCardAppId = 61;
+        try {
+            mobileCardAppId = Integer.parseInt(GlobalData.getStringResource(RS.string.app_mobilecard_id));
+        } catch (Exception e) {
+            Timber.d(e);
+        }
+        return getAppId() == mobileCardAppId;
     }
 
     public void updateOrderTime(long timestamp) {

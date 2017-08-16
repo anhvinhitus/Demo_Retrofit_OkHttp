@@ -25,6 +25,9 @@ public class RS {
 
     public static final class string {
 
+        public static final String app_mobilecard_id = "app_mobilecard_id";
+        public static final String app_mobilecard_desc = "app_mobilecard_desc";
+
         public static final String sdk_website_callback_domain = "sdk_website_callback_domain";
         public static final String sdk_website3ds_callback_url = "sdk_website3ds_callback_url";
         public static final String sdk_website123pay_domain = "sdk_website123pay_domain";

@@ -3,6 +3,8 @@
 
     <string name="app_service_id">15</string>
     <string name="app_service_name">Thanh toán đơn hàng</string>
+    <string name="app_mobilecard_id">61</string>
+    <string name="app_mobilecard_desc"><![CDATA[Vui lòng kiểm tra số dư theo cú pháp <b>*101#</b>]]></string>
 
     <string name="sdk_website_callback_domain">payment-complete</string>
     <string name="sdk_website3ds_callback_url">pay/success?orderNo</string>
@@ -422,5 +424,4 @@
     <string name="sdk_link_channel_subtext_pay">Liên kết để tiếp tục thanh toán</string>
     <string name="sdk_link_channel_subtext_transfer">Liên kết để tiếp tục chuyển tiền</string>
     <string name="sdk_link_channel_subtext_topup">Liên kết để tiếp tục nạp tiền</string>
-
 </resources>
