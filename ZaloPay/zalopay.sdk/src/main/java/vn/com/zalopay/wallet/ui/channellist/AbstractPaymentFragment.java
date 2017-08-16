@@ -327,9 +327,10 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
 
 
     public void disableScreenCapture() {
+        if (getActivity() == null && getActivity().isFinishing()) {
+            return;
+        }
         Window window = getActivity().getWindow();
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        WindowManager wm = getActivity().getWindowManager();
-        wm.updateViewLayout(window.getDecorView(), window.getAttributes());
     }
 }
