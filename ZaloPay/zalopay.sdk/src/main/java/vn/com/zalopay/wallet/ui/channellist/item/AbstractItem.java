@@ -112,17 +112,6 @@ public abstract class AbstractItem<T extends AbstractItem.ViewHolder> extends Da
     public T newViewHolder(ViewGroup parent) {
         return onNewBindHolder(parent);
     }
-    /* @Override
-    public T newViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(getLayoutId(), parent, false);
-        try {
-            Constructor constructor = clazz.getConstructor(View.class);
-            return (T) constructor.newInstance(view);
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-        return null;
-    }*/
 
     private String getWarningDesc(PaymentChannel pChannel) {
         String mess;

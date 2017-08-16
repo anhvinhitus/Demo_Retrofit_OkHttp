@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/channel_relativelayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <ImageView
+        android:id="@+id/select_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
+        android:paddingBottom="@dimen/zpw_item_listview_padding_top_bottom"
+        android:paddingTop="@dimen/zpw_item_listview_padding_top_bottom"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_select"
+        android:visibility="gone" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/icon_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
+        android:layout_toRightOf="@+id/select_imageview"
+        android:paddingBottom="@dimen/zpw_item_listview_padding_top_bottom"
+        android:paddingTop="@dimen/zpw_item_listview_padding_top_bottom"
+        app:actualImageScaleType="centerInside" />
+
+    <LinearLayout
+        android:id="@+id/name_fee_linearlayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
+        android:layout_toLeftOf="@+id/next_img"
+        android:layout_toRightOf="@+id/icon_imageview"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/zpw_item_listview_padding_top_bottom"
+        android:paddingTop="@dimen/zpw_item_listview_padding_top_bottom">
+
+        <TextView
+            android:id="@+id/name_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_color_bold"
+            android:textSize="@dimen/zpw_text_size_medium" />
+
+        <TextView
+            android:id="@+id/fee_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_grey"
+            android:textSize="@dimen/zpw_text_size_medium_small" />
+
+    </LinearLayout>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/next_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/zpw_item_listview_padding_left_right"
+        android:paddingBottom="@dimen/zpw_item_listview_padding_top_bottom"
+        android:paddingTop="@dimen/zpw_item_listview_padding_top_bottom"
+        app:actualImageScaleType="centerInside" />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zpw_line_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/dark_transparent" />
+</RelativeLayout>

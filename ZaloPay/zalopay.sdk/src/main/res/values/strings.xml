@@ -364,9 +364,11 @@
     <string name="sdk_warning_pmc_transtype_disable_payment"><![CDATA[<b>%1$s</b> hiện không hỗ trợ loại giao dịch bạn đã chọn. Vui lòng thử lại sau!]]></string>
     <string name="sdk_warning_pmc_transtype_disable_link"><![CDATA[<b>%1$s</b> hiện tại không hỗ trợ liên kết. Vui lòng thử lại sau!]]></string>
 
+    <string name="sdk_transfer_button_confirm_text">Xác nhận chuyển tiền</string>
+    <string name="sdk_topup_button_confirm_text">Xác nhận nạp tiền</string>
     <string name="sdk_pay_button_confirm_txt">Xác Nhận Thanh Toán</string>
+    <string name="sdk_withdraw_button_confirm_text">Xác nhận rút tiền</string>
     <string name="sdk_generic_button_confirm_txt">Xác Nhận Giao Dịch</string>
-    <string name="sdk_next_button_confirm_txt">Tiếp Tục</string>
 
     <string name="sdk_appname_title">Dịch vụ</string>
     <string name="sdk_order_fee_title">Phí giao dịch</string>
@@ -416,4 +418,9 @@
 
     <string name="sdk_bank_link_cc_limit_warning">Bạn chỉ có thể liên kết tối đa %1$s thẻ Visa/Master. Vui lòng hủy liên kết cũ để thực hiện liên kết thêm thẻ mới</string>
     <string name="sdk_load_bankconfig_error_mess">Không tải được thông tin ngân hàng. Vui lòng thử lại !</string>
+
+    <string name="sdk_link_channel_subtext_pay">Liên kết để tiếp tục thanh toán</string>
+    <string name="sdk_link_channel_subtext_transfer">Liên kết để tiếp tục chuyển tiền</string>
+    <string name="sdk_link_channel_subtext_topup">Liên kết để tiếp tục nạp tiền</string>
+
 </resources>

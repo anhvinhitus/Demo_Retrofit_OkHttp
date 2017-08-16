@@ -32,19 +32,18 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.entity.MultiValueMap;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
-import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.entity.UserInfo;
-import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
-import vn.com.zalopay.wallet.helper.ErrorCodeHelper;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.entity.MultiValueMap;
+import vn.com.zalopay.wallet.entity.UserInfo;
+import vn.com.zalopay.wallet.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
+import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
+import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.event.SdkInvalidPaymentInfo;
 import vn.com.zalopay.wallet.event.SdkNetworkEvent;
 import vn.com.zalopay.wallet.event.SdkPaymentInfoReadyMessage;
@@ -52,6 +51,7 @@ import vn.com.zalopay.wallet.event.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
+import vn.com.zalopay.wallet.helper.ErrorCodeHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TrackHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
@@ -754,7 +754,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         } else {
             try {
                 markPosition();
-                makeFullLineOnLastItem();
+                markFullLineOnLastItem();
                 makeDefaultChannel();
             } catch (Exception e) {
                 Timber.w(e);
@@ -833,7 +833,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         return selectChannel != null;
     }
 
-    private void makeFullLineOnLastItem() {
+    private void markFullLineOnLastItem() {
         if (mChannelList == null || mChannelList.size() <= 0) {
             return;
         }
@@ -845,6 +845,15 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         } catch (Exception e) {
             Timber.d(e, "Exception make full line item");
         }
+    }
+
+    private void markHasOneLinkChannel() {
+        if (mLinkChannel == null) {
+            return;
+        }
+        mLinkChannel.hasOneChannel = true;
+        int lastIndex = mChannelList.size() - 1;
+        mChannelAdapter.notifyBinderItemChanged(lastIndex);
     }
 
     private void markPosition() {
@@ -910,12 +919,9 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         if (shouldAutoPayment()) {
             startDefaultPayment();
         }
-        boolean hasLinkChannel = mLinkChannel != null;
-        if (hasLinkChannel) {
-            updateButton(mLinkChannel);
-        }
-        if (!mHasActiveChannel && !hasLinkChannel) {
+        if (!mHasActiveChannel) {
             getViewOrThrow().disableConfirmButton();
+            markHasOneLinkChannel();
         }
         showSnackBarOnError(validBalance);
     }
@@ -958,7 +964,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         } else {
             //update text by trans type
             int transtype = mPaymentInfoHelper != null ? mPaymentInfoHelper.getTranstype() : GlobalData.transtype();
-            int btnTextId = ChannelHelper.btnConfirmText(channel, transtype);
+            int btnTextId = ChannelHelper.btnConfirmText(transtype);
             int btnBgDrawableId = ChannelHelper.btnConfirmDrawable(channel);
             getViewOrThrow().enablePaymentButton(btnTextId, btnBgDrawableId);
         }

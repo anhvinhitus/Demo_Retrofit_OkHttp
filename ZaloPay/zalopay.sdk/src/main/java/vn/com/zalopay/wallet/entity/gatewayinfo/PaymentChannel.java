@@ -19,6 +19,8 @@ public class PaymentChannel extends MiniPmcTransType {
     public int position = -1;
     @SerializedName("fullLine")
     public boolean fullLine = false;
+    @SerializedName("hasOneChannel")
+    public boolean hasOneChannel = false;
 
     public PaymentChannel() {
     }
@@ -60,14 +62,5 @@ public class PaymentChannel extends MiniPmcTransType {
             }
         }
         return sameSame;
-    }
-
-    public boolean compareToCardNumber(String pCardNumber) {
-        if (TextUtils.isEmpty(pCardNumber) || pCardNumber.length() < 6) {
-            return false;
-        }
-        String first6cardno = pCardNumber.substring(0, 6);
-        String last4cardno = pCardNumber.substring(pCardNumber.length() - 4, pCardNumber.length());
-        return !TextUtils.isEmpty(this.l4no) && !TextUtils.isEmpty(this.f6no) && this.f6no.equals(first6cardno) && this.l4no.equals(last4cardno);
     }
 }

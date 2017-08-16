@@ -9,10 +9,10 @@ import java.util.List;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.entity.MultiValueMap;
-import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.entity.MultiValueMap;
+import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
 
 public class ChannelHelper {
     public static
@@ -53,20 +53,23 @@ public class ChannelHelper {
         return String.format("%s.png", pBankCode);
     }
 
-    public static int btnConfirmText(PaymentChannel channel, @TransactionType int transtype) {
+    public static int btnConfirmText(@TransactionType int transtype) {
         int btnTextId;
         switch (transtype) {
+            case TransactionType.MONEY_TRANSFER:
+                btnTextId = R.string.sdk_transfer_button_confirm_text;
+                break;
+            case TransactionType.TOPUP:
+                btnTextId = R.string.sdk_topup_button_confirm_text;
+                break;
+            case TransactionType.WITHDRAW:
+                btnTextId = R.string.sdk_withdraw_button_confirm_text;
+                break;
             case TransactionType.PAY:
                 btnTextId = R.string.sdk_pay_button_confirm_txt;
                 break;
             default:
                 btnTextId = R.string.sdk_generic_button_confirm_txt;
-        }
-        if (channel != null
-                && !channel.isZaloPayChannel()
-                && !channel.isMapCardChannel()
-                && !channel.isBankAccountMap()) {
-            btnTextId = R.string.sdk_next_button_confirm_txt;
         }
         return btnTextId;
     }
