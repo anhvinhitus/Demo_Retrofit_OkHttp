@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -25,9 +26,9 @@ import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.entity.UserInfo;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.FormatHelper;
 import vn.com.zalopay.wallet.listener.OnCloseSupportViewListener;
@@ -244,7 +245,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         //show 2 user avatar in tranfer money
         if (isTransfer) {
             //prevent capture screen
-            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+            disableScreenCapture();
             setVisible(R.id.money_tranfer_useravatar_linearlayout, true);
             if (destinationUser != null) {
                 View avatarViewTo = findViewById(R.id.img_avatarTo);
@@ -322,5 +323,13 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
         PaymentSnackBar.getInstance().dismiss();
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
         DialogManager.closeLoadDialog();
+    }
+
+
+    public void disableScreenCapture() {
+        Window window = getActivity().getWindow();
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+        WindowManager wm = getActivity().getWindowManager();
+        wm.updateViewLayout(window.getDecorView(), window.getAttributes());
     }
 }
