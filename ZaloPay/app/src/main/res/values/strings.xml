@@ -303,7 +303,7 @@
     <string name="application.downloading">Ứng dụng đang được tải. Vui lòng thử lại sau.</string>
     <string name="friends.use.zalopay">Bạn bè sử dụng zalo pay</string>
     <string name="friends.not.use.zalopay">Bạn bè chưa sử dụng zalo pay</string>
-    <string name="account.not.use.zalopay">%1$s chưa sử dụng Zalo Pay\n \nBạn hãy mời %2$s sử dụng Zalo Pay để chuyển tiền nhanh chóng và dễ dàng.</string>
+    <string name="account.not.use.zalopay"><![CDATA[<b>%1$s</b> chưa sử dụng Zalo Pay.<br><br>Bạn hãy mời <b>%2$s</b> sử dụng Zalo Pay để chuyển tiền nhanh chóng và dễ dàng.]]></string>
     <string name="Generate_qrcode_error">Sinh mã QR thất bại.</string>
     <string name="data_invalid">Dữ liệu không hợp lệ.</string>
     <string name="lbl.confirm.pay.order">Bạn có muốn thực hiện thanh toán đơn hàng này không?</string>

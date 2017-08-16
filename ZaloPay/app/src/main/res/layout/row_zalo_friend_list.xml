@@ -11,26 +11,31 @@
     android:orientation="horizontal">
 
     <FrameLayout
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="@dimen/padding_large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_large"
-        android:layout_marginRight="@dimen/padding_large"
-        android:layout_marginStart="@dimen/padding_large">
+        android:layout_marginRight="@dimen/padding_large">
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/imgAvatar"
-            style="@style/AvatarDraweeView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="@dimen/spacing.tiny">
 
-        <include layout="@layout/text_place_holder" />
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/imgAvatar"
+                style="@style/AvatarDraweeView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <include layout="@layout/text_place_holder" />
+
+        </FrameLayout>
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/logo"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="right|bottom"
             app:actualImageResource="@drawable/dot_zp"
             tools:background="@drawable/dot_zp"
             tools:ignore="RtlHardcoded" />

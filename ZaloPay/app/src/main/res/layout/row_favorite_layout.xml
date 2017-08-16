@@ -9,17 +9,25 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="4dp">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_large"
+        android:layout_marginRight="@dimen/padding_large">
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/imgAvatar"
-            style="@style/AvatarDraweeView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="@dimen/spacing.tiny">
 
-        <include layout="@layout/text_place_holder" />
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/imgAvatar"
+                style="@style/AvatarDraweeView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <include layout="@layout/text_place_holder" />
+
+        </FrameLayout>
 
         <com.zalopay.ui.widget.IconFont
             android:id="@+id/edit"
@@ -31,7 +39,7 @@
             android:textColor="@color/gray.a7a9aa"
             android:visibility="invisible"
             app:iconName="@string/ct_list_del"
-            app:iconSize="13dp" />
+            app:iconSize="18dp" />
 
     </FrameLayout>
 
