@@ -239,22 +239,22 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         switch (mTransferObject.transferMode) {
             case TransferToZaloPayID:
                 receiverName = mTransferObject.zalopayName;
-                receiverID = "Zalo Pay ID";
+                receiverID = applicationContext.getString(R.string.transfer_zalopayid);
                 break;
             case TransferToZaloPayContact:
                 receiverName = mTransferObject.phoneNumber;
-                receiverID = "Số điện thoại";
+                receiverID = applicationContext.getString(R.string.transfer_phonenumber);
                 break;
             case TransferToZaloPayUser:
                 receiverName = mTransferObject.phoneNumber;
-                receiverID = "Số điện thoại";
+                receiverID = applicationContext.getString(R.string.transfer_phonenumber);
                 break;
             default:
                 receiverName = zaloPayName;
-                receiverID = "Zalo Pay ID";
+                receiverID = applicationContext.getString(R.string.transfer_zalopayid);
                 break;
         }
-        String transferExtFormat = "Người nhận:%s\t%s:%s";
+        String transferExtFormat = applicationContext.getString(R.string.transfer_item_ext_format);
 
         String ext = String.format(transferExtFormat, mTransferObject.displayName, receiverID, receiverName);
         return new Item(TransactionType.MONEY_TRANSFER, ext);
