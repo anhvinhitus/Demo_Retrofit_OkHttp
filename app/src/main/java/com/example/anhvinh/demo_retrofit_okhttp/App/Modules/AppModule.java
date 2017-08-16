@@ -4,10 +4,16 @@ package com.example.anhvinh.demo_retrofit_okhttp.App.Modules;
  * Created by AnhVinh on 09/08/2017.
  */
 
+import android.content.Context;
+
+import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.DaoMaster;
+import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.DaoSession;
 import com.example.anhvinh.demo_retrofit_okhttp.Presenter.List_Country_Interator;
 import com.example.anhvinh.demo_retrofit_okhttp.Presenter.List_Country_Presenter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.greenrobot.greendao.database.Database;
 
 import javax.inject.Singleton;
 
@@ -27,6 +33,14 @@ public class AppModule {
     @Provides
     Gson provide_Gson() {
         return new GsonBuilder().create();
+    }
+
+    @Singleton
+    @Provides
+    DaoSession provide_DaoSession(Context context) {
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "worldpopulation-db");
+        Database db = helper.getWritableDb();
+        return new DaoMaster(db).newSession();
     }
 
     @Singleton
