@@ -19,14 +19,12 @@ import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 
-import static vn.com.vng.zalopay.data.ServerErrorMessage.OTP_CHANGE_PASSWORF_WRONG;
+import static vn.com.vng.zalopay.data.ServerErrorMessage.OTP_CHANGE_PASSWORD_WRONG;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -189,7 +187,7 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
             }
         } else {
             if (e instanceof BodyException) {
-                if (((BodyException) e).errorCode == OTP_CHANGE_PASSWORF_WRONG) {
+                if (((BodyException) e).errorCode == OTP_CHANGE_PASSWORD_WRONG) {
                  //   ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTWRONG);
                 }
             }

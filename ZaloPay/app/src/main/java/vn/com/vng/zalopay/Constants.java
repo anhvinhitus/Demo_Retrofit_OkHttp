@@ -19,6 +19,7 @@ public interface Constants {
     int MAX_WITHDRAW_MONEY = 10000000;
     int MIN_TRANSFER_MONEY = 10000;
     int MAX_TRANSFER_MONEY = 10000000;
+    int MAX_INVALID_OTP_CHANGE_PASSWORD = 3;
 
     String PREF_USER_SESSION = "pref_user_session";
     String PREF_USER_EXPIREIN = "pref_user_expirein";

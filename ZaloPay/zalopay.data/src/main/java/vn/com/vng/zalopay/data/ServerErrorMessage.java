@@ -112,7 +112,7 @@ public class ServerErrorMessage {
     public static final int WAITING_APPROVE_PROFILE_LEVEL_3 = -169;
     public static final int INCORRECT_PIN = -117;
     public static final int INCORRECT_PIN_LIMIT = -161;
-    public static final int OTP_CHANGE_PASSWORF_WRONG = -114;
+    public static final int OTP_CHANGE_PASSWORD_WRONG = -114;
     public static final int USER_IS_LOCKED = -124;
     public static final int ZALOPAYNAME_NOT_EXIST = -153;
     public static final int REQUEST_PHONE_NUMBER = 35;
@@ -434,6 +434,9 @@ public class ServerErrorMessage {
                 break;
             case INCORRECT_PIN_LIMIT:
                 stringResourceId = R.string.exception_incorrect_pin_limit;
+                break;
+            case OTP_CHANGE_PASSWORD_WRONG:
+                stringResourceId = R.string.exception_incorrect_otp_limit;
                 break;
             default:
                 return null;

@@ -107,4 +107,5 @@
     <string name="exception.no.connection.try.again">Vui lòng kiểm tra kết nối mạng và thử lại.</string>
 
     <string name="exception.incorrect.pin.limit">Sai mật khẩu quá số lần quy định</string>
+    <string name="exception.incorrect.otp.limit">Sai OTP quá số lần quy định</string>
 </resources>

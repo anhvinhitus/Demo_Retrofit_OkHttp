@@ -23,6 +23,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationPassword;
@@ -70,6 +71,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     private String mOldPassword;
     private String mNewPassword;
     private int viewStatus;
+    private int mCountInvalidOTP = 0;
     // Callback from keyboard input
     private IPasswordCallBack changePasswordCallBack = new IPasswordCallBack() {
         @Override
@@ -525,7 +527,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             setError(message, false);
             setViewStatus(STATUS_OLD_PASS_INVALID);
 
-            // check throwable errorCode
             // return if not have errorCode || errorCode != INCORRECT_PIN_LIMIT (-161)
             if (!(e instanceof BodyException) || ((BodyException) e).errorCode != ServerErrorMessage.INCORRECT_PIN_LIMIT) {
                 return;
@@ -546,12 +547,10 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                             try {
                                 mPassword.close();
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                Timber.d("ValidatePinSubscriber onError exception [%s]", e.getMessage());
                             }
                         }
                     });
-
-
         }
 
         @Override
@@ -634,6 +633,36 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 setViewStatus(STATUS_OTP_INVALID);
                 setError(errorMessage, true);
                 ZPAnalytics.trackEvent(ZPEvents.ME_SECURITY_CHANGEPASSWORD_RESULT);
+
+                // count invalid otp
+                mCountInvalidOTP++;
+
+                // return if not have errorCode || errorCode != OTP_CHANGE_PASSWORD_WRONG (-114)
+                if (mCountInvalidOTP < Constants.MAX_INVALID_OTP_CHANGE_PASSWORD || !(e instanceof BodyException) || ((BodyException) e).errorCode != ServerErrorMessage.OTP_CHANGE_PASSWORD_WRONG) {
+                    return;
+                }
+
+                // show dialog if errorCode == OTP_CHANGE_PASSWORD_WRONG
+                DialogHelper.showConfirmDialog(getActivity(),
+                        ServerErrorMessage.getMessage(getActivity(), ServerErrorMessage.OTP_CHANGE_PASSWORD_WRONG),
+                        getActivity().getString(R.string.dialog_turn_off),
+                        null, new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+
+                            }
+
+                            @Override
+                            public void onOKEvent() {
+                                try {
+                                    mCountInvalidOTP = 0;
+                                    mPassword.close();
+                                } catch (Exception e) {
+                                    Timber.d("VerifySubscriberOTP onError exception [%s]", e.getMessage());
+                                }
+                            }
+                        });
+
             } catch (Exception exception) {
                 Timber.d("VerifySubscriberOTP onError exception [%s]", exception.getMessage());
             }
