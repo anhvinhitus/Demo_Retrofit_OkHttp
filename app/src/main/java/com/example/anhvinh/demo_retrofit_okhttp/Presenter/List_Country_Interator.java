@@ -12,9 +12,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 /**
@@ -47,42 +50,52 @@ public class List_Country_Interator {
         if (listCountry == null || !userCache) {
             Log.d("Interator", "Load data");
             if (isInternet) {
-                loadDatafromJSON();
+                RequestApi requestApi = retrofit.create(RequestApi.class);
+                requestApi.getListCountry()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(new Consumer<JSONObjectWorld>() {
+                            @Override
+                            public void accept(JSONObjectWorld jsonObjectWorld) throws Exception {
+                                listCountry = jsonObjectWorld.getWorldpopulation();
+                                if (listCountry != null)
+                                    worldpopulation_repo.saveAll(listCountry);
+                                listener.LoadListCountrySuccess(listCountry);
+                            }
+                        })
+                        .subscribe();
             } else {
-                listCountry = worldpopulation_repo.loadAll();
-                if (listCountry != null) {
-                    listener.LoadListCountrySuccess(listCountry);
-                } else
-                    listener.LoadListCountryError();
+                worldpopulation_repo.loadAll()
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new Observer<List<Worldpopulation>>() {
+                            @Override
+                            public void onSubscribe(@NonNull Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(@NonNull List<Worldpopulation> worldpopulationList) {
+                                if (listCountry != null) {
+                                    listener.LoadListCountrySuccess(listCountry);
+                                } else
+                                    listener.LoadListCountryError();
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+                                listener.LoadListCountryError();
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+
             }
         } else {
             Log.d("Interator", "Exist Data");
             listener.LoadListCountrySuccess(listCountry);
         }
-    }
-
-    private void loadDatafromJSON() {
-        RequestApi requestApi = retrofit.create(RequestApi.class);
-        Call<JSONObjectWorld> call = requestApi.getListCountry();
-        call.enqueue(new Callback<JSONObjectWorld>() {
-            @Override
-            public void onResponse(Call<JSONObjectWorld> call, Response<JSONObjectWorld> response) {
-                listCountry = response.body().getWorldpopulation();
-                worldpopulation_repo.saveAll(listCountry);
-                if (listener != null) {
-                    if (listCountry != null) {
-                        listener.LoadListCountrySuccess(listCountry);
-                    } else listener.LoadListCountryError();
-                } else {
-                    throw new RuntimeException("Please set callback for Load Data from JSON");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JSONObjectWorld> call, Throwable t) {
-                listener.LoadListCountryError();
-                Log.d("Error Interator", t.getMessage());
-            }
-        });
     }
 }

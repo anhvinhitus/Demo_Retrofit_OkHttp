@@ -2,7 +2,7 @@ package com.example.anhvinh.demo_retrofit_okhttp.Api;
 
 import com.example.anhvinh.demo_retrofit_okhttp.Models.JSONObjectWorld;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 
 /**
@@ -11,5 +11,6 @@ import retrofit2.http.GET;
 
 public interface RequestApi {
     @GET("jsonparsetutorial.txt")
-    Call<JSONObjectWorld> getListCountry();
+    Observable<JSONObjectWorld> getListCountry();
+    //Call<JSONObjectWorld> getListCountry();
 }

@@ -14,6 +14,7 @@ import com.example.anhvinh.demo_retrofit_okhttp.Presenter.List_Country_Interator
 import com.example.anhvinh.demo_retrofit_okhttp.Presenter.List_Country_Presenter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -75,6 +76,7 @@ public class AppModule {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
 

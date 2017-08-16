@@ -4,6 +4,10 @@ import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.DaoSession;
 import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.Worldpopulation;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Observable;
+
 
 /**
  * Created by AnhVinh on 16/08/2017.
@@ -23,12 +27,24 @@ public class Worldpopulation_Repo {
         this.daoSession.getWorldpopulationDao().deleteAll();
     };
 
-    public List<Worldpopulation> loadAll(){
-        return this.daoSession.getWorldpopulationDao().loadAll();
-    };
 
-    public void saveAll(List<Worldpopulation> worldpopulationList){
-        //this.daoSession.getWorldpopulationDao().deleteAll();
-        this.daoSession.getWorldpopulationDao().insertOrReplaceInTx(worldpopulationList);
+    public Observable<List<Worldpopulation>> loadAll() {
+        return Observable.fromCallable(new Callable<List<Worldpopulation>>() {
+            @Override
+            public List<Worldpopulation> call() throws Exception {
+                return daoSession.getWorldpopulationDao().loadAll();
+            }
+        });
     }
+
+    public Observable<Boolean> saveAll(final List<Worldpopulation> worldpopulationList) {
+        return Observable.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                daoSession.getWorldpopulationDao().insertOrReplaceInTx(worldpopulationList);
+                return false;
+            }
+        });
+    }
+
 }
