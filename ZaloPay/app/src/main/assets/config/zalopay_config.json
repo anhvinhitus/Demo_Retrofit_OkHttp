@@ -185,7 +185,7 @@
   },
   "tab_me": {
     "quick_comment_url": "https://goo.gl/forms/FCO642guFSbpYwlt2",
-    "enable_register_profile_zalopayid": 0
+    "enable_register_profile_zalopayid": 1
   },
   "notification": {
     "vibrate": [
