@@ -706,9 +706,13 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     private boolean isValidCardDate() {
         try {
-            return TextUtils.isEmpty(getCardDateView().getText().toString())
-                    || getCardDateView().isValidPattern()
-                    && (getCardDateView().getText().toString().length() == 5);
+            VPaymentValidDateEditText validDateEditText = getCardDateView();
+            if (validDateEditText == null) {
+                return true;
+            }
+            return TextUtils.isEmpty(validDateEditText.getText().toString())
+                    || validDateEditText.isValidPattern()
+                    && (validDateEditText.getText().toString().length() == 5);
         } catch (Exception e) {
             Timber.d(e, "Exception validate card date");
         }
@@ -722,7 +726,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 if (mViewPager != null) {
                     mViewPager.setCurrentItem(mLastPageSelected);
                 }
-                String errMes = getCardDateView().getPatternErrorMessage();
+                String errMes = getCardDateView() != null ? getCardDateView().getPatternErrorMessage() : null;
                 showHintError(getCardDateView(), errMes);
             }
             return isValidCardDate;
