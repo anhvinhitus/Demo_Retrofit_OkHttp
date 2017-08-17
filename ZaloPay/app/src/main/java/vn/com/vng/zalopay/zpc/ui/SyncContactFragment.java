@@ -145,7 +145,7 @@ public class SyncContactFragment extends RuntimePermissionFragment implements Sy
 
     @Override
     public void showSyncContactSuccess() {
-        ToastUtil.showCustomToast(getContext(), getString(R.string.already_update));
+        ToastUtil.showCustomToast(getContext(), getString(R.string.already_update), false);
     }
 
     @OnClick({R.id.btnUpdate, R.id.layoutContact})
