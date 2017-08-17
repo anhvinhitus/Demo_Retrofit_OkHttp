@@ -13,13 +13,13 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/padding_large"
-        android:layout_marginRight="@dimen/padding_large">
+        android:layout_marginLeft="@dimen/padding_normal"
+        android:layout_marginRight="@dimen/padding_normal">
 
         <FrameLayout
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_margin="@dimen/spacing.tiny">
+            android:layout_margin="@dimen/spacing.tiny.s">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/imgAvatar"

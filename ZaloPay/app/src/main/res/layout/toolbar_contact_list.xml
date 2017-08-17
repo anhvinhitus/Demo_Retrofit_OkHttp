@@ -19,13 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:baselineAligned="false"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing.tiny"
                 android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
                 android:textSize="@dimen/font_size_xlarge" />
 
@@ -33,6 +33,7 @@
                 android:id="@+id/title_sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:textSize="@dimen/font_size_xnormal" />
 
         </LinearLayout>
