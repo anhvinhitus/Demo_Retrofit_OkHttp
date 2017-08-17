@@ -33,10 +33,10 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.entity.UserInfo;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.TrackHelper;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
@@ -122,6 +122,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
             return false;
         }
         if (mPresenter.quitWithoutConfirm()) {
+            mPresenter.setPaymentStatusAndCallback(PaymentStatus.USER_CLOSE);
             return false;
         }
         if (!mPresenter.onBackPressed()) {
