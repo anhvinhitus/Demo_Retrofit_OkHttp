@@ -56,9 +56,8 @@ public class ZPCRepository implements ZPCStore.Repository {
     private final ZPCStore.LocalStorage mLocalStorage;
     private final User mUser;
     private final ContactFetcher mContactFetcher;
-    private ZPMonitorEventTiming mEventTiming;
-
     private final SelfExpiringHashMap<String, Long> mExpiringPhoneMap;
+    private ZPMonitorEventTiming mEventTiming;
 
     public ZPCRepository(User user, ZPCStore.ZaloRequestService zaloRequestService,
                          ZPCStore.RequestService requestService,
@@ -267,11 +266,12 @@ public class ZPCRepository implements ZPCStore.Repository {
                         return Observable.just(entity);
                     }
 
-                    if (mExpiringPhoneMap.containsKey(phone)) {
-                        return Observable.error(new UserNotFoundException());
-                    }
+                    //if (mExpiringPhoneMap.containsKey(phone)) {
+                    // not call api, find not found --> callback error
+                    return Observable.error(new UserNotFoundException());
+                    //}
 
-                    return fetchUserInfoByPhone(phone);
+                    //return fetchUserInfoByPhone(phone); // this for call api
                 })
                 .map(this::transformToZPProfile);
 

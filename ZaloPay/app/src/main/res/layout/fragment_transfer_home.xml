@@ -82,7 +82,8 @@
             android:background="@drawable/default_white_selector"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/app_padding"
-            android:paddingTop="@dimen/app_padding">
+            android:paddingTop="@dimen/app_padding"
+            android:visibility="gone">
 
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
@@ -133,7 +134,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate_stroke"
             android:layout_marginLeft="60dp"
-            android:background="@color/separate" />
+            android:background="@color/separate"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/layoutTransferViaAccount"
@@ -236,18 +238,16 @@
 
         <ImageView
             android:id="@+id/imgIntroduction"
-            android:layout_width="269dp"
-            android:layout_height="208dp"
+            android:layout_width="206dp"
+            android:layout_height="147dp"
             android:layout_gravity="center_horizontal" />
 
         <TextView
-            android:layout_width="273dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="38dp"
             android:gravity="center"
-            android:text="@string/transfer_money_note"
-            android:textColor="@color/txt_item_sub"
-            android:textSize="@dimen/textsize.text.sub" />
+            android:padding="@dimen/spacing.large"
+            android:text="@string/transfer_money_note" />
     </LinearLayout>
 </LinearLayout>
