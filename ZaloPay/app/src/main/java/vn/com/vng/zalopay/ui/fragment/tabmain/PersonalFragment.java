@@ -125,7 +125,7 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
     @Override
     public void setPhoneNumber(long phoneNumber) {
         if (tvZaloPayPhoneNumber != null && phoneNumber > 0) {
-            String PhoneNumber = PhoneUtil.formatPhoneNumber(phoneNumber);
+            String PhoneNumber = PhoneUtil.formatPhoneNumberProfile(String.valueOf(phoneNumber));
             tvZaloPayPhoneNumber.setText(PhoneNumber);
         }
     }

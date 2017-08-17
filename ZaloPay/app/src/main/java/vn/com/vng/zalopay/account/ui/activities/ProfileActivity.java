@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.account.ui.activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,7 +15,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
-import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
@@ -79,7 +77,7 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
     @Override
     public void setPhoneNumber(long phoneNumber) {
         if (tvZaloPayPhoneNumber != null && phoneNumber > 0) {
-            String PhoneNumber = PhoneUtil.formatPhoneNumber(phoneNumber);
+            String PhoneNumber = PhoneUtil.formatPhoneNumberProfile(String.valueOf(phoneNumber));
             tvZaloPayPhoneNumber.setText(PhoneNumber);
         }
     }

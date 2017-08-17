@@ -95,7 +95,7 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
             mImgAvatar.setImageURI(item.avatar);
             mTvDisplayName.setText(item.displayName);
 
-            String phone = PhoneUtil.formatPhoneNumber(item.phoneNumber);
+            String phone = PhoneUtil.formatPhoneNumberProfile(item.phoneNumber);
             String zaloPayName = item.zaloPayName;
 
             switch (item.transferMode) {

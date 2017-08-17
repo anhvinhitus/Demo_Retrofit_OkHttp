@@ -17,7 +17,6 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
-import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -148,7 +147,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     }
 
     private void setPhone(long phone) {
-        String strPhoneNumber = PhoneUtil.formatPhoneNumber(phone);
+        String strPhoneNumber = PhoneUtil.formatPhoneNumberProfile(String.valueOf(phone));
         if (!TextUtils.isEmpty(strPhoneNumber)) {
             tvPhone.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvPhoneAndZalopayidSuggest.setVisibility(View.GONE);

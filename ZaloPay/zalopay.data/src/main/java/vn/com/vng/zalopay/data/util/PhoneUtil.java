@@ -222,4 +222,8 @@ public class PhoneUtil {
 
         return formattedNumber;
     }
+
+    public static String formatPhoneNumberProfile(@NonNull String phone) {
+        return formatPhoneNumberZPC(formatPhoneNumber(phone));
+    }
 }
