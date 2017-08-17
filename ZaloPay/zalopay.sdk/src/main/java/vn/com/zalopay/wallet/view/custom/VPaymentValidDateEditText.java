@@ -1,8 +1,6 @@
 package vn.com.zalopay.wallet.view.custom;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -12,11 +10,10 @@ import android.util.AttributeSet;
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.view.interfaces.IDoActionDateEdittext;
-import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
+import vn.com.zalopay.wallet.view.interfaces.IDoActionDateEdittext;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public class VPaymentValidDateEditText extends VPaymentEditText implements IDoActionDateEdittext {
@@ -25,8 +22,6 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
     private static final char VERTICAL_SEPERATOR = '/';
     private boolean mIsCheckNow = false;
     private boolean mIsCheckPass = false;
-
-    private Drawable drawableRight;
 
     private int mPreLength;
 
@@ -59,25 +54,10 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
         this.setEnabled(true);
         this.setDoActionListner(this);
 
-        if (drawableRight == null) {
+        if (drawableRightDelete == null) {
             getDrawableRight();
         }
         SPACE_SEPERATOR = VERTICAL_SEPERATOR;
-    }
-
-    public void getDrawableRight() {
-        super.loadDeleteIco()
-                .compose(SchedulerHelper.applySchedulers())
-                .subscribe(bitmap -> {
-                            drawableRight = bitmap;
-                            Rect rectIcon = drawableRight.getBounds();
-                            //extend the bound
-                            bounds = new Rect();
-                            bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
-                                    rectIcon.bottom + OFFSET);
-                        },
-                        throwable -> Timber.d(throwable, "Exception load bitmap delete ico"));
-
     }
 
     public String getTextField(int pField) {
@@ -254,14 +234,14 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
         setCompoundDrawablePadding(20);
 
         if (s.length() > 0) {
-            if (drawableRight == null) {
+            if (drawableRightDelete == null) {
                 getDrawableRight();
             }
-            if (drawableRight != null) {
-                setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRight, null);
+            if (drawableRightDelete != null) {
+                setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRightDelete, null);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawableRight, null);
+                    setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawableRightDelete, null);
                 }
             }
         } else {

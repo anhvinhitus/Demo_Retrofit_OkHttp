@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
@@ -19,7 +20,6 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
-import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
@@ -31,7 +31,7 @@ import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 public class CardNumberFragment extends CreditCardFragment {
     protected VPaymentDrawableEditText mCardNumberView;
 
-    protected ImageView mImageViewQuestion;
+    protected SimpleDraweeView mImageViewQuestion;
 
     protected View mVirtualView;
 
@@ -46,12 +46,8 @@ public class CardNumberFragment extends CreditCardFragment {
      */
     public void showQuestionIcon() {
         if (mImageViewQuestion == null) {
-            mImageViewQuestion = new ImageView(GlobalData.getAppContext());
-            ResourceManager.getImage(RS.drawable.ic_bank_support_help)
-                    .compose(SchedulerHelper.applySchedulers())
-                    .filter(bitmap -> bitmap != null)
-                    .subscribe(bitmap -> mImageViewQuestion.setImageBitmap(bitmap),
-                            throwable -> Timber.d(throwable, "Exception load bitmap icon question"));
+            mImageViewQuestion = new SimpleDraweeView(GlobalData.getAppContext());
+            ResourceManager.loadLocalSDKImage(mImageViewQuestion, RS.drawable.ic_bank_support_help);
 
             try {
                 if (getGuiProcessor() != null) {

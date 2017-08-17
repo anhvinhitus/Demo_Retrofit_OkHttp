@@ -1,15 +1,12 @@
 package vn.com.zalopay.wallet.view.custom;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
@@ -20,7 +17,7 @@ import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public class VPaymentDrawableEditText extends VPaymentEditText implements IDoActionDrawableEdittext {
     public static final char VERTICAL_SEPERATOR = ' ';
-    private Drawable drawableRightDelete;
+//    private Drawable drawableRightDelete;
     private OnClickListener mSelectedCardScanListener = null;
     private OnClickListener mOnClickListener = null;
     private int mLastInputLength = 0;
@@ -55,20 +52,20 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
         SPACE_SEPERATOR = VERTICAL_SEPERATOR;
     }
 
-    public void getDrawableRight() {
-        super.loadDeleteIco()
-                .compose(SchedulerHelper.applySchedulers())
-                .subscribe(bitmap -> {
-                            drawableRightDelete = bitmap;
-                            Rect rectIcon = drawableRightDelete.getBounds();
-                            //extend the bound
-                            bounds = new Rect();
-                            bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
-                                    rectIcon.bottom + OFFSET);
-                        },
-                        throwable -> Timber.d(throwable, "Exception load bitmap delete ico"));
-
-    }
+//    public void getDrawableRight() {
+//        super.loadDeleteIco()
+//                .compose(SchedulerHelper.applySchedulers())
+//                .subscribe(bitmap -> {
+//                            drawableRightDelete = bitmap;
+//                            Rect rectIcon = drawableRightDelete.getBounds();
+//                            //extend the bound
+//                            bounds = new Rect();
+//                            bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
+//                                    rectIcon.bottom + OFFSET);
+//                        },
+//                        throwable -> Timber.d(throwable, "Exception load bitmap delete ico"));
+//
+//    }
 
     public boolean isValidInput() {
         String input = getString();

@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.view.custom;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -17,13 +18,14 @@ import android.view.ViewParent;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.view.interfaces.IBaseDoActionEdittext;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.entity.config.DynamicEditText;
+import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
+import vn.com.zalopay.wallet.view.interfaces.IBaseDoActionEdittext;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 
 public class VPaymentEditText extends TextInputEditText {
@@ -33,6 +35,7 @@ public class VPaymentEditText extends TextInputEditText {
     protected boolean mIsTextGroup = true;
     protected boolean mIsPattern = false;
     protected String mPattern = null;
+    protected Drawable drawableRightDelete;
     protected Rect bounds;
     protected int actionX, actionY;
     protected IBaseDoActionEdittext mBaseDoActionEdittextListner;
@@ -68,12 +71,6 @@ public class VPaymentEditText extends TextInputEditText {
 
     protected void setDoActionListner(IBaseDoActionEdittext pListener) {
         this.mBaseDoActionEdittextListner = pListener;
-    }
-
-    public Observable<BitmapDrawable> loadDeleteIco() {
-        return ResourceManager.getImage(RS.drawable.ic_delete)
-                .filter(bitmap -> bitmap != null)
-                .map(bitmap -> new BitmapDrawable(getResources(), bitmap));
     }
 
     /***
@@ -246,5 +243,26 @@ public class VPaymentEditText extends TextInputEditText {
 
     public void onTextPaste() {
         this.setText(mText);
+    }
+
+    public Observable<BitmapDrawable> loadDeleteIco() {
+        return ResourceManager.getLocalSDKImage(RS.drawable.ic_delete)
+                .filter(bitmap -> bitmap != null)
+                .map(bitmap -> new BitmapDrawable(getResources(), bitmap));
+    }
+
+    public void getDrawableRight() {
+        loadDeleteIco()
+                .compose(SchedulerHelper.applySchedulers())
+                .subscribe(bitmap -> {
+                            drawableRightDelete = bitmap;
+                            Rect rectIcon = drawableRightDelete.getBounds();
+                            //extend the bound
+                            bounds = new Rect();
+                            bounds.set(rectIcon.left - OFFSET, rectIcon.top - OFFSET, rectIcon.right + OFFSET,
+                                    rectIcon.bottom + OFFSET);
+                        },
+                        throwable -> Timber.d(throwable, "Exception load bitmap delete ico"));
+
     }
 }

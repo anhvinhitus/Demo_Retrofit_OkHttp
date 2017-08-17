@@ -184,15 +184,19 @@ public class ResourceManager extends SingletonBase {
         });
     }
 
-    public static Observable<Bitmap> getImage(String imageName) {
+    /***
+     * get bitmap from resource
+     * use Observable
+     */
+    public static Observable<Bitmap> getLocalSDKImage(String pImageName) {
         return Observable.defer(() -> {
-            if (imageName.equals(HIDE_IMG_NAME)) {
+            if (pImageName.equals(HIDE_IMG_NAME)) {
                 return Observable.empty();
             }
             String imgLocalPath;
             Bitmap bitmap = null;
             try {
-                imgLocalPath = String.format("%s%s%s%s%s", getResourceFolderPath(), File.separator, PREFIX_IMG, File.separator, imageName);
+                imgLocalPath = String.format("%s%s%s%s%s", getResourceFolderPath(), File.separator, PREFIX_IMG, File.separator, pImageName);
                 bitmap = BitmapFactory.decodeFile(imgLocalPath);
             } catch (Exception e) {
                 Observable.error(e);
@@ -226,7 +230,7 @@ public class ResourceManager extends SingletonBase {
         }
     }
 
-    public static void loadLocalImage(View pView, String pImagePath) {
+    private static void loadLocalImage(View pView, String pImagePath) {
         try {
             if (TextUtils.isEmpty(pImagePath)) {
                 return;
