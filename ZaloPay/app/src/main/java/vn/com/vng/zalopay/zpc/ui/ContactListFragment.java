@@ -100,6 +100,9 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
     @BindView(R.id.not_save_yet_iv_avatar)
     SimpleDraweeView mAvatar;
 
+    @BindView(R.id.logo)
+    SimpleDraweeView mLogo;
+
     @BindView(R.id.not_save_yet_icf_avatar)
     IconFont mAvatarDefault;
 
@@ -456,6 +459,7 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
                 mPresenter.getUserInfoNotInZPC(phoneNumber);
                 mAvatarDefault.setVisibility(View.VISIBLE);
                 mAvatar.setVisibility(View.GONE);
+                mLogo.setVisibility(View.GONE);
             } else {
                 mTvEmptyView.setText(R.string.no_result_your_search);
                 mItemNumberNotSaveYet.setVisibility(View.GONE);
@@ -537,9 +541,11 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
             mAvatar.setImageURI(profile.avatar);
             mAvatarDefault.setVisibility(View.GONE);
             mAvatar.setVisibility(View.VISIBLE);
+            mLogo.setVisibility(View.VISIBLE);
         } else {
             mAvatarDefault.setVisibility(View.VISIBLE);
             mAvatar.setVisibility(View.GONE);
+            mLogo.setVisibility(View.GONE);
         }
 
         mLlEmptyView.setVisibility(View.GONE);
@@ -559,10 +565,12 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
             mTvNumberNotSave.setText(getString(R.string.not_number_save_yet));
             mAvatarDefault.setVisibility(View.VISIBLE);
             mAvatar.setVisibility(View.GONE);
+            mAvatar.setVisibility(View.GONE);
             mLlEmptyView.setVisibility(View.GONE);
         } else {
             mItemNumberNotSaveYet.setVisibility(View.GONE);
             mAvatarDefault.setVisibility(View.GONE);
+            mAvatar.setVisibility(View.VISIBLE);
             mAvatar.setVisibility(View.VISIBLE);
             mTvEmptyView.setText(R.string.no_result_your_search);
             mLlEmptyView.setVisibility(View.VISIBLE);

@@ -10,29 +10,70 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
+    <!--<FrameLayout-->
+    <!--android:layout_width="40dp"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_marginBottom="@dimen/spacing.medium"-->
+    <!--android:layout_marginLeft="@dimen/spacing.medium.s"-->
+    <!--android:layout_marginRight="@dimen/spacing.medium.s"-->
+    <!--android:layout_marginTop="@dimen/spacing.medium">-->
+
+    <!--<com.facebook.drawee.view.SimpleDraweeView-->
+    <!--android:id="@+id/not_save_yet_iv_avatar"-->
+    <!--style="@style/AvatarDraweeView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
+
+    <!--<com.zalopay.ui.widget.IconFont-->
+    <!--android:id="@+id/not_save_yet_icf_avatar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="center"-->
+    <!--android:textColor="@color/profile_avatar_default"-->
+    <!--app:iconName="@string/profile_avatar_default"-->
+    <!--app:iconSize="@dimen/font_size_avatar_default_icon" />-->
+
+    <!--</FrameLayout>-->
+
     <FrameLayout
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/spacing.medium"
-        android:layout_marginLeft="@dimen/spacing.medium.s"
-        android:layout_marginRight="@dimen/spacing.medium.s"
-        android:layout_marginTop="@dimen/spacing.medium">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_normal"
+        android:layout_marginRight="@dimen/padding_normal">
+
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="@dimen/spacing.tiny.s">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/not_save_yet_iv_avatar"
+                style="@style/AvatarDraweeView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:roundingBorderColor="@color/colorPrimary"
+                app:roundingBorderWidth="@dimen/border_avatar_contact" />
+
+            <com.zalopay.ui.widget.IconFont
+                android:id="@+id/not_save_yet_icf_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/profile_avatar_default"
+                app:iconName="@string/profile_avatar_default"
+                app:iconSize="@dimen/font_size_avatar_default_icon" />
+
+        </FrameLayout>
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/not_save_yet_iv_avatar"
-            style="@style/AvatarDraweeView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <com.zalopay.ui.widget.IconFont
-            android:id="@+id/not_save_yet_icf_avatar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textColor="@color/profile_avatar_default"
-            app:iconName="@string/profile_avatar_default"
-            app:iconSize="@dimen/font_size_avatar_default_icon" />
+            android:id="@+id/logo"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="right|bottom"
+            app:actualImageResource="@drawable/dot_zp"
+            tools:background="@drawable/dot_zp"
+            tools:ignore="RtlHardcoded" />
 
     </FrameLayout>
 
@@ -44,18 +85,19 @@
 
         <TextView
             android:id="@+id/not_save_yet_tv_display_name"
+            style="@style/TextView.Item.Main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_color_primary"
+            android:textColor="@color/colorPrimary"
             tools:text="0966 888 888" />
 
         <TextView
             android:id="@+id/not_save_yet_tv_phone_number"
+            style="@style/TextView.Item.Sub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="@string/not.number.save.yet"
-            android:textSize="@dimen/textsize.text.sub" />
+            android:text="@string/not.number.save.yet" />
 
     </LinearLayout>
 

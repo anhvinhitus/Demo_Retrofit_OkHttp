@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -79,7 +78,6 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
 
     private void initSearchPhoneContact() {
         Subscription subscription = mDelaySubject.debounce(TIME_DELAY_SEARCH, TimeUnit.MILLISECONDS)
-                .distinctUntilChanged()
                 .filter(PhoneUtil::isMobileNumber)
                 .onBackpressureLatest()
                 .flatMap(this::searchPhoneSkipError)
