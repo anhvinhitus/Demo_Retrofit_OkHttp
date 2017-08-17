@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.ui;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.v4.app.Fragment;
@@ -103,6 +104,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (isFinishing() || isDestroyed()) {
+                return;
+            }
+        }
         Fragment activeFragment = getActiveFragment();
         if (!(activeFragment instanceof BaseFragment)) {
             super.onBackPressed();
