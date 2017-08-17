@@ -12,10 +12,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
@@ -67,31 +64,17 @@ public class List_Country_Interator {
             } else {
                 worldpopulation_repo.loadAll()
                         .subscribeOn(Schedulers.io())
-                        .subscribe(new Observer<List<Worldpopulation>>() {
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(new Consumer<List<Worldpopulation>>() {
                             @Override
-                            public void onSubscribe(@NonNull Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(@NonNull List<Worldpopulation> worldpopulationList) {
-                                if (listCountry != null) {
-                                    listener.LoadListCountrySuccess(listCountry);
+                            public void accept(List<Worldpopulation> worldpopulationList) throws Exception {
+                                if (worldpopulationList != null) {
+                                    listener.LoadListCountrySuccess(worldpopulationList);
                                 } else
                                     listener.LoadListCountryError();
                             }
-
-                            @Override
-                            public void onError(@NonNull Throwable e) {
-                                listener.LoadListCountryError();
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
-
+                        })
+                        .subscribe();
             }
         } else {
             Log.d("Interator", "Exist Data");
