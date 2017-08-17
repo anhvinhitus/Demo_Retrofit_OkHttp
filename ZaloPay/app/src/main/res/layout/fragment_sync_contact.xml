@@ -12,7 +12,8 @@
         android:id="@+id/layoutContact"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="?selector">
+        android:background="?selector"
+        android:visibility="gone">
 
         <com.zalopay.ui.widget.IconFont
             android:id="@+id/avatarContact"
@@ -86,7 +87,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="?selector">
+        android:background="?selector"
+        android:visibility="gone">
 
         <com.zalopay.ui.widget.IconFont
             android:id="@+id/avatarZaloGroup"
@@ -131,7 +133,8 @@
         android:layout_height="@dimen/separate"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
-        android:background="@color/separate" />
+        android:background="@color/separate"
+        android:visibility="gone" />
 
     <TextView
         style="@style/TextView.Item.Sub"
