@@ -201,16 +201,16 @@ public class CardNumberFragment extends CreditCardFragment {
         //this is not error hint,it is detected bank name
         String warning = null;
         try {
-            warning = getPaymentAdapter().getGuiProcessor().warningCardExist();
+            warning = getPaymentFlow().getGuiProcessor().warningCardExist();
         } catch (Exception e) {
             Timber.d(e, "Exception warningCardExist");
         }
         if (!TextUtils.isEmpty(errorMess) && !errorMess.equalsIgnoreCase(warning)) {
             try {
-                if ((getPaymentAdapter().isATMFlow() && (BankDetector.getInstance().detected()
+                if ((getPaymentFlow().isATMFlow() && (BankDetector.getInstance().detected()
                         || CreditCardDetector.getInstance().detected()))) {
                     errorMess = null;
-                } else if (getPaymentAdapter().isCCFlow() && (CreditCardDetector.getInstance().detected()
+                } else if (getPaymentFlow().isCCFlow() && (CreditCardDetector.getInstance().detected()
                         || BankDetector.getInstance().detected())) {
                     errorMess = null;
                 }

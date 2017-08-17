@@ -2,8 +2,6 @@ package vn.com.zalopay.wallet.view.custom.topsnackbar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,14 +9,11 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.SwipeDismissBehavior;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,17 +22,14 @@ import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.listener.ZPWOnCloseCardPopupListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 
 
@@ -97,8 +89,7 @@ public final class TSnackbar {
     };
     private int mDuration;
     private Callback mCallback;
-    private onCloseSnackBar mOnCloseSnackBar;
-    private ZPWOnCloseCardPopupListener mCloseCardPopupListener;
+
     private TSnackbar(ViewGroup parent) {
         mParent = parent;
         mContext = parent.getContext();
@@ -106,67 +97,15 @@ public final class TSnackbar {
         mView = (SnackbarLayout) inflater.inflate(R.layout.tsnackbar_layout, mParent, false);
     }
 
-    /**
-     * Make a TSnackbar to display a message
-     * <p/>
-     * <p>TSnackbar will try and find a parent view to hold TSnackbar's view from the value given
-     * to {@code view}. TSnackbar will walk up the view tree trying to find a suitable parent,
-     * which is defined as a {@link CoordinatorLayout} or the window decor's content view,
-     * whichever comes first.
-     * <p/>
-     * <p>Having a {@link CoordinatorLayout} in your view hierarchy allows TSnackbar to enable
-     * certain features, such as swipe-to-dismiss and automatically moving of widgets like
-     * {@link FloatingActionButton}.
-     *
-     * @param view     The view to find a parent from.
-     * @param text     The text to show.  Can be formatted text.
-     * @param duration How long to display the message.  Either {@link #LENGTH_SHORT} or {@link
-     *                 #LENGTH_LONG}
-     */
     @NonNull
-    public static TSnackbar make(@NonNull View view, @NonNull CharSequence text, @Duration int duration, ZPWOnCloseCardPopupListener pListener) {
+    public static TSnackbar makeMessageBar(@NonNull View view, @NonNull CharSequence text, CharSequence actionText, @Duration int duration, onCloseSnackBar pListener) {
         TSnackbar snackbar = new TSnackbar(findSuitableParent(view));
-        snackbar.setText(text);
-        snackbar.setDuration(duration);
-
-        snackbar.mCloseCardPopupListener = pListener;
-        snackbar.setClosePopupListener();
-        return snackbar;
-    }
-
-    @NonNull
-    public static TSnackbar makeMessageBar(@NonNull View view, @NonNull CharSequence title, @NonNull CharSequence text, CharSequence actionText, @Duration int duration, onCloseSnackBar pListener) {
-        TSnackbar snackbar = new TSnackbar(findSuitableParent(view));
-        snackbar.setTitle(title);
-        snackbar.setMessageText(text);
-        snackbar.setActionMessageText(actionText);
-        snackbar.makeBankSupportSnackBarGone();
+        snackbar.setMessage(text);
+        snackbar.setActionMessage(actionText);
         snackbar.setDuration(duration);
         snackbar.setCloseListener(pListener);
 
         return snackbar;
-    }
-
-    /**
-     * Make a TSnackbar to display a message.
-     * <p/>
-     * <p>TSnackbar will try and find a parent view to hold TSnackbar's view from the value given
-     * to {@code view}. TSnackbar will walk up the view tree trying to find a suitable parent,
-     * which is defined as a {@link CoordinatorLayout} or the window decor's content view,
-     * whichever comes first.
-     * <p/>
-     * <p>Having a {@link CoordinatorLayout} in your view hierarchy allows TSnackbar to enable
-     * certain features, such as swipe-to-dismiss and automatically moving of widgets like
-     * {@link FloatingActionButton}.
-     *
-     * @param view     The view to find a parent from.
-     * @param resId    The resource id of the string resource to use. Can be formatted text.
-     * @param duration How long to display the message.  Either {@link #LENGTH_SHORT} or {@link
-     *                 #LENGTH_LONG}
-     */
-    @NonNull
-    public static TSnackbar make(@NonNull View view, @StringRes int resId, @Duration int duration, ZPWOnCloseCardPopupListener pListener) {
-        return make(view, view.getResources().getText(resId), duration, pListener);
     }
 
     private static ViewGroup findSuitableParent(View view) {
@@ -197,150 +136,44 @@ public final class TSnackbar {
         return fallback;
     }
 
-    public boolean isCardSupportPopup() {
-        GridView gridView = mView.getGridViewBankList();
-
-        return gridView != null && gridView.getVisibility() == View.VISIBLE;
-
-    }
-
-    /**
-     * size should be around 200....
-     */
-    public TSnackbar addIcon(int resource_id, int size) {
+    @NonNull
+    public TSnackbar setMessage(@NonNull CharSequence message) {
         final TextView tv = mView.getMessageView();
-
-        tv.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(Bitmap.createScaledBitmap(((BitmapDrawable) (mContext.getResources().getDrawable(resource_id))).getBitmap(), size, size, true)), null, null, null);
-
+        if (tv == null) {
+            return this;
+        }
+        tv.setText(message);
         return this;
     }
 
-    /**
-     * Update the text in this {@link TSnackbar}.
-     *
-     * @param message The new text for the Toast.
-     */
-    @NonNull
-    public TSnackbar setMessageText(@NonNull CharSequence message) {
-        final TextView tv = mView.getErrorMessageView();
-
-        if (tv != null) {
-            RelativeLayout viewWrapper = mView.getErrorMessageWrapper();
-
-            if (viewWrapper != null)
-                viewWrapper.setVisibility(View.VISIBLE);
-
+    public TSnackbar setActionMessage(@NonNull CharSequence message) {
+        final TextView tv = mView.getActionView();
+        if (tv == null) {
+            return this;
+        }
+        if (!TextUtils.isEmpty(message)) {
             tv.setText(message);
+        } else {
+            tv.setVisibility(View.GONE);
         }
-
         return this;
-    }
-
-    /**
-     * Update the text in this {@link TSnackbar}.
-     *
-     * @param title The new text for the Toast.
-     */
-    @NonNull
-    public TSnackbar setTitle(CharSequence title) {
-        final TextView tv = mView.getTitleView();
-        if (tv != null) {
-            if (title == null) {
-                tv.setVisibility(View.GONE);
-                return this;
-            }
-
-            tv.setVisibility(View.VISIBLE);
-            RelativeLayout viewWrapper = mView.getErrorMessageWrapper();
-
-            if (viewWrapper != null) {
-                viewWrapper.setVisibility(View.VISIBLE);
-                viewWrapper.setGravity(Gravity.LEFT);
-            }
-
-            tv.setText(title);
-        }
-
-        return this;
-    }
-
-    public TSnackbar setActionMessageText(@NonNull CharSequence message) {
-        final TextView tv = mView.getActionMessageView();
-
-        if (tv != null) {
-            if (!TextUtils.isEmpty(message))
-                tv.setText(message);
-            else
-                tv.setVisibility(View.GONE);
-        }
-
-        return this;
-    }
-
-    public void makeBankSupportSnackBarGone() {
-        mView.getMessageView().setVisibility(View.GONE);
-        mView.getGridViewBankList().setVisibility(View.GONE);
-        mView.getViewLine().setVisibility(View.GONE);
-    }
-
-    public void setClosePopupListener() {
-        View rootView = mView.getSnackBarRootView();
-
-        if (rootView != null)
-            rootView.setOnTouchListener((view, motionEvent) -> {
-
-                dismiss();
-
-                if (mCloseCardPopupListener != null)
-                    mCloseCardPopupListener.onCloseCardPopup();
-
-                return false;
-            });
-
-        GridView gridView = mView.getGridViewBankList();
-
-        if (gridView != null && gridView.getVisibility() == View.VISIBLE)
-            gridView.setOnTouchListener((view, motionEvent) -> {
-                dismiss();
-
-                if (mCloseCardPopupListener != null)
-                    mCloseCardPopupListener.onCloseCardPopup();
-
-                return false;
-            });
     }
 
     public void setCloseListener(onCloseSnackBar pListener) {
-        /*
-        View rootView = mView.getSnackBarRootView();
-
-        if(rootView != null)
-            rootView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                    dismiss();
-
-                    if(mOnCloseSnackBar != null)
-                        mOnCloseSnackBar.onClose();
-
-                    return false;
-                }
-            });
-            */
-
-        mOnCloseSnackBar = pListener;
-
-        TextView textViewAction = mView.getActionMessageView();
-
-        if (textViewAction != null) {
-            textViewAction.setOnClickListener(view -> {
-                dismiss();
-
-                if (mOnCloseSnackBar != null)
-                    mOnCloseSnackBar.onClose();
-            });
+        if (pListener == null) {
+            return;
         }
+        TextView textViewAction = mView.getActionView();
+        if (textViewAction == null) {
+            return;
+        }
+        WeakReference<onCloseSnackBar> closeSnackBarWeakReference = new WeakReference<>(pListener);
+        textViewAction.setOnClickListener(view -> {
+            dismiss();
+            if (closeSnackBarWeakReference.get() != null) {
+                closeSnackBarWeakReference.get().onClose();
+            }
+        });
     }
 
     /**
@@ -705,19 +538,8 @@ public final class TSnackbar {
      * @hide
      */
     public static class SnackbarLayout extends LinearLayout {
-        private LinearLayout mRootView;
-
         private TextView mMessageView;
-
-        private View mViewLine;
-
-        private RelativeLayout mErrorMessageWrapper;
-        private TextView mTitleView;
-        private TextView mErrorMessageView;
-        private TextView mActionMessaageView;
-
-        private GridView mGridBank;
-
+        private TextView mActionView;
         private int mMaxWidth;
         private OnLayoutChangeListener mOnLayoutChangeListener;
         private OnAttachStateChangeListener mOnAttachStateChangeListener;
@@ -725,6 +547,7 @@ public final class TSnackbar {
         public SnackbarLayout(Context context) {
             this(context, null);
         }
+
         public SnackbarLayout(Context context, AttributeSet attrs) {
             super(context, attrs);
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SnackbarLayout);
@@ -747,61 +570,19 @@ public final class TSnackbar {
             ViewCompat.setAccessibilityLiveRegion(this, ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE);
         }
 
-        private static void updateTopBottomPadding(View view, int topPadding, int bottomPadding) {
-            if (ViewCompat.isPaddingRelative(view)) {
-                ViewCompat.setPaddingRelative(view,
-                        ViewCompat.getPaddingStart(view), topPadding,
-                        ViewCompat.getPaddingEnd(view), bottomPadding);
-            } else {
-                view.setPadding(view.getPaddingLeft(), topPadding,
-                        view.getPaddingRight(), bottomPadding);
-            }
-        }
-
         @Override
         protected void onFinishInflate() {
             super.onFinishInflate();
-            mRootView = (LinearLayout) findViewById(R.id.snackbar_rootview);
-
-            mMessageView = (TextView) findViewById(R.id.snackbar_text);
-            mViewLine = findViewById(R.id.snackbar_line);
-            mErrorMessageWrapper = (RelativeLayout) findViewById(R.id.snackbar_error_wrapper);
-            mTitleView = (TextView) findViewById(R.id.snackbar_text_title);
-            mErrorMessageView = (TextView) findViewById(R.id.snackbar_text_error);
-            mActionMessaageView = (TextView) findViewById(R.id.snackbar_text_action);
-            mGridBank = (GridView) findViewById(R.id.gridBank);
-        }
-
-        GridView getGridViewBankList() {
-            return mGridBank;
-        }
-
-        View getViewLine() {
-            return mViewLine;
+            mMessageView = (TextView) findViewById(R.id.snackbar_text_title);
+            mActionView = (TextView) findViewById(R.id.snackbar_text_action);
         }
 
         TextView getMessageView() {
             return mMessageView;
         }
 
-        TextView getErrorMessageView() {
-            return mErrorMessageView;
-        }
-
-        TextView getTitleView() {
-            return mTitleView;
-        }
-
-        TextView getActionMessageView() {
-            return mActionMessaageView;
-        }
-
-        RelativeLayout getErrorMessageWrapper() {
-            return mErrorMessageWrapper;
-        }
-
-        LinearLayout getSnackBarRootView() {
-            return mRootView;
+        TextView getActionView() {
+            return mActionView;
         }
 
         @Override
@@ -812,32 +593,6 @@ public final class TSnackbar {
                 widthMeasureSpec = MeasureSpec.makeMeasureSpec(mMaxWidth, MeasureSpec.EXACTLY);
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             }
-            /*
-            final int multiLineVPadding = getResources().getDimensionPixelSize(
-                    R.dimen.design_snackbar_padding_vertical_2lines);
-            final int singleLineVPadding = getResources().getDimensionPixelSize(R.dimen.design_snackbar_padding_vertical);
-            final boolean isMultiLine = mMessageView.getLayout().getLineCount() > 1;
-
-            boolean remeasure = false;
-            if (isMultiLine && mMaxInlineActionWidth > 0
-                    && mActionView.getMeasuredWidth() > mMaxInlineActionWidth) {
-                if (updateViewsWithinLayout(VERTICAL, multiLineVPadding,
-                        multiLineVPadding - singleLineVPadding)) {
-                    remeasure = true;
-                }
-            } else {
-                final int messagePadding = isMultiLine ? multiLineVPadding : singleLineVPadding;
-                if (updateViewsWithinLayout(HORIZONTAL, messagePadding, messagePadding)) {
-                    remeasure = true;
-                }
-            }
-
-
-            if (remeasure) {
-                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            }
-            */
-
         }
 
         void animateChildrenIn(int delay, int duration) {
@@ -845,42 +600,12 @@ public final class TSnackbar {
                 ViewCompat.setAlpha(mMessageView, 0f);
                 ViewCompat.animate(mMessageView).alpha(1f).setDuration(duration).setStartDelay(delay).start();
             }
-
-            if (mErrorMessageWrapper.getVisibility() == VISIBLE) {
-                ViewCompat.setAlpha(mErrorMessageView, 0f);
-                ViewCompat.animate(mErrorMessageView).alpha(1f).setDuration(duration).setStartDelay(delay).start();
-
-                ViewCompat.setAlpha(mActionMessaageView, 0f);
-                ViewCompat.animate(mActionMessaageView).alpha(1f).setDuration(duration).setStartDelay(delay).start();
-
-            }
-
-            if (mGridBank.getVisibility() == VISIBLE) {
-                ViewCompat.setAlpha(mGridBank, 0f);
-                ViewCompat.animate(mGridBank).alpha(1f).setDuration(duration)
-                        .setStartDelay(delay).start();
-            }
-
         }
 
         void animateChildrenOut(int delay, int duration) {
             if (mMessageView.getVisibility() == VISIBLE) {
                 ViewCompat.setAlpha(mMessageView, 1f);
                 ViewCompat.animate(mMessageView).alpha(0f).setDuration(duration).setStartDelay(delay).start();
-            }
-
-            if (mErrorMessageWrapper.getVisibility() == VISIBLE) {
-                ViewCompat.setAlpha(mErrorMessageView, 1f);
-                ViewCompat.animate(mErrorMessageView).alpha(0f).setDuration(duration).setStartDelay(delay).start();
-
-                ViewCompat.setAlpha(mActionMessaageView, 1f);
-                ViewCompat.animate(mActionMessaageView).alpha(0f).setDuration(duration).setStartDelay(delay).start();
-            }
-
-            if (mGridBank.getVisibility() == VISIBLE) {
-                ViewCompat.setAlpha(mGridBank, 1f);
-                ViewCompat.animate(mGridBank).alpha(0f).setDuration(duration)
-                        .setStartDelay(delay).start();
             }
         }
 
@@ -914,20 +639,6 @@ public final class TSnackbar {
 
         void setOnAttachStateChangeListener(OnAttachStateChangeListener listener) {
             mOnAttachStateChangeListener = listener;
-        }
-
-        private boolean updateViewsWithinLayout(final int orientation, final int messagePadTop, final int messagePadBottom) {
-            boolean changed = false;
-            if (orientation != getOrientation()) {
-                setOrientation(orientation);
-                changed = true;
-            }
-            if (mMessageView.getPaddingTop() != messagePadTop
-                    || mMessageView.getPaddingBottom() != messagePadBottom) {
-                updateTopBottomPadding(mMessageView, messagePadTop, messagePadBottom);
-                changed = true;
-            }
-            return changed;
         }
 
         interface OnLayoutChangeListener {

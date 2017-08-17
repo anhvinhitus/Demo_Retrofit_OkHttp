@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -572,8 +573,8 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void showSnackBar(String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {
-        PaymentSnackBar.getInstance().dismiss();
         try {
+            dismissSnackBar();
             PaymentSnackBar.getInstance().setRootView(view_top_linearlayout)
                     .setBgColor(getResources().getColor(R.color.yellow_bg_popup_error))
                     .setMessage(pMessage)
@@ -619,12 +620,13 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void switchToResultScreen(StatusResponse pResponse) throws Exception {
-        if (!(getActivity() instanceof BaseActivity) || getActivity().isFinishing()) {
+        Activity activity = getActivity();
+        if (!(activity instanceof BaseActivity) || activity.isFinishing()) {
             throw new IllegalStateException("Activity is finish");
         }
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.STATUS_RESPONSE, pResponse);
         BaseFragment fragment = ResultPaymentFragment.newInstance(bundle);
-        ((BaseActivity) getActivity()).hostFragment(fragment);
+        ((BaseActivity) activity).hostFragment(fragment);
     }
 }

@@ -11,7 +11,7 @@ import vn.com.zalopay.wallet.entity.voucher.UseVoucherResponse;
 import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.repository.AbstractLocalStorage;
-import vn.com.zalopay.wallet.voucher.VoucherStatusResponse;
+import vn.com.zalopay.wallet.entity.voucher.VoucherStatusResponse;
 
 /*
  * Created by chucvv on 8/1/17.

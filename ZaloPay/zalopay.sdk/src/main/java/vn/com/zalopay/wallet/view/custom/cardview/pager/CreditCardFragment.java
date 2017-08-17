@@ -74,10 +74,10 @@ public abstract class CreditCardFragment extends Fragment {
         if (mGuiProcessor != null && mGuiProcessor.get() != null) {
             return mGuiProcessor.get();
         }
-        if (getPaymentAdapter() == null) {
-            throw new Exception("Invalid paymentflow");
+        if (getPaymentFlow() == null) {
+            throw new Exception("Invalid payment flow");
         }
-        mGuiProcessor = new WeakReference<>(getPaymentAdapter().getGuiProcessor());
+        mGuiProcessor = new WeakReference<>(getPaymentFlow().getGuiProcessor());
         return mGuiProcessor.get();
     }
 
@@ -88,7 +88,7 @@ public abstract class CreditCardFragment extends Fragment {
         throw new Exception();
     }
 
-    public AbstractWorkFlow getPaymentAdapter() throws Exception {
+    public AbstractWorkFlow getPaymentFlow() throws Exception {
         ChannelActivity channelActivity = getHostActivity();
         if (channelActivity != null && !channelActivity.isFinishing()) {
             return channelActivity.getWorkFlow();

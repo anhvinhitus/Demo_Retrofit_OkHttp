@@ -13,7 +13,7 @@ import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.repository.voucher.VoucherStore;
-import vn.com.zalopay.wallet.voucher.VoucherStatusResponse;
+import vn.com.zalopay.wallet.entity.voucher.VoucherStatusResponse;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 

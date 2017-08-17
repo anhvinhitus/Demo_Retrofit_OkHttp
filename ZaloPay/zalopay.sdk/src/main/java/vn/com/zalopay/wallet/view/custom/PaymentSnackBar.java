@@ -20,8 +20,6 @@ public class PaymentSnackBar {
 
     private View mRootView;
 
-    private String mTitle;
-
     private String mMessage;
 
     private String mActionMessage;
@@ -61,11 +59,6 @@ public class PaymentSnackBar {
         return this;
     }
 
-    public PaymentSnackBar setTitle(String pTitle) {
-        mTitle = pTitle;
-        return this;
-    }
-
     public PaymentSnackBar setMessage(String pMessage) {
         mMessage = pMessage;
         return this;
@@ -100,15 +93,12 @@ public class PaymentSnackBar {
         }
 
         if (mSnackBar == null || mSnackBar.getView().getId() != mRootView.getId())
-            mSnackBar = TSnackbar.makeMessageBar(mRootView, mTitle, mMessage, mActionMessage, mDuration, mCloseListener);
+            mSnackBar = TSnackbar.makeMessageBar(mRootView, mMessage, mActionMessage, mDuration, mCloseListener);
         else {
-            mSnackBar.setTitle(mTitle);
-            mSnackBar.setMessageText(mMessage);
-            mSnackBar.setActionMessageText(mActionMessage);
+            mSnackBar.setMessage(mMessage);
+            mSnackBar.setActionMessage(mActionMessage);
             mSnackBar.setDuration(mDuration);
             mSnackBar.setCloseListener(mCloseListener);
-            mSnackBar.makeBankSupportSnackBarGone();
-
         }
         View snackbarView = mSnackBar.getView();
         snackbarView.setBackgroundColor(mBgColor);

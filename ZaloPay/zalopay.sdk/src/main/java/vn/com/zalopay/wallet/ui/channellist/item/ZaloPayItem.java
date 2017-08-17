@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.ui.channellist.item;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,15 +46,16 @@ public class ZaloPayItem extends AbstractItem<ZaloPayItem.ViewHolder> {
         renderBalance(holder);
     }
 
-    public void renderBalance(ViewHolder holder) {
+    private void renderBalance(ViewHolder holder) {
         balance = balance > 0 ? balance : 0;
         holder.balance_textview.setText(CurrencyUtil.formatCurrency(balance, false));
     }
 
-    public void renderBalanceError(ZaloPayItem.ViewHolder holder, String warningDesc) {
+    void renderBalanceError(ZaloPayItem.ViewHolder holder, String warningDesc) {
         holder.balance_error_textview.setText(warningDesc);
         holder.balance_error_textview.setVisibility(View.VISIBLE);
         holder.fee_textview.setVisibility(View.GONE);
+        holder.balance_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color)));
     }
 
     static class ViewHolder extends AbstractItem.ViewHolder {
