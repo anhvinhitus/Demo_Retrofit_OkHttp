@@ -5,8 +5,9 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.AuthenMapCardImpl;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.entity.UserInfo;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.event.SdkAuthenPayerEvent;
 
 public class AuthenMapCardTask extends BaseTask<StatusResponse> {
@@ -32,7 +33,7 @@ public class AuthenMapCardTask extends BaseTask<StatusResponse> {
     @Override
     public void onRequestFail(Throwable e) {
         StatusResponse statusResponse = new StatusResponse();
-        statusResponse.returncode = -1;
+        statusResponse.returncode = Constants.RETURN_CODE_RETRY_GETSTATUS;
         statusResponse.returnmessage = getDefaulErrorNetwork();
         mEventBus.postSticky(new SdkAuthenPayerEvent(statusResponse));
     }

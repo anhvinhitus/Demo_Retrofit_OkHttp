@@ -33,4 +33,7 @@ public class AtmScriptInput {
 
     @SerializedName("password")
     public String password;
+
+    @SerializedName("onlinePassword")
+    public String onlinePassword;
 }

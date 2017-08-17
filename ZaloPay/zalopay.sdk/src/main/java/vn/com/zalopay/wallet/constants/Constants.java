@@ -47,6 +47,7 @@ public class Constants {
     public static final List<Integer> MONEY_NOT_ENOUGH_CODE = Arrays.asList(-62, -63);
     public static final int TRANSACTION_PROCESSING = 5;
     public static final int AUTHEN_PAYER_OTP_WRONG_CODE = 17;
+    public static final int RETURN_CODE_RETRY_GETSTATUS = 90;
     public static final List<Integer> GET_STATUS_AUTHEN_PAYER_CODE = Arrays.asList(14, 18);
     public static final List<Long> TRANSACTION_SUCCESS_NOTIFICATION_TYPES = Arrays.asList(1L, 2L, 3L, 4L, 5L);//filter list notification app push notification into sdk
     //user submited order to server fail

@@ -1,9 +1,9 @@
 package vn.com.zalopay.wallet.helper;
 
 import vn.com.zalopay.wallet.constants.Constants;
+import vn.com.zalopay.wallet.constants.PaymentActionStatus;
 import vn.com.zalopay.wallet.entity.response.SecurityResponse;
 import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.constants.PaymentActionStatus;
 
 public class PaymentStatusHelper {
     public static boolean isTransactionNotSubmit(StatusResponse pResponse) {
@@ -25,7 +25,10 @@ public class PaymentStatusHelper {
 
     public static boolean isNeedToGetStatusAfterAuthenPayer(StatusResponse pResponse) {
         if (pResponse == null) {
-            return false;
+            return true;
+        }
+        if (pResponse.returncode == Constants.RETURN_CODE_RETRY_GETSTATUS) {
+            return true;
         }
 
         return pResponse.isprocessing || Constants.GET_STATUS_AUTHEN_PAYER_CODE.contains(pResponse.returncode);

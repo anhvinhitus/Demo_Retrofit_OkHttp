@@ -37,21 +37,19 @@ import vn.com.zalopay.wallet.api.task.SendLogTask;
 import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.entity.bank.BankConfig;
-import vn.com.zalopay.wallet.entity.bank.PaymentCard;
-import vn.com.zalopay.wallet.entity.response.SecurityResponse;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.helper.WebViewHelper;
-import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
-import vn.com.zalopay.wallet.entity.bank.MapCard;
-import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.entity.config.OtpRule;
-import vn.com.zalopay.wallet.entity.UserInfo;
-import vn.com.zalopay.wallet.helper.ErrorCodeHelper;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.entity.UserInfo;
+import vn.com.zalopay.wallet.entity.bank.BankConfig;
+import vn.com.zalopay.wallet.entity.bank.MapCard;
+import vn.com.zalopay.wallet.entity.bank.PaymentCard;
+import vn.com.zalopay.wallet.entity.config.OtpRule;
+import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
+import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.entity.response.SecurityResponse;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.event.SdkAuthenPayerEvent;
 import vn.com.zalopay.wallet.event.SdkCheckSubmitOrderEvent;
 import vn.com.zalopay.wallet.event.SdkOrderStatusEvent;
@@ -63,10 +61,12 @@ import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsBackEvent;
 import vn.com.zalopay.wallet.event.SdkWebsite3dsEvent;
 import vn.com.zalopay.wallet.helper.BankHelper;
+import vn.com.zalopay.wallet.helper.ErrorCodeHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.ToastHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
 import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
@@ -102,6 +102,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     SDKTransactionAdapter mTransactionAdapter;
     //check data in response get status api
     boolean isCheckDataInStatus = false;
+    boolean mLoadWebStarted = false;
     private boolean isLoadWebTimeout = false;
     private int numberRetryOtp = 0;
     //count of retry check status if submit order fail
@@ -388,6 +389,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     }
 
     protected void startParseBankWebsite(String pRedirectUrl) {
+        Timber.d("start load parse web %s", pRedirectUrl);
     }
 
     protected void stopLoadWeb() {
@@ -396,7 +398,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     protected void initializeGuiProcessor() throws Exception {
     }
 
-    protected void endingCountTimeLoadCaptchaOtp() {
+    private void endingCountTimeLoadCaptchaOtp() {
         if (mCaptchaEndTime == 0) {
             mCaptchaBeginTime = System.currentTimeMillis();
         }
@@ -414,7 +416,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     }
 
     @BankFlow
-    public int getECardFlowType() {
+    private int getECardFlowType() {
         return mECardFlowType;
     }
 
@@ -426,11 +428,11 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         return isParseWebFlow() || isLoadWeb();
     }
 
-    public boolean isParseWebFlow() {
+    private boolean isParseWebFlow() {
         return getECardFlowType() == BankFlow.PARSEWEB;
     }
 
-    public boolean isLoadWeb() {
+    private boolean isLoadWeb() {
         return getECardFlowType() == BankFlow.LOADWEB;
     }
 
@@ -454,7 +456,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         return this instanceof ZaloPayWorkFlow;
     }
 
-    public boolean isOrderSubmit() {
+    private boolean isOrderSubmit() {
         return mIsOrderSubmit;
     }
 
@@ -718,6 +720,10 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             showTransactionFailView(mContext.getResources().getString(R.string.sdk_trans_fail_check_status_mess));
             return;
         }
+        if (mLoadWebStarted) {
+            showTransactionFailView(mStatusResponse.returnmessage);
+            return;
+        }
         //retry otp
         if (PaymentStatusHelper.isWrongOtpResponse(mStatusResponse)) {
             processWrongOtp();
@@ -800,6 +806,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
             setECardFlowType(BankFlow.LOADWEB);
             getGuiProcessor().loadUrl(redirecturl);
             getView().hideLoading();
+            mLoadWebStarted = true;
             //begin count timer loading site until finish transaction
             mOtpBeginTime = System.currentTimeMillis();
             mCaptchaBeginTime = System.currentTimeMillis();

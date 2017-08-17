@@ -17,12 +17,6 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.entity.bank.AtmScriptOutput;
-import vn.com.zalopay.wallet.entity.response.BaseResponse;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.entity.config.OtpRule;
-import vn.com.zalopay.wallet.workflow.webview.AbstractWebViewClient;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
@@ -31,6 +25,11 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.entity.bank.AtmScriptOutput;
+import vn.com.zalopay.wallet.entity.config.OtpRule;
+import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.entity.response.BaseResponse;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.event.SdkAuthenPayerEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
@@ -42,7 +41,10 @@ import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
+import vn.com.zalopay.wallet.workflow.webview.AbstractWebViewClient;
 import vn.com.zalopay.wallet.workflow.webview.BankWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.BidvWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.SdkWebView;
 
 import static vn.com.zalopay.wallet.constants.Constants.PAGE_COVER_BANK_AUTHEN;
 import static vn.com.zalopay.wallet.constants.Constants.SCREEN_ATM;
@@ -92,8 +94,21 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
 
     @Override
     public void startParseBankWebsite(String pUrl) {
-        mWebViewProcessor = new BankWebViewClient(this);
-        mWebViewProcessor.start(pUrl);
+        if (paymentBIDV()) {
+            try {
+                SdkWebView webView = (SdkWebView) getView().findViewById(R.id.webviewParser);
+                mWebViewProcessor = new BidvWebViewClient(this, webView);
+            } catch (Exception e) {
+                Timber.d(e);
+            }
+        } else {
+            SdkWebView webView = new SdkWebView(GlobalData.getAppContext());
+            mWebViewProcessor = new BankWebViewClient(this, webView);
+        }
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.start(pUrl);
+            mLoadWebStarted = true;
+        }
     }
 
     @Override
@@ -446,7 +461,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         super.onDetach();
     }
 
-    public boolean paymentBIDV() {
+    private boolean paymentBIDV() {
         BankDetector atmCardCheck = null;
         try {
             atmCardCheck = getGuiProcessor().getBankCardFinder();

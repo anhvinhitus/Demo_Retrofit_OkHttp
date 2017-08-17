@@ -38,28 +38,23 @@ import vn.com.zalopay.wallet.workflow.ui.BankCardGuiProcessor;
 import static vn.com.zalopay.wallet.api.task.SDKReportTask.ERROR_WEBSITE;
 
 public class BankWebViewClient extends AbstractWebViewClient {
+    static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
     private static final long DELAY_TIME_TO_DETECT_AJAX = 8000;
-    private static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
+    List<BankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
+    int mEventID = 0;
+    String mPageCode = null;
+    boolean mIsFirst = true;
     private boolean mIsLoadingFinished = true;
     private boolean mIsRedirect = false;
-
-    private List<BankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
     private String mCurrentUrlPattern = null;
     private String mStartedtUrl = null;
     private String mCurrentUrl = null;
-
     private long mLastStartPageTime = 0;
     private Handler mHandler = new Handler();
 
-    private int mEventID = 0;
-    private String mPageCode = null;
-
-    private boolean mIsFirst = true;
-
-    public BankWebViewClient(AbstractWorkFlow pAdapter) {
-        SdkWebView webView = new SdkWebView(GlobalData.getAppContext());
-        webView.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
-        initialize(pAdapter, webView);
+    public BankWebViewClient(AbstractWorkFlow pAdapter, SdkWebView pWebview) {
+        pWebview.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
+        initialize(pAdapter, pWebview);
     }
 
     @Override
@@ -98,7 +93,7 @@ public class BankWebViewClient extends AbstractWebViewClient {
     }
 
     @NonNull
-    private AtmScriptInput genJsInput() {
+    protected AtmScriptInput genJsInput() throws Exception {
         AtmScriptInput input = new AtmScriptInput();
         AbstractWorkFlow workFlow = null;
         try {
@@ -141,8 +136,15 @@ public class BankWebViewClient extends AbstractWebViewClient {
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;
 
-                AtmScriptInput input = genJsInput();
-                input.isAjax = pIsAjax;
+                AtmScriptInput input = null;
+                try {
+                    input = genJsInput();
+                } catch (Exception e) {
+                    Timber.d(e);
+                }
+                if (input != null) {
+                    input.isAjax = pIsAjax;
+                }
 
                 String inputScript = GsonUtils.toJsonString(input);
 
@@ -215,14 +217,13 @@ public class BankWebViewClient extends AbstractWebViewClient {
         }
     }
 
-    private void onPageFinished(String url) {
+    protected void onPageFinished(String url) {
         matchAndRunJs(url, EJavaScriptType.AUTO, false);
     }
 
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
         Timber.d("Current error SSL on page: %s", mStartedtUrl);
-
         for (BankScript bankScript : mBankScripts) {
             if (bankScript.eventID == IGNORE_EVENT_ID_FOR_HTTPS && mStartedtUrl.matches(bankScript.url)) {
                 handler.proceed(); // Ignore SSL certificate errors
@@ -271,7 +272,7 @@ public class BankWebViewClient extends AbstractWebViewClient {
         }
     }
 
-    private EEventType convertPageIdToEvent(int pEventID) {
+    EEventType convertPageIdToEvent(int pEventID) {
         switch (pEventID) {
             case -1:
                 return EEventType.ON_FAIL;
@@ -286,7 +287,7 @@ public class BankWebViewClient extends AbstractWebViewClient {
         }
     }
 
-    private BaseResponse genResponse(EEventType pEventType, AtmScriptOutput pScriptOutput) {
+    BaseResponse genResponse(EEventType pEventType, AtmScriptOutput pScriptOutput) {
         BaseResponse ret = new BaseResponse();
         switch (pEventType) {
 

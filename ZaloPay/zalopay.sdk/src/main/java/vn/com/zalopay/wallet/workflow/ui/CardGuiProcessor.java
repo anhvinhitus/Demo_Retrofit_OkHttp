@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -75,6 +74,7 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CreditCardFragment;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.workflow.BankCardWorkFlow;
+import vn.com.zalopay.wallet.workflow.webview.CCWebViewClient;
 import vn.com.zalopay.wallet.workflow.webview.SdkWebView;
 
 import static vn.com.zalopay.wallet.helper.FontHelper.applyFont;
@@ -116,6 +116,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     String lastValue = "";
     boolean isInputValidWithWhiteSpace = true;
     ViewPager mViewPager;
+    private CCWebViewClient mDefaultWebViewClient;
     private BankSupportAdapter mBankSupportAdapter;
     private View mLayoutSwitch;
     private int mLengthBeforeChange;
@@ -132,7 +133,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         try {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (getAdapter().isInputStep()) {
-                    onDoneTapped();
+                    onDoneTap();
                     return true;
                 } else if (checkEnableSubmitButton()) {
                     getAdapter().onClickSubmission();
@@ -157,7 +158,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 mMaxPagerCount = mViewPager.getAdapter().getCount();
                 // if last card
                 if (mViewPager.getCurrentItem() == mMaxPagerCount - 1) {
-                    onDoneTapped();
+                    onDoneTap();
                 } else {
                     showNext();
                 }
@@ -496,7 +497,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected void initWebView() throws Exception {
         mWebView = (SdkWebView) getView().findViewById(R.id.zpw_threesecurity_webview);
-        mWebView.setWebViewClient(new WebViewClient());
+        if (mWebView != null) {
+            mDefaultWebViewClient = new CCWebViewClient(getAdapter(), mWebView);
+        }
     }
 
     protected void flipCardView(int pPosition) {
@@ -1224,12 +1227,15 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         mBankSupportAdapter = null;
         mAdapter = null;
         mView = null;
+        if (mDefaultWebViewClient != null) {
+            mDefaultWebViewClient.dispose();
+        }
         if (mWebView != null) {
             mWebView.release();
         }
     }
 
-    void onDoneTapped() throws Exception {
+    void onDoneTap() throws Exception {
         int errorFragmentIndex = validateInputCard();
         //there're no error
         if (errorFragmentIndex == -1) {
