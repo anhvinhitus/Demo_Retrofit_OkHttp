@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -495,6 +496,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected void initWebView() throws Exception {
         mWebView = (SdkWebView) getView().findViewById(R.id.zpw_threesecurity_webview);
+        mWebView.setWebViewClient(new WebViewClient());
     }
 
     protected void flipCardView(int pPosition) {
