@@ -209,7 +209,7 @@ public class SdkUtils {
     /*
      * Capture screen fail
      */
-    public static Bitmap CaptureScreenshot(Activity pActivity) {
+    public static Bitmap getScreenShot(Activity pActivity) throws Exception {
         try {
             View rootView = pActivity.getWindow().getDecorView().getRootView();
             rootView.setDrawingCacheEnabled(true);
@@ -221,16 +221,23 @@ public class SdkUtils {
             }
             rootView.setDrawingCacheEnabled(false);
             return bitmap;
-        } catch (Throwable ignored) {
+        } catch (Throwable e) {
+            throw e;
         }
-        return null;
     }
 
-    public static void openWebPage(Context pContext, String pUrl) {
-        Uri webpage = Uri.parse(pUrl);
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        if (intent.resolveActivity(pContext.getPackageManager()) != null) {
-            pContext.startActivity(intent);
+    public static void openWebPage(Context pContext, String pUrl) throws Exception {
+        try {
+            if (pContext == null) {
+                return;
+            }
+            Uri webpage = Uri.parse(pUrl);
+            Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+            if (intent.resolveActivity(pContext.getPackageManager()) != null) {
+                pContext.startActivity(intent);
+            }
+        } catch (Exception e) {
+            throw e;
         }
     }
 

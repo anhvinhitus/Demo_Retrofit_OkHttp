@@ -148,14 +148,19 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         if (mShowMenuItem) {
             inflater.inflate(R.menu.bidv_menu, menu);
             MenuItem menuItem = menu.findItem(R.id.menu_action_instruct);
+            if(menuItem == null){
+                return;
+            }
             View view = menuItem.getActionView();
+            if(view == null){
+                return;
+            }
             view.setOnClickListener(v -> {
-                Timber.d("onClick() menu bidv");
                 if (!existPresenter()) {
                     Timber.w("invalid presenter");
                     return;
                 }
-                mPresenter.showInstructRegiterBIDV();
+                mPresenter.showInstructRegisterBIDV();
             });
         }
     }

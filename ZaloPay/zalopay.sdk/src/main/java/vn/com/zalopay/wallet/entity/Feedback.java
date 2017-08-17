@@ -48,7 +48,7 @@ public class Feedback implements Parcelable {
 
     public static Feedback collectFeedBack(Activity pContext, String transTitle, String transFailReason,
                                            int pErrorCode, String pTransId) throws Exception {
-        Bitmap mBitmap = SdkUtils.CaptureScreenshot(pContext);
+        Bitmap mBitmap = SdkUtils.getScreenShot(pContext);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (mBitmap != null) {
             mBitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);

@@ -76,27 +76,32 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     public void continueDetectCardForLinkCard() throws Exception {
-        AbstractWorkFlow workFlow = getAdapter();
-        if (workFlow == null) {
-            return;
-        }
         Subscription subscription = getBankCardFinder().detectOnAsync(getCardNumber())
                 .compose(SchedulerHelper.applySchedulers())
-                .subscribe(detected -> {
-                    try {
-                        workFlow.setNeedToSwitchChannel(detected);
-                        populateTextOnCardView();
-                        if (detected) {
-                            onDetectedBank(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
-                            checkValidCardNumberFromBundle = true;
-                        } else {
-                            onDetectedBank();
-                        }
-                    } catch (Exception e) {
-                        Timber.w(e);
-                    }
-                }, Timber::d);
-        workFlow.mCompositeSubscription.add(subscription);
+                .subscribe(this::onDetectCardForLinkComplete, Timber::d);
+        AbstractWorkFlow workFlow = getAdapter();
+        if (workFlow != null) {
+            workFlow.mCompositeSubscription.add(subscription);
+        }
+    }
+
+    private void onDetectCardForLinkComplete(boolean detected) {
+        try {
+            AbstractWorkFlow workFlow = getAdapter();
+            if (workFlow == null) {
+                return;
+            }
+            workFlow.setNeedToSwitchChannel(detected);
+            populateTextOnCardView();
+            if (detected) {
+                onDetectedBank(getBankCardFinder().getBankName(), getBankCardFinder().getDetectBankCode());
+                checkValidCardNumberFromBundle = true;
+            } else {
+                onDetectedBank();
+            }
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     @Override

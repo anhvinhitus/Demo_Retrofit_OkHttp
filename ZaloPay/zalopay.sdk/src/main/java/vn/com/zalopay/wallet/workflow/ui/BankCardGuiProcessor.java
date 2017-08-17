@@ -36,6 +36,7 @@ import vn.com.zalopay.wallet.entity.bank.BankConfig;
 import vn.com.zalopay.wallet.entity.bank.PaymentCard;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
+import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
 import vn.com.zalopay.wallet.ui.channel.ChannelFragment;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.LocalCardFragmentAdapter;
@@ -104,7 +105,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                 try {
                     SdkUtils.openWebPage(getActivity(), GlobalData.getStringResource(RS.string.sdk_bidv_bankaccount_register_url));
                 } catch (Exception e) {
-                    Timber.w(e);
+                    Timber.w(e, "Exception open Bidv register page");
                 }
             });
             mOtpTokenLayoutRootView = getView().findViewById(R.id.zpw_content_input_view_root);
@@ -178,10 +179,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                 mAccountPasswordEditText.addTextChangedListener(mEnabledTextWatcher);
                 mAccountPasswordEditText.setOnFocusChangeListener(mOnFocusChangeListener);
 
-                //mCaptchaWebEditText.setOnFocusChangeListener(getOnOtpCaptchaFocusChangeListener());
                 mCaptchaWebEditText.addTextChangedListener(mEnabledTextWatcher);
                 mCaptchaWebEditText.setOnEditorActionListener(mEditorActionListener);
-                //mCaptchaWebEditText.setOnTouchListener(mOnTouchListener);
 
                 mOnlinePasswordEditText.addTextChangedListener(mEnabledTextWatcher);
                 mOnlinePasswordEditText.setOnFocusChangeListener(mOnFocusChangeListener);
@@ -214,29 +213,35 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     public void continueDetectCardForLinkCard() throws Exception {
-        AbstractWorkFlow workFlow = getAdapter();
-        if (workFlow == null) {
-            return;
-        }
+
         Subscription subscription = getCreditCardFinder().detectOnAsync(getCardNumber())
                 .compose(SchedulerHelper.applySchedulers())
-                .subscribe(detected -> {
-                    try {
-                        workFlow.setNeedToSwitchChannel(detected);
-                        populateTextOnCardView();
-                        if (detected) {
-                            onDetectedBank(getCreditCardFinder().getBankName(), getCreditCardFinder().getDetectBankCode());
-                            checkValidCardNumberFromBundle = false;
-                            mCardView.visibleCardDate();
-                            isInputBankMaintenance();
-                        } else {
-                            onDetectedBank();
-                        }
-                    } catch (Exception e) {
-                        Timber.d(e, "Exception continueDetectCardForLinkCard");
-                    }
-                }, Timber::d);
-        workFlow.mCompositeSubscription.add(subscription);
+                .subscribe(this::onDetectCardForLinkComplete, Timber::d);
+        AbstractWorkFlow workFlow = getAdapter();
+        if (workFlow != null) {
+            workFlow.mCompositeSubscription.add(subscription);
+        }
+    }
+
+    private void onDetectCardForLinkComplete(boolean detected) {
+        try {
+            AbstractWorkFlow workFlow = getAdapter();
+            if (workFlow == null) {
+                return;
+            }
+            workFlow.setNeedToSwitchChannel(detected);
+            populateTextOnCardView();
+            if (detected) {
+                onDetectedBank(getCreditCardFinder().getBankName(), getCreditCardFinder().getDetectBankCode());
+                checkValidCardNumberFromBundle = false;
+                mCardView.visibleCardDate();
+                isInputBankMaintenance();
+            } else {
+                onDetectedBank();
+            }
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     @Override
@@ -247,7 +252,11 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     @Override
     protected CardFragmentBaseAdapter onCreateCardFragmentAdapter() {
         try {
-            return new LocalCardFragmentAdapter(getActivity().getSupportFragmentManager(), getActivity().getIntent().getExtras());
+            ChannelActivity activity = getActivity();
+            if (activity == null || activity.isFinishing()) {
+                return null;
+            }
+            return new LocalCardFragmentAdapter(activity.getSupportFragmentManager(), activity.getIntent().getExtras());
         } catch (Exception e) {
             Timber.d(e);
         }

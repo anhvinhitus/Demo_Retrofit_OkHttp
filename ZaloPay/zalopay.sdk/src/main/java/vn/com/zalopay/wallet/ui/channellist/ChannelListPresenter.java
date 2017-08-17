@@ -412,7 +412,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         trackingPaymentChannel(channel.pmcid);
     }
 
-    public void startPayment() {
+    void startPayment() {
         try {
             //auto assign to link channel
             if (mSelectChannel == null) {
@@ -442,7 +442,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         onSelectedChannel(pos);
     }
 
-    public void startDefaultPayment() {
+    private void startDefaultPayment() {
         try {
             if (mSelectChannel == null || mPayProxy == null) {
                 return;
@@ -455,7 +455,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public void startBankSelection() {
+    private void startBankSelection() {
         try {
             Intent bankSelectIntent = new Intent(BuildConfig.BANK_SELECT_ACTION);
             String packageName = GlobalData.getAppContext() != null ? GlobalData.getAppContext().getPackageName() : null;
@@ -498,7 +498,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public void clearVoucher() {
+    void clearVoucher() {
         if (!validPaymentInfo()) {
             return;
         }
@@ -511,7 +511,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
 
     }
 
-    public void useVoucher(String voucherCode) {
+    void useVoucher(String voucherCode) {
         if (!validPaymentInfo()) {
             return;
         }
@@ -556,7 +556,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public void onPaymentReady() {
+    void onPaymentReady() {
         try {
             mEventTiming.recordEvent(ZPMonitorEvent.TIMING_SDK_ON_PAYMENT_READY);
             if (!validPaymentInfo()) {
@@ -1065,11 +1065,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public boolean isUniqueChannel() {
+    private boolean isUniqueChannel() {
         return mChannelList == null || mChannelList.size() <= 1;
     }
 
-    public void exitHasOneChannel() {
+    private void exitHasOneChannel() {
         if (isUniqueChannel()) {
             try {
                 getViewOrThrow().callbackThenTerminate();
@@ -1111,7 +1111,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public void setPaymentStatusAndCallback(@PaymentStatus int pStatus) {
+    void setPaymentStatusAndCallback(@PaymentStatus int pStatus) {
         if (!validPaymentInfo()) {
             return;
         }
