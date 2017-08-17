@@ -221,9 +221,7 @@ public final class ContactListPresenter extends AbstractPresenter<ContactListVie
         Subscription subscription = mZPCRepository.syncContact()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnCompleted(() -> {
-                    refreshFriendList();
-                })
+                .doOnCompleted(this::refreshFriendList)
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
