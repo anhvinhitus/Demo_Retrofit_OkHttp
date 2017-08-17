@@ -31,7 +31,7 @@ public class BankSupportAdapter extends BaseCardSupportAdapter<String, BankSuppo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.gridview__item__bank, parent, false));
+        return new ViewHolder(mInflater.inflate(R.layout.item__bank__support, parent, false));
     }
 
     @Override

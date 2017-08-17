@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.view.effects;
+package vn.com.zalopay.wallet.view.custom.cardview;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;

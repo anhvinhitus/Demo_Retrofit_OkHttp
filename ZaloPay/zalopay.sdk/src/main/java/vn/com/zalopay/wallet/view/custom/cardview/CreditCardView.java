@@ -27,7 +27,6 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.entity.CardColorText;
 import vn.com.zalopay.wallet.helper.FontHelper;
-import vn.com.zalopay.wallet.view.effects.FlipAnimator;
 import vn.com.zalopay.wallet.workflow.ui.CardGuiProcessor;
 
 public class CreditCardView extends FrameLayout {
