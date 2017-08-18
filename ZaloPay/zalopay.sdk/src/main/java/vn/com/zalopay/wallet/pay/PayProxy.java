@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -21,19 +20,19 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.IRequest;
 import vn.com.zalopay.wallet.api.ITransService;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.entity.bank.BankConfig;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.entity.bank.BankAccount;
-import vn.com.zalopay.wallet.entity.bank.BaseMap;
-import vn.com.zalopay.wallet.entity.bank.MapCard;
-import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.entity.bank.BankAccount;
+import vn.com.zalopay.wallet.entity.bank.BankConfig;
+import vn.com.zalopay.wallet.entity.bank.BaseMap;
+import vn.com.zalopay.wallet.entity.bank.MapCard;
+import vn.com.zalopay.wallet.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
+import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.event.SdkSuccessTransEvent;
 import vn.com.zalopay.wallet.exception.InvalidStateException;
 import vn.com.zalopay.wallet.helper.ChannelHelper;
@@ -189,10 +188,6 @@ public class PayProxy extends SingletonBase {
         moveToResultScreen();
     }
 
-    public List<Object> getChannels() throws Exception {
-        return getPresenter().getChannelList();
-    }
-
     private boolean preventSubmitOrder() {
         boolean isSubmitted = mRequestApi != null && mRequestApi.isRunning();
         if (isSubmitted) {
@@ -291,7 +286,7 @@ public class PayProxy extends SingletonBase {
             mStatusResponse.returncode = -1;
             mStatusResponse.returnmessage = mContext.getResources().getString(R.string.sdk_fail_trans_status);
         }
-        if(mAuthenActor != null){
+        if (mAuthenActor != null) {
             mAuthenActor.closeAuthen();
         }
         showResultScreen();
@@ -565,7 +560,12 @@ public class PayProxy extends SingletonBase {
     }
 
     private boolean shouldShowFingerPrintToast() {
-        return mAuthenActor != null && mAuthenActor.updatePassword();
+        try {
+            return mAuthenActor != null && mAuthenActor.updatePassword();
+        } catch (Exception e) {
+            Timber.d(e, "Exception check show toast ff");
+        }
+        return false;
     }
 
     private void startChannelActivity() {

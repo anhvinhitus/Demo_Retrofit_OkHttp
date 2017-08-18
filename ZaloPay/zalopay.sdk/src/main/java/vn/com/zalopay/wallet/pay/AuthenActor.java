@@ -11,10 +11,10 @@ import com.zalopay.ui.widget.password.managers.PasswordManager;
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
+import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 
 /*
@@ -106,26 +106,25 @@ public class AuthenActor {
         return new AuthenActor();
     }
 
-    public boolean updatePassword() {
+    boolean updatePassword() throws Exception {
         /*
          * user use wrong fingerprint
          * update again password after payment success
          */
         if (!TextUtils.isEmpty(fpPassword) && !TextUtils.isEmpty(popupPassword) && !fpPassword.equals(popupPassword)) {
-            try {
-                PaymentFingerPrint.shared().updatePassword(fpPassword, popupPassword);
-                return useFPPassword
-                        && !TextUtils.isEmpty(popupPassword)
-                        && shouldUseFPPassword()
-                        && PaymentFingerPrint.shared().putPassword(popupPassword);
-            } catch (Exception e) {
-                Timber.d(e, "Exception update Password");
-            }
+            PaymentFingerPrint.shared().updatePassword(fpPassword, popupPassword);
+            return true;
         }
-        return false;
+        /*
+         * user check checkbox use fingerprint
+         */
+        return useFPPassword
+                && !TextUtils.isEmpty(popupPassword)
+                && shouldUseFPPassword()
+                && PaymentFingerPrint.shared().putPassword(popupPassword);
     }
 
-    public AuthenActor plant(PayProxy payProxy) {
+    AuthenActor plant(PayProxy payProxy) {
         mPayProxy = new WeakReference<>(payProxy);
         return this;
     }
@@ -143,7 +142,7 @@ public class AuthenActor {
         return fingerPrintAvailable && !hasPassword;
     }
 
-    public void showPasswordPopup(Activity pActivity, PaymentChannel pPaymentChannel) throws Exception {
+    void showPasswordPopup(Activity pActivity, PaymentChannel pPaymentChannel) throws Exception {
         if (mPassword != null && mPassword.isShowing()) {
             return;
         }
@@ -164,7 +163,7 @@ public class AuthenActor {
         mPassword.show();
     }
 
-    public boolean showFingerPrint(Activity pActivity) throws Exception {
+    boolean showFingerPrint(Activity pActivity) throws Exception {
         mFingerPrintDialog = PaymentFingerPrint.shared().getDialogFingerprintAuthentication(pActivity, mFingerPrintCallback);
         if (mFingerPrintDialog != null && !pActivity.isFinishing()) {
             FragmentManager fragmentManager = pActivity.getFragmentManager();
@@ -210,7 +209,7 @@ public class AuthenActor {
         return mPassword != null;
     }
 
-    public void closeAuthen() {
+    void closeAuthen() {
         try {
             closeFingerPrint();
             closePassword();
