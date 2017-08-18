@@ -128,7 +128,7 @@ public class ZPAnalyticsTrackerWrapper extends SingletonBase {
         }
     }
 
-    public void trackApiTiming(int apiId, long startTime, long endTime, BaseResponse response) {
+    private void trackApiTiming(int apiId, long startTime, long endTime, BaseResponse response) {
         int returnCode = response != null ? response.returncode : -100;
         trackApiTiming(apiId, startTime, endTime, returnCode);
     }

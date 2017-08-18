@@ -146,10 +146,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
     }
 
-    public List<Object> getChannelList() {
-        return mChannelList;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult resultCode %s", resultCode);

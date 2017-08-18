@@ -589,7 +589,9 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnUnLockScreen(SdkUnlockScreenMessage message) {
         try {
-            if (mAbstractWorkFlow != null && mAbstractWorkFlow.isCardFlow() && mAbstractWorkFlow.hasCardGuiProcessor()) {
+            if (mAbstractWorkFlow != null
+                    && mAbstractWorkFlow.isCardFlow()
+                    && mAbstractWorkFlow.hasCardGuiProcessor()) {
                 mAbstractWorkFlow.getGuiProcessor().moveScrollViewToCurrentFocusView();
             }
             mBus.removeStickyEvent(SdkUnlockScreenMessage.class);

@@ -102,7 +102,7 @@ public class DialogManager {
         }
     }
 
-    public static void closeShowDialog() {
+    private static void closeShowDialog() {
         try {
             if (mDialog != null && mDialog.isShowing()) {
                 mDialog.dismiss();
