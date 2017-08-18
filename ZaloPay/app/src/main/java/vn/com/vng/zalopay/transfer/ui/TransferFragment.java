@@ -26,6 +26,7 @@ import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.MoneyTransferModeEnum;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -308,7 +309,8 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         }
 
         if (mTextViewZaloPayName != null) {
-            mTextViewZaloPayName.setText(zalopayName_or_numberPhone);
+            String formatPhone = PhoneUtil.formatPhoneNumberProfile(zalopayName_or_numberPhone);
+            mTextViewZaloPayName.setText(formatPhone);
         }
     }
 

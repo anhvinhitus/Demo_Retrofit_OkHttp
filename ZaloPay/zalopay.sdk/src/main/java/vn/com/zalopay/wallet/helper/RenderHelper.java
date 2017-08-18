@@ -21,6 +21,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 
@@ -65,9 +66,10 @@ public class RenderHelper {
                 linearLayout.addView(name_txt);
             }
             if (!TextUtils.isEmpty(nameValuePair.value)) {
+                String value = (PhoneUtil.isMobileNumber(nameValuePair.value)) ? PhoneUtil.formatPhoneNumberProfile(nameValuePair.value) : nameValuePair.value;
                 TextView value_txt = new TextView(context);
                 value_txt.setTextColor(ContextCompat.getColor(context, (R.color.text_color_grey)));
-                value_txt.setText(nameValuePair.value);
+                value_txt.setText(value);
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.weight = 1;
