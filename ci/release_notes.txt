@@ -1,2 +1,16 @@
-Zalo Pay (Production v2.17.0 - build 415) - Released on 2017-08-17 09:24
-
+Zalo Pay (Sandbox v2.17.0 - build 416) - Released on 2017-08-18 09:30
++ [SDK] Cleanup by chucvv (#9f5905e)
++ [SDK] Cleanup by chucvv (#fdf82e0)
++ [SDK] Update load web BIDV by lytm (#77f1f7f)
++ [ZPC] restore UI chuyển tiền + không gọi api getuserbyphone by sinhtt (#ab704bf)
++ [Resource]  task#826 : Điều chỉnh cho bản 2.17 : Enable đăng ký Zalo Pay ID by chucvv (#94fdad3)
++ [APP] task#824: Fomat lại số điện thoại cho đồng nhất với Contact list by lytm (#dc8c8a6)
++ [SDK] Cleanup by chucvv (#a86aa56)
++ [ZPC] task#822 : search bằng số điện thoại by sinhtt (#852bcae)
++ [SDK] Cleanup by chucvv (#0195435)
++ [ZPC] cập nhật danh bạ by sinhtt (#565d34b)
++ [ZPC] update ui by sinhtt (#73bb4d6)
++ [UI] Remove unusage code by chucvv (#dbf1b67)
++ [Resource] task#811 : Sử dụng SimpleDraweeView để load hình ảnh từ local storage by sinhtt (#d86616b)
++ [ZPC] update ui : Cập nhật danh bạ by sinhtt (#41bf0e1)
++ [APP] Update background list BankSupport by lytm (#6c0a112)
