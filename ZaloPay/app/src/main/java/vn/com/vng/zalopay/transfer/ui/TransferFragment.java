@@ -309,8 +309,8 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         }
 
         if (mTextViewZaloPayName != null) {
-            String formatPhone = PhoneUtil.formatPhoneNumberProfile(zalopayName_or_numberPhone);
-            mTextViewZaloPayName.setText(formatPhone);
+            String value = (PhoneUtil.isMobileNumber(zalopayName_or_numberPhone)) ? PhoneUtil.formatPhoneNumberProfile(zalopayName_or_numberPhone) : zalopayName_or_numberPhone;
+            mTextViewZaloPayName.setText(value);
         }
     }
 
