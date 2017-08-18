@@ -30,6 +30,7 @@
             android:hint="@string/hint_zalo_contact"
             android:inputType="text|textCapWords"
             android:paddingLeft="50dp"
+            android:paddingRight="@dimen/spacing.small.t"
             app:zlp_floatingLabel="none"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
 
@@ -89,6 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_large"
+                android:lineSpacingExtra="@dimen/spacing.tiny"
                 android:text="@string/no.result.your.search" />
 
         </LinearLayout>
