@@ -6,9 +6,10 @@ import vn.com.vng.zalopay.tracker.ActivityTracker;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment;
+import vn.com.zalopay.analytics.ZPScreens;
 
 public class WithdrawConditionActivity extends UserBaseToolBarActivity {
-    private final ActivityTracker mActivityTracker = new ActivityTracker("", -1, -1);
+    private final ActivityTracker mActivityTracker = new ActivityTracker(ZPScreens.BANK_INTRO, -1, -1);
 
     @NonNull
     @Override
