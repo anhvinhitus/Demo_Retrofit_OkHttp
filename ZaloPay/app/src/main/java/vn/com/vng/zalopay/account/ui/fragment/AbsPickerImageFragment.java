@@ -17,8 +17,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.FileProvider;
 import android.view.View;
 
-import com.zalopay.apploader.internal.FileUtils;
-
 import java.io.File;
 import java.util.List;
 
@@ -77,7 +75,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
         i.setType("image/*");
 
         if (i.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(i, requestCode);
+            getActivity().startActivityForResult(i, requestCode);
         } else {
             Timber.d("No Activity found to handle Intent %s" + Intent.ACTION_PICK);
             showToast(R.string.missing_image_pick);
@@ -115,7 +113,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
         i.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
 
         if (i.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(i, requestCode);
+            getActivity().startActivityForResult(i, requestCode);
         } else {
             Timber.d("No Activity found to handle Intent %s" + MediaStore.ACTION_IMAGE_CAPTURE);
             showToast(R.string.missing_image_capture);

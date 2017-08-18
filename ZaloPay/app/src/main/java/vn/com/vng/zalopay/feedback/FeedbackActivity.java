@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.feedback;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,6 +13,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 
 public class FeedbackActivity extends UserBaseToolBarActivity {
     private final ActivityTracker mActivityTracker = new ActivityTracker("", -1, -1);
+    private FeedbackFragment feedbackFragment;
 
     @NonNull
     @Override
@@ -21,7 +23,8 @@ public class FeedbackActivity extends UserBaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return FeedbackFragment.newInstance();
+        feedbackFragment = FeedbackFragment.newInstance();
+        return feedbackFragment;
     }
 
     @Override
@@ -41,5 +44,11 @@ public class FeedbackActivity extends UserBaseToolBarActivity {
         } else {
             return super.dispatchTouchEvent(event);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (feedbackFragment != null)
+            feedbackFragment.onActivityResult(requestCode, resultCode, data);
     }
 }
