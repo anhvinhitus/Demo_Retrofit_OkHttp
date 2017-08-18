@@ -38,12 +38,8 @@ public class LoginListener extends OAuthCompleteListener {
         Timber.d("Protect account complete");
         if (errorCode == 0) {
 
-            ZaloSDK.Instance.isAuthenticate(new ValidateOAuthCodeCallback() {
+            ZaloSDK.Instance.isAuthenticate((validated, error_Code, userId, oauthCode) -> {
 
-                @Override
-                public void onValidateComplete(boolean validated, int error_Code, long userId, String oauthCode) {
-
-                }
             });
 
             dialog.dismiss();
