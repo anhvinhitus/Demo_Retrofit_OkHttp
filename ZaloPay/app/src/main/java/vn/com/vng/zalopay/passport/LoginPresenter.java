@@ -52,7 +52,7 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
     private final ApplicationSession mApplicationSession;
     private final AppResourceStore.Repository mAppResourceRepository;
     private final ZaloSdkApi mZaloSdkApi;
-    private final Context mApplicationContext;
+    final Context mApplicationContext;
 
     @Inject
     LoginPresenter(Context applicationContext, UserConfig userConfig, PassportRepository passportRepository, ApplicationSession applicationSession, AppResourceStore.Repository appResourceRepository, ZaloSdkApi zaloSdkApi) {
@@ -181,19 +181,19 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
         }
     }
 
-    private void showLoadingView() {
+    void showLoadingView() {
         if (mView != null) {
             mView.showLoading();
         }
     }
 
-    private void hideLoadingView() {
+    void hideLoadingView() {
         if (mView != null) {
             mView.hideLoading();
         }
     }
 
-    private void showErrorView(String message) {
+    void showErrorView(String message) {
         if (mView != null) {
             mView.showError(message);
         }
@@ -213,7 +213,7 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
         }
     }
 
-    private void loginPayment(ZaloProfile profile, String oauthcode) {
+    void loginPayment(ZaloProfile profile, String oauthcode) {
         Timber.d("login payment system");
         ZPAnalytics.trackEvent(ZPEvents.LOGIN_RESULT);
         Subscription subscriptionLogin = mPassportRepository.login(profile.userId, oauthcode)
@@ -229,7 +229,7 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
         private final ZaloProfile profile;
         private final String oauthcode;
 
-        private LoginPaymentSubscriber(ZaloProfile profile, String oauthcode) {
+        LoginPaymentSubscriber(ZaloProfile profile, String oauthcode) {
             this.profile = profile;
             this.oauthcode = oauthcode;
         }
@@ -247,7 +247,7 @@ public class LoginPresenter extends AbstractLoginPresenter<ILoginView> implement
         }
     }
 
-    private void onAuthenticationError(Throwable e, ZaloProfile profile, String oauthcode) {
+    void onAuthenticationError(Throwable e, ZaloProfile profile, String oauthcode) {
         if (mView == null) {
             Timber.w("View login screen is NULL");
             return;
