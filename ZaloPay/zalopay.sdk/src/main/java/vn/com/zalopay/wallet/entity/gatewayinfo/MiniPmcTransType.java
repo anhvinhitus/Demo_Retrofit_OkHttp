@@ -233,11 +233,8 @@ public class MiniPmcTransType implements Parcelable {
         if (maxvalue == -1 && pAmount >= minvalue) {
             return true;
         }
-        if (pAmount >= minvalue && pAmount <= maxvalue) {
-            return true;
-        }
+        return pAmount >= minvalue && pAmount <= maxvalue;
 
-        return false;
     }
 
     private boolean compareToChannel(int pChannelId) {

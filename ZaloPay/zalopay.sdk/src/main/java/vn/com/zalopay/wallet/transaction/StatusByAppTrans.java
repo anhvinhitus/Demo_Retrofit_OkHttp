@@ -51,10 +51,7 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
         if (!PaymentStatusHelper.isTransactionNotSubmit(pResponse)) {
             return true;
         }
-        if (retryCount >= TRANS_STATUS_MAX_RETRY) {
-            return true;
-        }
-        return false;
+        return retryCount >= TRANS_STATUS_MAX_RETRY;
     }
 
     @Override
