@@ -278,8 +278,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         if (object == null) {
             return;
         }
-
-        String zalopayName = String.format(getString(R.string.phone_format), object.phoneNumber);
+        String zalopayName = String.format(getString(R.string.phone_format), PhoneUtil.formatPhoneNumberProfile(object.phoneNumber));
         if (object.transferMode == MoneyTransferModeEnum.TransferToZaloPayID) {
             zalopayName = String.format(getString(R.string.account_format), object.zalopayName);
         }
@@ -309,8 +308,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         }
 
         if (mTextViewZaloPayName != null) {
-            String value = (PhoneUtil.isMobileNumber(zalopayName_or_numberPhone)) ? PhoneUtil.formatPhoneNumberProfile(zalopayName_or_numberPhone) : zalopayName_or_numberPhone;
-            mTextViewZaloPayName.setText(value);
+            mTextViewZaloPayName.setText(zalopayName_or_numberPhone);
         }
     }
 
