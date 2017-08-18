@@ -24,7 +24,7 @@ public class SingletonLifeCircleManager {
      */
     public static synchronized void register(Class<?> pClassHasStaticAttr) {
         if (mClassHasStaticAttrList == null) {
-            mClassHasStaticAttrList = new HashSet<Class<?>>();
+            mClassHasStaticAttrList = new HashSet<>();
         }
         mClassHasStaticAttrList.add(pClassHasStaticAttr);
     }

@@ -24,11 +24,12 @@ public class SmsReceiver extends BroadcastReceiver {
             //concat  multiple sms
             Object[] pdus = (Object[]) pBundle.get("pdus");
 
-            if (pdus == null)
+            if (pdus == null) {
                 return;
-
-            SmsMessage[] messages = new SmsMessage[pdus.length];
-            for (int i = 0; i < pdus.length; i++) {
+            }
+            int length = pdus.length;
+            SmsMessage[] messages = new SmsMessage[length];
+            for (int i = 0; i < length; i++) {
                 messages[i] = getIncomingMessage(pdus[i], pBundle);
             }
 

@@ -25,7 +25,6 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNameFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 import vn.com.zalopay.wallet.workflow.AbstractWorkFlow;
 import vn.com.zalopay.wallet.workflow.CreditCardWorkFlow;
-import vn.com.zalopay.wallet.workflow.webview.CCWebViewClient;
 
 public class CreditCardGuiProcessor extends CardGuiProcessor {
     public CreditCardGuiProcessor(Context pContext, CreditCardWorkFlow pAdapterCreditCard, ChannelFragment pChannelFragment) {

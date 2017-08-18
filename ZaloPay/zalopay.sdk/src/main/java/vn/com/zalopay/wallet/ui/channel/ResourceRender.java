@@ -48,9 +48,9 @@ public class ResourceRender {
         }
         for (DKeyBoardConfig keyboard : keyBoardConfigs) {
             Timber.d("render keyboard %s", GsonUtils.toJsonString(keyboard));
-            /***
-             * "keyboard":[
-             * //set keyboad for bank's view with bankcode
+            /**
+             "keyboard":[
+             //set keyboad for bank's view with bankcode
              {
              "bankcode":"123PVTB",
              "view": "zpsdk_otp_ctl",

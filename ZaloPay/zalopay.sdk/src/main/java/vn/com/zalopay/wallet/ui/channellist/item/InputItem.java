@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.mutilview.recyclerview.DataBindAdapter;
 
-import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.TransactionType;

@@ -435,8 +435,7 @@ public class SharedPreferencesManager {
         boolean existed = false;
         if (!TextUtils.isEmpty(mapKeys)) {
             String[] keys = mapKeys.split(Constants.COMMA);
-            for (int i = 0; i < keys.length; i++) {
-                String key = keys[i];
+            for (String key : keys) {
                 if (!TextUtils.isEmpty(key) && key.equals(mapKey)) {
                     existed = true;
                     break;

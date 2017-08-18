@@ -16,10 +16,10 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
-import vn.com.zalopay.wallet.entity.response.AppInfoResponse;
-import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.constants.TransactionType;
+import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
+import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.entity.response.AppInfoResponse;
 import vn.com.zalopay.wallet.exception.RequestException;
 import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
@@ -147,9 +147,10 @@ public class AppInfoInteractor implements AppInfoStore.Interactor {
     private String transtypeToString(@TransactionType int[] pTranstype) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
-        for (int i = 0; i < pTranstype.length; i++) {
+        int length = pTranstype != null ? pTranstype.length : 0;
+        for (int i = 0; i < length; i++) {
             stringBuilder.append(pTranstype[i]);
-            if (i + 1 < pTranstype.length) {
+            if (i + 1 < length) {
                 stringBuilder.append(",");
             }
         }
