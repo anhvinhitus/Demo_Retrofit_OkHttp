@@ -315,7 +315,7 @@
     <string name="please_update_profile">Vui lòng cập nhật thông tin tài khoản.</string>
     <string name="data_invalid_try_again">Dữ liệu không hợp lệ, vui lòng thử lại.</string>
     <string name="friend.list.empty">Bạn chưa có bạn bè trên Zalo.\nHãy kết bạn để tiếp tục</string>
-    <string name="no.result.your.search">Không tìm thấy kết quả phù hợp\nHãy nhập đủ 10 hoặc 11 số.</string>
+    <string name="no.result.your.search">Không tìm thấy kết quả phù hợp</string>
     <string name="establish.and.protect.account">Thiết lập bảo vệ tài khoản</string>
 
     <!-- Start Fingerprint-->

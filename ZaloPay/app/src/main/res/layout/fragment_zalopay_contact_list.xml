@@ -89,7 +89,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_large"
-                android:text="@string/no.result.your.search" />
+                android:text="@string/no.result.your.search"
+                android:textSize="@dimen/textsize.normal.s" />
 
         </LinearLayout>
     </FrameLayout>
