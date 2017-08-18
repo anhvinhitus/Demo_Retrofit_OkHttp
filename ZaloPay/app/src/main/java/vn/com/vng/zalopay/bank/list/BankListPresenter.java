@@ -446,7 +446,7 @@ final class BankListPresenter extends AbstractPresenter<IBankListView> {
             Timber.w("showPasswordDialog get Context = null");
             return;
         }
-        if (PasswordUtil.detectShowFingerPrint((Activity) mView.getContext(), mUserConfig)) {
+        if (PasswordUtil.detectShowFingerPrint(mView.getContext(), mUserConfig)) {
             AuthenticationDialog dialog = AuthenticationDialog.newInstance();
             dialog.setAuthenticationCallback(new AuthenticationCallback() {
                 @Override

@@ -405,11 +405,8 @@ public class Navigator {
     }
 
     private boolean validUserBeforeLinkBank(Context context) {
-        if (!mUserConfig.hasCurrentUser()) {
-            return false;
-        }
+        return mUserConfig.hasCurrentUser();
 
-        return true;
     }
 
     private boolean hasLinkBank() {

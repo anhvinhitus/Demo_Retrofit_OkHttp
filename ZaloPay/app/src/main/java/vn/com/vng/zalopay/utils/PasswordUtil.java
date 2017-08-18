@@ -18,10 +18,7 @@ public class PasswordUtil {
     public static boolean detectShowFingerPrint(Context context, UserConfig pUserConfig) {
         FingerprintManagerCompat mFingerprintManagerCompat = FingerprintManagerCompat.from(context);
         String password = pUserConfig.getEncryptedPassword();
-        if (mFingerprintManagerCompat.isFingerprintAvailable() && !TextUtils.isEmpty(password)) {
-            return true;
-        }
-        return false;
+        return mFingerprintManagerCompat.isFingerprintAvailable() && !TextUtils.isEmpty(password);
     }
 
     public static boolean detectFingerPrint(Context context) {

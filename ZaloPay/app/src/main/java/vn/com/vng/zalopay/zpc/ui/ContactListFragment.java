@@ -475,7 +475,7 @@ public class ContactListFragment extends RuntimePermissionFragment implements Co
         if (!(activity instanceof UserBaseToolBarActivity)) {
             return;
         }
-        ((UserBaseToolBarActivity) activity).setTitle(title);
+        activity.setTitle(title);
     }
 
     @Override

@@ -236,7 +236,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
                 mNavigator.startProtectAccountActivity(mView.getContext());
                 break;
             case InsideApp.Constants.TRANSFERS:
-                mNavigator.startTransferMoneyActivity((Activity) mView.getContext());
+                mNavigator.startTransferMoneyActivity(mView.getContext());
                 break;
             case InsideApp.Constants.RECEIVE_MONEY:
                 mNavigator.startReceiveMoneyActivity(mView.getContext());

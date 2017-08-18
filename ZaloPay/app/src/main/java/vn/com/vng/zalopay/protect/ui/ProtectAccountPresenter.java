@@ -281,7 +281,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         if (mView == null) {
             return;
         }
-        AuthenticationPassword authenticationPassword = new AuthenticationPassword((Activity) mView.getContext(), isShowFingerPrint, callback);
+        AuthenticationPassword authenticationPassword = new AuthenticationPassword(mView.getContext(), isShowFingerPrint, callback);
         authenticationPassword.initialize();
         if (authenticationPassword.getPasswordManager() != null) {
             try {
