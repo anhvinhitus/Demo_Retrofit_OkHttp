@@ -56,10 +56,12 @@ public class ZaloPayItem extends AbstractItem<ZaloPayItem.ViewHolder> {
         holder.balance_error_textview.setVisibility(View.VISIBLE);
         holder.fee_textview.setVisibility(View.GONE);
         holder.balance_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color)));
+        holder.balance_error_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color)));
+        holder.balance_unit_textview.setTextColor(ContextCompat.getColor(mContext, (R.color.text_color)));
     }
 
     static class ViewHolder extends AbstractItem.ViewHolder {
-        TextView balance_textview, balance_error_textview;
+        TextView balance_textview, balance_error_textview, balance_unit_textview;
         View balance_linearlayout;
 
         public ViewHolder(View view) {
@@ -67,6 +69,7 @@ public class ZaloPayItem extends AbstractItem<ZaloPayItem.ViewHolder> {
             balance_textview = (TextView) view.findViewById(R.id.balance_textview);
             balance_error_textview = (TextView) view.findViewById(R.id.balance_error_textview);
             balance_linearlayout = view.findViewById(R.id.balance_linearlayout);
+            balance_unit_textview = (TextView) view.findViewById(R.id.balance_unit_textview);
         }
     }
 }
