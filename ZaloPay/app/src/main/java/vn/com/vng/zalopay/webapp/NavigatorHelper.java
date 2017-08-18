@@ -57,16 +57,21 @@ class NavigatorHelper {
             context.startActivity(chooserIntent);
 
         } catch (Exception e) {
-            Timber.e(e, "Cannot share web on Zalo");
+            Timber.w(e, "Cannot share web on Zalo");
         }
     }
 
     static void openWebInBrowser(Context context, String currentUrl) {
         try {
+            if (context == null) {
+                return;
+            }
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
-            context.startActivity(browserIntent);
+            if (browserIntent.resolveActivity(context.getPackageManager()) != null) {
+                context.startActivity(browserIntent);
+            }
         } catch (Exception e) {
-            Timber.e(e, "Cannot open web in default browser");
+            Timber.w(e, "Cannot open web in default browser");
         }
     }
 }
