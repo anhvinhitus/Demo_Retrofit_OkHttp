@@ -16,8 +16,8 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
-import vn.com.zalopay.wallet.listener.onCloseSnackBar;
-import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
+import vn.com.zalopay.wallet.listener.OnSnackbarListener;
+import vn.com.zalopay.wallet.listener.OnNetworkDialogListener;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.IContract;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
@@ -161,12 +161,12 @@ public class ResultPaymentFragment extends AbstractPaymentFragment<ResultPayment
     }
 
     @Override
-    public void showOpenSettingNetwokingDialog(onNetworkingDialogCloseListener pListener) {
+    public void showOpenSettingNetwokingDialog(OnNetworkDialogListener pListener) {
 
     }
 
     @Override
-    public void showSnackBar(String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {
+    public void showSnackBar(String pMessage, String pActionMessage, int pDuration, OnSnackbarListener pOnCloseListener) {
 
     }
 

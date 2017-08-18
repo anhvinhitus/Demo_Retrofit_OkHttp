@@ -1,9 +1,9 @@
-package vn.com.zalopay.wallet.business.fingerprint;
+package vn.com.zalopay.wallet.fingerprint;
 
 import android.app.Activity;
 import android.app.DialogFragment;
 
-import vn.com.zalopay.wallet.business.data.PaymentPermission;
+import vn.com.zalopay.wallet.helper.PaymentPermission;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 
 public abstract class BaseFingerPrint extends SingletonBase implements IPaymentFingerPrint {

@@ -26,13 +26,13 @@ import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.FontHelper;
-import vn.com.zalopay.wallet.listener.onCloseSnackBar;
-import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
+import vn.com.zalopay.wallet.listener.OnSnackbarListener;
+import vn.com.zalopay.wallet.listener.OnNetworkDialogListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.channellist.AbstractPaymentFragment;
@@ -371,7 +371,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     }
 
     @Override
-    public void showOpenSettingNetwokingDialog(onNetworkingDialogCloseListener pListener) {
+    public void showOpenSettingNetwokingDialog(OnNetworkDialogListener pListener) {
         hideLoading();
         DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NO_INTERNET, -1,
                 getString(R.string.sdk_dialog_nointernet_content), pIndex -> {
@@ -395,7 +395,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     }
 
     @Override
-    public void showSnackBar(String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {
+    public void showSnackBar(String pMessage, String pActionMessage, int pDuration, OnSnackbarListener pOnCloseListener) {
         PaymentSnackBar.getInstance().dismiss();
         try {
             PaymentSnackBar.getInstance().setRootView(findViewById(R.id.supperRootView))
@@ -438,7 +438,7 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
         setVisible(R.id.zpw_threesecurity_webview, pIsVisible);
     }
 
-    public void showMessageSnackBar(View pRootView, String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {
+    public void showMessageSnackBar(View pRootView, String pMessage, String pActionMessage, int pDuration, OnSnackbarListener pOnCloseListener) {
         PaymentSnackBar.getInstance().dismiss();
         try {
             PaymentSnackBar.getInstance().setRootView(pRootView)

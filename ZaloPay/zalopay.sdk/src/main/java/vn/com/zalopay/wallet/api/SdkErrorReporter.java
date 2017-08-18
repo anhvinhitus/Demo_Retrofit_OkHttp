@@ -7,7 +7,7 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
-import vn.com.zalopay.wallet.business.data.PaymentPermission;
+import vn.com.zalopay.wallet.helper.PaymentPermission;
 import vn.com.zalopay.wallet.constants.Constants;
 
 /**

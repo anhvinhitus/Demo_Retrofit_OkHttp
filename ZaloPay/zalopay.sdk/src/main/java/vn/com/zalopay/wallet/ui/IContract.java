@@ -3,8 +3,8 @@ package vn.com.zalopay.wallet.ui;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
-import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
-import vn.com.zalopay.wallet.listener.onCloseSnackBar;
+import vn.com.zalopay.wallet.listener.OnNetworkDialogListener;
+import vn.com.zalopay.wallet.listener.OnSnackbarListener;
 
 /*
  * Created by chucvv on 6/12/17.
@@ -23,9 +23,9 @@ public interface IContract {
 
     void showRetryDialog(String pMessage, ZPWOnEventConfirmDialogListener pListener);
 
-    void showOpenSettingNetwokingDialog(onNetworkingDialogCloseListener pListener);
+    void showOpenSettingNetwokingDialog(OnNetworkDialogListener pListener);
 
-    void showSnackBar(String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener);
+    void showSnackBar(String pMessage, String pActionMessage, int pDuration, OnSnackbarListener pOnCloseListener);
 
     void terminate();
 

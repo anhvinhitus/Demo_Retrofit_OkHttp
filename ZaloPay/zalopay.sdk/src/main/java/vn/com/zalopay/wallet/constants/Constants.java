@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.constants;
 import java.util.Arrays;
 import java.util.List;
 
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.RS;
 
 public class Constants {
     public static final int VCB_MAX_RETRY_GET_NUMBERPHONE = 3;

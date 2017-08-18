@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.dao;
+package vn.com.zalopay.wallet.helper;
 
 import android.graphics.Typeface;
 import android.os.Build;
@@ -15,11 +15,11 @@ import vn.com.zalopay.wallet.repository.ResourceManager;
 /*
  * class for caching font.
  */
-public class FontManager extends SingletonBase {
-    private static FontManager _object;
+public class FontLoader extends SingletonBase {
+    private static FontLoader _object;
     private Map<String, Typeface> fontMap;
 
-    public FontManager() {
+    public FontLoader() {
         super();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             fontMap = new ArrayMap<>();
@@ -28,11 +28,11 @@ public class FontManager extends SingletonBase {
         }
     }
 
-    public static FontManager getInstance() {
-        if (FontManager._object == null) {
-            FontManager._object = new FontManager();
+    public static FontLoader getInstance() {
+        if (FontLoader._object == null) {
+            FontLoader._object = new FontLoader();
         }
-        return FontManager._object;
+        return FontLoader._object;
     }
 
     public Typeface loadFont(String pFontName) {

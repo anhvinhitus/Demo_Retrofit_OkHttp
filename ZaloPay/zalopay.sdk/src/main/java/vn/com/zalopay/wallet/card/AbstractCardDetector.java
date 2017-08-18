@@ -8,7 +8,7 @@ import rx.Observable;
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.GlobalData;
 import vn.com.zalopay.wallet.entity.config.CardRule;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.repository.ResourceManager;

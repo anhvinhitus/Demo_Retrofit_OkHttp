@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.wallet.entity.SdkError;
 import vn.com.zalopay.wallet.entity.bank.BaseMap;
-import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.listener.OnPaymentResultListener;
 
 import static vn.com.zalopay.wallet.constants.PaymentError.COMPONENT_NULL;
 import static vn.com.zalopay.wallet.constants.PaymentError.DATA_INVALID;
@@ -44,7 +44,7 @@ import static vn.com.zalopay.wallet.constants.PaymentStatus.USER_LOCK;
  * Created by huuhoa on 12/8/16.
  * Listener for callback from SDK
  */
-class WalletListener implements ZPPaymentListener {
+class WalletListener implements OnPaymentResultListener {
     private final TransactionStore.Repository mTransactionRepository;
     private final BalanceStore.Repository mBalanceRepository;
     private PaymentWrapper mPaymentWrapper;
@@ -70,7 +70,7 @@ class WalletListener implements ZPPaymentListener {
                 ? mPaymentWrapper.getPaymentInfoBuilder().getStatus() : FAILURE;
         BaseMap mapBank = mPaymentWrapper.getPaymentInfoBuilder() != null
                 ? mPaymentWrapper.getPaymentInfoBuilder().getMapBank() : null;
-        Timber.d("pay complete, result [%d]", paymentStatus);
+        Timber.d("pay onCloseCompleted, result [%d]", paymentStatus);
 
         boolean paymentIsCompleted = true;
 
@@ -82,7 +82,7 @@ class WalletListener implements ZPPaymentListener {
         }
 
         if (mPaymentWrapper.mActivity == null) {
-            Timber.w("Activity is null after pay order complete");
+            Timber.w("Activity is null after pay order onCloseCompleted");
         }
 
         switch (paymentStatus) {
@@ -137,10 +137,10 @@ class WalletListener implements ZPPaymentListener {
                 break;
             case DIRECT_LINK_ACCOUNT:
                 if (mPaymentWrapper.mLinkCardListener != null) {
-                    Timber.d("pay complete, switch to link account because link card but user input bank account");
+                    Timber.d("pay onCloseCompleted, switch to link account because link card but user input bank account");
                     mPaymentWrapper.mLinkCardListener.onErrorLinkCardButInputBankAccount(mapBank);
                 } else {
-                    Timber.w("pay complete, response error: DIRECT_LINK_ACCOUNT");
+                    Timber.w("pay onCloseCompleted, response error: DIRECT_LINK_ACCOUNT");
                     responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT);
                 }
                 break;
@@ -199,7 +199,7 @@ class WalletListener implements ZPPaymentListener {
                 forceUpdate, latestVersion, msg);
 
         if (mPaymentWrapper.mActivity == null) {
-            Timber.w("Activity is null after pay order complete");
+            Timber.w("Activity is null after pay order onCloseCompleted");
             return;
         }
 

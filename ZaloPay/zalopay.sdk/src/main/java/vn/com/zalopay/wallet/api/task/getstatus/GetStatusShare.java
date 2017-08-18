@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.api.task.getstatus;
 
 import java.util.Map;
 
-import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.GlobalData;
 import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.constants.TransactionType;

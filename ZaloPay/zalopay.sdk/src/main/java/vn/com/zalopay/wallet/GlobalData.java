@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.data;
+package vn.com.zalopay.wallet;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,8 +21,8 @@ import vn.com.zalopay.wallet.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
-import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
-import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
+import vn.com.zalopay.wallet.fingerprint.IPaymentFingerPrint;
+import vn.com.zalopay.wallet.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
@@ -34,7 +34,7 @@ import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.feedback.IFeedBack;
 import vn.com.zalopay.wallet.helper.TrackHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
-import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.listener.OnPaymentResultListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.repository.voucher.VoucherStore;
@@ -54,7 +54,7 @@ public class GlobalData {
     @BankFunctionCode
     private static int bankFunction = BankFunctionCode.PAY;
     private static WeakReference<Activity> mMerchantActivity = null;
-    private static ZPPaymentListener mListener = null;
+    private static OnPaymentResultListener mListener = null;
 
     public static PaymentInfoHelper getPaymentInfoHelper() {
         if (mPaymentInfoHelper == null || mPaymentInfoHelper.getUserInfo() == null) {
@@ -143,7 +143,7 @@ public class GlobalData {
     /***
      * alwaw call this to set static listener and info.
      */
-    public static void setSDKData(Activity pActivity, ZPPaymentListener pPaymentListener) throws Exception {
+    public static void setSDKData(Activity pActivity, OnPaymentResultListener pPaymentListener) throws Exception {
         if (!isAccessRight()) {
             throw new Exception("Violate Design Pattern! Only 'pay' static method of ZingPayService class can set application!");
         }
@@ -170,7 +170,7 @@ public class GlobalData {
         return mMerchantActivity.get();
     }
 
-    public static ZPPaymentListener getPaymentListener() {
+    public static OnPaymentResultListener getPaymentListener() {
         return mListener;
     }
 

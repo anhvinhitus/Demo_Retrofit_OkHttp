@@ -31,7 +31,7 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.GlobalData;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.OrderState;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -57,7 +57,7 @@ import vn.com.zalopay.wallet.helper.TrackHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
-import vn.com.zalopay.wallet.listener.onCloseSnackBar;
+import vn.com.zalopay.wallet.listener.OnSnackbarListener;
 import vn.com.zalopay.wallet.pay.PayProxy;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -105,7 +105,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private
     @PaymentStatus
     int tempPaymentStatus;
-    private onCloseSnackBar mOnCloseSnackBarListener = () -> {
+    private OnSnackbarListener mOnCloseSnackBarListener = () -> {
         try {
             getViewOrThrow().showOpenSettingNetwokingDialog(null);
         } catch (Exception e) {
@@ -970,7 +970,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         return new Observer<PaymentChannel>() {
             @Override
             public void onCompleted() {
-                Timber.d("load channels on complete");
+                Timber.d("load channels on onCloseCompleted");
                 loadChannelOnCompleted();
             }
 

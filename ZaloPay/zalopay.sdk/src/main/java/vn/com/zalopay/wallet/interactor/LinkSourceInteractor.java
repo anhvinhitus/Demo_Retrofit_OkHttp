@@ -10,7 +10,7 @@ import rx.Observable;
 import rx.functions.Func1;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.GlobalData;
 import vn.com.zalopay.wallet.entity.response.BankAccountResponse;
 import vn.com.zalopay.wallet.entity.response.BaseResponse;
 import vn.com.zalopay.wallet.entity.response.CardInfoResponse;

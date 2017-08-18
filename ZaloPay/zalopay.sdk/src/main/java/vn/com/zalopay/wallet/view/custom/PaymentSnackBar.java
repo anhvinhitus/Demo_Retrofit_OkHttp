@@ -4,8 +4,8 @@ import android.text.TextUtils;
 import android.view.View;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.listener.onCloseSnackBar;
+import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.listener.OnSnackbarListener;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 /***
@@ -16,7 +16,7 @@ public class PaymentSnackBar {
 
     private TSnackbar mSnackBar;
 
-    private onCloseSnackBar mCloseListener;
+    private OnSnackbarListener mCloseListener;
 
     private View mRootView;
 
@@ -74,7 +74,7 @@ public class PaymentSnackBar {
         return this;
     }
 
-    public PaymentSnackBar setOnCloseListener(onCloseSnackBar pListener) {
+    public PaymentSnackBar setOnCloseListener(OnSnackbarListener pListener) {
         mCloseListener = pListener;
         return this;
     }

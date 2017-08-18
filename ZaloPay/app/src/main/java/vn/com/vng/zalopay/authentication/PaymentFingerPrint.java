@@ -9,9 +9,9 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.authentication.fingerprintsupport.FingerprintManagerCompat;
 import vn.com.vng.zalopay.authentication.secret.KeyTools;
-import vn.com.zalopay.wallet.business.fingerprint.FPError;
-import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
-import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
+import vn.com.zalopay.wallet.fingerprint.FPError;
+import vn.com.zalopay.wallet.fingerprint.IFPCallback;
+import vn.com.zalopay.wallet.fingerprint.IPaymentFingerPrint;
 
 /**
  * Created by hieuvm on 1/5/17.

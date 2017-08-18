@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.data;
+package vn.com.zalopay.wallet;
 
 import android.support.annotation.StringRes;
 

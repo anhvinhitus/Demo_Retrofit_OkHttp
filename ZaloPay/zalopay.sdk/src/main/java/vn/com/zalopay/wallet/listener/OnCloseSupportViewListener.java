@@ -5,7 +5,5 @@ package vn.com.zalopay.wallet.listener;
  */
 
 public interface OnCloseSupportViewListener {
-    void processing();
-
-    void complete();
+    void onCloseCompleted();
 }

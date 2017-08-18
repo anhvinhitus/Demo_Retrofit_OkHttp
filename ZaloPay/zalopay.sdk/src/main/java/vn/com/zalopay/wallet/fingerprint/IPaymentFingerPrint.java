@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.fingerprint;
+package vn.com.zalopay.wallet.fingerprint;
 
 import android.app.Activity;
 import android.app.DialogFragment;

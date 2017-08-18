@@ -9,7 +9,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.mutilview.recyclerview.DataBindAdapter;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.RS;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.repository.ResourceManager;

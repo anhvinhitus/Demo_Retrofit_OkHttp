@@ -11,8 +11,8 @@ import android.widget.ToggleButton;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.RS;
 import vn.com.zalopay.wallet.entity.config.DynamicViewGroup;
 import vn.com.zalopay.wallet.entity.config.StaticViewGroup;
 import vn.com.zalopay.wallet.constants.KeyboardType;

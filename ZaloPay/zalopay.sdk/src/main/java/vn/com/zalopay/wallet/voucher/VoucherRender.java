@@ -21,8 +21,8 @@ import java.lang.ref.WeakReference;
 import timber.log.Timber;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.RS;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;

@@ -3,8 +3,8 @@ package vn.com.zalopay.wallet.helper;
 import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.RS;
 
 public class WebViewHelper {
     public static final int SSL_ERROR = -998;

@@ -32,16 +32,16 @@ import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.TrackHelper;
-import vn.com.zalopay.wallet.listener.onCloseSnackBar;
-import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
+import vn.com.zalopay.wallet.listener.OnSnackbarListener;
+import vn.com.zalopay.wallet.listener.OnNetworkDialogListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
@@ -482,7 +482,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void showOpenSettingNetwokingDialog(onNetworkingDialogCloseListener pListener) {
+    public void showOpenSettingNetwokingDialog(OnNetworkDialogListener pListener) {
         hideLoading();
         DialogManager.showMultiButtonDialog(getActivity(), SweetAlertDialog.NO_INTERNET, -1,
                 getString(R.string.sdk_dialog_nointernet_content), pIndex -> {
@@ -572,7 +572,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     }
 
     @Override
-    public void showSnackBar(String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {
+    public void showSnackBar(String pMessage, String pActionMessage, int pDuration, OnSnackbarListener pOnCloseListener) {
         try {
             dismissSnackBar();
             PaymentSnackBar.getInstance().setRootView(view_top_linearlayout)

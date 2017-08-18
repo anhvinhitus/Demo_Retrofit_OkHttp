@@ -24,9 +24,9 @@ import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.PaymentPermission;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.helper.PaymentPermission;
+import vn.com.zalopay.wallet.RS;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -45,7 +45,7 @@ import vn.com.zalopay.wallet.helper.BankHelper;
 import vn.com.zalopay.wallet.helper.ErrorCodeHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.interactor.VersionCallback;
-import vn.com.zalopay.wallet.listener.onCloseSnackBar;
+import vn.com.zalopay.wallet.listener.OnSnackbarListener;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.appinfo.AppInfoStore;
 import vn.com.zalopay.wallet.ui.BaseActivity;
@@ -75,7 +75,7 @@ public class ChannelPresenter extends PaymentPresenter<ChannelFragment> {
     @Inject
     AppInfoStore.Interactor appInfoInteractor;
     AbstractWorkFlow mAbstractWorkFlow = null;
-    private onCloseSnackBar mOnCloseSnackBarListener = () -> {
+    private OnSnackbarListener mOnCloseSnackBarListener = () -> {
         if (mAbstractWorkFlow != null) {
             mAbstractWorkFlow.checkAndOpenNetworkingSetting();
         }

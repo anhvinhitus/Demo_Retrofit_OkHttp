@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.workflow.channelloader;
 
-import vn.com.zalopay.wallet.business.data.PaymentPermission;
+import vn.com.zalopay.wallet.helper.PaymentPermission;
 import vn.com.zalopay.wallet.constants.TransactionType;
 
 public class PaymentChannelLoader extends AbstractChannelLoader {

@@ -43,7 +43,7 @@ import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKPayment;
-import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.listener.OnPaymentResultListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.IBuilder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfo;
@@ -74,7 +74,7 @@ public class PaymentWrapper {
     private AbstractOrder mPendingOrder;
     @TransactionType
     private int mPendingTransaction;
-    private ZPPaymentListener mWalletListener;
+    private OnPaymentResultListener mWalletListener;
     private IBuilder mPaymentInfoBuilder;
 
     PaymentWrapper(IResponseListener responseListener, IRedirectListener redirectListener,

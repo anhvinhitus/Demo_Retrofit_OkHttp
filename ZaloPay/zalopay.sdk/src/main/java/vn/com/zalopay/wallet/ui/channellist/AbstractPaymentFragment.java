@@ -23,9 +23,9 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.NameValuePair;
 import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.SdkUtils;
+import vn.com.zalopay.wallet.GlobalData;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.entity.response.StatusResponse;
@@ -59,21 +59,13 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
     private boolean isShowSupportView = false;
     private View.OnClickListener mSupportItemClick = view -> {
         try {
-            onCloseSupportView(new OnCloseSupportViewListener() {
-                @Override
-                public void processing() {
-                    Timber.d("OnCloseSupportViewListener processing()");
-                }
-
-                @Override
-                public void complete() {
-                    Timber.d("OnCloseSupportViewListener complete()");
-                    int i = view.getId();
-                    if (i == R.id.question_button) {
-                        onStartCenterSupport();
-                    } else if (i == R.id.support_button) {
-                        onStartFeedbackSupport();
-                    }
+            onCloseSupportView(() -> {
+                Timber.d("OnCloseSupportViewListener onCloseCompleted()");
+                int i = view.getId();
+                if (i == R.id.question_button) {
+                    onStartCenterSupport();
+                } else if (i == R.id.support_button) {
+                    onStartFeedbackSupport();
                 }
             });
         } catch (Exception e) {
@@ -87,8 +79,6 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
     }
 
     public void onCloseSupportView(OnCloseSupportViewListener listener) {
-        if (listener != null)
-            listener.processing();
         View v = findViewById(R.id.layout_spview_animation);
         if (v != null) {
             Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
@@ -100,7 +90,7 @@ public abstract class AbstractPaymentFragment<T extends IPresenter> extends Rend
             setVisible(R.id.zpw_pay_support_buttom_view, false);
             // callback finish close
             if (listener != null)
-                listener.complete();
+                listener.onCloseCompleted();
         }, 300);
     }
 

@@ -11,7 +11,7 @@ import vn.com.zalopay.utility.CurrencyUtil;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.GlobalData;
 import vn.com.zalopay.wallet.entity.bank.BankConfig;
 import vn.com.zalopay.wallet.entity.bank.BankAccount;
 import vn.com.zalopay.wallet.entity.bank.MapCard;

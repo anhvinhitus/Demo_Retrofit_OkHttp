@@ -35,8 +35,8 @@ import vn.com.zalopay.wallet.api.task.CheckOrderStatusFailSubmit;
 import vn.com.zalopay.wallet.api.task.SDKReportTask;
 import vn.com.zalopay.wallet.api.task.SendLogTask;
 import vn.com.zalopay.wallet.api.task.getstatus.GetStatus;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.RS;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -68,7 +68,7 @@ import vn.com.zalopay.wallet.helper.ToastHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;
-import vn.com.zalopay.wallet.listener.onNetworkingDialogCloseListener;
+import vn.com.zalopay.wallet.listener.OnNetworkDialogListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.transaction.SDKTransactionAdapter;
@@ -112,7 +112,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     //need to switch to cc or atm
     private boolean mNeedToSwitchChannel = false;
     private boolean mIsOrderSubmit = false;
-    onNetworkingDialogCloseListener networkingDialogCloseListener = new onNetworkingDialogCloseListener() {
+    OnNetworkDialogListener networkingDialogCloseListener = new OnNetworkDialogListener() {
         @Override
         public void onCloseNetworkingDialog() {
             whetherQuitPaymentOffline();
@@ -591,7 +591,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         mOtpEndTime = System.currentTimeMillis();
         mCaptchaEndTime = System.currentTimeMillis();
         getTransactionStatus(mTransactionID, false, mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
-        Timber.d("on website 3ds complete");
+        Timber.d("on website 3ds onCloseCompleted");
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -605,9 +605,9 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
                 return;
             }
             handleEventSubmitOrderCompleted(event.response);
-            Timber.d("on submit order complete %s", GsonUtils.toJsonString(event.response));
+            Timber.d("on submit order onCloseCompleted %s", GsonUtils.toJsonString(event.response));
         } catch (Exception e) {
-            Timber.w(e, "Exception on submit order complete");
+            Timber.w(e, "Exception on submit order onCloseCompleted");
         }
     }
 
@@ -617,9 +617,9 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         try {
             mOrderProcessing = false;
             handleEventGetStatusComplete(event.response);
-            Timber.d("on status order complete %s", GsonUtils.toJsonString(event.response));
+            Timber.d("on status order onCloseCompleted %s", GsonUtils.toJsonString(event.response));
         } catch (Exception e) {
-            Timber.w(e, "Exception on status order complete");
+            Timber.w(e, "Exception on status order onCloseCompleted");
         }
     }
 
@@ -629,9 +629,9 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         try {
             mOrderProcessing = false;
             handleEventCheckStatusSubmitComplete(event.response);
-            Timber.d("on check submit order complete %s", GsonUtils.toJsonString(event.response));
+            Timber.d("on check submit order onCloseCompleted %s", GsonUtils.toJsonString(event.response));
         } catch (Exception e) {
-            Timber.w(e, "Exception on checksubmit order complete");
+            Timber.w(e, "Exception on checksubmit order onCloseCompleted");
         }
     }
 

@@ -2,7 +2,7 @@ package vn.com.zalopay.wallet.listener;
 
 import vn.com.zalopay.wallet.entity.SdkError;
 
-public interface ZPPaymentListener {
+public interface OnPaymentResultListener {
 
     void onComplete();
 

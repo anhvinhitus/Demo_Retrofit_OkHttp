@@ -30,7 +30,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.listener.onCloseSnackBar;
+import vn.com.zalopay.wallet.listener.OnSnackbarListener;
 
 
 public final class TSnackbar {
@@ -98,7 +98,7 @@ public final class TSnackbar {
     }
 
     @NonNull
-    public static TSnackbar makeMessageBar(@NonNull View view, @NonNull CharSequence text, CharSequence actionText, @Duration int duration, onCloseSnackBar pListener) {
+    public static TSnackbar makeMessageBar(@NonNull View view, @NonNull CharSequence text, CharSequence actionText, @Duration int duration, OnSnackbarListener pListener) {
         TSnackbar snackbar = new TSnackbar(findSuitableParent(view));
         snackbar.setMessage(text);
         snackbar.setActionMessage(actionText);
@@ -159,7 +159,7 @@ public final class TSnackbar {
         return this;
     }
 
-    public void setCloseListener(onCloseSnackBar pListener) {
+    public void setCloseListener(OnSnackbarListener pListener) {
         if (pListener == null) {
             return;
         }
@@ -167,11 +167,11 @@ public final class TSnackbar {
         if (textViewAction == null) {
             return;
         }
-        WeakReference<onCloseSnackBar> closeSnackBarWeakReference = new WeakReference<>(pListener);
+        WeakReference<OnSnackbarListener> closeSnackBarWeakReference = new WeakReference<>(pListener);
         textViewAction.setOnClickListener(view -> {
             dismiss();
             if (closeSnackBarWeakReference.get() != null) {
-                closeSnackBarWeakReference.get().onClose();
+                closeSnackBarWeakReference.get().onSnackbarClose();
             }
         });
     }
@@ -662,7 +662,7 @@ public final class TSnackbar {
         public boolean onInterceptTouchEvent(CoordinatorLayout parent, SnackbarLayout child,
                                              MotionEvent event) {
             // We want to make sure that we disable any TSnackbar timeouts if the user is
-            // currently touching the TSnackbar. We restore the timeout when complete
+            // currently touching the TSnackbar. We restore the timeout when onCloseCompleted
             if (parent.isPointInChildBounds(child, (int) event.getX(), (int) event.getY())) {
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:

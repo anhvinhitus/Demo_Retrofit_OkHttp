@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.business.fingerprint;
+package vn.com.zalopay.wallet.fingerprint;
 
 public class PaymentFingerPrint extends BaseFingerPrint {
     protected static PaymentFingerPrint _object;

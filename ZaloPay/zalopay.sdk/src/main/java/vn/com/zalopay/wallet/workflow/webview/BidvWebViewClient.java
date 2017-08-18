@@ -11,8 +11,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.RS;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.entity.bank.AtmScriptInput;
 import vn.com.zalopay.wallet.entity.bank.AtmScriptOutput;

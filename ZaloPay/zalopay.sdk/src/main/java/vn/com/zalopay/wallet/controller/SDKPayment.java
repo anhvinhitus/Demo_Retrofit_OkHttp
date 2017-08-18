@@ -12,15 +12,15 @@ import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.GlobalData;
 import vn.com.zalopay.wallet.entity.SdkError;
-import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
+import vn.com.zalopay.wallet.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentError;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.feedback.IFeedBack;
 import vn.com.zalopay.wallet.interactor.ChannelListInteractor;
-import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.listener.OnPaymentResultListener;
 import vn.com.zalopay.wallet.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -111,7 +111,7 @@ public class SDKPayment {
      * @param pPaymentListener
      * @param pExtraParams
      */
-    public synchronized static void pay(final Activity pMerchantActivity, IPaymentInfo pPaymentInfo, final ZPPaymentListener pPaymentListener, Object... pExtraParams) {
+    public synchronized static void pay(final Activity pMerchantActivity, IPaymentInfo pPaymentInfo, final OnPaymentResultListener pPaymentListener, Object... pExtraParams) {
         SDKApplication.getApplicationComponent().monitorEventTiming().recordEvent(ZPMonitorEvent.TIMING_SDK_START);
         //validate payment info and activity
         if (pMerchantActivity == null || pPaymentInfo == null) {

@@ -11,9 +11,9 @@ import com.zalopay.ui.widget.password.managers.PasswordManager;
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.business.fingerprint.FPError;
-import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
-import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
+import vn.com.zalopay.wallet.fingerprint.FPError;
+import vn.com.zalopay.wallet.fingerprint.IFPCallback;
+import vn.com.zalopay.wallet.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 
