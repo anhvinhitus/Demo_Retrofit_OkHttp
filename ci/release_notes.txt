@@ -1,20 +1,2 @@
-Zalo Pay (Sandbox v2.17.0 - build 419) - Released on 2017-08-18 18:25
-+ [SDK] Refactor package by chucvv (#df31598)
-+ [Fix] task#839 : lỗi activity truyền sai requestCode=65637 vào fragment khi chụp hình by sinhtt (#61d433a)
-+ [SDK] Cleanup by chucvv (#0e284e0)
-+ [Fabric] Check exist package by chucvv (#7c177d6)
-+ [Analytic] add Screens BANK_INTRO by lytm (#5ef7f2e)
-+ [SDK] Refactor by chucvv (#f0a538a)
-+ [APP] Update format phone number in transfer by lytm (#ba7146e)
-+ [APP] Refactor code by lytm (#dd6ff50)
-+ [SDK] Update format phone number in order info by lytm (#8066ef6)
-+ [ZPC] update ui by sinhtt (#1de8221)
-+ [Widget] Cleanup by chucvv (#e6ea57c)
-+ [SDK] Cleanup by chucvv (#2f81c56)
-+ [UI] Blur text khi số dư không đủ by chucvv (#c5c436e)
-+ [ZPC] update message by sinhtt (#d420ca6)
-+ [App] Refactor by chucvv (#81454c2)
-+ [SDK] Refactor by chucvv (#becd930)
-+ [Login] Access to private member by chucvv (#6585304)
-+ [Zalo] Use lambda by chucvv (#8607f95)
-+ [ZPC] update ui by sinhtt (#3900523)
+Zalo Pay (Staging v2.17.0 - build 420) - Released on 2017-08-18 18:25
+
