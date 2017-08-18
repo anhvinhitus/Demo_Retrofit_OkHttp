@@ -275,7 +275,7 @@
         android:paddingLeft="@dimen/zpw_padding_8"
         android:paddingRight="@dimen/zpw_padding_8"
         android:paddingTop="@dimen/zpw_padding_5"
-        android:visibility="gone"></LinearLayout>
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/layout_dialog_button"

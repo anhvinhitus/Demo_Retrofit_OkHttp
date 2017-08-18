@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -184,9 +185,13 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         mOverlayOutAnim = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                WindowManager.LayoutParams wlp = getWindow().getAttributes();
+                Window window = getWindow();
+                if(window == null){
+                    return;
+                }
+                WindowManager.LayoutParams wlp = window.getAttributes();
                 wlp.alpha = 1 - interpolatedTime;
-                getWindow().setAttributes(wlp);
+                window.setAttributes(wlp);
             }
         };
         mOverlayOutAnim.setDuration(120);
@@ -195,7 +200,6 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
 
     @Override
     public void onBackPressed() {
-        return;
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,7 +224,7 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         mNormalFrame = (FrameLayout) findViewById(R.id.normal_frame);
         mUpdateFrame = (FrameLayout) findViewById(R.id.update_frame);
         mProgressFrame = (FrameLayout) findViewById(R.id.progress_dialog);
-        mLine = (View) findViewById(R.id.view_line);
+        mLine = findViewById(R.id.view_line);
         mCustomImage = (ImageView) findViewById(R.id.custom_image);
         mWarningFrame = (FrameLayout) findViewById(R.id.warning_frame);
         mConfirmButton = (TextView) findViewById(R.id.confirm_button);
@@ -512,7 +516,7 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         mConfirmText = text;
         if (mConfirmButton != null && mConfirmText != null) {
             mConfirmButton.setText(Html.fromHtml(mConfirmText));
-        } else if (mConfirmButton != null && TextUtils.isEmpty(mConfirmText)) {
+        } else if (mConfirmButton != null) {
             mConfirmButton.setVisibility(View.GONE);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mCancelButton.getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);

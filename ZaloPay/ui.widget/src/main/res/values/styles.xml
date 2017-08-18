@@ -77,7 +77,7 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert"></style>
+    <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert" />
 
     <style name="RecipientEditTextView" parent="Base.V12.Widget.AppCompat.AutoCompleteTextView">
         <item name="android:inputType">textEmailAddress|textMultiLine</item>

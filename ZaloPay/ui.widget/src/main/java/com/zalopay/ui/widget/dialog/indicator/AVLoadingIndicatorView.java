@@ -79,7 +79,7 @@ public class AVLoadingIndicatorView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-        DEFAULT_SIZE = (int) (parentWidth / (DEFAULT_SCREEN / 2));
+        DEFAULT_SIZE = parentWidth / (DEFAULT_SCREEN / 2);
         int width = measureDimension(dp2px(DEFAULT_SIZE), widthMeasureSpec);
         int height = measureDimension(dp2px(DEFAULT_SIZE), heightMeasureSpec);
         setMeasuredDimension(width, height);

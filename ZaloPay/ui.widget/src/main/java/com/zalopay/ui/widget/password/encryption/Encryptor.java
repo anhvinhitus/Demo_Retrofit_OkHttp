@@ -9,6 +9,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 /**
  * SHA1
  * of the 4-digit password.
@@ -58,7 +60,6 @@ public class Encryptor {
     }
 
     /**
-
      * @param algorithm The {@link Algorithm} to use
      */
     private static MessageDigest getShaDigest(Algorithm algorithm) {
@@ -95,8 +96,12 @@ public class Encryptor {
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e1) {
-            e1.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            Timber.w(e);
+        }
+        if (digest == null) {
+            Timber.w("Can get MessageDigest instance");
+            return new byte[0];
         }
         digest.reset();
         return digest.digest(password.getBytes());

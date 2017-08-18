@@ -40,7 +40,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true</item>
     </style>
 
-    <style name="ZMTheme.NoActionBar" parent="BaseTheme.NoActionBar"></style>
+    <style name="ZMTheme.NoActionBar" parent="BaseTheme.NoActionBar" />
 
     <style name="ZMTheme.NoActionBar.Splash" parent="ZMTheme.NoActionBar">
         <item name="android:windowBackground">@color/splash_bg</item>
