@@ -1,2 +1,2 @@
-Zalo Pay (Staging v2.17.0 - build 428) - Released on 2017-08-19 13:43
-+ [SDK] Clean code :  flow select channel from bank popup by chucvv (#ef6bde8)
+Zalo Pay (Sandbox v2.17.0 - build 429) - Released on 2017-08-19 13:44
+
