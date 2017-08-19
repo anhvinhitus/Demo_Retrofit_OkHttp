@@ -787,6 +787,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             getView().visibleBIDVAccountRegisterBtn(false);
             getView().visibleInputCardView(true);
             getView().visibleSubmitButton(true);
+            getView().hidemenuItem();
         }
     }
 

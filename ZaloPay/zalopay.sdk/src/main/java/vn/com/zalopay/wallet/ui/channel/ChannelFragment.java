@@ -31,8 +31,8 @@ import vn.com.zalopay.wallet.configure.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.helper.FontHelper;
-import vn.com.zalopay.wallet.listener.OnSnackbarListener;
 import vn.com.zalopay.wallet.listener.OnNetworkDialogListener;
+import vn.com.zalopay.wallet.listener.OnSnackbarListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.ui.BaseFragment;
 import vn.com.zalopay.wallet.ui.channellist.AbstractPaymentFragment;
@@ -145,14 +145,15 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         if (mShowMenuItem) {
             inflater.inflate(R.menu.bidv_menu, menu);
             MenuItem menuItem = menu.findItem(R.id.menu_action_instruct);
-            if(menuItem == null){
+            if (menuItem == null) {
                 return;
             }
             View view = menuItem.getActionView();
-            if(view == null){
+            if (view == null) {
                 return;
             }
             view.setOnClickListener(v -> {
@@ -466,6 +467,11 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
 
     public void showMenuItem() {
         mShowMenuItem = true;
+        ActivityCompat.invalidateOptionsMenu(getActivity());
+    }
+
+    public void hidemenuItem() {
+        mShowMenuItem = false;
         ActivityCompat.invalidateOptionsMenu(getActivity());
     }
 }
