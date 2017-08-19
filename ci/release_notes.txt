@@ -1,2 +1,6 @@
-Zalo Pay (Production v2.17.0 - build 421) - Released on 2017-08-18 18:26
-
+Zalo Pay (Production v2.17.0 - build 422) - Released on 2017-08-19 10:33
++ [Personal] Visible voucher app by app resource list by chucvv (#a587a66)
++ [Personal] Visible voucher app by app resource list by chucvv (#f538603)
++ [Analytic] Update LOGIN_TOUCH by lytm (#1633b07)
++ [SDK] Refactor package by chucvv (#994afb2)
++ [Analytic] Clear LOGIN_RESULT in Authentication zalo success by lytm (#e90ff6b)
