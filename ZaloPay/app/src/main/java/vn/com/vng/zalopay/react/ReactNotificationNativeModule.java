@@ -18,14 +18,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
@@ -140,10 +138,10 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
 
     private static class NotificationSubscriber extends DefaultSubscriber<WritableArray> {
 
-        WeakReference<Promise> promiseWeakReference;
+        Promise mPromise;
 
         NotificationSubscriber(Promise promise) {
-            promiseWeakReference = new WeakReference<>(promise);
+            mPromise = promise;
         }
 
         @Override
@@ -154,13 +152,19 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         @Override
         public void onError(Throwable e) {
             Timber.w(e, "error on getting notification logs");
-            Helpers.promiseResolveError(promiseWeakReference.get(), PaymentError.ERR_CODE_FAIL.value(), "get notification error");
+            Helpers.promiseResolveError(mPromise, PaymentError.ERR_CODE_FAIL.value(), "get notification error");
+
+            // nullify for GC
+            mPromise = null;
         }
 
         @Override
         public void onNext(WritableArray writableArray) {
             Timber.d("notification array %s", writableArray);
-            Helpers.promiseResolveSuccess(promiseWeakReference.get(), writableArray);
+            Helpers.promiseResolveSuccess(mPromise, writableArray);
+
+            // nullify for GC
+            mPromise = null;
         }
     }
 

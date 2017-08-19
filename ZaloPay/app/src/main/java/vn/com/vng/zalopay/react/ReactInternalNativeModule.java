@@ -284,7 +284,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         mCompositeSubscription.add(subscription);
     }
 
-    private void payOrder(NotificationData notify) {
+    void payOrder(NotificationData notify) {
         JsonObject embeddata = notify.getEmbeddata();
         Timber.d("Pay order : notificationId [%s] embeddata [%s]", notify.notificationId, embeddata);
         if (embeddata == null) {
@@ -408,26 +408,32 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     private class PayOrderSubscriber extends DefaultSubscriber<NotificationData> {
-        private WeakReference<Promise> mPromise;
+        private Promise mPromise;
 
         PayOrderSubscriber(Promise promise) {
-            mPromise = new WeakReference<>(promise);
+            mPromise = promise;
         }
 
         @Override
         public void onError(Throwable e) {
             Timber.d(e, "Error pay order");
-            if (mPromise.get() != null) {
-                Helpers.promiseResolveError(mPromise.get(), PaymentError.ERR_CODE_UNKNOWN.value(), e.getMessage());
+            if (mPromise != null) {
+                Helpers.promiseResolveError(mPromise, PaymentError.ERR_CODE_UNKNOWN.value(), e.getMessage());
             }
+
+            // nullify for GC
+            mPromise = null;
         }
 
         @Override
         public void onNext(NotificationData notify) {
             payOrder(notify);
-            if (mPromise.get() != null) {
-                Helpers.promiseResolveSuccess(mPromise.get(), null);
+            if (mPromise != null) {
+                Helpers.promiseResolveSuccess(mPromise, null);
             }
+
+            // nullify for GC
+            mPromise = null;
         }
     }
 

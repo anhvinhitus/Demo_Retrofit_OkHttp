@@ -252,28 +252,66 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         mCompositeSubscription.add(subscription);
     }
 
-    private class TransactionLogSubscriber extends DefaultSubscriber<TransactionResult> {
+    private static class TransactionLogSubscriber extends DefaultSubscriber<TransactionResult> {
 
-        WeakReference<Promise> mPromise;
+        Promise mPromise;
 
         TransactionLogSubscriber(Promise promise) {
-            mPromise = new WeakReference<>(promise);
+            mPromise = promise;
         }
 
         @Override
         public void onError(Throwable e) {
             Timber.w(e, "error on getting transaction logs");
-            Helpers.promiseResolveError(mPromise.get(), ERR_CODE_FAIL.value(), "get transaction error");
+            Helpers.promiseResolveError(mPromise, ERR_CODE_FAIL.value(), "get transaction error");
+
+            // nullify for GC
+            mPromise = null;
         }
 
         @Override
         public void onNext(TransactionResult result) {
             Timber.d(" transactions code [%s] message [%s] data size [%s]", result.code, result.message, result.data.size());
             if (result.code == ERR_CODE_TRANSACTION_NOT_LOADED.value()) {
-                Helpers.promiseResolveError(mPromise.get(), result.code, "Transaction has not been loaded");
+                Helpers.promiseResolveError(mPromise, result.code, "Transaction has not been loaded");
             } else {
-                Helpers.promiseResolveSuccess(mPromise.get(), result.code, result.message, transform(result.data));
+                Helpers.promiseResolveSuccess(mPromise, result.code, result.message, transform(result.data));
             }
+
+            // nullify for GC
+            mPromise = null;
+        }
+
+        private WritableArray transform(List<TransHistory> histories) {
+            WritableArray result = Arguments.createArray();
+            for (TransHistory history : histories) {
+                WritableMap item = transform(history);
+                if (item == null) {
+                    continue;
+                }
+                result.pushMap(item);
+            }
+            return result;
+        }
+
+        private WritableMap transform(TransHistory history) {
+            if (history == null) {
+                return null;
+            }
+            WritableMap item = Arguments.createMap();
+            item.putDouble("transid", history.transid);
+            item.putDouble("reqdate", history.reqdate);
+            item.putString("description", history.description);
+            item.putDouble("amount", history.amount);
+            item.putDouble("userfeeamt", history.userfeeamt);
+            item.putDouble("type", history.type);
+            item.putDouble("sign", history.sign);
+            item.putString("username", history.username);
+            item.putString("appusername", history.appusername);
+            item.putString("appid", String.valueOf(history.appid));
+            item.putString("userid", history.appuser);
+            item.putString("thankmessage", history.thank_message);
+            return item;
         }
     }
 
@@ -325,39 +363,6 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         if (subscription != null) {
             subscription.clear();
         }
-    }
-
-    private WritableMap transform(TransHistory history) {
-        if (history == null) {
-            return null;
-        }
-        WritableMap item = Arguments.createMap();
-        item.putDouble("transid", history.transid);
-        item.putDouble("reqdate", history.reqdate);
-        item.putString("description", history.description);
-        item.putDouble("amount", history.amount);
-        item.putDouble("userfeeamt", history.userfeeamt);
-        item.putDouble("type", history.type);
-        item.putDouble("sign", history.sign);
-        item.putString("username", history.username);
-        item.putString("appusername", history.appusername);
-        item.putString("appid", String.valueOf(history.appid));
-        item.putString("userid", history.appuser);
-        item.putString("thankmessage", history.thank_message);
-        return item;
-    }
-
-
-    private WritableArray transform(List<TransHistory> histories) {
-        WritableArray result = Arguments.createArray();
-        for (TransHistory history : histories) {
-            WritableMap item = transform(history);
-            if (item == null) {
-                continue;
-            }
-            result.pushMap(item);
-        }
-        return result;
     }
 
     private Bundle transform(ReadableMap param) {

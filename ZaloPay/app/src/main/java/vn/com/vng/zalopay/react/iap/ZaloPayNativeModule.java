@@ -65,7 +65,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     private final User mUser;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private Navigator mNavigator;
-    private WeakReference<Promise> mPromiseTopup = null;
+    private Promise mPromiseTopup = null;
 
     ZaloPayNativeModule(ReactApplicationContext reactContext,
                         User user,
@@ -323,7 +323,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     private boolean shouldAddQueriesUser() {
-        Timber.d("Should add QueriesUser: [appId:%s]",mAppId);
+        Timber.d("Should add QueriesUser: [appId:%s]", mAppId);
         return mAppId == BuildConfig.VOUCHER_APP_ID;
     }
 
@@ -436,7 +436,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
             return;
         }
 
-        mPromiseTopup = new WeakReference<>(promise);
+        mPromiseTopup = promise;
 
         // push data to bundle
         Bundle extras = new Bundle();
@@ -449,15 +449,13 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     private void handleResultTopup(int resultCode, Intent data) {
-        if (mPromiseTopup == null || mPromiseTopup.get() == null) {
+        if (mPromiseTopup == null) {
             return;
         }
 
         try {
-
-            Promise promise = mPromiseTopup.get();
             if (resultCode != Activity.RESULT_OK || data == null) {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_USER_CANCEL.value(), "User cancel");
+                Helpers.promiseResolveError(mPromiseTopup, PaymentError.ERR_CODE_USER_CANCEL.value(), "User cancel");
                 return;
             }
 
@@ -465,18 +463,13 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
             if (profile == null || TextUtils.isEmpty(profile.phonenumber)) {
                 Timber.d("Profile invalid");
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), "Data invalid");
+                Helpers.promiseResolveError(mPromiseTopup, PaymentError.ERR_CODE_FAIL.value(), "Data invalid");
                 return;
             }
             WritableMap resp = createTopupResponse(profile.phonenumber, profile.displayName, profile.avatar);
-            Helpers.promiseResolveSuccess(promise, PaymentError.ERR_CODE_SUCCESS.value(), "", resp);
+            Helpers.promiseResolveSuccess(mPromiseTopup, PaymentError.ERR_CODE_SUCCESS.value(), "", resp);
         } finally {
-            if (mPromiseTopup != null) {
-                mPromiseTopup.clear();
-                mPromiseTopup = null;
-            }
+            mPromiseTopup = null;
         }
-
     }
-
 }

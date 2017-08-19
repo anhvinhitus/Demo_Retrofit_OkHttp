@@ -18,34 +18,34 @@ import vn.com.vng.zalopay.react.Helpers;
  */
 class GetAllFriendSubscriber extends DefaultSubscriber<WritableArray> {
 
-    private WeakReference<Promise> mPromise;
+    private Promise mPromise;
     private Context mContext;
 
     GetAllFriendSubscriber(Promise promise, Context context) {
-        mPromise = new WeakReference<>(promise);
+        this.mPromise = promise;
         this.mContext = context;
     }
 
     @Override
     public void onError(Throwable e) {
         Timber.w(e, "error while getting all friends");
-        if (mPromise.get() == null) {
+        if (mPromise == null) {
             return;
         }
 
         Pair<Integer, String> error = Helpers.createReactError(mContext, e);
-        Helpers.promiseResolveError(mPromise.get(), error);
-        mPromise.clear();
+        Helpers.promiseResolveError(mPromise, error);
+        mPromise = null;
     }
 
     @Override
     public void onNext(WritableArray writableArray) {
         Timber.d("receive %s friends", writableArray.size());
-        if (mPromise.get() == null) {
+        if (mPromise == null) {
             return;
         }
 
-        Helpers.promiseResolveSuccess(mPromise.get(), writableArray);
-        mPromise.clear();
+        Helpers.promiseResolveSuccess(mPromise, writableArray);
+        mPromise = null;
     }
 }
