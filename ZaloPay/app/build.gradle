@@ -45,7 +45,7 @@ android {
         applicationId cfg.applicationId
         minSdkVersion minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 427
+        versionCode 428
         versionName "2.17.0"
 
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
