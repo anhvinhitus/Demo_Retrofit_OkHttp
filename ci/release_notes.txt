@@ -1,2 +1,3 @@
-Zalo Pay (Staging v2.17.0 - build 426) - Released on 2017-08-19 11:00
-+ [React] Remove WeakReference to Promise by hoanh (#547e8ac3a)
+Zalo Pay (Production v2.17.0 - build 427) - Released on 2017-08-19 11:59
++ [SDK] Select ngân hàng đã liên kết sau khi user liên kết thành công, trong flow thanh toán by chucvv (#8a7ecb1)
++ [SDK] Clear OptionsMenu in success view by lytm (#7d8412c)
