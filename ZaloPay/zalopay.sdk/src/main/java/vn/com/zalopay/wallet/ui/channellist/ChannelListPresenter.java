@@ -98,6 +98,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
     private PaymentChannel mLinkChannel = null;
     private int mLastSelectPosition = -1;
     private boolean mHasActiveChannel = false;
+    private boolean mReloadChannelsAfterLink = false;
     private
     @TransactionType
     int tempTranstype;
@@ -174,6 +175,7 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 try {
                     mChannelList.clear();
                     mChannelAdapter.clearDataset();
+                    mReloadChannelsAfterLink = true;
                     loadChannels();
                 } catch (Exception e) {
                     Timber.w(e, "Exception reload channel after link success");
@@ -868,8 +870,11 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
             return;
         }
         boolean validBalance = mPaymentInfoHelper.validBalancePayment();
+        boolean reloadAfterLink = mReloadChannelsAfterLink;
+        mReloadChannelsAfterLink = !mReloadChannelsAfterLink;
         //valid balance and has active zalopay channel
         if (validBalance
+                && !reloadAfterLink
                 && mZaloPayChannel != null
                 && mZaloPayChannel.meetPaymentCondition()) {
             selectAndScrollToChannel(mZaloPayChannel, mZaloPayChannel.position);
