@@ -83,10 +83,8 @@ public class Constants {
     public static final String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
     public static final String PMC_CONFIG = "config";
     public static final String STATUS_RESPONSE = "status";
-    public static final String SELECTED_PMC_POSITION = "pmc_name";
     public static final int CHANNEL_PAYMENT_REQUEST_CODE = 1001;
     public static final int BANK_SELECT_REQUEST_CODE = 1002;
-    public static final int MAP_POPUP_RESULT_CODE = 880;
     public static final int LINK_ACCOUNT_RESULT_CODE = 881;
     public static final int TRANS_STATUS_DELAY_RETRY = 1000;//ms
     public static final int TRANS_STATUS_MAX_RETRY = 30;

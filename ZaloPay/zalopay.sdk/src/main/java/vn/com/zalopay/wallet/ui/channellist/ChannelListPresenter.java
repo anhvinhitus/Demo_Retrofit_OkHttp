@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.ui.channellist;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 
@@ -198,9 +197,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                     OnActivityResultPaymentRequestCanceled(data);
                 }
                 break;
-            case Constants.MAP_POPUP_RESULT_CODE:
-                selectChannelFromPopup(data);
-                break;
         }
     }
 
@@ -269,20 +265,6 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
         }
         int orderState = mPayProxy.orderProcessing();
         return orderState == OrderState.SUBMIT || orderState == OrderState.QUERY_STATUS;
-    }
-
-    private void selectChannelFromPopup(Intent data) {
-        if (data == null) {
-            return;
-        }
-
-        int position = data.getIntExtra(Constants.SELECTED_PMC_POSITION, -1);
-        boolean started = onSelectedChannel(position);
-        if (!started) {
-            return;
-        }
-        //delay waiting for destroy popup
-        new Handler().postDelayed(this::startPayment, 300);
     }
 
     @Override
