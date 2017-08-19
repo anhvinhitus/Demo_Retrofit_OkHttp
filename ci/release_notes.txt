@@ -1,2 +1,2 @@
-Zalo Pay (Sandbox v2.17.0 - build 424) - Released on 2017-08-19 10:34
+Zalo Pay (Staging v2.17.0 - build 425) - Released on 2017-08-19 10:47
 
