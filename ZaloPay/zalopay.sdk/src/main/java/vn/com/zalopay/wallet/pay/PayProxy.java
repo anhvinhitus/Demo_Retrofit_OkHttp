@@ -220,6 +220,7 @@ public class PayProxy extends SingletonBase {
         try {
             getView().updateDefaultTitle();
         } catch (Exception e) {
+            Timber.d(e);
         }
         if (pResponse == null) {
             markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
@@ -721,7 +722,7 @@ public class PayProxy extends SingletonBase {
         }
     }
 
-    public void onCompletePasswordPopup(String pHashPassword) {
+    void onCompletePasswordPopup(String pHashPassword) {
         if (preventSubmitOrder()) {
             Timber.d("order is submit - skip");
             return;
@@ -733,11 +734,11 @@ public class PayProxy extends SingletonBase {
         }
     }
 
-    public void onErrorPasswordPopup() {
+    void onErrorPasswordPopup() {
         markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
     }
 
-    public void onCompleteFingerPrint(String pHashPassword) {
+    void onCompleteFingerPrint(String pHashPassword) {
         if (preventSubmitOrder()) {
             Timber.d("order is submit - skip");
             return;
@@ -750,13 +751,13 @@ public class PayProxy extends SingletonBase {
                 Timber.d(e, "Exception onCompleteFingerPrint");
                 markTransFail(TransactionHelper.getGenericExceptionMessage(mContext));
             }
-        } else {
-            //submit password
-            submitOrder(pHashPassword);
+            return;
         }
+        //submit password
+        submitOrder(pHashPassword);
     }
 
-    public void onErrorFingerPrint() {
+    void onErrorFingerPrint() {
         try {
             getView().showInfoDialog(mContext.getResources().getString(R.string.sdk_fingerprint_error_suggest_password_mess), () -> {
                 try {
