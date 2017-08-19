@@ -151,7 +151,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         getBalanceLocal();
         checkLinkCardStatus();
         boolean hasVoucherApp = hasVoucherApp();
-        mView.visibleVoucherAppList(false);
+        mView.visibleVoucherAppList(hasVoucherApp);
     }
 
     private boolean hasVoucherApp() {
