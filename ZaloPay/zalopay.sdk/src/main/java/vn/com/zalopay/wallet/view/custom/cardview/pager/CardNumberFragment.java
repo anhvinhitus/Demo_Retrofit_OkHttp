@@ -16,8 +16,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.GlobalData;
-import vn.com.zalopay.wallet.RS;
+import vn.com.zalopay.wallet.configure.GlobalData;
+import vn.com.zalopay.wallet.configure.RS;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
 import vn.com.zalopay.wallet.repository.ResourceManager;

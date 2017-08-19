@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet;
+package vn.com.zalopay.wallet.configure;
 
 import android.app.Activity;
 import android.content.Context;

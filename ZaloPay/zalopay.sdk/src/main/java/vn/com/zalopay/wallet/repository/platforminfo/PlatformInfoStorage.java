@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
-import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.configure.GlobalData;
 import vn.com.zalopay.wallet.entity.response.PlatformInfoResponse;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.interactor.ILinkSourceInteractor;

@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.monitors.ZPMonitorEventTiming;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.repository.ResourceManager;
-import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.configure.GlobalData;
 import vn.com.zalopay.wallet.entity.response.BankResponse;
 import vn.com.zalopay.wallet.entity.gatewayinfo.AppInfo;
 import vn.com.zalopay.wallet.entity.UserInfo;

@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.GlobalData;
-import vn.com.zalopay.wallet.RS;
+import vn.com.zalopay.wallet.configure.GlobalData;
+import vn.com.zalopay.wallet.configure.RS;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;

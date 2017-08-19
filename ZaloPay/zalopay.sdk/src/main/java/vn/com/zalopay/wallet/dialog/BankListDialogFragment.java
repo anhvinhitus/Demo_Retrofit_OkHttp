@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.configure.GlobalData;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.view.adapter.BankSupportAdapter;
 import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;

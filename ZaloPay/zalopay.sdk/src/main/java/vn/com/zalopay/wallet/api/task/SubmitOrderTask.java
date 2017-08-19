@@ -5,7 +5,7 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.implement.SubmitOrderImpl;
-import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.configure.GlobalData;
 import vn.com.zalopay.wallet.entity.bank.PaymentCard;
 import vn.com.zalopay.wallet.entity.PaymentLocation;
 import vn.com.zalopay.wallet.entity.response.StatusResponse;

@@ -353,7 +353,8 @@ public static java.lang.String TABLENAME;
 -keep class vn.com.zalopay.wallet.merchant.* { *; }
 -keep class vn.com.zalopay.wallet.listener.* { *; }
 -keep class vn.com.zalopay.wallet.controller.* { *; }
-
+-keep class vn.com.zalopay.wallet.helper.* { *; }
+-keep class vn.com.zalopay.wallet.configure.* { *; }
 #-keep public class vn.com.zalopay.wallet.** {
 #  public protected *;
 #}

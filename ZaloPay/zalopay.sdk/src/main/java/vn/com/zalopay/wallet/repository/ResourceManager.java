@@ -26,7 +26,7 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.StorageUtil;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.configure.GlobalData;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.entity.bank.BankScript;
 import vn.com.zalopay.wallet.entity.config.CardRule;

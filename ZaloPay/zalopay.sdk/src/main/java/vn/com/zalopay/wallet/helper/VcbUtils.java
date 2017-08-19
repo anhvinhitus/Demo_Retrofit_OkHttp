@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.helper;
 
-import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.configure.GlobalData;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.constants.BankAccountError;
 

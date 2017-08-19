@@ -12,7 +12,7 @@ import vn.com.vng.zalopay.monitors.ZPMonitorEvent;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.configure.GlobalData;
 import vn.com.zalopay.wallet.entity.SdkError;
 import vn.com.zalopay.wallet.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.Constants;

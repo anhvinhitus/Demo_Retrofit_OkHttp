@@ -8,7 +8,7 @@ import java.util.List;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.RS;
+import vn.com.zalopay.wallet.configure.RS;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.entity.MultiValueMap;

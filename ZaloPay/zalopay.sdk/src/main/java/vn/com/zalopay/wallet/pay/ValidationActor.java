@@ -8,7 +8,7 @@ import timber.log.Timber;
 import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.configure.GlobalData;
 import vn.com.zalopay.wallet.entity.bank.BankConfig;
 import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
 import vn.com.zalopay.wallet.controller.SDKApplication;

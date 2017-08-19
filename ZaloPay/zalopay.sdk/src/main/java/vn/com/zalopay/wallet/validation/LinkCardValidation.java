@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.validation;
 import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.configure.GlobalData;
 import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.paymentinfo.IPaymentInfo;

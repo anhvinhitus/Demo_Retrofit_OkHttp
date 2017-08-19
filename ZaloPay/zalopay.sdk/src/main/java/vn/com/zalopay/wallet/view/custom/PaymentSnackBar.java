@@ -4,7 +4,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.GlobalData;
+import vn.com.zalopay.wallet.configure.GlobalData;
 import vn.com.zalopay.wallet.listener.OnSnackbarListener;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 

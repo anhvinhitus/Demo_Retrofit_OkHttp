@@ -1,8 +1,8 @@
 package vn.com.zalopay.wallet.helper;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.GlobalData;
-import vn.com.zalopay.wallet.RS;
+import vn.com.zalopay.wallet.configure.GlobalData;
+import vn.com.zalopay.wallet.configure.RS;
 
 /***
  * allow some action
