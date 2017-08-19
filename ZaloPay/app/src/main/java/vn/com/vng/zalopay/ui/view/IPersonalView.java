@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
- * Created by Duke on 3/27/17.
+ * Created by DatNT10 on 3/27/17.
  */
 
 public interface IPersonalView {
@@ -21,7 +21,8 @@ public interface IPersonalView {
 
     void setBalance(long balance);
 
-//    void setBankLinkText(int linkBankStatus, int cardAmount, int accAmount);
+    void visibleVoucherAppList(boolean isVisible);
+
     void setBankLinkText(int accounts);
 
     Context getContext();

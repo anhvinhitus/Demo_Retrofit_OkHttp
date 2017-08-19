@@ -17,6 +17,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -27,6 +28,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.entity.bank.BankAccount;
@@ -43,15 +45,6 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private ZaloSdkApi mZaloSdkApi;
     private Navigator mNavigator;
     private AppResourceStore.Repository mAppResourceRepository;
-
-    public int getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(int accounts) {
-        this.accounts = accounts;
-    }
-
     private int accounts;
 
     @Inject
@@ -66,6 +59,14 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         this.mZaloSdkApi = zaloSdkApi;
         this.mNavigator = navigator;
         this.mAppResourceRepository = appResourceRepository;
+    }
+
+    public int getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(int accounts) {
+        this.accounts = accounts;
     }
 
     @Override
@@ -149,6 +150,12 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         mView.setBalance(mBalanceRepository.currentBalance());
         getBalanceLocal();
         checkLinkCardStatus();
+        boolean hasVoucherApp = hasVoucherApp();
+        mView.visibleVoucherAppList(false);
+    }
+
+    private boolean hasVoucherApp() {
+        return PaymentAppConfig.getAppResource(BuildConfig.VOUCHER_APP_ID) != null;
     }
 
     private void getBalanceLocal() {
@@ -160,38 +167,10 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         mSubscription.add(subscription);
     }
 
-    private class BalanceSubscriber extends DefaultSubscriber<Long> {
-        BalanceSubscriber() {
-        }
-
-        @Override
-        public void onNext(Long aLong) {
-            onGetBalanceSuccess(aLong);
-        }
-    }
-
     void onGetBalanceSuccess(Long balance) {
         Timber.d("onGetBalanceSuccess %s", balance);
         mView.setBalance(balance);
     }
-
-//    public void logout() {
-//        Subscription subscription = mPassportRepository.logout()
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(new DefaultSubscriber<>());
-//        mSubscription.add(subscription);
-//
-//        if (mEventBus.isRegistered(this)) {
-//            mEventBus.unregister(this);
-//        }
-//
-//        if (mView == null) {
-//            return;
-//        }
-//
-//        ((UserBaseActivity) mView.getContext()).clearUserSession(null);
-//
-//    }
 
     private void checkLinkCardStatus() {
         List<MapCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser);
@@ -216,6 +195,24 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         }
     }
 
+//    public void logout() {
+//        Subscription subscription = mPassportRepository.logout()
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new DefaultSubscriber<>());
+//        mSubscription.add(subscription);
+//
+//        if (mEventBus.isRegistered(this)) {
+//            mEventBus.unregister(this);
+//        }
+//
+//        if (mView == null) {
+//            return;
+//        }
+//
+//        ((UserBaseActivity) mView.getContext()).clearUserSession(null);
+//
+//    }
+
     public void addLinkCard() {
         mNavigator.startBankSupportSelectionActivityWithoutBank(getContext());
     }
@@ -227,6 +224,16 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         Subscription subscription = mNavigator.startVoucherApp(mView.getActivity());
         if (subscription != null) {
             mSubscription.add(subscription);
+        }
+    }
+
+    private class BalanceSubscriber extends DefaultSubscriber<Long> {
+        BalanceSubscriber() {
+        }
+
+        @Override
+        public void onNext(Long aLong) {
+            onGetBalanceSuccess(aLong);
         }
     }
 }

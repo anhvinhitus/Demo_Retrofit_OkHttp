@@ -48,6 +48,12 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
     @BindView(R.id.tab_personal_tv_bank_link_now)
     TextView tvBankLink;
 
+    @BindView(R.id.tab_personal_voucher)
+    View voucherapp_rl;
+
+    @BindView(R.id.voucher_line)
+    View voucher_line;
+
     @Inject
     PersonalPresenter presenter;
 
@@ -140,13 +146,21 @@ public class PersonalFragment extends UserBaseTabFragment implements IPersonalVi
 
     @Override
     public void setBankLinkText(int accounts) {
-        if (tvBankLink != null) {
-            if (accounts > 0) {
-                tvBankLink.setText(accounts + " liên kết");
-            } else {
-                tvBankLink.setText(getString(R.string.personal_link_now_text));
-            }
+        if (tvBankLink == null) {
+            return;
         }
+        if (accounts > 0) {
+            String linkNow = String.format(getString(R.string.personal_link_now_with_card_desc), String.valueOf(accounts));
+            tvBankLink.setText(linkNow);
+        } else {
+            tvBankLink.setText(getString(R.string.personal_link_now_text));
+        }
+    }
+
+    @Override
+    public void visibleVoucherAppList(boolean isVisible) {
+        voucherapp_rl.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        voucher_line.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

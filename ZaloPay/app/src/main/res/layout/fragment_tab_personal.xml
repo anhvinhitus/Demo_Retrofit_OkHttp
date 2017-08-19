@@ -161,6 +161,7 @@
                 </RelativeLayout>
 
                 <View
+                    android:id="@+id/voucher_line"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/personal_dashline_height"
                     android:layout_marginLeft="@dimen/personal_dashline_margin_left"

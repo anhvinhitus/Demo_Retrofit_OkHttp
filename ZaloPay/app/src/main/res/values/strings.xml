@@ -414,6 +414,7 @@
     <string name="personal_item_quick_feedback_title">Góp Ý Nhanh</string>
     <string name="personal_item_app_info_title">Thông Tin Ứng Dụng</string>
     <string name="personal_link_now_text">Liên kết ngay</string>
+    <string name="personal_link_now_with_card_desc">%1$s liên kết</string>
     <string name="personal_view_detail_text">Xem chi tiết</string>
     <string name="profile_dob_and_gender_edit_hint_text">Chỉnh sửa Ngày sinh và Giới tính tại ứng dụng Zalo</string>
     <string name="profile_phone_and_zpid_update_hint_text">Cập nhật Số điện thoại và Zalo Pay ID để thực hiện các giao dịch chuyển tiền, rút tiền và lì xì cho bạn bè</string>
