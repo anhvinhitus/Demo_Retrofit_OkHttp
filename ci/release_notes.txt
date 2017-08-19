@@ -1,2 +1,2 @@
-Zalo Pay (Staging v2.17.0 - build 425) - Released on 2017-08-19 10:47
-
+Zalo Pay (Staging v2.17.0 - build 426) - Released on 2017-08-19 11:00
++ [React] Remove WeakReference to Promise by hoanh (#547e8ac3a)
