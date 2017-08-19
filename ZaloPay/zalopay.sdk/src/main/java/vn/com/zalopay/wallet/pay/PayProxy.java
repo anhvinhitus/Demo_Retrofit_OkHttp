@@ -330,7 +330,7 @@ public class PayProxy extends SingletonBase {
             }
             return mValidActor.validate(channel);
         } catch (Exception e) {
-            Timber.d(e.getMessage());
+            Timber.w(e, "Exception validate");
         }
         return false;
     }
@@ -415,7 +415,8 @@ public class PayProxy extends SingletonBase {
                 .doOnSubscribe(() -> {
                     try {
                         getView().setTitle(mContext.getResources().getString(R.string.sdk_trans_getstatus_mess));
-                    } catch (Exception ignored) {
+                    } catch (Exception e) {
+                        Timber.d(e);
                     }
                 })
                 .subscribe(this::onTransStatusSuccess, this::onTransStatusError);
