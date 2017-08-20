@@ -157,9 +157,11 @@ public class PayProxy extends SingletonBase {
     public PayProxy initialize(BaseActivity activity) {
         mActivity = new WeakReference<>(activity);
         mAuthenActor = AuthenActor.get().plant(this);
-        mTransService = SDKApplication.getApplicationComponent().transService();
+        mTransService = SDKApplication.getApplicationComponent()
+                .transService();
         mContext = activity.getApplicationContext();
-        mBankInteractor = SDKApplication.getApplicationComponent().bankListInteractor();
+        mBankInteractor = SDKApplication.getApplicationComponent()
+                .bankListInteractor();
         return this;
     }
 
@@ -270,7 +272,6 @@ public class PayProxy extends SingletonBase {
                 } else {
                     showPassword(getActivity());
                     setError(mStatusResponse.returnmessage);
-                    getView().updateDefaultTitle();
                     retryPassword++;
                 }
                 break;
@@ -281,7 +282,7 @@ public class PayProxy extends SingletonBase {
         hideLoading(pError);
     }
 
-    synchronized void moveToResultScreen() {
+    void moveToResultScreen() {
         //reset value to notify on fail screen
         if (TransactionHelper.isOrderProcessing(mStatusResponse)) {
             mStatusResponse.returncode = -1;
@@ -340,7 +341,7 @@ public class PayProxy extends SingletonBase {
             if (mAuthenActor.showLoading()) {
                 getView().setTitle(pMessage);
             } else {
-                getView().showLoading(pMessage);
+                getView().showLoading(pMessage, this::moveToResultScreen);
             }
         } catch (Exception e) {
             Timber.w(e, "Exception show loading");
@@ -349,12 +350,10 @@ public class PayProxy extends SingletonBase {
 
     private void hideLoading(String pError) {
         try {
-            getView().setTitle(mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()));
-            if (!mAuthenActor.hideLoading(pError)) {
-                getView().hideLoading();
-            }
+            mAuthenActor.hideLoading(pError);
+            getView().hideLoading();
         } catch (Exception e) {
-            Timber.w(e, "Exception hide loading");
+            Timber.d(e, "Exception hide loading");
         }
     }
 
@@ -384,7 +383,7 @@ public class PayProxy extends SingletonBase {
                             .subscribe(this::onOrderSubmittedSuccess, this::onOrderSubmitedFailed);
             getPresenter().addSubscription(subscription);
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.w(e, "Exception submit order");
             markTransFail(TransactionHelper.getSubmitExceptionMessage(mContext));
         }
     }

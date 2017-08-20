@@ -197,16 +197,15 @@ public class AuthenActor {
         return mPassword != null;
     }
 
-    public boolean hideLoading(String pError) {
+    public void hideLoading(String pError) {
         try {
             if (mPassword != null) {
                 mPassword.setError(pError);
                 mPassword.unlock();
             }
         } catch (Exception e) {
-            Timber.d(e, "AuthenActor hideLoading");
+            Timber.d(e, "Authen Actor hideLoading");
         }
-        return mPassword != null;
     }
 
     void closeAuthen() {

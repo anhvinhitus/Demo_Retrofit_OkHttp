@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
@@ -40,8 +41,8 @@ import vn.com.zalopay.wallet.entity.UserInfo;
 import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.helper.FontHelper;
 import vn.com.zalopay.wallet.helper.TrackHelper;
-import vn.com.zalopay.wallet.listener.OnSnackbarListener;
 import vn.com.zalopay.wallet.listener.OnNetworkDialogListener;
+import vn.com.zalopay.wallet.listener.OnSnackbarListener;
 import vn.com.zalopay.wallet.paymentinfo.AbstractOrder;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.BaseActivity;
@@ -73,7 +74,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
         }
     };
     private RecyclerView channel_list_recycler;
-    private String mOriginTitle;
     private View order_amount_linearlayout;
     private TextView order_amount_txt;
     private TextView order_description_txt;
@@ -91,6 +91,13 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     private TextView voucher_discount_amount_textview;
     private View active_voucher_del_img;
     private TextView origin_amount_total_txt;
+    private OnProgressDialogTimeoutListener progressDialogTimeoutListener = () -> {
+        try {
+            showError(getResources().getString(R.string.sdk_loading_timeout));
+        } catch (Exception e) {
+            Timber.d(e, "Exception show timeout loading dialog");
+        }
+    };
 
     public static BaseFragment newInstance() {
         return new ChannelListFragment();
@@ -171,9 +178,6 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void setTitle(String title) {
-        if (TextUtils.isEmpty(mOriginTitle)) {
-            mOriginTitle = title;
-        }
         if (getActivity() != null) {
             ((ChannelListActivity) getActivity()).setToolbarTitle(title);
         }
@@ -208,24 +212,25 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void showLoading(String pTitle) {
-        if (getActivity() != null) {
-            setTitle(pTitle);
-            DialogManager.showProcessDialog(getActivity(), () -> {
-                try {
-                    showError(getResources().getString(R.string.sdk_loading_timeout));
-                } catch (Exception e) {
-                    Timber.d(e, "Exception show timeout loading dialog");
-                }
-            });
+        showLoading(pTitle, progressDialogTimeoutListener);
+    }
+
+    @Override
+    public void showLoading(String title, OnProgressDialogTimeoutListener pListener) {
+        Activity activity = getActivity();
+        if (activity == null || activity.isFinishing()) {
+            return;
         }
+        setTitle(title);
+        DialogManager.showProcessDialog(getActivity(), pListener);
     }
 
     @Override
     public void updateDefaultTitle() {
-        if (getActivity() != null) {
-            getActivity().setTitle(mOriginTitle);
-            Timber.d("set default title %s", mOriginTitle);
-        }
+        String title = GlobalData.getPaymentInfoHelper() != null
+                ? GlobalData.mPaymentInfoHelper.getTitleByTrans(GlobalData.getAppContext()) : getString(R.string.sdk_pay_title);
+        setTitle(title);
+        Timber.d("set default title %s", title);
     }
 
     @Override
