@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.UIBottomSheetDialog;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
-import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
+import com.zalopay.ui.widget.dialog.listener.OnLoadingDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
@@ -91,7 +91,7 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
     private TextView voucher_discount_amount_textview;
     private View active_voucher_del_img;
     private TextView origin_amount_total_txt;
-    private OnProgressDialogTimeoutListener progressDialogTimeoutListener = () -> {
+    private OnLoadingDialogTimeoutListener mDialogTimeoutListener = () -> {
         try {
             showError(getResources().getString(R.string.sdk_loading_timeout));
         } catch (Exception e) {
@@ -212,17 +212,27 @@ public class ChannelListFragment extends GenericFragment<ChannelListPresenter> i
 
     @Override
     public void showLoading(String pTitle) {
-        showLoading(pTitle, progressDialogTimeoutListener);
+        showLoading(pTitle, mDialogTimeoutListener);
     }
 
     @Override
-    public void showLoading(String title, OnProgressDialogTimeoutListener pListener) {
+    public void showLoading(String title, OnLoadingDialogTimeoutListener pListener) {
         Activity activity = getActivity();
         if (activity == null || activity.isFinishing()) {
             return;
         }
         setTitle(title);
-        DialogManager.showProcessDialog(getActivity(), pListener);
+        DialogManager.showLoadingDialog(activity, pListener);
+    }
+
+    @Override
+    public void showLoadingNoTimeout(String title) {
+        Activity activity = getActivity();
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+        setTitle(title);
+        DialogManager.showLoadingDialog(activity, null, 0);
     }
 
     @Override

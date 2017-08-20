@@ -121,7 +121,11 @@ public class PayProxy extends SingletonBase {
 
     private void onAppTransStatusSuccess(StatusResponse statusResponse) {
         if (PaymentStatusHelper.isTransactionNotSubmit(statusResponse)) {
-            markTransFail(mContext.getResources().getString(R.string.sdk_error_not_submit_order));
+            String failMess = statusResponse.returnmessage;
+            if (TextUtils.isEmpty(failMess)) {
+                failMess = mContext.getResources().getString(R.string.sdk_error_not_submit_order);
+            }
+            markTransFail(failMess);
             return;
         }
         try {
@@ -341,7 +345,7 @@ public class PayProxy extends SingletonBase {
             if (mAuthenActor.showLoading()) {
                 getView().setTitle(pMessage);
             } else {
-                getView().showLoading(pMessage, this::moveToResultScreen);
+                getView().showLoadingNoTimeout(pMessage);
             }
         } catch (Exception e) {
             Timber.w(e, "Exception show loading");

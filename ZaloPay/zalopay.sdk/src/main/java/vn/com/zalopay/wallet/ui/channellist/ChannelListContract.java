@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.ui.channellist;
 
-import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
+import com.zalopay.ui.widget.dialog.listener.OnLoadingDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.util.List;
@@ -61,7 +61,8 @@ public interface ChannelListContract extends IContract {
 
         void dismissSnackBar();
 
-        void showLoading(String title, OnProgressDialogTimeoutListener pListener);
+        void showLoading(String title, OnLoadingDialogTimeoutListener pListener);
+        void showLoadingNoTimeout(String title);
 
         ChannelListAdapter initChannelListAdapter(long amount, UserInfo userInfo, int userLevel, int transtype);
     }
