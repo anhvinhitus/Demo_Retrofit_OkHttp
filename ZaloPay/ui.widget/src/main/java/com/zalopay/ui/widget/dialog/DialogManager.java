@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.R;
-import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
+import com.zalopay.ui.widget.dialog.listener.OnLoadingDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
@@ -38,8 +38,8 @@ public class DialogManager {
         closeShowDialog();
     }
 
-    private synchronized static void showProcessDialog(Activity pActivity, final long pStartTime,
-                                                       final OnProgressDialogTimeoutListener pCallback, long pTimeoutLoading) {
+    private synchronized static void showLoadingDialog(Activity pActivity, final long pStartTime,
+                                                       final OnLoadingDialogTimeoutListener pCallback, long pTimeoutLoading) {
         try {
             if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
                 Timber.d("There is a showing process dialog");
@@ -54,8 +54,8 @@ public class DialogManager {
             }
             //set timeout for show progress dialog.
             mLastShowProcessDialog = pStartTime;
-            if (pCallback != null) {
-                final WeakReference<OnProgressDialogTimeoutListener> timeoutLoading = new WeakReference<>(pCallback);
+            if (pCallback != null && pTimeoutLoading > 0) {
+                final WeakReference<OnLoadingDialogTimeoutListener> timeoutLoading = new WeakReference<>(pCallback);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -63,7 +63,9 @@ public class DialogManager {
                             closeLoadDialog();
                             if (timeoutLoading.get() != null) {
                                 timeoutLoading.get().onProgressTimeout();
+                                Timber.d("callback on Timeout loading Dialog");
                             }
+                            Timber.d("onTimeout loading Dialog");
                         }
                     }
                 }, pTimeoutLoading);
@@ -76,13 +78,13 @@ public class DialogManager {
         }
     }
 
-    public synchronized static void showProcessDialog(Activity pActivity,
-                                                      OnProgressDialogTimeoutListener pCallback, long pTimeoutLoading) {
-        showProcessDialog(pActivity, System.currentTimeMillis(), pCallback, pTimeoutLoading);
+    public synchronized static void showLoadingDialog(Activity pActivity,
+                                                      OnLoadingDialogTimeoutListener pCallback, long pTimeoutLoading) {
+        showLoadingDialog(pActivity, System.currentTimeMillis(), pCallback, pTimeoutLoading);
     }
 
-    public synchronized static void showProcessDialog(Activity pActivity, OnProgressDialogTimeoutListener pCallback) {
-        showProcessDialog(pActivity, System.currentTimeMillis(), pCallback, PROGRESS_DIALOG_TIMEOUT);
+    public synchronized static void showLoadingDialog(Activity pActivity, OnLoadingDialogTimeoutListener pCallback) {
+        showLoadingDialog(pActivity, System.currentTimeMillis(), pCallback, PROGRESS_DIALOG_TIMEOUT);
     }
 
     public synchronized static boolean showingLoadDialog() {

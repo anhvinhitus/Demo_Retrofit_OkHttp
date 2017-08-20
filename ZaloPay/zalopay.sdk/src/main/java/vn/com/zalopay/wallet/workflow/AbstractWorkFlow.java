@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
-import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
+import com.zalopay.ui.widget.dialog.listener.OnLoadingDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
@@ -125,7 +125,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     private boolean mCanEditCardInfo = false;
     @BankFlow
     private int mECardFlowType;
-    OnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new OnProgressDialogTimeoutListener() {
+    OnLoadingDialogTimeoutListener mProgressDialogTimeoutListener = new OnLoadingDialogTimeoutListener() {
         @Override
         public void onProgressTimeout() {
             try {
@@ -158,7 +158,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
 
                                 @Override
                                 public void onOKEvent() {
-                                    DialogManager.showProcessDialog(activity.get(), mProgressDialogTimeoutListener);
+                                    DialogManager.showLoadingDialog(activity.get(), mProgressDialogTimeoutListener);
                                     try {
                                         getGuiProcessor().reloadUrl();
                                     } catch (Exception e) {

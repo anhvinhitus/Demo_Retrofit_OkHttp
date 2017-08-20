@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
-import com.zalopay.ui.widget.dialog.listener.OnProgressDialogTimeoutListener;
+import com.zalopay.ui.widget.dialog.listener.OnLoadingDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
@@ -192,10 +192,10 @@ public class ChannelFragment extends AbstractPaymentFragment<ChannelPresenter> i
     }
 
     @Override
-    public void showLoading(String pTitle, OnProgressDialogTimeoutListener timeoutListener) {
+    public void showLoading(String pTitle, OnLoadingDialogTimeoutListener timeoutListener) {
         if (getActivity() != null) {
             setTitle(pTitle);
-            DialogManager.showProcessDialog(getActivity(), timeoutListener);
+            DialogManager.showLoadingDialog(getActivity(), timeoutListener);
         }
     }
 

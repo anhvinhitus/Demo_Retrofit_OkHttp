@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.transaction;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import timber.log.Timber;
@@ -8,13 +9,10 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
+import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_DELAY_RETRY;
-import static vn.com.zalopay.wallet.constants.Constants.TRANS_STATUS_MAX_RETRY;
 
 /**
  * in case submit order return fail as networking - request timeout
@@ -37,7 +35,7 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
     }
 
     private boolean shouldStop(StatusResponse statusResponse) {
-        Timber.d("start check trans status by app trans");
+        Timber.d("start check trans status by app trans [retry time: %s]", retryCount);
         ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, statusResponse);
         boolean stop = shouldStopCheckStatus(statusResponse);
         running = !stop;
@@ -45,7 +43,7 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
     }
 
     private boolean shouldStopCheckStatus(StatusResponse pResponse) {
-        if (retryCount >= TRANS_STATUS_MAX_RETRY) {
+        if (retryCount >= Constants.TRANS_STATUS_MAX_RETRY) {
             return true;
         }
         return pResponse != null
@@ -74,12 +72,12 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
                     running = true;
                 })
                 .doOnError(this::doOnError)
-                /* .map(statusResponse -> {
+                /*.map(statusResponse -> {
                     statusResponse.isprocessing = true;
                     statusResponse.returncode = -49;
                     return statusResponse;
                 })*/
-                .repeatWhen(observable -> observable.delay(TRANS_STATUS_DELAY_RETRY, MILLISECONDS))
+                .repeatWhen(observable -> observable.delay(Constants.TRANS_STATUS_DELAY_RETRY, TimeUnit.MILLISECONDS))
                 .takeUntil(this::shouldStop)
                 .filter(this::shouldStopCheckStatus);
     }

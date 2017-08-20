@@ -295,14 +295,6 @@ public class PaymentInfoHelper extends SingletonBase {
         }
     }
 
-    public String getPaymentMethodTitleByTrans(Context context) {
-        String title = context.getResources().getString(R.string.sdk_pay_method_title);
-        if (isMoneyTranferTrans()) {
-            title = context.getResources().getString(R.string.sdk_tranfer_method_title);
-        }
-        return title;
-    }
-
     public String getTitleByTrans(Context context) {
         String title = context.getString(R.string.sdk_pay_title);
         if (isTopupTrans()) {
