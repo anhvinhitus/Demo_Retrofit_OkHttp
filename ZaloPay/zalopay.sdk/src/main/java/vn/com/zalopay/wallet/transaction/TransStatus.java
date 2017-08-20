@@ -3,15 +3,14 @@ package vn.com.zalopay.wallet.transaction;
 import java.util.Map;
 
 import rx.Observable;
-import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.api.AbstractRequest;
 import vn.com.zalopay.wallet.api.DataParameter;
 import vn.com.zalopay.wallet.api.ITransService;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.entity.UserInfo;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.tracker.ZPAnalyticsTrackerWrapper;
 
@@ -30,13 +29,6 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
     private int retryCount = 0;
     private long intervalRetry = TRANS_STATUS_DELAY_RETRY;
 
-    private Func1<StatusResponse, Boolean> shouldStop = statusResponse -> {
-        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, statusResponse);
-        boolean stop = shouldStop(statusResponse);
-        running = !stop;
-        return stop;
-    };
-
     public TransStatus(ITransService transService, long appId, UserInfo userInfo, String transId) {
         super(transService);
         this.mAppId = appId;
@@ -45,18 +37,22 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
         intervalRetry = (mAppId == BuildConfig.channel_zalopay) ? TRANS_STATUS_DELAY_RETRY / 2 : TRANS_STATUS_DELAY_RETRY;
     }
 
-    private boolean shouldStop(StatusResponse pResponse) {
+    private boolean shouldStop(StatusResponse statusResponse) {
         Timber.d("start check should stop check trans status");
-        if (pResponse == null) {
-            return false;
-        }
+        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS, startTime, statusResponse);
+        boolean stop = shouldStopCheckStatus(statusResponse);
+        running = !stop;
+        return stop;
+    }
+
+    private boolean shouldStopCheckStatus(StatusResponse pResponse) {
         if (retryCount >= TRANS_STATUS_MAX_RETRY) {
             return true;
         }
-        if (TransactionHelper.isSecurityFlow(pResponse)) {
-            return true;
+        if (pResponse == null) {
+            return false;
         }
-        return !pResponse.isprocessing;
+        return TransactionHelper.isSecurityFlow(pResponse) || !pResponse.isprocessing;
     }
 
     @Override
@@ -86,8 +82,8 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
                     return statusResponse;
                 })*/
                 .repeatWhen(observable -> observable.delay(intervalRetry, MILLISECONDS))
-                .takeUntil(shouldStop)
-                .filter(this::shouldStop);
+                .takeUntil(this::shouldStop)
+                .filter(this::shouldStopCheckStatus);
     }
 
     @Override

@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.transaction;
 import java.util.Map;
 
 import rx.Observable;
-import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.api.AbstractRequest;
@@ -28,12 +27,6 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
     private String userId;
     private String appTransId;
     private int retryCount = 1;
-    private Func1<StatusResponse, Boolean> shouldStop = statusResponse -> {
-        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, statusResponse);
-        boolean stop = shouldStop(statusResponse);
-        running = !stop;
-        return stop;
-    };
 
     public StatusByAppTrans(ITransService pTransService, long appId, String userId, String appTransId) {
         super(pTransService);
@@ -43,15 +36,20 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
         this.appTransId = appTransId;
     }
 
-    private boolean shouldStop(StatusResponse pResponse) {
+    private boolean shouldStop(StatusResponse statusResponse) {
         Timber.d("start check trans status by app trans");
-        if (pResponse == null) {
-            return false;
-        }
-        if (!PaymentStatusHelper.isTransactionNotSubmit(pResponse)) {
+        ZPAnalyticsTrackerWrapper.trackApiCall(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT, startTime, statusResponse);
+        boolean stop = shouldStopCheckStatus(statusResponse);
+        running = !stop;
+        return stop;
+    }
+
+    private boolean shouldStopCheckStatus(StatusResponse pResponse) {
+        if (retryCount >= TRANS_STATUS_MAX_RETRY) {
             return true;
         }
-        return retryCount >= TRANS_STATUS_MAX_RETRY;
+        return pResponse != null
+                && !PaymentStatusHelper.isTransactionNotSubmit(pResponse);
     }
 
     @Override
@@ -82,7 +80,7 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
                     return statusResponse;
                 })*/
                 .repeatWhen(observable -> observable.delay(TRANS_STATUS_DELAY_RETRY, MILLISECONDS))
-                .takeUntil(shouldStop)
-                .filter(this::shouldStop);
+                .takeUntil(this::shouldStop)
+                .filter(this::shouldStopCheckStatus);
     }
 }
