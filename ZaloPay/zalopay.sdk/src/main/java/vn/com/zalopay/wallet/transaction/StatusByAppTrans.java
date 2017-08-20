@@ -24,7 +24,7 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
     private long appId;
     private String userId;
     private String appTransId;
-    private int retryCount = 1;
+    private int retryCount = 0;
 
     public StatusByAppTrans(ITransService pTransService, long appId, String userId, String appTransId) {
         super(pTransService);
@@ -63,6 +63,11 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
         return map;
     }
 
+    private StatusResponse getDefaultResponse() {
+        StatusResponse response = new StatusResponse(Constants.TRANSACTION_NOT_SUBMIT, null);
+        return response;
+    }
+
     @Override
     public Observable<StatusResponse> getObserver() {
         return mTransService.getStatusByAppTransClient(buildParams())
@@ -72,8 +77,9 @@ public class StatusByAppTrans extends AbstractRequest<StatusResponse> {
                     running = true;
                 })
                 .doOnError(this::doOnError)
-                /*.map(statusResponse -> {
-                    statusResponse.isprocessing = true;
+                .onErrorReturn(throwable -> getDefaultResponse())
+               /* .map(statusResponse -> {
+                    //statusResponse.isprocessing = true;
                     statusResponse.returncode = -49;
                     return statusResponse;
                 })*/

@@ -66,6 +66,12 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
         return map;
     }
 
+    private StatusResponse getDefaultResponse() {
+        StatusResponse response = new StatusResponse(-1, null);
+        response.isprocessing = true;
+        return response;
+    }
+
     public Observable<StatusResponse> getStatus(Map<String, String> params) {
         return mTransService.getStatus(params)
                 .doOnSubscribe(() -> {
@@ -74,6 +80,7 @@ public class TransStatus extends AbstractRequest<StatusResponse> {
                     startTime = System.currentTimeMillis();
                 })
                 .doOnError(this::doOnError)
+                .onErrorReturn(throwable -> getDefaultResponse())
                /* .map(statusResponse -> {
                     statusResponse.isprocessing = true;
                     statusResponse.data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
