@@ -11,11 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 
 import java.text.DateFormat;
@@ -85,7 +85,7 @@ public class FeedbackFragment extends AbsPickerImageFragment
     LinearLayout mView;
 
     @BindView(R.id.screenshot)
-    ImageView mScreenshotView;
+    SimpleDraweeView mScreenshotView;
 
     @Inject
     FeedbackPresenter mPresenter;
