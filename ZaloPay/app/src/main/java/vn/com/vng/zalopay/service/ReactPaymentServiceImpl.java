@@ -3,7 +3,9 @@ package vn.com.vng.zalopay.service;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.WritableMap;
 
 import java.util.Locale;
 
@@ -111,9 +113,11 @@ public class ReactPaymentServiceImpl implements IPaymentService {
 
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
         private final Promise mPromise;
+        private final WritableMap mSuccessParams;
 
         public PaymentResponseListener(Promise promise) {
             mPromise = promise;
+            mSuccessParams = Arguments.createMap();
         }
 
         @Override
@@ -134,7 +138,7 @@ public class ReactPaymentServiceImpl implements IPaymentService {
 
         @Override
         public void onResponseSuccess(IBuilder builder) {
-            Helpers.promiseResolveSuccess(mPromise, null);
+            Helpers.promiseResolveSuccess(mPromise, mSuccessParams);
         }
 
         @Override
@@ -142,6 +146,14 @@ public class ReactPaymentServiceImpl implements IPaymentService {
             Helpers.promiseResolveError(mPromise, PaymentError.ERR_CODE_SYSTEM.value(),
                     PaymentError.getErrorMessage(PaymentError.ERR_CODE_SYSTEM));
             destroyVariable();
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
+            super.onPreComplete(isSuccessful, pTransId, pAppTransId);
+            mSuccessParams.putString("zptransid", pTransId);
+            mSuccessParams.putString("apptransid", pAppTransId);
+            mSuccessParams.putInt("result", isSuccessful ? 1 : 0);
         }
     }
 }
