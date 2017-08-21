@@ -151,13 +151,7 @@ public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response
         int eventId = getEventId(isPaymentCall);
         Timber.d("API Request [%s, %s] (%s), duration: %s (ms)", mHttpsApiId, mConnectorApiId, ZPEvents.actionFromEventId(eventId), duration);
         if (eventId <= 0) {
-            String path = request.url().encodedPath();
-            Timber.d("API Request: %s", path);
-            if (MerchantApiMap.gApiMapEvent.containsKey(path)) {
-                Timber.d("Found API Request");
-                eventId = MerchantApiMap.gApiMapEvent.get(path);
-            }
-
+            eventId = MerchantApiMap.getEventIdByRequest(request);
             if (eventId <= 0) {
                 Timber.i("Skip logging timing event");
                 return;

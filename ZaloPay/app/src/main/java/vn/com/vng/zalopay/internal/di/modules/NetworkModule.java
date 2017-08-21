@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.data.ws.parser.NotificationMessageDeserializer;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.network.BaseNetworkInterceptor;
+import vn.com.vng.zalopay.network.MerchantApiMap;
 import vn.com.vng.zalopay.network.ToStringConverterFactory;
 import vn.com.vng.zalopay.tracker.GoogleReporter;
 import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
@@ -49,6 +50,10 @@ import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.Adapt
 @Module
 public class NetworkModule {
     private static final HttpUrl API_HTTP_URL = HttpUrl.parse(BuildConfig.HOST);
+
+    public NetworkModule(){
+        MerchantApiMap.sHostTopup = HttpUrl.parse(BuildConfig.TOPUP_HOST).host();
+    }
 
     @Provides
     @Singleton

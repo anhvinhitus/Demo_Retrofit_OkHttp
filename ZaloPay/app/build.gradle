@@ -181,6 +181,7 @@ android {
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
             buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/promotion/home"'
             buildConfigField 'String', 'VOUCHER_HOST', '"https://evoucher.zalopay.vn/promotion/"'
+            buildConfigField 'String', 'TOPUP_HOST', '"https://topup.zalopay.vn/"'
         }
 
         sandbox {
@@ -200,6 +201,7 @@ android {
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sblog.zalopay.com.vn/"'
             buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/promotion/home"'
             buildConfigField 'String', 'VOUCHER_HOST', '"https://sb-evoucher.zalopay.vn/promotion/"'
+            buildConfigField 'String', 'TOPUP_HOST', '"https://sbtopup.zalopay.vn/"'
         }
 
         staging {
@@ -219,6 +221,7 @@ android {
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
             buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/promotion/home"'
             buildConfigField 'String', 'VOUCHER_HOST', '"https://stg-evoucher.zalopay.vn/promotion/"'
+            buildConfigField 'String', 'TOPUP_HOST', '"https://stgtopup.zalopay.vn/"'
         }
 
         internalProduction {
@@ -238,6 +241,7 @@ android {
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
             buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/promotion/home"'
             buildConfigField 'String', 'VOUCHER_HOST', '"https://evoucher.zalopay.vn/promotion/"'
+            buildConfigField 'String', 'TOPUP_HOST', '"https://topup.zalopay.vn/"'
         }
 
         internalSandbox {
@@ -257,6 +261,7 @@ android {
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/promotion/home"'
             buildConfigField 'String', 'VOUCHER_HOST', '"https://sb-evoucher.zalopay.vn/promotion/"'
+            buildConfigField 'String', 'TOPUP_HOST', '"https://sbtopup.zalopay.vn/"'
         }
 
         internalStaging {
@@ -276,6 +281,7 @@ android {
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
             buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/promotion/home"'
             buildConfigField 'String', 'VOUCHER_HOST', '"https://stg-evoucher.zalopay.vn/promotion/"'
+            buildConfigField 'String', 'TOPUP_HOST', '"https://stgtopup.zalopay.vn/"'
         }
 
         iapProduction {
@@ -296,6 +302,7 @@ android {
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://log.zalopay.com.vn/"'
             buildConfigField 'String', 'PROMOTION_URL', '"https://promotion.zalopay.vn/promotion/home"'
             buildConfigField 'String', 'VOUCHER_HOST', '"https://evoucher.zalopay.vn/promotion/"'
+            buildConfigField 'String', 'TOPUP_HOST', '"https://topup.zalopay.vn/"'
         }
 
         iapSandbox {
@@ -316,6 +323,7 @@ android {
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'String', 'PROMOTION_URL', '"https://sbpromotion.zalopay.vn/promotion/home"'
             buildConfigField 'String', 'VOUCHER_HOST', '"https://sb-evoucher.zalopay.vn/promotion/"'
+            buildConfigField 'String', 'TOPUP_HOST', '"https://sbtopup.zalopay.vn/"'
         }
 
         iapStaging {
@@ -336,6 +344,7 @@ android {
             buildConfigField 'String', 'CLIENTLOGS_URL', '"https://stglog.zalopay.com.vn/"'
             buildConfigField 'String', 'PROMOTION_URL', '"https://stgpromotion.zalopay.vn/promotion/home"'
             buildConfigField 'String', 'VOUCHER_HOST', '"https://stg-evoucher.zalopay.vn/promotion/"'
+            buildConfigField 'String', 'TOPUP_HOST', '"https://stgtopup.zalopay.vn/"'
         }
     }
 
