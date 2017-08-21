@@ -154,13 +154,14 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
         @Override
         public void onResponseError(PaymentError status) {
             super.onResponseError(status);
+            if (status == null) {
+                return;
+            }
             if (status.value() == PaymentError.ERR_CODE_NON_STATE.value()) {
                 closeTopup();
             }
-            if (status.value() == PaymentError.ERR_CODE_USER_CANCEL.value()) {
-                if (mView == null || mView.getContext() == null) {
-                    return;
-                }
+            if (status.value() == PaymentError.ERR_CODE_USER_CANCEL.value()
+                    && mView != null) {
                 mView.showKeyboard();
             }
         }

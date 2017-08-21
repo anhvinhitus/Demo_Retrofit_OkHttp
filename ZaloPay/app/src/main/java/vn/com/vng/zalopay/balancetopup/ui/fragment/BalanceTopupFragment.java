@@ -111,7 +111,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
                 return mEdtAmountView.getAmount() % 10000 == 0;
             }
         });
-        mEdtAmountView.setClearTextListener(() -> showKeyboard());
+        mEdtAmountView.setClearTextListener(this::showKeyboard);
 
         mBtnDepositView.setEnabled(mEdtAmountView.isValid());
     }
@@ -159,7 +159,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @Override
     public void showKeyboard() {
-        AndroidUtils.runOnUIThread(()->{
+        AndroidUtils.runOnUIThread(() -> {
             if (!AndroidUtils.isKeyboardShowed(mEdtAmountView))
                 AndroidUtils.showKeyboard(mEdtAmountView);
         }, 250);
