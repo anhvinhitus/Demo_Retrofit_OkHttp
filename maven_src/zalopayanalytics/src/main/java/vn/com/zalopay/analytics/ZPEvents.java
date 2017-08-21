@@ -332,6 +332,10 @@ public class ZPEvents {
     public static final int CONNECTOR_GET_VOUCHER_STATUS = 12503;
     public static final int CONNECTOR_USE_VOUCHER = 12504;
     public static final int CONNECTOR_REVERT_VOUCHER = 12505;
+    public static final int API_TOPUP_GETPRICELIST = 12601;
+    public static final int API_TOPUP_GETRECENTLIST = 12602;
+    public static final int API_TOPUP_GETTRANSBYZPTRANSID = 12603;
+    public static final int API_TOPUP_CREATEORDER = 12604;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -991,6 +995,14 @@ public class ZPEvents {
                 return "connector_use_voucher";
             case CONNECTOR_REVERT_VOUCHER:
                 return "connector_revert_voucher";
+            case API_TOPUP_GETPRICELIST:
+                return "api_topup_getpricelist";
+            case API_TOPUP_GETRECENTLIST:
+                return "api_topup_getrecentlist";
+            case API_TOPUP_GETTRANSBYZPTRANSID:
+                return "api_topup_gettransbyzptransid";
+            case API_TOPUP_CREATEORDER:
+                return "api_topup_createorder";
             default:
                 return "DefaultAction";
         }
@@ -1654,6 +1666,14 @@ public class ZPEvents {
                 return "Timing  Voucher";
             case CONNECTOR_REVERT_VOUCHER:
                 return "Timing  Voucher";
+            case API_TOPUP_GETPRICELIST:
+                return "Timing Topup";
+            case API_TOPUP_GETRECENTLIST:
+                return "Timing Topup";
+            case API_TOPUP_GETTRANSBYZPTRANSID:
+                return "Timing Topup";
+            case API_TOPUP_CREATEORDER:
+                return "Timing Topup";
             default:
                 return "DefaultCategory";
         }
