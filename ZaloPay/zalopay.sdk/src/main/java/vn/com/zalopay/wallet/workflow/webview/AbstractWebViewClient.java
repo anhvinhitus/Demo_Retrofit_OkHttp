@@ -69,7 +69,7 @@ public abstract class AbstractWebViewClient extends WebViewClient {
         SdkWebView finalWebView = webView;
         Subscription subscription = Observable.from(pJsFileName.split(Constants.COMMA))
                 .filter(s -> !TextUtils.isEmpty(s))
-                .flatMap(ResourceManager::getJavascriptContent)
+                .concatMap(ResourceManager::getJavascriptContent)
                 .filter(s -> !TextUtils.isEmpty(s))
                 .map(jsContent -> String.format(jsContent, pJsInput))
                 .compose(SchedulerHelper.applySchedulers())
