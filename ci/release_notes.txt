@@ -1,2 +1,8 @@
-Zalo Pay (Sandbox v2.17.0 - build 429) - Released on 2017-08-19 13:44
-
+Zalo Pay (Sandbox v2.17.0 - build 430) - Released on 2017-08-21 08:10
++ [SDK] Tiếp tục check status khi request bị fail by chucvv (#89088fc)
++ [SDK] Không dùng timeout dialog trong api transaction by chucvv (#87c7715)
++ [SDK] Refactor by chucvv (#9b7dfaa)
++ [SDK] Refactor by chucvv (#1eb1681)
++ [SDK] Refactor check trans status by chucvv (#00be307)
++ [SDK] Cleanup by chucvv (#72cec3c)
++ [SDK] Cleanup by chucvv (#bcf2be4)
