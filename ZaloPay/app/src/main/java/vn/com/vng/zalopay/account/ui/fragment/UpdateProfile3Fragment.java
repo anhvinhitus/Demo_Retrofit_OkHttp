@@ -702,21 +702,22 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     public String getImagePath(Context context, Uri uri) {
-        if ("content".equalsIgnoreCase(uri.getScheme())) {
-            if (isGoogleOldPhotosUri(uri)) {
-                // return http path, then download file.
-                return uri.getLastPathSegment();
-            } else if (isGoogleNewPhotosUri(uri)) {
-                // copy from uri. context.getContentResolver().openInputStream(uri);
-                return AndroidUtils.createTempImageFile(context, uri);
-            } else if (isPicasaPhotoUri(uri)) {
-                // copy from uri. context.getContentResolver().openInputStream(uri);
-                return AndroidUtils.createTempImageFile(context, uri);
-            } else {
-                return LOCAL_IMAGE;
-            }
+        if (!"content".equalsIgnoreCase(uri.getScheme())) {
+            return LOCAL_IMAGE;
         }
-        return null;
+
+        if (isGoogleOldPhotosUri(uri)) {
+            // return http path, then download file.
+            return uri.getLastPathSegment();
+        } else if (isGoogleNewPhotosUri(uri)) {
+            // copy from uri. context.getContentResolver().openInputStream(uri);
+            return AndroidUtils.createTempImageFile(context, uri);
+        } else if (isPicasaPhotoUri(uri)) {
+            // copy from uri. context.getContentResolver().openInputStream(uri);
+            return AndroidUtils.createTempImageFile(context, uri);
+        } else {
+            return LOCAL_IMAGE;
+        }
     }
 
     private boolean isGoogleOldPhotosUri(Uri uri) {
