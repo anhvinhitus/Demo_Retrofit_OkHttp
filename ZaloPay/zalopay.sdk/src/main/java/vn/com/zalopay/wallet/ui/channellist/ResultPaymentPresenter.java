@@ -127,7 +127,7 @@ public class ResultPaymentPresenter extends AbstractPresenter<ResultPaymentFragm
                 getViewOrThrow().showError(mContext.getResources().getString(R.string.sdk_error_paymentinfo_empty));
                 return;
             }
-            GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getBankCode());
+            GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getBankCode(), false);
             boolean success = TransactionHelper.isTransactionSuccess(pResponse);
             if (success) {
                 doOnSuccessPayment();

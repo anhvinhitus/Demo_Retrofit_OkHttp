@@ -16,22 +16,22 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.analytics.ZPScreens;
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.entity.enumeration.ELinkAccType;
-import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
-import vn.com.zalopay.wallet.entity.linkacc.LinkAccInfo;
-import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
-import vn.com.zalopay.wallet.fingerprint.IPaymentFingerPrint;
-import vn.com.zalopay.wallet.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
+import vn.com.zalopay.wallet.entity.enumeration.ELinkAccType;
+import vn.com.zalopay.wallet.entity.gatewayinfo.PaymentChannel;
+import vn.com.zalopay.wallet.entity.linkacc.LinkAccInfo;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
+import vn.com.zalopay.wallet.entity.voucher.VoucherInfo;
 import vn.com.zalopay.wallet.event.SdkInvalidPaymentInfo;
 import vn.com.zalopay.wallet.feedback.FeedBackCollector;
 import vn.com.zalopay.wallet.feedback.IFeedBack;
+import vn.com.zalopay.wallet.fingerprint.IPaymentFingerPrint;
+import vn.com.zalopay.wallet.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.helper.TrackHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
 import vn.com.zalopay.wallet.listener.OnPaymentResultListener;
@@ -190,7 +190,7 @@ public class GlobalData {
         return bankFunction;
     }
 
-    public static void extraJobOnPaymentCompleted(StatusResponse pStatusResponse, String pBankCode) {
+    public static void extraJobOnPaymentCompleted(StatusResponse pStatusResponse, String pBankCode, boolean trackScreen) {
         PaymentInfoHelper paymentInfoHelper = getPaymentInfoHelper();
         if (pStatusResponse == null || paymentInfoHelper == null) {
             return;
@@ -218,10 +218,12 @@ public class GlobalData {
             TrackHelper.trackingTransactionEvent(success ? ZPPaymentSteps.OrderStepResult_Success : ZPPaymentSteps.OrderStepResult_Fail
                     , pStatusResponse
                     , pBankCode);
-            //track screen name
-            String screenName = paymentInfoHelper.isLinkTrans() ? ZPScreens.BANK_RESULT : ZPScreens.PAYMENT_RESULT;
-            ZPAnalytics.trackScreen(screenName);
             TrackHelper.trackPaymentResult(paymentInfoHelper);
+            if (trackScreen) {
+                //track screen name
+                String screenName = paymentInfoHelper.isLinkTrans() ? ZPScreens.BANK_RESULT : ZPScreens.PAYMENT_RESULT;
+                ZPAnalytics.trackScreen(screenName);
+            }
         } catch (Exception e) {
             Timber.d(e);
         }

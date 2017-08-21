@@ -548,7 +548,7 @@ public class PayProxy extends SingletonBase {
                 if (mPaymentInfoHelper != null
                         && mPaymentInfoHelper.isRedPacket()) {
                     String bankCode = mPaymentInfoHelper.getMapBank() != null ? mPaymentInfoHelper.getMapBank().bankcode : "";
-                    GlobalData.extraJobOnPaymentCompleted(mStatusResponse, bankCode);
+                    GlobalData.extraJobOnPaymentCompleted(mStatusResponse, bankCode, false);
                     getView().callbackThenTerminate();
                     return;
                 }

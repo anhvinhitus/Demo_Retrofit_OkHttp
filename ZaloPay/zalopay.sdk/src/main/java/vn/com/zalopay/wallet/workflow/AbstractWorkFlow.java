@@ -1103,7 +1103,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.d(e, "Exception dismiss loading view");
         }
-        GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getBankCode());
+        GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getBankCode(), true);
         //save payment card for show on channel list later
         String userId = mPaymentInfoHelper != null ? mPaymentInfoHelper.getUserId() : null;
         if (!TextUtils.isEmpty(userId)) {
@@ -1189,7 +1189,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         } catch (Exception e) {
             Timber.d(e);
         }
-        GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getBankCode());
+        GlobalData.extraJobOnPaymentCompleted(mStatusResponse, getBankCode(), true);
         try {
             mGuiProcessor.useWebView(false);
         } catch (Exception e) {
