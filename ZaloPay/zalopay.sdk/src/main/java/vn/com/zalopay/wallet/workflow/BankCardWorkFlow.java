@@ -15,11 +15,11 @@ import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.configure.GlobalData;
-import vn.com.zalopay.wallet.configure.RS;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
+import vn.com.zalopay.wallet.configure.GlobalData;
+import vn.com.zalopay.wallet.configure.RS;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.Constants;
@@ -183,14 +183,19 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 if (TextUtils.isEmpty(otpReceiverPattern.sender) || !otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
                     continue;
                 }
-
-                String otp = PaymentUtils.clearOTP(parseOtp(otpReceiverPattern, pSender, pOtp));
-                Timber.d("otp after split by space " + otp);
+                String otp = parseOtp(otpReceiverPattern, pSender, pOtp);
+                if (TextUtils.isEmpty(otp)) {
+                    continue;
+                }
+                //clear whitespace and - character
+                otp = PaymentUtils.clearOTP(otp);
+                Timber.d("otp after split by space %s", otp);
                 //check it whether length match length of otp in config
                 if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
                     continue;
                 }
-                if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
+                if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp))
+                        || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                     continue;
                 }
                 ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
@@ -23,7 +24,6 @@ import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.ConnectionUtil;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
@@ -559,23 +559,26 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     public void autoFillOtp(String pSender, String pOtp) {
     }
 
+    @Nullable
     String parseOtp(OtpRule otpPattern, String pSender, String pMessage) {
         try {
-            if (TextUtils.isEmpty(pSender) || TextUtils.isEmpty(pMessage)) {
-                return "";
+            if (TextUtils.isEmpty(pSender)) {
+                return null;
             }
-            if (!TextUtils.isEmpty(otpPattern.sender) && otpPattern.sender.equalsIgnoreCase(pSender)) {
-                pMessage = pMessage.trim();
-                //read the begining of sms content
-                int start = (otpPattern.begin) ? otpPattern.start : (pMessage.length() - otpPattern.length - otpPattern.start);
-                String otp = pMessage.substring(start, start + otpPattern.length);
-                //clear whitespace and - character
-                return PaymentUtils.clearOTP(otp);
+            if (TextUtils.isEmpty(pMessage)) {
+                return null;
             }
+            if (TextUtils.isEmpty(otpPattern.sender) || !otpPattern.sender.equalsIgnoreCase(pSender)) {
+                return null;
+            }
+            pMessage = pMessage.trim();
+            //read the begining of sms content
+            int start = (otpPattern.begin) ? otpPattern.start : (pMessage.length() - otpPattern.length - otpPattern.start);
+            return pMessage.substring(start, start + otpPattern.length);
         } catch (Exception e) {
             Timber.d(e);
         }
-        return "";
+        return null;
     }
 
     boolean shouldCheckStatusAgain() {

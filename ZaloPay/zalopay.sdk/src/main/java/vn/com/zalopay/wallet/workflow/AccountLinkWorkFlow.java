@@ -31,32 +31,32 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.api.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.configure.GlobalData;
-import vn.com.zalopay.wallet.helper.PaymentPermission;
 import vn.com.zalopay.wallet.configure.RS;
-import vn.com.zalopay.wallet.helper.VcbUtils;
-import vn.com.zalopay.wallet.entity.bank.BankConfig;
-import vn.com.zalopay.wallet.entity.bank.BankNotification;
-import vn.com.zalopay.wallet.entity.response.StatusResponse;
-import vn.com.zalopay.wallet.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.entity.bank.BankAccount;
-import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
-import vn.com.zalopay.wallet.entity.linkacc.LinkAccScriptOutput;
-import vn.com.zalopay.wallet.entity.config.OtpRule;
-import vn.com.zalopay.wallet.entity.UserInfo;
-import vn.com.zalopay.wallet.workflow.webview.SdkWebView;
-import vn.com.zalopay.wallet.workflow.webview.AccountLinkWebViewClient;
 import vn.com.zalopay.wallet.constants.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.entity.UserInfo;
+import vn.com.zalopay.wallet.entity.bank.BankAccount;
+import vn.com.zalopay.wallet.entity.bank.BankConfig;
+import vn.com.zalopay.wallet.entity.bank.BankNotification;
+import vn.com.zalopay.wallet.entity.config.OtpRule;
+import vn.com.zalopay.wallet.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
+import vn.com.zalopay.wallet.entity.linkacc.LinkAccScriptOutput;
+import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.helper.BankHelper;
+import vn.com.zalopay.wallet.helper.PaymentPermission;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.helper.TransactionHelper;
+import vn.com.zalopay.wallet.helper.VcbUtils;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
 import vn.com.zalopay.wallet.repository.ResourceManager;
 import vn.com.zalopay.wallet.ui.channel.ChannelPresenter;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 import vn.com.zalopay.wallet.workflow.ui.AccountLinkGuiProcessor;
+import vn.com.zalopay.wallet.workflow.webview.AccountLinkWebViewClient;
+import vn.com.zalopay.wallet.workflow.webview.SdkWebView;
 
 import static vn.com.zalopay.wallet.constants.BankAccountError.ACCOUNT_LOCKED;
 import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_CAPCHA;
@@ -505,14 +505,15 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
                 return;
             }
             for (OtpRule otpReceiverPattern : patternList) {
-
                 Timber.d("checking pattern %s", GsonUtils.toJsonString(otpReceiverPattern));
-
                 if (TextUtils.isEmpty(otpReceiverPattern.sender) || !otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
                     continue;
                 }
-
                 String otp = parseOtp(otpReceiverPattern, pSender, pOtp);
+                if (TextUtils.isEmpty(otp)) {
+                    continue;
+                }
+                //clear whitespace and - character
                 otp = PaymentUtils.clearOTP(otp);
                 if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                     continue;
