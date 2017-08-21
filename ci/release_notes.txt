@@ -1,14 +1,2 @@
-Zalo Pay (Production v2.17.0 - build 433) - Released on 2017-08-21 19:03
-+ [Update Profile Level 3] Update loading image behavior by datnt10 (#0b88003)
-+ [TOPUP] task#846 : [Optimize] Tự động focus và show bàn phím khi user chọn Back : Refactor by chucvv (#28781a6)
-+ [TOPUP] task#846 : [Optimize] Tự động focus và show bàn phím khi user chọn Back by luannt (#7eab504)
-+ [Tracking] Fix lỗi lệch track giữa screen select channel và màn hình kết quả by chucvv (#ca53373)
-+ [Analytics] Thêm API timing cho các API của app 61 by hieuvm (#8d1a926)
-+ [Analytics] Update event analytics - v1.34 by hieuvm (#24b23eb)
-+ [SDK] Add unit test fill otp by chucvv (#5e5e123)
-+ [SDK] Clear code by chucvv (#afde221)
-+ [FeedBack] using SimpleDraweeView instead of ImageView by sinhtt (#570f18b)
-+ [ZPDK] report back apptransid, zptransid to merchant app by hoanh (#30f9c66)
-+ [SDK] Cleanup by chucvv (#4f56beb)
-+ [SDK] Run js script in turn synchronizedly by chucvv (#22e7745)
-+ [Profile] Add missing UI by datnt10 (#e896e7a)
+Zalo Pay (Staging v2.17.0 - build 434) - Released on 2017-08-21 19:03
+
