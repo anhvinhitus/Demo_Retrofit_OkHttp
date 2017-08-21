@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -110,6 +111,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
                 return mEdtAmountView.getAmount() % 10000 == 0;
             }
         });
+        mEdtAmountView.setClearTextListener(() -> showKeyboard());
 
         mBtnDepositView.setEnabled(mEdtAmountView.isValid());
     }
@@ -153,6 +155,14 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public Fragment getFragment() {
         return this;
+    }
+
+    @Override
+    public void showKeyboard() {
+        AndroidUtils.runOnUIThread(()->{
+            if (!AndroidUtils.isKeyboardShowed(mEdtAmountView))
+                AndroidUtils.showKeyboard(mEdtAmountView);
+        }, 250);
     }
 
     @Override

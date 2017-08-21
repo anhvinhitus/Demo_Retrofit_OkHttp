@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -13,7 +12,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
@@ -158,6 +156,12 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
             super.onResponseError(status);
             if (status.value() == PaymentError.ERR_CODE_NON_STATE.value()) {
                 closeTopup();
+            }
+            if (status.value() == PaymentError.ERR_CODE_USER_CANCEL.value()) {
+                if (mView == null || mView.getContext() == null) {
+                    return;
+                }
+                mView.showKeyboard();
             }
         }
 

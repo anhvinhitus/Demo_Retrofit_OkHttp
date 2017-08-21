@@ -12,4 +12,5 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 public interface IBalanceTopupView  extends ILoadDataView {
     Activity getActivity();
     Fragment getFragment();
+    void showKeyboard();
 }
