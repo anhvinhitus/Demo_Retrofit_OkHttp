@@ -38,11 +38,11 @@ public class SmsReceiver extends BroadcastReceiver {
                 throw new Exception("Nội dung tin nhắn trống");
             }
             sender = sms.getOriginatingAddress();//shared numberphone
-            Timber.d("SmsReceiver", "sender", sender);
+            Timber.d("sender %s", sender);
 
             if (messages.length == 1 || sms.isReplace()) {
                 body = sms.getDisplayMessageBody();
-                Timber.d("SmsReceiver", "content sms", body);
+                Timber.d("content sms %s", body);
             } else {
                 //if sms has length over 160,it's devided by multipart to send
                 StringBuilder bodyText = new StringBuilder();
@@ -50,7 +50,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     bodyText.append(message.getMessageBody());
                 }
                 body = bodyText.toString();
-                Timber.d("SmsReceiver", "content sms", body);
+                Timber.d("content sms %s", body);
             }
 
             if (!TextUtils.isEmpty(body)) {
@@ -61,7 +61,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 SDKApplication.getApplicationComponent().eventBus().post(smsEventMessage);
             }
         } catch (Exception e) {
-            Timber.d("SmsReceiver", e);
+            Timber.d(e, "Exception parse sms");
         }
     }
 

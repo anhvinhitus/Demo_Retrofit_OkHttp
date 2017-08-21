@@ -559,28 +559,6 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
     public void autoFillOtp(String pSender, String pOtp) {
     }
 
-    @Nullable
-    String parseOtp(OtpRule otpPattern, String pSender, String pMessage) {
-        try {
-            if (TextUtils.isEmpty(pSender)) {
-                return null;
-            }
-            if (TextUtils.isEmpty(pMessage)) {
-                return null;
-            }
-            if (TextUtils.isEmpty(otpPattern.sender) || !otpPattern.sender.equalsIgnoreCase(pSender)) {
-                return null;
-            }
-            pMessage = pMessage.trim();
-            //read the begining of sms content
-            int start = (otpPattern.begin) ? otpPattern.start : (pMessage.length() - otpPattern.length - otpPattern.start);
-            return pMessage.substring(start, start + otpPattern.length);
-        } catch (Exception e) {
-            Timber.d(e);
-        }
-        return null;
-    }
-
     boolean shouldCheckStatusAgain() {
         return mStatusResponse == null
                 && ConnectionUtil.isOnline(mContext)
@@ -620,6 +598,7 @@ public abstract class AbstractWorkFlow implements ISdkErrorContext {
         try {
             mOrderProcessing = false;
             handleEventGetStatusComplete(event.response);
+            //testOtp();
             Timber.d("on status order onCloseCompleted %s", GsonUtils.toJsonString(event.response));
         } catch (Exception e) {
             Timber.w(e, "Exception on status order onCloseCompleted");

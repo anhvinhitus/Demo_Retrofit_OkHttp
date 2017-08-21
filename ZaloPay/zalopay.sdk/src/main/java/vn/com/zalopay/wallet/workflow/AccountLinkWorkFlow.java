@@ -21,10 +21,8 @@ import java.util.TreeMap;
 import rx.Subscription;
 import timber.log.Timber;
 import vn.com.zalopay.utility.ConnectionUtil;
-import vn.com.zalopay.utility.GsonUtils;
 import vn.com.zalopay.utility.HashMapUtils;
 import vn.com.zalopay.utility.LayoutUtils;
-import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.utility.StringUtil;
 import vn.com.zalopay.wallet.BuildConfig;
@@ -44,6 +42,7 @@ import vn.com.zalopay.wallet.entity.gatewayinfo.MiniPmcTransType;
 import vn.com.zalopay.wallet.entity.linkacc.LinkAccScriptOutput;
 import vn.com.zalopay.wallet.entity.response.StatusResponse;
 import vn.com.zalopay.wallet.helper.BankHelper;
+import vn.com.zalopay.wallet.helper.OtpHelper;
 import vn.com.zalopay.wallet.helper.PaymentPermission;
 import vn.com.zalopay.wallet.helper.RenderHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
@@ -504,27 +503,15 @@ public class AccountLinkWorkFlow extends AbstractWorkFlow {
             if (patternList == null || patternList.size() <= 0) {
                 return;
             }
-            for (OtpRule otpReceiverPattern : patternList) {
-                Timber.d("checking pattern %s", GsonUtils.toJsonString(otpReceiverPattern));
-                if (TextUtils.isEmpty(otpReceiverPattern.sender) || !otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
-                    continue;
-                }
-                String otp = parseOtp(otpReceiverPattern, pSender, pOtp);
-                if (TextUtils.isEmpty(otp)) {
-                    continue;
-                }
-                //clear whitespace and - character
-                otp = PaymentUtils.clearOTP(otp);
-                if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
-                    continue;
-                }
-                if (isNativeFlow) {
-                    mWebViewProcessor.fillOtpOnWebFlow(otp);
-                    Timber.d("fill otp into website vcb directly");
-                } else {
-                    linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
-                }
-                break;
+            String otp = OtpHelper.parseOtp(patternList, pSender, pOtp);
+            if (TextUtils.isEmpty(otp)) {
+                return;
+            }
+            if (isNativeFlow) {
+                mWebViewProcessor.fillOtpOnWebFlow(otp);
+                Timber.d("fill otp into website vcb directly");
+            } else {
+                linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
             }
         } catch (Exception e) {
             Timber.d(e, "Exception autoFillOtp");

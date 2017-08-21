@@ -12,7 +12,6 @@ import rx.Subscription;
 import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPPaymentSteps;
 import vn.com.zalopay.utility.GsonUtils;
-import vn.com.zalopay.utility.PaymentUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
@@ -35,6 +34,7 @@ import vn.com.zalopay.wallet.event.SdkParseWebsiteCompleteEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteErrorEvent;
 import vn.com.zalopay.wallet.event.SdkParseWebsiteRenderEvent;
 import vn.com.zalopay.wallet.helper.BankHelper;
+import vn.com.zalopay.wallet.helper.OtpHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.helper.SchedulerHelper;
 import vn.com.zalopay.wallet.paymentinfo.PaymentInfoHelper;
@@ -145,10 +145,6 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
         }
     }
 
-    public AbstractWebViewClient getWebViewProcessor() {
-        return mWebViewProcessor;
-    }
-
     protected int getDefaultChannelId() {
         return BuildConfig.channel_atm;
     }
@@ -161,7 +157,7 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
 
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
-        Timber.d("Sender %s Sms %s", pSender, pOtp);
+        Timber.d("auto fill otp [%s : %s]", pSender, pOtp);
         try {
             if (TextUtils.isEmpty(pSender) || TextUtils.isEmpty(pOtp)) {
                 return;
@@ -171,36 +167,19 @@ public class BankCardWorkFlow extends AbstractWorkFlow {
                 return;
             }
             if (!((BankCardGuiProcessor) getGuiProcessor()).isBankOtpPhase()) {
-                Timber.d("user is not in otp phase, skip auto fill otp");
+                Timber.d("User is not in otp phase, skip auto fill otp");
                 return;
             }
 
             List<OtpRule> patternList = ((BankDetector) getGuiProcessor().getCardFinder()).getFoundOtpRules();
             if (patternList == null || patternList.size() <= 0) {
+                Timber.d("Opt rule is empty - skip parse otp");
                 return;
             }
-            for (OtpRule otpReceiverPattern : patternList) {
-                if (TextUtils.isEmpty(otpReceiverPattern.sender) || !otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
-                    continue;
-                }
-                String otp = parseOtp(otpReceiverPattern, pSender, pOtp);
-                if (TextUtils.isEmpty(otp)) {
-                    continue;
-                }
-                //clear whitespace and - character
-                otp = PaymentUtils.clearOTP(otp);
-                Timber.d("otp after split by space %s", otp);
-                //check it whether length match length of otp in config
-                if (!TextUtils.isEmpty(otp) && otp.length() != otpReceiverPattern.length) {
-                    continue;
-                }
-                if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp))
-                        || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
-                    continue;
-                }
+            String otp = OtpHelper.parseOtp(patternList, pSender, pOtp);
+            if (!TextUtils.isEmpty(otp)) {
                 ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);
                 getView().setVisible(R.id.txtOtpInstruction, false);
-                break;
             }
         } catch (Exception e) {
             Timber.d(e, "Exception autoFillOtp");
