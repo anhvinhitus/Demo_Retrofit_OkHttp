@@ -336,6 +336,7 @@ public class ZPEvents {
     public static final int API_TOPUP_GETRECENTLIST = 12602;
     public static final int API_TOPUP_GETTRANSBYZPTRANSID = 12603;
     public static final int API_TOPUP_CREATEORDER = 12604;
+    public static final int API_TOPUP_UPDATEORDER = 12605;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -1003,6 +1004,8 @@ public class ZPEvents {
                 return "api_topup_gettransbyzptransid";
             case API_TOPUP_CREATEORDER:
                 return "api_topup_createorder";
+            case API_TOPUP_UPDATEORDER:
+                return "api_topup_updateorder";
             default:
                 return "DefaultAction";
         }
@@ -1673,6 +1676,8 @@ public class ZPEvents {
             case API_TOPUP_GETTRANSBYZPTRANSID:
                 return "Timing Topup";
             case API_TOPUP_CREATEORDER:
+                return "Timing Topup";
+            case API_TOPUP_UPDATEORDER:
                 return "Timing Topup";
             default:
                 return "DefaultCategory";

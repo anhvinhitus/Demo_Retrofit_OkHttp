@@ -331,3 +331,4 @@ EventId,Category,Action
 12602,Timing Topup,api_topup_getrecentlist
 12603,Timing Topup,api_topup_gettransbyzptransid
 12604,Timing Topup,api_topup_createorder
+12605,Timing Topup,api_topup_updateorder
