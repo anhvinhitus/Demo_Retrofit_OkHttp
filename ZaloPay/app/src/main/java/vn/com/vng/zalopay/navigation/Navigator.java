@@ -745,7 +745,6 @@ public class Navigator {
 
                         @Override
                         public void onAuthenticationFailure() {
-                            Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
                         }
                     });
                     mAuthenticationPassword.initialize();
@@ -765,7 +764,6 @@ public class Navigator {
 
                 @Override
                 public void onAuthenticationFailure() {
-                    Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
                 }
             });
             mAuthenticationPassword.initialize();
