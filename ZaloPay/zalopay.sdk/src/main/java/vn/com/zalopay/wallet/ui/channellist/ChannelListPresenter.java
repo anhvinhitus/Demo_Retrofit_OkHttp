@@ -212,15 +212,19 @@ public class ChannelListPresenter extends PaymentPresenter<ChannelListFragment> 
                 return;
             }
             //backup data and fake data for link type
-            temOrder = mPaymentInfoHelper.takeOrder();
-            tempTranstype = mPaymentInfoHelper.getTranstype();
-            tempPaymentStatus = mPaymentInfoHelper.getStatus();
+            if(temOrder == null){
+                temOrder = mPaymentInfoHelper.takeOrder();
+                tempTranstype = mPaymentInfoHelper.getTranstype();
+                tempPaymentStatus = mPaymentInfoHelper.getStatus();
+            }
 
             GlobalData.updatePaymentInfo(isBankAccount);
             mPaymentInfoHelper.setMapBank(null);
             mPaymentInfoHelper.setCardTypeLink(bankCode);
 
-            ChannelListInteractor interactor = SDKApplication.getApplicationComponent().channelListInteractor();
+            ChannelListInteractor interactor = SDKApplication
+                    .getApplicationComponent()
+                    .channelListInteractor();
             interactor.collectPaymentInfo(mPaymentInfoHelper);
 
             Intent intent = getChannelIntent();

@@ -18,7 +18,7 @@ import vn.com.zalopay.wallet.ui.channel.ChannelActivity;
  */
 
 public abstract class PaymentPresenter<T extends IContract> extends AbstractPresenter<T> {
-    protected ZPMonitorEventTiming mEventTiming = SDKApplication.getApplicationComponent().monitorEventTiming();
+    private ZPMonitorEventTiming mEventTiming = SDKApplication.getApplicationComponent().monitorEventTiming();
 
     protected void onProcessUpVersionMessage(VersionCallback message) {
         if (GlobalData.getPaymentListener() != null) {

@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
@@ -402,30 +401,18 @@ public class AccountLinkGuiProcessor extends CardGuiProcessor {
             pgbProgress = (ProgressBar) getView().findViewById(R.id.pgb_progress);
 
             submitButton = getView().findViewById(R.id.zpw_vcb_submit);
+
+            getLoginHolder().getEdtUsername().addTextChangedListener(mLoginEditTextWatcher);
+            getLoginHolder().getEdtPassword().addTextChangedListener(mLoginEditTextWatcher);
+            getLoginHolder().getEdtCaptcha().addTextChangedListener(mLoginEditTextWatcher);
+            getLoginHolder().getEdtCaptcha().requestFocus();
+
+            getRegisterHolder().getEdtCaptcha().addTextChangedListener(mConfirmCaptchaEditTextWatcher);
+            getRegisterHolder().getEdtCaptcha().requestFocus();
+            getConfirmOTPHolder().getEdtConfirmOTP().addTextChangedListener(mConfirmOtpEditTextWatcher);
+            getUnregisterHolder().getEdtPassword().addTextChangedListener(mUnRegPassEditTextWatcher);
         } catch (Exception e) {
             Timber.d(e);
-        }
-
-        getLoginHolder().getEdtUsername().addTextChangedListener(mLoginEditTextWatcher);
-        getLoginHolder().getEdtPassword().addTextChangedListener(mLoginEditTextWatcher);
-        getLoginHolder().getEdtCaptcha().addTextChangedListener(mLoginEditTextWatcher);
-        // getLoginHolder().getEdtCaptcha().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
-        getLoginHolder().getEdtCaptcha().requestFocus();
-
-        getRegisterHolder().getEdtCaptcha().addTextChangedListener(mConfirmCaptchaEditTextWatcher);
-        getRegisterHolder().getEdtCaptcha().requestFocus();
-        //getRegisterHolder().getEdtCaptcha().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
-        getConfirmOTPHolder().getEdtConfirmOTP().addTextChangedListener(mConfirmOtpEditTextWatcher);
-        //getConfirmOTPHolder().getEdtConfirmOTP().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
-        getUnregisterHolder().getEdtPassword().addTextChangedListener(mUnRegPassEditTextWatcher);
-        //getUnregisterHolder().getEdtPassword().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
-    }
-
-    public void setLogoImgLinkAcc(Drawable pDrawable) {
-        if (pDrawable != null) {
-            getLoginHolder().getImgLogoLinkAcc().setImageResource(android.R.color.transparent);
-            // set Image
-            getLoginHolder().getImgLogoLinkAcc().setImageDrawable(pDrawable);
         }
     }
 
