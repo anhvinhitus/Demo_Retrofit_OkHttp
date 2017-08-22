@@ -230,7 +230,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
                 mNavigator.startBalanceManagementActivity(mView.getContext());
                 break;
             case InsideApp.Constants.CHANGE_PIN:
-                mNavigator.startChangePinActivity(mView.getContext());
+                mNavigator.startProtectAccount(mView.getContext());
                 break;
             case InsideApp.Constants.PROTECT_ACCOUNT:
                 mNavigator.startProtectAccountActivity(mView.getContext());
