@@ -916,8 +916,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             PaymentInfoHelper paymentInfoHelper = getAdapter().getPaymentInfoHelper();
             String userId = paymentInfoHelper != null ? paymentInfoHelper.getUserId() : null;
             if (!TextUtils.isEmpty(userId) && BankHelper.hasBankAccountOnCache(userId, bankCode)) {
-                showHintError(getCardNumberView(),
-                        mContext.getResources().getString(R.string.sdk_existed_vcb_warning_input_mess));
+                getView().showNotificationDialog( mContext.getResources().getString(R.string.sdk_existed_vcb_warning_input_mess),
+                        mContext.getResources().getString(R.string.dialog_close_button),
+                        this::clearCardNumberAndShowKeyBoard);
                 return true;
             }
         } catch (Exception e) {
@@ -948,7 +949,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
     }
 
-    void populateTextOnCardViewNoPaintCard() {
+    private void populateTextOnCardViewNoPaintCard() {
         if (mCardView != null) {
             mCardView.setCardNumberNoPaintCard(getCardNumber());
         }
