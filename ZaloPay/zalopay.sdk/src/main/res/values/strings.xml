@@ -424,4 +424,6 @@
     <string name="sdk_link_channel_subtext_pay">Liên kết để tiếp tục thanh toán</string>
     <string name="sdk_link_channel_subtext_transfer">Liên kết để tiếp tục chuyển tiền</string>
     <string name="sdk_link_channel_subtext_topup">Liên kết để tiếp tục nạp tiền</string>
+
+    <string name="sdk_existed_vcb_warning_input_mess">Quý khách đã liên kết với ngân hàng Vietcombank</string>
 </resources>

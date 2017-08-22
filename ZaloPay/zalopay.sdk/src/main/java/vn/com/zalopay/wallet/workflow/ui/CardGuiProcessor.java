@@ -38,11 +38,11 @@ import vn.com.zalopay.utility.PlayStoreUtils;
 import vn.com.zalopay.utility.SdkUtils;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.configure.GlobalData;
-import vn.com.zalopay.wallet.configure.RS;
 import vn.com.zalopay.wallet.card.AbstractCardDetector;
 import vn.com.zalopay.wallet.card.BankDetector;
 import vn.com.zalopay.wallet.card.CreditCardDetector;
+import vn.com.zalopay.wallet.configure.GlobalData;
+import vn.com.zalopay.wallet.configure.RS;
 import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
@@ -895,9 +895,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 showWarningDisablePmc(bankName);
                 return;
             }
-
             //user input bank account
-            if (!TextUtils.isEmpty(bankCode) && BankHelper.isBankAccount(bankCode)) {
+            if (!TextUtils.isEmpty(bankCode)
+                    && BankHelper.isBankAccount(bankCode)
+                    && !existBankAccount(bankCode)) {
                 showWarningBankAccount();
             }
 
@@ -908,6 +909,21 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         } catch (Exception e) {
             Timber.d(e);
         }
+    }
+
+    private boolean existBankAccount(String bankCode) {
+        try {
+            PaymentInfoHelper paymentInfoHelper = getAdapter().getPaymentInfoHelper();
+            String userId = paymentInfoHelper != null ? paymentInfoHelper.getUserId() : null;
+            if (!TextUtils.isEmpty(userId) && BankHelper.hasBankAccountOnCache(userId, bankCode)) {
+                showHintError(getCardNumberView(),
+                        mContext.getResources().getString(R.string.sdk_existed_vcb_warning_input_mess));
+                return true;
+            }
+        } catch (Exception e) {
+            Timber.d(e, "Exception validate bank account");
+        }
+        return false;
     }
 
     private boolean isMaxCcLink(String bankCode) {
@@ -1053,7 +1069,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return;
             }
             //user input bank account
-            if (!TextUtils.isEmpty(pBankCode) && BankHelper.isBankAccount(pBankCode)) {
+            if (!TextUtils.isEmpty(pBankCode)
+                    && BankHelper.isBankAccount(pBankCode)
+                    && !existBankAccount(pBankCode)) {
                 showWarningBankAccount();
             }
             if (getAdapter().isCCFlow() && getBankCardFinder().detected()) {
