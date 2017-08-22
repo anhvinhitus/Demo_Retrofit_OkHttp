@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.data.util.ConfigLoader;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
+import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 
 /**
@@ -151,6 +152,8 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         Timber.d("begin load config in app [%s]", appid);
         if (appid == BuildConfig.WITHDRAW_APP_ID) {
             ConfigLoader.loadConfigFromResource(BuildConfig.WITHDRAW_APP_ID);
+            //post event to ZaloPayPresenter to refresh app list in home page
+            mEventBus.post(new RefreshPlatformInfoEvent());
         } else if (appid == BuildConfig.ZALOPAY_APP_ID) {
             AndroidApplication.instance().loadFontFromApp1();
         }
