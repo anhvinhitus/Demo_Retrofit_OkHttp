@@ -1,5 +1,2 @@
-Zalo Pay (Sandbox v2.17.0 - build 436) - Released on 2017-08-22 08:42
-+ [SDK] Cleanup by chucvv (#7235913)
-+ [SDK] ZPF-509 : Đã LK TK VCB nhưng liên kết tiếp thì thông báo không chính xác : chuyển thành popup dialog by chucvv (#ac671b3)
-+ [SDK] ZPF-509 : Đã LK TK VCB nhưng liên kết tiếp thì thông báo không chính xác by chucvv (#0466f9f)
-+ [SDK] ZPF-510 : Đã LK TK VCB nhưng có thể LK tiếp trong lúc thanh toán by chucvv (#326d288)
+Zalo Pay (Staging v2.17.0 - build 437) - Released on 2017-08-22 08:48
+
