@@ -1,2 +1,2 @@
-Zalo Pay (Production v2.17.0 - build 442) - Released on 2017-08-22 17:42
-+ [Search] Update search app "Đổi mật khẩu thanh toán" by lytm (#f2da9ca)
+Zalo Pay (Staging v2.17.0 - build 443) - Released on 2017-08-22 17:56
+
