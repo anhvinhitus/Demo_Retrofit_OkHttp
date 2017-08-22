@@ -96,7 +96,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     private final UserSession mUserSession;
     private final ApplicationState mApplicationState;
     private final GlobalEventHandlingService globalEventHandlingService;
-    private boolean isInitTransaction;
+    boolean isInitTransaction;
     private Subscription mRefPlatformSubscription;
     private boolean isLoadedGateWayInfo;
     private DefaultSubscriber<PlatformInfoCallback> mPlatformInfoSubscriber = new DefaultSubscriber<PlatformInfoCallback>() {
@@ -123,8 +123,8 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         }
     };
     private PaymentWrapper paymentWrapper;
-    private IBuilder mPromotionBuilder;
-    private PromotionHelper mPromotionHelper;
+    IBuilder mPromotionBuilder;
+    PromotionHelper mPromotionHelper;
     private IResourceLoader mPromotionResourceLoader;
 
     @Inject
