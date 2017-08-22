@@ -154,8 +154,8 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
             ConfigLoader.loadConfigFromResource(BuildConfig.WITHDRAW_APP_ID);
             //post event to ZaloPayPresenter to refresh app list in home page
             mEventBus.post(new RefreshPlatformInfoEvent());
-        } else if (appid == BuildConfig.ZALOPAY_APP_ID) {
+        } /*else if (appid == BuildConfig.ZALOPAY_APP_ID) {
             AndroidApplication.instance().loadFontFromApp1();
-        }
+        }*/
     }
 }
