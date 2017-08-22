@@ -78,6 +78,8 @@ public class GlobalData {
         if (isBankAccount) {
             LinkAccInfo linkAccInfo = new LinkAccInfo(CardType.PVCB, ELinkAccType.LINK);
             paymentInfoHelper.setLinkAccountInfo(linkAccInfo);
+        }else{
+            paymentInfoHelper.setLinkAccountInfo(null);
         }
     }
 
