@@ -119,6 +119,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onDestroyView() {
         mEdtAmountView.clearValidators();
+        mEdtAmountView.setClearTextListener(null);
         mPresenter.detachView();
         super.onDestroyView();
     }
