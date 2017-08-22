@@ -1,9 +1,2 @@
-Zalo Pay (Production v2.17.0 - build 439) - Released on 2017-08-22 14:51
-+ [Password] ZPF-516: Sau khi reset MKTT nhập MKTT báo lỗi "Có lỗi trong quá trình xử lý dữ liệu" by lytm (#6cbf596)
-+ [Resource] ZPF-512 : Lỗi thỉnh thoảng mất icon trên bottom bar by chucvv (#37096a7)
-+ [Resource] Refresh home page app list after download app 2 resource by chucvv (#8085657)
-+ [App] Access of private member from inner class by chucvv (#9676edd)
-+ Revert "[TOPUP] task#846 : [Optimize] Tự động focus và show bàn phím khi user chọn Back" by luannt (#ac0c495)
-+ [Login] Đổi message khi không lấy được thông tin Zalo by chucvv (#cff3d8a)
-+ [Analytics] Thêm API timing cho các API của app 61 by hieuvm (#786d750)
-+ [Analytics] Build zalopay analytics v1.35 by hieuvm (#299be7b)
+Zalo Pay (Staging v2.17.0 - build 440) - Released on 2017-08-22 14:52
+
