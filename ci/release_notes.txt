@@ -1,2 +1,2 @@
-Zalo Pay (Sandbox v2.17.0 - build 441) - Released on 2017-08-22 14:52
-
+Zalo Pay (Production v2.17.0 - build 442) - Released on 2017-08-22 17:42
++ [Search] Update search app "Đổi mật khẩu thanh toán" by lytm (#f2da9ca)
