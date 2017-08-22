@@ -22,6 +22,7 @@ public class MerchantApiMap {
         sApiTopupMapEvent.put("/getpricelist", ZPEvents.API_TOPUP_GETPRICELIST);
         sApiTopupMapEvent.put("/getrecentlist", ZPEvents.API_TOPUP_GETRECENTLIST);
         sApiTopupMapEvent.put("/gettransbyzptransid", ZPEvents.API_TOPUP_GETTRANSBYZPTRANSID);
+        sApiTopupMapEvent.put("/updateorder", ZPEvents.API_TOPUP_UPDATEORDER);
     }
 
     static int getEventIdByRequest(Request request) {
