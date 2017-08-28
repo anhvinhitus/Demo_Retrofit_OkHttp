@@ -1,16 +1,17 @@
 package com.example.anhvinh.demo_retrofit_okhttp.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.anhvinh.demo_retrofit_okhttp.Models.Entity.Worldpopulation;
 import com.example.anhvinh.demo_retrofit_okhttp.R;
+import com.example.anhvinh.demo_retrofit_okhttp.View.DetailItem.DetaiItemActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -48,8 +49,15 @@ public class WorldAdapter extends RecyclerView.Adapter<WorldAdapter.WorldAdapter
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View v, int position, boolean longclick) {
-                if (!longclick)
-                    Toast.makeText(context, "Click: " + listCountry.get(position).getCountry(), Toast.LENGTH_SHORT).show();
+                if (!longclick) {
+                    Intent intent = new Intent(context, DetaiItemActivity.class);
+                    intent.putExtra("NAME", listCountry.get(position).getCountry());
+                    intent.putExtra("RANK", String.valueOf(listCountry.get(position).getRank()));
+                    intent.putExtra("POPULATION", listCountry.get(position).getPopulation());
+                    intent.putExtra("FLAG", listCountry.get(position).getFlag());
+                    context.startActivity(intent);
+                }
+//                    Toast.makeText(context, "Click: " + listCountry.get(position).getCountry(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -78,6 +86,7 @@ public class WorldAdapter extends RecyclerView.Adapter<WorldAdapter.WorldAdapter
         public void setItemClickListener(ItemClickListener itemClickListener) {
             this.itemClickListener = itemClickListener;
         }
+
         public WorldAdapterHolder(View itemView) {
             super(itemView);
             rank = (TextView) itemView.findViewById(R.id.tv_rank);

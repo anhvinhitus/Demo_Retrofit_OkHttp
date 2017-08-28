@@ -2,4 +2,10 @@
     <string name="app_name">Demo_Retrofit_OkHttp</string>
     <string name="lable_nodata">No data to show</string>
     <string name="btn_Reload">Reload Data</string>
+    <string name="tv_namecountry">Name Country</string>
+    <string name="tv_populationcountry">Population Country</string>
+    <string name="tv_rankcountry">Rank Country</string>
+    <string name="btn_Back">Back to list</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
