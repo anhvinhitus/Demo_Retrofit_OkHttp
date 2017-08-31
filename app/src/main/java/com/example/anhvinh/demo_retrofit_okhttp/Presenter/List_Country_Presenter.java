@@ -32,6 +32,9 @@ public class List_Country_Presenter implements List_Country_Listener {
         model.getListCountry(useCache, isInternet);
     }
 
+    public void saveData(){
+        model.saveData();
+    }
 
     public void reLoad(boolean isInternet) {
         getData(false, isInternet);

@@ -55,9 +55,7 @@ public class List_Country_Interator {
                             @Override
                             public void accept(JSONObjectWorld jsonObjectWorld) throws Exception {
                                 listCountry = jsonObjectWorld.getWorldpopulation();
-                                if (listCountry != null)
-                                    worldpopulation_repo.saveAll(listCountry);
-                                listener.LoadListCountrySuccess(listCountry);
+                                saveData();
                             }
                         })
                         .subscribe();
@@ -79,6 +77,22 @@ public class List_Country_Interator {
         } else {
             Log.d("Interator", "Exist Data");
             listener.LoadListCountrySuccess(listCountry);
+        }
+    }
+
+    public void saveData() {
+        if (listCountry != null) {
+            worldpopulation_repo.saveAll(listCountry)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean aBoolean) throws Exception {
+                            listener.LoadListCountrySuccess(listCountry);
+                        }
+                    })
+                    .subscribe();
+            //listCountry = worldpopulation_repo.loadAll2();
         }
     }
 }

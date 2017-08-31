@@ -1,8 +1,11 @@
 package com.example.anhvinh.demo_retrofit_okhttp.Adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,10 +45,9 @@ public class WorldAdapter extends RecyclerView.Adapter<WorldAdapter.WorldAdapter
     }
 
     @Override
-    public void onBindViewHolder(WorldAdapterHolder holder, final int position) {
+    public void onBindViewHolder(final WorldAdapterHolder holder, final int position) {
         if (listCountry == null) return;
         holder.Display(listCountry.get(position));
-
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View v, int position, boolean longclick) {
@@ -56,10 +58,58 @@ public class WorldAdapter extends RecyclerView.Adapter<WorldAdapter.WorldAdapter
                     intent.putExtra("POPULATION", listCountry.get(position).getPopulation());
                     intent.putExtra("FLAG", listCountry.get(position).getFlag());
                     context.startActivity(intent);
-                }
+                } else {
 //                    Toast.makeText(context, "Click: " + listCountry.get(position).getCountry(), Toast.LENGTH_SHORT).show();
+                    CharSequence items[] = {"Share Image", "Rename", "Delete"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.app_name))
+                            .setItems(items, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    switch (which) {
+                                        case 0:
+                                            // Chia sẽ tệp tin ghi âm qua ứng dụng khác
+                                            shareCountry(holder.getPosition());
+                                            break;
+                                        case 1:
+                                            // Sửa tên tệp tin ghi âm.
+                                            changeNameCountry(holder.getPosition());
+                                            break;
+                                        case 2:
+                                            // Xóa tệp tin ghi âm.
+                                            deleteCountry(holder.getPosition());
+                                            break;
+                                    }
+                                }
+                            });
+                    builder.setCancelable(true);
+                    builder.setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
+    }
+
+    private void deleteCountry(int position) {
+
+    }
+
+    private void shareCountry(int position) {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setType("text/html");
+        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml("<p>This is the text that will be shared.</p>"));
+        context.startActivity(Intent.createChooser(shareIntent, "Send to"));
+    }
+
+    private void changeNameCountry(int position) {
+
     }
 
     @Override
@@ -74,8 +124,9 @@ public class WorldAdapter extends RecyclerView.Adapter<WorldAdapter.WorldAdapter
         notifyDataSetChanged();
     }
 
+
     // VIewHolder:
-    public class WorldAdapterHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class WorldAdapterHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private ItemClickListener itemClickListener;
         // Declare Variable on one Item:
         private ImageView flag;
@@ -94,6 +145,7 @@ public class WorldAdapter extends RecyclerView.Adapter<WorldAdapter.WorldAdapter
             population = (TextView) itemView.findViewById(R.id.tv_population);
             flag = (ImageView) itemView.findViewById(R.id.img_flag);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         public void Display(Worldpopulation worldpopulation) {
@@ -111,6 +163,12 @@ public class WorldAdapter extends RecyclerView.Adapter<WorldAdapter.WorldAdapter
         @Override
         public void onClick(View view) {
             itemClickListener.onClick(view, getPosition(), false);
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            itemClickListener.onClick(view, getPosition(), true);
+            return true;
         }
     }
 }

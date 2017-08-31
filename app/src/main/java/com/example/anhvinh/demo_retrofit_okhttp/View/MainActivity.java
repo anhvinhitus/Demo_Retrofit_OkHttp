@@ -66,6 +66,12 @@ public class MainActivity extends AppCompatActivity implements List_Country_View
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.saveData();
+    }
+
+    @Override
     public void showError() {
         tv_error.setVisibility(View.VISIBLE);
         tv_error.setText("Load Data Error");
