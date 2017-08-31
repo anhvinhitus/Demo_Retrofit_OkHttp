@@ -19,6 +19,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * Created by AnhVinh on 09/08/2017.
  */
@@ -96,8 +98,21 @@ public class WorldAdapter extends RecyclerView.Adapter<WorldAdapter.WorldAdapter
         });
     }
 
-    private void deleteCountry(int position) {
-
+    private void deleteCountry(final int position) {
+        SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE);
+        alertDialog.setTitleText("Are you sure?")
+                .setContentText("Won't be able to recover this item!")
+                .setConfirmText("Yes, delete it!")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                        listCountry.remove(position);
+                        notifyItemRemoved(position);
+                        notifyDataSetChanged();
+                    }
+                })
+                .show();
     }
 
     private void shareCountry(int position) {

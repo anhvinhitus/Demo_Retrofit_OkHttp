@@ -68,8 +68,15 @@ public class MainActivity extends AppCompatActivity implements List_Country_View
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        view.setListCountry(listCountry);
         presenter.saveData();
     }
+
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        presenter.saveData();
+//    }
 
     @Override
     public void showError() {

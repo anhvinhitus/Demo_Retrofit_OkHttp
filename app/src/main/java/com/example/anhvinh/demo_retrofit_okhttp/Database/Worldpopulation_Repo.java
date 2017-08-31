@@ -27,10 +27,6 @@ public class Worldpopulation_Repo {
         this.daoSession.getWorldpopulationDao().deleteAll();
     };
 
-    public List<Worldpopulation> loadAll2() {
-        return daoSession.getWorldpopulationDao().loadAll();
-    }
-
     public Observable<List<Worldpopulation>> loadAll() {
         return Observable.fromCallable(new Callable<List<Worldpopulation>>() {
             @Override
@@ -44,6 +40,7 @@ public class Worldpopulation_Repo {
         return Observable.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
+                deleteAll();
                 daoSession.getWorldpopulationDao().insertOrReplaceInTx(worldpopulationList);
                 return true;
             }
