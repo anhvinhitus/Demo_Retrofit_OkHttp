@@ -23,6 +23,7 @@ public class Worldpopulation_Repo {
     public DaoSession getDaoSession() {
         return daoSession;
     }
+
     public void deleteAll() {
         this.daoSession.getWorldpopulationDao().deleteAll();
     };
